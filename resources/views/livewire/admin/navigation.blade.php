@@ -2,7 +2,7 @@
      x-data="{ 
         sidebarOpen: false,
         sidebarCollapsed: (localStorage.getItem('sidebarCollapsed') === 'true' || localStorage.getItem('sidebarCollapsed') === null),
-        activeSubmenu: '{{ request()->is('admin/staff*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : '') }}',
+        activeSubmenu: '{{ request()->is('admin/staff*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : (request()->is('admin/sales*') || request()->is('admin/finance*') ? 'finance' : '')) }}',
         toggleSidebar() {
             this.sidebarCollapsed = !this.sidebarCollapsed;
             localStorage.setItem('sidebarCollapsed', this.sidebarCollapsed);
@@ -134,14 +134,44 @@
                 </div>
             </div>
 
-            <!-- Sales -->
-            <a href="/admin/sales" 
-               class="nav-link {{ request()->is('admin/sales*') ? 'active' : '' }}">
-                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
-                <span class="nav-text">{{ __('dashboard.nav_sales') }}</span>
-            </a>
+            <!-- Sales & Finance (With Submenu) -->
+            <div class="nav-group" :class="{ 'active': activeSubmenu === 'finance' }">
+                <button @click="toggleSubmenu('finance')" 
+                        class="nav-link nav-link--parent {{ request()->is('admin/sales*') || request()->is('admin/finance*') ? 'active' : '' }}">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="nav-text">{{ __('finance.nav_title') }}</span>
+                    <svg class="nav-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                
+                <div class="nav-submenu" 
+                     x-show="activeSubmenu === 'finance'" 
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 max-h-0"
+                     x-transition:enter-end="opacity-100 max-h-96"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 max-h-96"
+                     x-transition:leave-end="opacity-0 max-h-0">
+                    <a href="/admin/sales" class="submenu-link {{ request()->is('admin/sales') && !request()->is('admin/sales/*') ? 'active' : '' }}">
+                        {{ __('finance.sales_reports.title') }}
+                    </a>
+                    <a href="/admin/finance/expenses" class="submenu-link {{ request()->is('admin/finance/expenses*') ? 'active' : '' }}">
+                        {{ __('finance.expenses') }}
+                    </a>
+                    <a href="/admin/finance/budgeting" class="submenu-link {{ request()->is('admin/finance/budgeting*') ? 'active' : '' }}">
+                        {{ __('finance.budgeting.title') }}
+                    </a>
+                    <a href="/admin/finance/reports" class="submenu-link {{ request()->is('admin/finance/reports*') ? 'active' : '' }}">
+                        {{ __('finance.financial_reports.title') }}
+                    </a>
+                    <a href="/admin/finance/settings" class="submenu-link {{ request()->is('admin/finance/settings*') ? 'active' : '' }}">
+                        {{ __('finance.settings.nav_title') }}
+                    </a>
+                </div>
+            </div>
 
             <!-- Staff (With Submenu) -->
             <div class="nav-group" :class="{ 'active': activeSubmenu === 'staff' }">

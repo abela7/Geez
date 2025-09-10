@@ -130,6 +130,23 @@ Route::get('/admin/sales', function () {
     return view('admin.sales.index');
 });
 
+// Finance Routes
+Route::get('/admin/finance/expenses', function () {
+    return view('admin.finance.expenses');
+});
+
+Route::get('/admin/finance/budgeting', function () {
+    return view('admin.finance.budgeting');
+});
+
+Route::get('/admin/finance/reports', function () {
+    return view('admin.finance.reports');
+});
+
+Route::get('/admin/finance/settings', function () {
+    return view('admin.finance.settings');
+});
+
 // Staff Management Routes
 Route::get('/admin/staff', function () {
     return view('admin.staff.index');
