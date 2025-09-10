@@ -1,0 +1,36 @@
+/* ========================================
+   SALES SECTION STYLES
+   ======================================== */
+
+/* Sales-specific styling */
+.sales-container {
+    /* Sales layout styles will go here */
+}
+
+.sales-chart {
+    /* Sales chart styling */
+}
+
+.sales-summary {
+    /* Sales summary cards */
+}
+
+.sales-transactions {
+    /* Transaction list styling */
+}
+
+/* Sales performance indicators */
+.sales-metric-positive {
+    /* Positive performance styling */
+}
+
+.sales-metric-negative {
+    /* Negative performance styling */
+}
+
+/* Sales responsive breakpoints */
+@media (max-width: 768px) {
+    .sales-chart {
+        /* Mobile sales chart adjustments */
+    }
+}

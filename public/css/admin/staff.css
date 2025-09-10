@@ -1,0 +1,324 @@
+/* ==========================================================================
+   STAFF MANAGEMENT - SECTION-SPECIFIC STYLES
+   Using design tokens from layout.css
+   ========================================================================== */
+
+/* ==========================================================================
+   1. STAFF OVERVIEW DASHBOARD
+   ========================================================================== */
+
+/* Sub-navigation tabs */
+.staff-nav-tabs {
+  display: flex;
+  gap: var(--space-xs);
+  padding: var(--space-xs);
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: var(--space-xl);
+}
+
+.staff-nav-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-lg);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-base);
+  text-decoration: none;
+}
+
+.staff-nav-tab:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+.staff-nav-tab.active {
+  background-color: var(--color-primary);
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Staff stat cards with custom colors */
+.staff-stat-total {
+  --stat-color: var(--color-primary);
+  --stat-bg: rgba(48, 25, 52, 0.1);
+}
+
+.staff-stat-active {
+  --stat-color: var(--color-success);
+  --stat-bg: var(--color-success-bg);
+}
+
+.staff-stat-duty {
+  --stat-color: var(--color-info);
+  --stat-bg: var(--color-info-bg);
+}
+
+.staff-stat-leave {
+  --stat-color: var(--color-warning);
+  --stat-bg: var(--color-warning-bg);
+}
+
+/* Activity timeline */
+.activity-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.activity-item {
+  display: flex;
+  gap: var(--space-md);
+  position: relative;
+}
+
+.activity-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-sm);
+}
+
+.activity-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-title {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.activity-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.activity-time {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* Department overview grid */
+.department-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-md);
+}
+
+.department-card {
+  text-align: center;
+  padding: var(--space-lg);
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+}
+
+.department-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.department-count {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: var(--line-height-tight);
+  margin-bottom: var(--space-xs);
+}
+
+.department-name {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
+   2. STAFF DIRECTORY
+   ========================================================================== */
+
+/* Search and filters bar */
+.staff-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.staff-search {
+  flex: 1;
+  min-width: 200px;
+}
+
+.staff-filter-group {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+/* Employee grid/list toggle */
+.view-toggle {
+  display: flex;
+  gap: var(--space-xs);
+  padding: var(--space-xs);
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+.view-toggle-btn {
+  padding: var(--space-sm);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.view-toggle-btn.active {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Employee cards */
+.employee-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-lg);
+}
+
+.employee-card {
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+.employee-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-strong);
+}
+
+.employee-card-header {
+  padding: var(--space-lg);
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.employee-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  margin: 0 auto var(--space-md);
+  object-fit: cover;
+  border: 3px solid var(--color-border);
+}
+
+.employee-name {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.employee-position {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.employee-card-body {
+  padding: var(--space-lg);
+}
+
+.employee-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.employee-info-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-sm);
+}
+
+.employee-info-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
+}
+
+.employee-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-full);
+}
+
+.employee-status.active {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.employee-status.inactive {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.employee-status.leave {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+/* ==========================================================================
+   3. RESPONSIVE ADJUSTMENTS
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .staff-nav-tabs {
+    gap: 0;
+    padding: 0;
+  }
+  
+  .staff-nav-tab {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-xs);
+  }
+  
+  .department-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .employee-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .staff-filters {
+    flex-direction: column;
+  }
+  
+  .staff-search {
+    width: 100%;
+  }
+}

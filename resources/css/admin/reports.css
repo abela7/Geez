@@ -1,0 +1,40 @@
+/* ========================================
+   REPORTS SECTION STYLES
+   ======================================== */
+
+/* Reports-specific styling */
+.reports-container {
+    /* Reports layout styles will go here */
+}
+
+.reports-dashboard {
+    /* Reports dashboard grid */
+}
+
+.report-widget {
+    /* Individual report widget styling */
+}
+
+.report-filters {
+    /* Report filter controls */
+}
+
+/* Report type indicators */
+.report-financial {
+    /* Financial report styling */
+}
+
+.report-inventory {
+    /* Inventory report styling */
+}
+
+.report-sales {
+    /* Sales report styling */
+}
+
+/* Reports responsive breakpoints */
+@media (max-width: 768px) {
+    .reports-dashboard {
+        /* Mobile reports dashboard adjustments */
+    }
+}

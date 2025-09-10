@@ -1,0 +1,321 @@
+---
+description: RESTAURANT-OS PROJECT RULES ←
+
+Stack: Laravel 11 • Livewire v3 • Tailwind (Filament v3 compatible) • Filament v3 • MySQL 8 • Redis • Echo + Soketi • PWA (later)
+Mode: UI-first, build tiny vertical slices, production-grade security from day one.
+Tooling: Cursor for AI pair-programming. Keep prompts and diffs small.
+
+0) Workflow (one thing at a time — all planning in chat)
+
+Think first. Read relevant code. If anything is unclear, ask; never assume.
+
+Plan in chat: propose a short checklist and files you’ll touch. Wait for my OK.
+
+Implement exactly one subsection as a vertical slice (migration → model/policy → tests → UI → docs/notes in PR).
+
+After each step, post a high-level summary in chat (what changed, why).
+
+Keep changes small, isolated. No drive-by refactors.
+
+Security is non-negotiable. Prod defaults at all times.
+
+“What would Zuck do?” Ship the simplest thing that works, measure, iterate.
+
+Before pushing: remove secrets/PII, no .env, run lint/tests/build, sanity check for vulns.
+
+Explain your work like you’re teaching a smart 16-year-old.
+
+1) Product scope — Modules → Sections → Subsections
+1) ADMIN (Store)
+
+Sales & Finance:
+- Daily Sales
+- Financial Reports
+- Payment Management
+- Expenses
+- Budgeting
+- Cash-up (Z/X)
+- Settlement/Refunds
+- Taxes & Tips
+
+Inventory & Procurement: Ingredients, Units/Conversions, Recipes/BOM, Stock Locations, Stock Levels, Movements (receive/transfer/adjust/waste), Purchasing (POs), Suppliers, Low-stock Rules & Alerts, Analytics, Stocktake
+
+Menu Management:
+- Food Items
+- Categories
+- Modifiers
+- Dish Cost
+- Pricing
+- Menu Design
+- Availability/86
+- Allergens/Nutrition
+- Translations
+- Media
+
+Staff Management:
+- Staff Directory
+- Performance
+- Attendance
+- Tasks
+- Payroll
+- Roles/Permissions
+- Shifts/Scheduling
+- Checklists
+- KPIs
+
+CRM & Loyalty: Customers, Segments, Feedback/Reviews, Campaigns, Coupons/Vouchers, Points/Tiers, Communications
+
+Reports & Analytics: Overview, Sales/COGS/Labor, KDS Speed, Inventory Variance, Promo ROI, Custom Reports, Exports
+
+Settings: Store Profile, Taxes/Fees, Languages/Theme, Printers/Devices, Payment Providers, Integrations, Notification & Receipt Templates
+
+Security & Audit: Users/2FA, Audit Log, Data Retention/Backups, Offline/Sync Config, Access Rules (LAN/VPN)
+
+2) KITCHEN (KDS/Expo)
+
+Stations board (Placed/In Prep/Ready), Expo view, ticket detail, routing, prep timers/SLAs, bump/hold/recall, label/chit printing, prep lists, 86/unavailable, waste quick-add.
+
+3) POS (Till & Cash)
+
+Order build, modifiers/notes, cart edits, split/merge/transfer, discounts/comps, checkout (cash/card/QR, tips), refunds/void (auth), receipts, customer display, till sessions, Z/X reports, offline queue.
+
+4) WAITER / FOH
+
+Floor plan & table status, table detail, new/edit orders, transfer items/table, notes to kitchen, order-ready alerts, tasks/checklists, clock-in/out (LAN-only), my KPIs.
+
+5) CUSTOMERS (In-Restaurant)
+
+QR menu (search/allergens/nutrition), self-order/kiosk, order tracking, feedback, digital receipt, optional Wi-Fi promo capture.
+
+6) ONLINE SERVICE (Public)
+
+Web ordering (pickup/delivery/zones/scheduling), checkout & history, reservations & waitlist, customer account (profile/loyalty wallet), announcements/gallery.
+
+7) SUPER ADMIN (HQ/Platform)
+
+Multi-store (locations, shared catalog, overrides), device fleet (registry, printer map, health), integrations/APIs (accounting, delivery, webhooks, API keys), global RBAC & audit, backups/replication, IP/VPN rules, roll-up reports, global branding/localization.
+
+2) Design strategy
+
+Responsive: works beautifully at mobile ≤767, tablet 768–1279, desktop 1280–1919, TV ≥1920.
+
+Grid collapse 4→3→2→1; sticky headers on small screens; min tap 44px; density toggle for long tables.
+
+Simple & obvious: clear hierarchy; primary CTA top-right (desktop) or bottom sticky (mobile); minimal chrome.
+
+Dark/Light/System: class/data-attribute theming. No hardcoded hex in components — use tokens derived from brand palette.
+
+Accessibility: WCAG AA contrast, visible focus, keyboard nav, ARIA where needed. Provide loading skeletons, empty states, error banners, and “undo” for destructive actions.
+
+Printing & TV: styles for 80mm receipts and A4 reports. KDS TV mode is high-contrast, large targets, no hover-only interactions.
+
+3) Enhanced Brand Palette & Professional Color System
+
+PRIMARY ACCENT COLORS:
+- Gold Accent: #CDAF56 (Primary accent for highlights, active states, important elements)
+- Deep Purple: #301934 (For critical actions, warnings, important text)
+
+LIGHT THEME - Professional Cream & Purple
+Background Colors:
+- Main Background: #F8F6F1 (Warm Cream) - Sophisticated, easy on eyes
+- Card Background: #FFFFFF (Pure White) - Clean, premium contrast
+- Card Hover: #F1ECE2 (Light Cream) - Subtle interactive feedback
+- Elevated Surface: #FEFDFB (Off White) - For modals, dropdowns
+- Glass Effect: rgba(255, 255, 255, 0.85) with backdrop-blur
+
+Text Colors:
+- Primary Text: #301934 (Deep Purple) - Maximum readability, premium feel
+- Secondary Text: #4D4052 (Purple Gray) - Supporting content
+- Muted Text: #6B5B73 (Light Purple Gray) - Labels, placeholders
+- Accent Text: #CDAF56 (Gold) - Links, highlights, active states
+
+UI Elements:
+- Primary Button: Background #CDAF56, Text #301934, Hover #B8A04A
+- Critical Button: Background #301934, Text #FFFFFF, Hover #4A2B4F
+- Secondary Button: Background #F1ECE2, Text #301934, Hover #E5DED1
+- Borders: #E8E0D5 (Warm Beige) - Subtle, sophisticated separation
+- Focus Ring: #CDAF56 with 40% opacity
+- Success: #22C55E, Warning: #F59E0B, Error: #EF4444, Info: #3B82F6
+
+DARK THEME - Premium Deep Purple & Gold
+Background Colors:
+- Main Background: #0F0F1A (Very Dark Navy) - Deep, luxurious base
+- Card Background: #1C1B2E (Dark Purple Navy) - Rich, sophisticated contrast
+- Card Hover: #252340 (Lighter Dark Purple) - Smooth interactive feedback
+- Elevated Surface: #2A2847 (Medium Dark Purple) - For modals, dropdowns
+- Glass Effect: rgba(28, 27, 46, 0.85) with backdrop-blur
+
+Text Colors:
+- Primary Text: #F8F6F1 (Warm Cream) - Excellent contrast, easy reading
+- Secondary Text: #D1CBC1 (Light Warm Gray) - Supporting content
+- Muted Text: #9B8FA3 (Muted Purple) - Labels, placeholders
+- Accent Text: #CDAF56 (Gold) - Links, highlights, active states
+
+UI Elements:
+- Primary Button: Background #CDAF56, Text #0F0F1A, Hover #E0C366
+- Critical Button: Background #301934, Text #F8F6F1, Hover #4A2B4F
+- Secondary Button: Background #252340, Text #F8F6F1, Hover #2F2A4A
+- Borders: #3A3654 (Dark Purple Gray) - Subtle, professional separation
+- Focus Ring: #CDAF56 with 50% opacity
+- Success: #10B981, Warning: #F59E0B, Error: #F87171, Info: #60A5FA
+
+PROFESSIONAL USAGE GUIDELINES:
+- Use #CDAF56 (Gold) for: Primary CTAs, active navigation, highlights, success states
+- Use #301934 (Deep Purple) for: Critical actions, important warnings, emphasis
+- Maintain 4.5:1 contrast ratio minimum (WCAG AA)
+- Use glass morphism effects for headers, modals, overlays
+- Apply subtle shadows and gradients for depth
+- Smooth transitions (200-300ms) for all interactive elements
+- Consistent spacing using 8px grid system
+
+SEMANTIC COLOR MAPPING:
+- Primary: #CDAF56 (Gold accent)
+- Critical: #301934 (Deep purple)
+- Success: Light #22C55E / Dark #10B981
+- Warning: #F59E0B (Both themes)
+- Error: Light #EF4444 / Dark #F87171
+- Info: Light #3B82F6 / Dark #60A5FA
+
+This enhanced system creates a premium, sophisticated experience with excellent accessibility and professional aesthetics.
+
+ENHANCED DESIGN IMPLEMENTATION RULES:
+
+Primary Actions & CTAs:
+- Use #CDAF56 (Gold Accent) for all primary buttons, main CTAs, active navigation
+- Use #301934 (Deep Purple) for critical/destructive actions, important warnings
+
+Interactive Elements:
+- Gold (#CDAF56) for: links, active states, highlights, focus indicators
+- Hover states: Darken gold by 10% (#B8A04A), lighten purple by 15% (#4A2B4F)
+- Glass morphism for elevated surfaces (modals, dropdowns, headers)
+
+Visual Hierarchy:
+- Deep Purple (#301934) for headings and important text
+- Purple Gray (#4D4052 light / #D1CBC1 dark) for body text
+- Gold accent (#CDAF56) for interactive elements and highlights
+
+Accessibility & Contrast:
+- Maintain WCAG AA contrast (4.5:1 minimum)
+- Use semantic colors consistently across themes
+- Provide clear focus indicators with gold accent
+
+Modern Effects:
+- Subtle shadows and gradients for depth
+- 200-300ms smooth transitions for all interactions
+- Glass morphism with backdrop-blur for premium feel
+- Consistent 8px grid spacing system
+
+Fonts must support Ethiopic: Inter + Noto Sans Ethiopic.
+
+4) i18n (English / Amharic / Tigrinya)
+
+No hardcoded text. Everything uses translation keys.
+
+Structure: global JSON for common UI + per-section namespaces (admin.sales.*, inventory.*, pos.*, kds.*, waiter.*, customers.*, online.*, superadmin.*).
+
+Provide a simple translations admin page (shows per-section keys, missing only).
+
+Persist user locale; default to browser; graceful fallbacks.
+
+TRANSLATION DEVELOPMENT RULE: During development phase, ONLY use English values in ALL translation files (en/, am/, ti/). This ensures:
+- Consistent development experience
+- No translation work needed during UI building
+- Easy identification of untranslated content later
+- Reduced Cursor credit usage (no translation work)
+- Amharic/Tigrinya files contain English placeholders until translators replace them
+- Example: 'nav_dashboard' => 'Dashboard' in ALL language files during development
+
+5) Realtime, offline, access
+
+Realtime: Echo + Soketi; event names like order.status_changed, stock.low; broadcast guard matches component guard.
+
+Offline: PWA shell caches UI + last-known reads. Only state-changing requests (POST/PUT/PATCH/DELETE) include an idempotency key; server stores it in a unique mutation_log to avoid duplicates on replay.
+
+On-prem primary + Cloud replica: on-prem (LAN) is source of truth; runs fine without internet. Cloud has read-only replica for dashboards. Remote writes go to primary over VPN (WireGuard/Tailscale) or secure proxy.
+
+Route gating: LAN-only pages (kiosk, clock-in); remote-allowed pages (manager tools via VPN/IP ranges).
+
+6) Data & business rules
+
+PKs: ULIDs.
+
+Tables: id, created_at, updated_at, deleted_at NULL.
+
+FKs: ON UPDATE CASCADE ON DELETE RESTRICT.
+
+Enums: PHP 8.3 native (stored as strings).
+
+Money: decimal(12,2) (never float).
+
+Stock decrements: queued job on order close (not inline).
+
+Locale/timezone: Intl/Carbon; currency from store settings.
+
+7) Testing & CI
+
+Per slice minimum: 1 Pest feature test + 1 unit test.
+
+Browser tests: Playwright happy paths (waiter, kitchen, manager).
+
+CI must be green before merge:
+
+composer lint → Pint + Larastan (level 8)
+
+composer test → Pest
+
+npm run ci → Tailwind build + Playwright headless
+
+8) Security & audit
+
+Controllers call $this->authorize() or are policy-protected.
+
+2FA for remote manager accounts.
+
+Mask PII in logs; no secrets in frontend; no .env in repo.
+
+Nightly activity_log snapshot to backups.
+
+HTTPS + CSP in prod; IP/VPN gating for sensitive pages.
+
+Review PRs for least-privilege and secure defaults.
+
+9) Don’ts
+
+No new Composer/NPM packages without approval.
+
+No commented-out code.
+
+Don’t bypass linters/types/security “just to make it work.”
+
+No JS frameworks beyond Alpine in Blade views.
+
+No inline CSS or JavaScript in Blade views — use dedicated CSS/JS files per page/section.
+
+CSS/JS File Organization:
+- Each admin section gets its own CSS/JS files: `resources/css/admin/{section}.css` and `resources/js/admin/{section}.js`
+- Use `@push('styles')` and `@push('scripts')` in Blade views to load section-specific assets
+- All styles must use CSS custom properties (design tokens) — no raw hex colors
+- Structure CSS files with commented sections: design tokens, layout, components, responsive, dark theme overrides
+- Keep shared/global styles in `resources/css/app.css` and section-specific styles in dedicated files
+- Example structure:
+  ```
+  resources/css/admin/
+  ├── layout.css (shared admin layout)
+  ├── dashboard.css (dashboard-specific)
+  ├── staff.css (staff section)
+  ├── inventory.css (inventory section)
+  └── sales.css (sales section)
+  ```
+
+10) Cursor protocol (chat-only planning)
+
+Step A — PLAN ONLY (no code yet):
+“Target slice = Module → Section → Subsection.
+Goal = 1–2 lines.
+Share: clarifying questions, tiny checklist, files you’ll touch, translation key namespace, breakpoint notes, accessibility notes, Definition of Done. Wait for approval.”
+
+Step B — IMPLEMENT (after OK):
+Implement exactly as planned. Meet DoD. Summarize changes in chat. Run lint/tests/build. Explain how it works and any follow-ups.
+globs: 
+alwaysApply: true
+---

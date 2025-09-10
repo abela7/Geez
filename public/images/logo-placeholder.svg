@@ -1,0 +1,26 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="60" cy="60" r="60" fill="#301934"/>
+  
+  <!-- Restaurant Icon -->
+  <g transform="translate(30, 30)">
+    <!-- Plate -->
+    <circle cx="30" cy="45" r="25" fill="#DAA520" stroke="#F1ECE2" stroke-width="2"/>
+    
+    <!-- Fork -->
+    <path d="M15 20 L15 35 M12 20 L12 30 M18 20 L18 30" stroke="#F1ECE2" stroke-width="2" stroke-linecap="round"/>
+    
+    <!-- Knife -->
+    <path d="M45 20 L45 35 M45 20 L47 22" stroke="#F1ECE2" stroke-width="2" stroke-linecap="round"/>
+    
+    <!-- Food on plate -->
+    <circle cx="30" cy="45" r="8" fill="#4D4052"/>
+    <circle cx="26" cy="42" r="3" fill="#DAA520"/>
+    <circle cx="34" cy="42" r="3" fill="#DAA520"/>
+    <circle cx="30" cy="48" r="3" fill="#DAA520"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="60" y="85" text-anchor="middle" fill="#F1ECE2" font-family="Inter, sans-serif" font-size="12" font-weight="600">GEEZ</text>
+  <text x="60" y="100" text-anchor="middle" fill="#DAA520" font-family="Inter, sans-serif" font-size="8">RESTAURANT</text>
+</svg>

@@ -1,0 +1,40 @@
+/* ========================================
+   SETTINGS SECTION STYLES
+   ======================================== */
+
+/* Settings-specific styling */
+.settings-container {
+    /* Settings layout styles will go here */
+}
+
+.settings-navigation {
+    /* Settings sidebar navigation */
+}
+
+.settings-content {
+    /* Settings main content area */
+}
+
+.settings-form {
+    /* Settings form styling */
+}
+
+/* Settings category indicators */
+.settings-general {
+    /* General settings styling */
+}
+
+.settings-security {
+    /* Security settings styling */
+}
+
+.settings-appearance {
+    /* Appearance settings styling */
+}
+
+/* Settings responsive breakpoints */
+@media (max-width: 768px) {
+    .settings-navigation {
+        /* Mobile settings navigation adjustments */
+    }
+}

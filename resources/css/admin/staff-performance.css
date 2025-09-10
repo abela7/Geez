@@ -1,0 +1,614 @@
+/* ==========================================================================
+   STAFF PERFORMANCE - SECTION-SPECIFIC STYLES
+   Using design tokens from layout.css for consistent theming
+   ========================================================================== */
+
+/* ==========================================================================
+   1. DESIGN TOKENS & VARIABLES
+   ========================================================================== */
+
+:root {
+  /* Performance-specific color tokens */
+  --performance-excellent: var(--color-success);
+  --performance-good: var(--color-info);
+  --performance-average: var(--color-warning);
+  --performance-poor: var(--color-error);
+  
+  /* Chart and visualization colors */
+  --chart-primary: var(--color-primary);
+  --chart-secondary: var(--color-secondary);
+  --chart-grid: var(--color-border);
+  
+  /* Progress bar dimensions */
+  --progress-bar-height: 8px;
+  --progress-bar-radius: 4px;
+  --metric-bar-height: 6px;
+  --metric-bar-width: 80px;
+}
+
+/* ==========================================================================
+   2. LAYOUT & STRUCTURE
+   ========================================================================== */
+
+/* Performance overview cards grid */
+.performance-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+/* Performance Cards */
+.performance-card {
+  padding: var(--space-lg);
+  position: relative;
+}
+
+.performance-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.performance-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.performance-icon-primary {
+  background-color: rgba(218, 165, 32, 0.1);
+  color: var(--color-accent);
+}
+
+.performance-icon-success {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.performance-icon-warning {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.performance-icon-info {
+  background-color: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+.performance-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.performance-card-label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.performance-card-value {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-xs);
+  line-height: var(--line-height-tight);
+}
+
+.performance-card-trend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-sm);
+}
+
+.performance-trend-positive {
+  color: var(--color-success);
+}
+
+.performance-trend-negative {
+  color: var(--color-error);
+}
+
+.performance-trend-neutral {
+  color: var(--color-text-secondary);
+}
+
+.performance-trend-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+/* Main content layout */
+.performance-main-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+}
+
+@media (min-width: 1280px) {
+  .performance-main-grid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+/* ==========================================================================
+   3. PERFORMANCE CHART COMPONENTS
+   ========================================================================== */
+
+/* Chart container */
+.performance-chart-container {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  padding: var(--space-md);
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+/* Chart toggle buttons */
+.performance-chart-toggle {
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.performance-chart-toggle:hover {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
+.performance-chart-toggle.active {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+/* ==========================================================================
+   4. PERFORMANCE BARS & PROGRESS INDICATORS
+   ========================================================================== */
+
+/* Main performance bars for top performers */
+.performance-bar {
+  width: 100%;
+  height: var(--progress-bar-height);
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--progress-bar-radius);
+  overflow: hidden;
+  position: relative;
+}
+
+.performance-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-success) 0%, var(--color-success-light) 100%);
+  border-radius: var(--progress-bar-radius);
+  transition: width var(--transition-slow);
+  position: relative;
+}
+
+.performance-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Metric bars for sidebar metrics */
+.metric-bar {
+  width: var(--metric-bar-width);
+  height: var(--metric-bar-height);
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+}
+
+.metric-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-sm);
+  transition: width var(--transition-base);
+}
+
+.metric-bar-fill.bg-success {
+  background-color: var(--color-success);
+}
+
+.metric-bar-fill.bg-warning {
+  background-color: var(--color-warning);
+}
+
+.metric-bar-fill.bg-error {
+  background-color: var(--color-error);
+}
+
+.metric-bar-fill.bg-info {
+  background-color: var(--color-info);
+}
+
+/* ==========================================================================
+   5. TOP PERFORMERS LIST
+   ========================================================================== */
+
+/* Top performer item styling */
+.top-performer-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+}
+
+.top-performer-item:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-strong);
+  transform: translateY(-1px);
+}
+
+/* Ranking badge */
+.performer-rank {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+}
+
+.performer-rank.rank-1 {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.performer-rank.rank-2 {
+  background-color: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+.performer-rank.rank-3 {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+/* Performer details */
+.performer-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.performer-name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.performer-role {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.performer-score {
+  text-align: right;
+}
+
+.performer-score-value {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-success);
+  line-height: var(--line-height-tight);
+}
+
+.performer-score-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   6. UPCOMING REVIEWS
+   ========================================================================== */
+
+/* Review item styling */
+.review-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+}
+
+.review-item:hover {
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-border-strong);
+}
+
+/* Review icon */
+.review-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.review-icon.urgent {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.review-icon.normal {
+  background-color: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+/* Review content */
+.review-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.review-employee-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.review-type {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.review-due-date {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.review-due-date.urgent {
+  color: var(--color-warning);
+}
+
+.review-due-date.normal {
+  color: var(--color-info);
+}
+
+/* ==========================================================================
+   7. QUICK ACTIONS
+   ========================================================================== */
+
+/* Action button grid */
+.performance-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* Individual action buttons */
+.performance-action-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+}
+
+.performance-action-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.performance-action-btn:active {
+  transform: translateY(0);
+}
+
+/* Primary action button */
+.performance-action-btn.primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+/* Secondary action buttons */
+.performance-action-btn.secondary {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+.performance-action-btn.secondary:hover {
+  background-color: var(--color-bg-secondary);
+  border-color: var(--color-border-strong);
+}
+
+/* ==========================================================================
+   8. RESPONSIVE DESIGN
+   ========================================================================== */
+
+/* Mobile adjustments (≤767px) */
+@media (max-width: 767px) {
+  .performance-overview-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+  
+  .performance-chart-container {
+    height: 240px;
+    padding: var(--space-sm);
+  }
+  
+  .performance-chart-toggle {
+    padding: var(--space-xs);
+    font-size: var(--font-size-xs);
+  }
+  
+  .top-performer-item {
+    padding: var(--space-md);
+    gap: var(--space-sm);
+  }
+  
+  .performer-rank {
+    width: 40px;
+    height: 40px;
+    font-size: var(--font-size-md);
+  }
+  
+  .metric-bar {
+    width: 60px;
+  }
+}
+
+/* Tablet adjustments (768px-1279px) */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .performance-overview-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .performance-main-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+}
+
+/* Desktop adjustments (1280px-1919px) */
+@media (min-width: 1280px) and (max-width: 1919px) {
+  .performance-overview-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* TV/Large screen adjustments (≥1920px) */
+@media (min-width: 1920px) {
+  .performance-chart-container {
+    height: 400px;
+  }
+  
+  .top-performer-item {
+    padding: var(--space-xl);
+  }
+  
+  .performer-rank {
+    width: 56px;
+    height: 56px;
+    font-size: var(--font-size-xl);
+  }
+}
+
+/* ==========================================================================
+   9. DARK THEME OVERRIDES
+   ========================================================================== */
+
+.dark .performance-chart-container {
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-border-strong);
+}
+
+.dark .performance-bar {
+  background-color: var(--color-bg-primary);
+}
+
+.dark .metric-bar {
+  background-color: var(--color-bg-primary);
+}
+
+.dark .top-performer-item {
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-border-strong);
+}
+
+.dark .review-item {
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-border-strong);
+}
+
+.dark .review-item:hover {
+  background-color: var(--color-bg-secondary);
+}
+
+.dark .performance-action-btn.secondary {
+  background-color: var(--color-bg-secondary);
+  border-color: var(--color-border-strong);
+}
+
+.dark .performance-action-btn.secondary:hover {
+  background-color: var(--color-bg-tertiary);
+}
+
+/* ==========================================================================
+   10. ACCESSIBILITY ENHANCEMENTS
+   ========================================================================== */
+
+/* Focus styles for interactive elements */
+.performance-chart-toggle:focus,
+.performance-action-btn:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .performance-bar-fill,
+  .metric-bar-fill {
+    border: 1px solid currentColor;
+  }
+  
+  .top-performer-item,
+  .review-item {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .performance-bar-fill,
+  .metric-bar-fill,
+  .top-performer-item,
+  .review-item,
+  .performance-action-btn {
+    transition: none;
+  }
+  
+  .performance-bar-fill::after {
+    animation: none;
+  }
+}
