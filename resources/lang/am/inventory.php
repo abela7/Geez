@@ -632,4 +632,151 @@ return [
         'yield_help' => 'Total quantity produced by this recipe',
         'cost_calculation_help' => 'Automatically calculated based on ingredient costs',
     ],
+
+    // Movements Subsection
+    'movements' => [
+        'title' => 'Inventory Movements',
+        'nav_title' => 'Movements',
+        'subtitle' => 'Track all inventory movements, transfers, adjustments, and stock changes',
+        
+        // Navigation & Actions
+        'add_movement' => 'Add Movement',
+        'edit_movement' => 'Edit Movement',
+        'delete_movement' => 'Delete Movement',
+        'view_movement' => 'View Movement Details',
+        
+        // Movement Types
+        'movement_types' => [
+            'receive' => 'Receive',
+            'transfer' => 'Transfer',
+            'adjust' => 'Adjust',
+            'waste' => 'Waste',
+            'return' => 'Return',
+            'sale' => 'Sale',
+            'production' => 'Production',
+        ],
+        
+        // Table Headers
+        'item' => 'Item',
+        'quantity' => 'Quantity',
+        'movement_type' => 'Movement Type',
+        'location' => 'Location',
+        'from_location' => 'From Location',
+        'to_location' => 'To Location',
+        'staff' => 'Staff Member',
+        'date_time' => 'Date & Time',
+        'notes' => 'Notes',
+        'reference' => 'Reference',
+        
+        // Filters
+        'filter_by_type' => 'Filter by Movement Type',
+        'filter_by_location' => 'Filter by Location',
+        'filter_by_staff' => 'Filter by Staff',
+        'filter_by_date' => 'Filter by Date Range',
+        'all_types' => 'All Movement Types',
+        'all_locations' => 'All Locations',
+        'all_staff' => 'All Staff',
+        'date_from' => 'From Date',
+        'date_to' => 'To Date',
+        'search_items' => 'Search items...',
+        
+        // Form Fields
+        'select_item' => 'Select Item',
+        'select_movement_type' => 'Select Movement Type',
+        'enter_quantity' => 'Enter Quantity',
+        'select_location' => 'Select Location',
+        'select_from_location' => 'Select From Location',
+        'select_to_location' => 'Select To Location',
+        'select_staff' => 'Select Staff Member',
+        'movement_date' => 'Movement Date',
+        'movement_time' => 'Movement Time',
+        'add_notes' => 'Add notes (optional)',
+        'reference_number' => 'Reference Number',
+        
+        // Movement Details
+        'movement_details' => 'Movement Details',
+        'item_details' => 'Item Details',
+        'movement_info' => 'Movement Information',
+        'location_info' => 'Location Information',
+        'staff_info' => 'Staff Information',
+        'additional_info' => 'Additional Information',
+        
+        // Messages
+        'movement_created' => 'Movement recorded successfully',
+        'movement_updated' => 'Movement updated successfully',
+        'movement_deleted' => 'Movement deleted successfully',
+        'no_movements' => 'No movements found',
+        'no_movements_message' => 'No inventory movements yet. Add your first one to start tracking stock changes.',
+        'loading_movements' => 'Loading movements...',
+        'error_loading' => 'Error loading movements',
+        'retry' => 'Retry',
+        
+        // Validation
+        'item_required' => 'Item is required',
+        'type_required' => 'Movement type is required',
+        'quantity_required' => 'Quantity is required',
+        'quantity_positive' => 'Quantity must be positive',
+        'location_required' => 'Location is required',
+        'from_location_required' => 'From location is required',
+        'to_location_required' => 'To location is required',
+        'staff_required' => 'Staff member is required',
+        'date_required' => 'Date is required',
+        'invalid_date' => 'Invalid date format',
+        
+        // Actions
+        'save_movement' => 'Save Movement',
+        'cancel' => 'Cancel',
+        'close' => 'Close',
+        'edit' => 'Edit',
+        'delete' => 'Delete',
+        'confirm_delete' => 'Are you sure you want to delete this movement?',
+        'delete_warning' => 'This action cannot be undone.',
+        
+        // Drawer/Modal
+        'movement_drawer_title' => 'Movement Details',
+        'add_movement_title' => 'Add New Movement',
+        'edit_movement_title' => 'Edit Movement',
+        'close_drawer' => 'Close Drawer',
+        
+        // Summary & Stats
+        'total_movements' => 'Total Movements',
+        'recent_movements' => 'Recent Movements',
+        'movements_today' => 'Movements Today',
+        'movements_this_week' => 'This Week',
+        'movements_this_month' => 'This Month',
+        
+        // Locations
+        'locations' => [
+            'warehouse' => 'Main Warehouse',
+            'kitchen' => 'Kitchen',
+            'storage' => 'Storage Room',
+            'freezer' => 'Freezer',
+            'dry_storage' => 'Dry Storage',
+            'bar' => 'Bar Area',
+            'prep_area' => 'Prep Area',
+        ],
+        
+        // Staff Roles
+        'staff_roles' => [
+            'manager' => 'Manager',
+            'chef' => 'Chef',
+            'cook' => 'Cook',
+            'server' => 'Server',
+            'inventory_clerk' => 'Inventory Clerk',
+        ],
+        
+        // Time Formats
+        'time_ago' => ':time ago',
+        'just_now' => 'Just now',
+        'minutes_ago' => ':count minutes ago',
+        'hours_ago' => ':count hours ago',
+        'days_ago' => ':count days ago',
+        
+        // Tooltips
+        'click_row_details' => 'Click row to view details',
+        'movement_type_help' => 'Select the type of inventory movement',
+        'quantity_help' => 'Enter the quantity moved (positive number)',
+        'location_help' => 'Select the location affected by this movement',
+        'notes_help' => 'Add any additional notes about this movement',
+    ],
 ];

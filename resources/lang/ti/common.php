@@ -183,4 +183,5 @@ return [
     'average' => 'Average',
     'total' => 'Total',
     'clear_filters' => 'Clear Filters',
+    'sort_by' => 'Sort by',
 ];

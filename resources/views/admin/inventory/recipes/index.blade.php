@@ -155,102 +155,103 @@
     </div>
 
     <!-- Recipes Table -->
-    <div class="table-card">
-        <div class="table-responsive">
-            <table class="recipes-table">
-                <thead>
-                    <tr>
-                        <th>{{ __('inventory.recipes.recipe_name') }}</th>
-                        <th>{{ __('inventory.recipes.category') }}</th>
-                        <th>{{ __('inventory.recipes.difficulty') }}</th>
-                        <th>{{ __('inventory.recipes.serving_size') }}</th>
-                        <th>{{ __('inventory.recipes.total_time') }}</th>
-                        <th>{{ __('inventory.recipes.cost_per_serving') }}</th>
-                        <th>{{ __('inventory.recipes.status') }}</th>
-                        <th>{{ __('inventory.recipes.actions') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($recipes as $recipe)
-                        <tr>
-                            <td class="recipe-name-cell">
-                                <div class="recipe-name">{{ $recipe->name }}</div>
-                                <div class="recipe-code">{{ $recipe->code }}</div>
-                            </td>
-                            <td>
-                                <span class="category-badge category-{{ $recipe->category }}">
-                                    {{ __('inventory.recipes.categories.' . $recipe->category) }}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="difficulty-badge {{ $recipe->difficulty_badge_class }}">
-                                    {{ __('inventory.recipes.difficulty_levels.' . $recipe->difficulty) }}
-                                </span>
-                            </td>
-                            <td class="serving-cell">{{ $recipe->serving_size }} {{ __('common.servings') }}</td>
-                            <td class="time-cell">{{ $recipe->formatted_total_time }}</td>
-                            <td class="cost-cell">
-                                @if($recipe->cost_per_serving)
-                                    ${{ number_format($recipe->cost_per_serving, 2) }}
-                                @else
-                                    <span class="text-muted">{{ __('common.not_calculated') }}</span>
-                                @endif
-                            </td>
-                            <td>
-                                <span class="status-badge {{ $recipe->status_badge_class }}">
-                                    {{ __('inventory.recipes.statuses.' . $recipe->status) }}
-                                </span>
-                            </td>
-                            <td class="actions-cell">
-                                <button class="action-btn view" onclick="viewRecipe({{ $recipe->id }})" title="{{ __('inventory.recipes.view_recipe') }}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
-                                </button>
-                                <button class="action-btn edit" onclick="editRecipe({{ $recipe->id }})" title="{{ __('inventory.recipes.edit_recipe') }}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                    </svg>
-                                </button>
-                                <button class="action-btn duplicate" onclick="duplicateRecipe({{ $recipe->id }})" title="{{ __('inventory.recipes.duplicate_recipe') }}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                    </svg>
-                                </button>
-                                <button class="action-btn delete" onclick="deleteRecipe({{ $recipe->id }})" title="{{ __('inventory.recipes.delete_recipe') }}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="empty-state">
-                                <div class="empty-state-content">
-                                    <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                    </svg>
-                                    <h3>{{ __('inventory.recipes.no_recipes') }}</h3>
-                                    <p>{{ __('inventory.recipes.no_recipes_message') }}</p>
-                                    <button onclick="openRecipeModal()" class="btn btn-primary">
-                                        {{ __('inventory.recipes.add_recipe') }}
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Pagination -->
-        @if($recipes->hasPages())
-            <div class="pagination-wrapper">
-                {{ $recipes->links() }}
+    <div class="card table-card">
+        <div class="card-header">
+            <h3 class="card-title">{{ __('inventory.recipes.title') }}</h3>
+            <div class="table-controls">
+                <div class="sort-controls">
+                    <label for="sort_by" class="sr-only">{{ __('common.sort_by') }}</label>
+                    <select id="sort_by" name="sort_by" class="form-select form-select-sm" onchange="updateSort()">
+                        <option value="name">{{ __('inventory.recipes.recipe_name') }}</option>
+                        <option value="category">{{ __('inventory.recipes.category') }}</option>
+                        <option value="difficulty">{{ __('inventory.recipes.difficulty') }}</option>
+                        <option value="cost_per_serving">{{ __('inventory.recipes.cost_per_serving') }}</option>
+                        <option value="status">{{ __('inventory.recipes.status') }}</option>
+                    </select>
+                    <button type="button" class="btn btn-link btn-sm" onclick="toggleSortDirection()" 
+                            title="Toggle sort direction">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
-        @endif
+        </div>
+        <div class="card-body">
+            @if(count($recipes->data) > 0)
+                <div class="table-responsive">
+                    <table class="table recipes-table">
+                        <thead>
+                            <tr>
+                                <th>{{ __('inventory.recipes.recipe_name') }}</th>
+                                <th>{{ __('inventory.recipes.category') }}</th>
+                                <th>{{ __('inventory.recipes.difficulty') }}</th>
+                                <th>{{ __('inventory.recipes.serving_size') }}</th>
+                                <th>{{ __('inventory.recipes.total_time') }}</th>
+                                <th>{{ __('inventory.recipes.cost_per_serving') }}</th>
+                                <th>{{ __('inventory.recipes.status') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($recipes->data as $recipe)
+                                <tr class="table-row" data-recipe-id="{{ $recipe->id }}">
+                                    <td class="recipe-name-cell">
+                                        <div class="item-info">
+                                            <div class="item-name">{{ $recipe->name }}</div>
+                                            <div class="item-code">{{ $recipe->code }}</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="category-badge category-{{ $recipe->category }}">
+                                            {{ __('inventory.recipes.categories.' . $recipe->category) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="difficulty-badge difficulty-{{ $recipe->difficulty }}">
+                                            {{ __('inventory.recipes.difficulty_levels.' . $recipe->difficulty) }}
+                                        </span>
+                                    </td>
+                                    <td class="serving-cell">
+                                        <div class="serving-info">
+                                            <div class="serving-amount">{{ $recipe->serving_size }} {{ __('common.servings') }}</div>
+                                        </div>
+                                    </td>
+                                    <td class="time-cell">{{ $recipe->formatted_total_time }}</td>
+                                    <td class="cost-cell">
+                                        @if($recipe->cost_per_serving)
+                                            <div class="cost-info">
+                                                <div class="cost-amount">${{ number_format($recipe->cost_per_serving, 2) }}</div>
+                                            </div>
+                                        @else
+                                            <span class="text-muted">{{ __('common.not_calculated') }}</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-{{ $recipe->status }}">
+                                            {{ __('inventory.recipes.statuses.' . $recipe->status) }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <!-- Empty State -->
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="empty-state-title">{{ __('inventory.recipes.no_recipes') }}</h3>
+                    <p class="empty-state-description">{{ __('inventory.recipes.no_recipes_message') }}</p>
+                    <button onclick="openRecipeModal()" class="btn btn-primary">
+                        {{ __('inventory.recipes.add_recipe') }}
+                    </button>
+                </div>
+            @endif
+        </div>
     </div>
 </div>
 @endsection

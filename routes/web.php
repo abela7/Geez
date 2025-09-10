@@ -69,6 +69,15 @@ Route::prefix('admin/inventory/settings')->name('admin.inventory.settings.')->gr
         Route::post('/{recipe}/calculate-costs', [App\Http\Controllers\Admin\Inventory\RecipesController::class, 'calculateCosts'])->name('calculate-costs');
     });
 
+    // Movements Routes
+    Route::prefix('admin/inventory/movements')->name('admin.inventory.movements.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Inventory\MovementsController::class, 'index'])->name('index');
+        Route::post('/', [App\Http\Controllers\Admin\Inventory\MovementsController::class, 'store'])->name('store');
+        Route::get('/{id}', [App\Http\Controllers\Admin\Inventory\MovementsController::class, 'show'])->name('show');
+        Route::put('/{id}', [App\Http\Controllers\Admin\Inventory\MovementsController::class, 'update'])->name('update');
+        Route::delete('/{id}', [App\Http\Controllers\Admin\Inventory\MovementsController::class, 'destroy'])->name('destroy');
+    });
+
 Route::get('/admin/sales', function () {
     return view('admin.sales.index');
 });

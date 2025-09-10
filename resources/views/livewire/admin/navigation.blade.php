@@ -110,12 +110,11 @@
                     <a href="/admin/inventory/recipes" class="submenu-link {{ request()->is('admin/inventory/recipes*') ? 'active' : '' }}">
                         {{ __('inventory.recipes.title') }}
                     </a>
+                    <a href="/admin/inventory/movements" class="submenu-link {{ request()->is('admin/inventory/movements*') ? 'active' : '' }}">
+                        {{ __('inventory.movements.nav_title') }}
+                    </a>
                     <a href="/admin/inventory/locations" class="submenu-link {{ request()->is('admin/inventory/locations*') ? 'active' : '' }} opacity-60">
                         Stock Locations
-                        <span class="text-xs ml-auto">{{ __('common.coming_soon') }}</span>
-                    </a>
-                    <a href="/admin/inventory/movements" class="submenu-link {{ request()->is('admin/inventory/movements*') ? 'active' : '' }} opacity-60">
-                        Stock Movements
                         <span class="text-xs ml-auto">{{ __('common.coming_soon') }}</span>
                     </a>
                     <a href="/admin/inventory/purchasing" class="submenu-link {{ request()->is('admin/inventory/purchasing*') ? 'active' : '' }} opacity-60">

@@ -19,60 +19,141 @@ class RecipesController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = Recipe::with(['recipeIngredients.ingredient', 'instructions']);
+        // Sample recipe data for UI demo
+        $sampleRecipes = collect([
+            (object) [
+                'id' => 1,
+                'name' => 'Ethiopian Doro Wat',
+                'code' => 'RCP001',
+                'description' => 'Traditional Ethiopian chicken stew with berbere spice',
+                'category' => 'main_course',
+                'serving_size' => 6,
+                'prep_time' => 30,
+                'cook_time' => 90,
+                'total_time' => 120,
+                'difficulty' => 'medium',
+                'cost_per_serving' => 8.50,
+                'total_cost' => 51.00,
+                'status' => 'active',
+                'difficulty_badge_class' => 'difficulty-medium',
+                'status_badge_class' => 'status-active',
+                'formatted_total_time' => '2h',
+            ],
+            (object) [
+                'id' => 2,
+                'name' => 'Injera Bread',
+                'code' => 'RCP002',
+                'description' => 'Traditional Ethiopian sourdough flatbread',
+                'category' => 'side_dish',
+                'serving_size' => 8,
+                'prep_time' => 15,
+                'cook_time' => 20,
+                'total_time' => 35,
+                'difficulty' => 'easy',
+                'cost_per_serving' => 1.25,
+                'total_cost' => 10.00,
+                'status' => 'active',
+                'difficulty_badge_class' => 'difficulty-easy',
+                'status_badge_class' => 'status-active',
+                'formatted_total_time' => '35m',
+            ],
+            (object) [
+                'id' => 3,
+                'name' => 'Tibs (Sautéed Beef)',
+                'code' => 'RCP003',
+                'description' => 'Spiced sautéed beef with onions and peppers',
+                'category' => 'main_course',
+                'serving_size' => 4,
+                'prep_time' => 20,
+                'cook_time' => 25,
+                'total_time' => 45,
+                'difficulty' => 'medium',
+                'cost_per_serving' => 12.75,
+                'total_cost' => 51.00,
+                'status' => 'active',
+                'difficulty_badge_class' => 'difficulty-medium',
+                'status_badge_class' => 'status-active',
+                'formatted_total_time' => '45m',
+            ],
+            (object) [
+                'id' => 4,
+                'name' => 'Shiro Wat',
+                'code' => 'RCP004',
+                'description' => 'Chickpea flour stew with spices',
+                'category' => 'main_course',
+                'serving_size' => 5,
+                'prep_time' => 10,
+                'cook_time' => 30,
+                'total_time' => 40,
+                'difficulty' => 'easy',
+                'cost_per_serving' => 3.20,
+                'total_cost' => 16.00,
+                'status' => 'draft',
+                'difficulty_badge_class' => 'difficulty-easy',
+                'status_badge_class' => 'status-draft',
+                'formatted_total_time' => '40m',
+            ],
+            (object) [
+                'id' => 5,
+                'name' => 'Ethiopian Coffee',
+                'code' => 'RCP005',
+                'description' => 'Traditional Ethiopian coffee ceremony brew',
+                'category' => 'beverage',
+                'serving_size' => 3,
+                'prep_time' => 45,
+                'cook_time' => 15,
+                'total_time' => 60,
+                'difficulty' => 'hard',
+                'cost_per_serving' => null,
+                'total_cost' => null,
+                'status' => 'testing',
+                'difficulty_badge_class' => 'difficulty-hard',
+                'status_badge_class' => 'status-testing',
+                'formatted_total_time' => '1h',
+            ],
+        ]);
 
-        // Apply filters
+        // Apply filters to sample data
+        $filteredRecipes = $sampleRecipes;
+
         if ($request->filled('category') && $request->category !== 'all') {
-            $query->where('category', $request->category);
+            $filteredRecipes = $filteredRecipes->where('category', $request->category);
         }
 
         if ($request->filled('difficulty') && $request->difficulty !== 'all') {
-            $query->where('difficulty', $request->difficulty);
+            $filteredRecipes = $filteredRecipes->where('difficulty', $request->difficulty);
         }
 
         if ($request->filled('status') && $request->status !== 'all') {
-            $query->where('status', $request->status);
+            $filteredRecipes = $filteredRecipes->where('status', $request->status);
         }
 
         if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('code', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+            $search = strtolower($request->search);
+            $filteredRecipes = $filteredRecipes->filter(function ($recipe) use ($search) {
+                return str_contains(strtolower($recipe->name), $search) ||
+                       str_contains(strtolower($recipe->code), $search) ||
+                       str_contains(strtolower($recipe->description), $search);
             });
         }
 
-        // Apply sorting
-        $sortBy = $request->get('sort_by', 'name');
-        $sortDirection = $request->get('sort_direction', 'asc');
+        // Create a simple paginator-like object
+        $recipes = (object) [
+            'data' => $filteredRecipes->values(),
+            'hasPages' => function() { return false; },
+            'links' => function() { return ''; },
+        ];
 
-        $allowedSorts = ['name', 'code', 'category', 'difficulty', 'total_cost', 'created_at'];
-        if (in_array($sortBy, $allowedSorts)) {
-            $query->orderBy($sortBy, $sortDirection);
-        } else {
-            $query->orderBy('name', 'asc');
-        }
-
-        $recipes = $query->paginate(20)->withQueryString();
-
-        // Get filter options
-        $categories = Recipe::select('category')
-            ->distinct()
-            ->orderBy('category')
-            ->pluck('category')
-            ->toArray();
-
+        // Static filter options
+        $categories = ['appetizer', 'main_course', 'dessert', 'beverage', 'sauce', 'side_dish', 'soup', 'salad'];
         $difficulties = ['easy', 'medium', 'hard', 'expert'];
         $statuses = ['active', 'inactive', 'draft', 'testing'];
 
-        // Calculate summary statistics
-        $totalRecipes = Recipe::count();
-        $activeRecipes = Recipe::where('status', 'active')->count();
-        $draftRecipes = Recipe::where('status', 'draft')->count();
-        $avgCostPerServing = Recipe::where('status', 'active')
-            ->whereNotNull('cost_per_serving')
-            ->avg('cost_per_serving') ?? 0;
+        // Calculate summary statistics from sample data
+        $totalRecipes = $sampleRecipes->count();
+        $activeRecipes = $sampleRecipes->where('status', 'active')->count();
+        $draftRecipes = $sampleRecipes->where('status', 'draft')->count();
+        $avgCostPerServing = $sampleRecipes->whereNotNull('cost_per_serving')->avg('cost_per_serving') ?? 0;
 
         return view('admin.inventory.recipes.index', compact(
             'recipes',

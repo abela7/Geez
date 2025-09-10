@@ -22,7 +22,9 @@ export default defineConfig({
             'resources/css/admin/inventory-settings.css',
             'resources/js/admin/inventory-settings.js',
             'resources/css/admin/inventory-recipes.css',
-            'resources/js/admin/inventory-recipes.js'
+            'resources/js/admin/inventory-recipes.js',
+            'resources/css/admin/inventory-movements.css',
+            'resources/js/admin/inventory-movements.js'
             ],
             refresh: true,
         }),
