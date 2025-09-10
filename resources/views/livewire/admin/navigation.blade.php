@@ -107,13 +107,8 @@
                     <a href="/admin/inventory/settings" class="submenu-link {{ request()->is('admin/inventory/settings*') ? 'active' : '' }}">
                         {{ __('inventory.settings.nav_title') }}
                     </a>
-                    <a href="/admin/inventory/units" class="submenu-link {{ request()->is('admin/inventory/units*') ? 'active' : '' }} opacity-60">
-                        Units & Conversions
-                        <span class="text-xs ml-auto">{{ __('common.coming_soon') }}</span>
-                    </a>
-                    <a href="/admin/inventory/recipes" class="submenu-link {{ request()->is('admin/inventory/recipes*') ? 'active' : '' }} opacity-60">
-                        Recipes / BOM
-                        <span class="text-xs ml-auto">{{ __('common.coming_soon') }}</span>
+                    <a href="/admin/inventory/recipes" class="submenu-link {{ request()->is('admin/inventory/recipes*') ? 'active' : '' }}">
+                        {{ __('inventory.recipes.title') }}
                     </a>
                     <a href="/admin/inventory/locations" class="submenu-link {{ request()->is('admin/inventory/locations*') ? 'active' : '' }} opacity-60">
                         Stock Locations

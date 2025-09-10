@@ -176,4 +176,11 @@ return [
     'last_month' => 'Last Month',
     'this_year' => 'This Year',
     'last_year' => 'Last Year',
+    
+    // Additional Common Terms
+    'servings' => 'servings',
+    'not_calculated' => 'Not calculated',
+    'average' => 'Average',
+    'total' => 'Total',
+    'clear_filters' => 'Clear Filters',
 ];

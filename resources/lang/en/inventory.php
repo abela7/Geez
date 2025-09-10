@@ -576,4 +576,135 @@ return [
         'units_tab' => 'Units',
         'types_tab' => 'Ingredient Types',
     ],
+
+    // Recipes / BOM Subsection
+    'recipes' => [
+        'title' => 'Recipes & Bill of Materials',
+        'nav_title' => 'Recipes / BOM',
+        'subtitle' => 'Manage recipes, ingredient lists, and bill of materials for menu items',
+        
+        // Navigation & Actions
+        'add_recipe' => 'Add Recipe',
+        'edit_recipe' => 'Edit Recipe',
+        'duplicate_recipe' => 'Duplicate Recipe',
+        'delete_recipe' => 'Delete Recipe',
+        'view_recipe' => 'View Recipe',
+        
+        // Recipe Fields
+        'recipe_name' => 'Recipe Name',
+        'recipe_code' => 'Recipe Code',
+        'description' => 'Description',
+        'category' => 'Category',
+        'serving_size' => 'Serving Size',
+        'prep_time' => 'Prep Time',
+        'cook_time' => 'Cook Time',
+        'total_time' => 'Total Time',
+        'difficulty' => 'Difficulty Level',
+        'cost_per_serving' => 'Cost per Serving',
+        'total_cost' => 'Total Recipe Cost',
+        'yield' => 'Recipe Yield',
+        'status' => 'Status',
+        
+        // Recipe Categories
+        'categories' => [
+            'appetizer' => 'Appetizer',
+            'main_course' => 'Main Course',
+            'dessert' => 'Dessert',
+            'beverage' => 'Beverage',
+            'sauce' => 'Sauce',
+            'side_dish' => 'Side Dish',
+            'soup' => 'Soup',
+            'salad' => 'Salad',
+        ],
+        
+        // Difficulty Levels
+        'difficulty_levels' => [
+            'easy' => 'Easy',
+            'medium' => 'Medium',
+            'hard' => 'Hard',
+            'expert' => 'Expert',
+        ],
+        
+        // Recipe Status
+        'statuses' => [
+            'active' => 'Active',
+            'inactive' => 'Inactive',
+            'draft' => 'Draft',
+            'testing' => 'Testing',
+        ],
+        
+        // Ingredients Section
+        'ingredients' => 'Ingredients',
+        'ingredient_name' => 'Ingredient',
+        'quantity' => 'Quantity',
+        'unit' => 'Unit',
+        'cost' => 'Cost',
+        'notes' => 'Notes',
+        'add_ingredient' => 'Add Ingredient',
+        'remove_ingredient' => 'Remove Ingredient',
+        
+        // Instructions
+        'instructions' => 'Instructions',
+        'step' => 'Step',
+        'add_step' => 'Add Step',
+        'remove_step' => 'Remove Step',
+        
+        // Nutrition (Optional)
+        'nutrition' => 'Nutrition Information',
+        'calories' => 'Calories',
+        'protein' => 'Protein (g)',
+        'carbs' => 'Carbohydrates (g)',
+        'fat' => 'Fat (g)',
+        'fiber' => 'Fiber (g)',
+        'sodium' => 'Sodium (mg)',
+        
+        // Table Headers
+        'recipe_details' => 'Recipe Details',
+        'ingredient_list' => 'Ingredient List',
+        'recipe_instructions' => 'Recipe Instructions',
+        'cost_analysis' => 'Cost Analysis',
+        
+        // Filters
+        'all_categories' => 'All Categories',
+        'all_difficulties' => 'All Difficulties',
+        'all_statuses' => 'All Statuses',
+        'filter_by_category' => 'Filter by Category',
+        'filter_by_difficulty' => 'Filter by Difficulty',
+        'filter_by_status' => 'Filter by Status',
+        'search_recipes' => 'Search recipes...',
+        
+        // Messages
+        'recipe_created' => 'Recipe created successfully',
+        'recipe_updated' => 'Recipe updated successfully',
+        'recipe_deleted' => 'Recipe deleted successfully',
+        'recipe_duplicated' => 'Recipe duplicated successfully',
+        'no_recipes' => 'No recipes found',
+        'no_recipes_message' => 'Start by creating your first recipe to build your menu.',
+        
+        // Validation
+        'name_required' => 'Recipe name is required',
+        'category_required' => 'Category is required',
+        'serving_size_required' => 'Serving size is required',
+        'ingredients_required' => 'At least one ingredient is required',
+        'instructions_required' => 'Recipe instructions are required',
+        
+        // Actions
+        'actions' => 'Actions',
+        'bulk_actions' => 'Bulk Actions',
+        'export_recipe' => 'Export Recipe',
+        'print_recipe' => 'Print Recipe',
+        'calculate_cost' => 'Calculate Cost',
+        
+        // Empty States
+        'no_ingredients' => 'No ingredients added',
+        'no_instructions' => 'No instructions added',
+        'add_first_ingredient' => 'Add your first ingredient',
+        'add_first_instruction' => 'Add your first instruction step',
+        
+        // Tooltips
+        'recipe_code_help' => 'Unique identifier for this recipe',
+        'serving_size_help' => 'Number of servings this recipe makes',
+        'yield_help' => 'Total quantity produced by this recipe',
+        'cost_calculation_help' => 'Automatically calculated based on ingredient costs',
+    ],
 ];

@@ -50,11 +50,24 @@ Route::prefix('admin/inventory/settings')->name('admin.inventory.settings.')->gr
     Route::put('/units/{unit}', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'updateUnit'])->name('units.update');
     Route::delete('/units/{unit}', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'deleteUnit'])->name('units.delete');
     
-    // Types
-    Route::post('/types', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'storeType'])->name('types.store');
-    Route::put('/types/{type}', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'updateType'])->name('types.update');
-    Route::delete('/types/{type}', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'deleteType'])->name('types.delete');
-});
+        // Types
+        Route::post('/types', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'storeType'])->name('types.store');
+        Route::put('/types/{type}', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'updateType'])->name('types.update');
+        Route::delete('/types/{type}', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'deleteType'])->name('types.delete');
+    });
+
+    // Recipes Routes
+    Route::prefix('admin/inventory/recipes')->name('admin.inventory.recipes.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Inventory\RecipesController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\Admin\Inventory\RecipesController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\Admin\Inventory\RecipesController::class, 'store'])->name('store');
+        Route::get('/{recipe}', [App\Http\Controllers\Admin\Inventory\RecipesController::class, 'show'])->name('show');
+        Route::get('/{recipe}/edit', [App\Http\Controllers\Admin\Inventory\RecipesController::class, 'edit'])->name('edit');
+        Route::put('/{recipe}', [App\Http\Controllers\Admin\Inventory\RecipesController::class, 'update'])->name('update');
+        Route::delete('/{recipe}', [App\Http\Controllers\Admin\Inventory\RecipesController::class, 'destroy'])->name('destroy');
+        Route::post('/{recipe}/duplicate', [App\Http\Controllers\Admin\Inventory\RecipesController::class, 'duplicate'])->name('duplicate');
+        Route::post('/{recipe}/calculate-costs', [App\Http\Controllers\Admin\Inventory\RecipesController::class, 'calculateCosts'])->name('calculate-costs');
+    });
 
 Route::get('/admin/sales', function () {
     return view('admin.sales.index');
