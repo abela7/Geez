@@ -101,9 +101,8 @@
                     <a href="/admin/inventory/stock-levels" class="submenu-link {{ request()->is('admin/inventory/stock-levels*') ? 'active' : '' }}">
                         {{ __('inventory.stock_levels.title') }}
                     </a>
-                    <a href="/admin/inventory/ingredients" class="submenu-link {{ request()->is('admin/inventory/ingredients*') ? 'active' : '' }} opacity-60">
-                        Ingredients
-                        <span class="text-xs ml-auto">{{ __('common.coming_soon') }}</span>
+                    <a href="/admin/inventory/ingredients" class="submenu-link {{ request()->is('admin/inventory/ingredients*') ? 'active' : '' }}">
+                        {{ __('inventory.ingredients.title') }}
                     </a>
                     <a href="/admin/inventory/units" class="submenu-link {{ request()->is('admin/inventory/units*') ? 'active' : '' }} opacity-60">
                         Units & Conversions

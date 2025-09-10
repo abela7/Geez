@@ -134,6 +134,167 @@ return [
     'import_successful' => 'Import completed successfully',
     'export_successful' => 'Export completed successfully',
     
+    // Ingredients Subsection
+    'ingredients' => [
+        'title' => 'Ingredients',
+        'subtitle' => 'Manage recipe ingredients, nutritional information, and allergen data',
+        'nav_title' => 'Ingredients',
+        
+        // Navigation & Actions
+        'add_ingredient' => 'Add Ingredient',
+        'edit_ingredient' => 'Edit Ingredient',
+        'delete_ingredient' => 'Delete Ingredient',
+        'bulk_actions' => 'Bulk Actions',
+        'export_ingredients' => 'Export Ingredients',
+        'import_ingredients' => 'Import Ingredients',
+        'view_details' => 'View Details',
+        
+        // Table Headers
+        'ingredient_name' => 'Ingredient Name',
+        'category' => 'Category',
+        'unit' => 'Unit',
+        'cost_per_unit' => 'Cost per Unit',
+        'supplier' => 'Supplier',
+        'allergens' => 'Allergens',
+        'nutritional_info' => 'Nutritional Info',
+        'status' => 'Status',
+        'actions' => 'Actions',
+        
+        // Categories
+        'categories' => [
+            'proteins' => 'Proteins',
+            'vegetables' => 'Vegetables',
+            'fruits' => 'Fruits',
+            'grains' => 'Grains',
+            'dairy' => 'Dairy',
+            'spices' => 'Spices & Herbs',
+            'oils' => 'Oils & Fats',
+            'beverages' => 'Beverages',
+            'condiments' => 'Condiments',
+            'sweeteners' => 'Sweeteners',
+            'nuts' => 'Nuts & Seeds',
+            'other' => 'Other',
+        ],
+        
+        // Units
+        'units' => [
+            'kg' => 'Kilogram',
+            'g' => 'Gram',
+            'l' => 'Liter',
+            'ml' => 'Milliliter',
+            'pieces' => 'Pieces',
+            'cups' => 'Cups',
+            'tbsp' => 'Tablespoon',
+            'tsp' => 'Teaspoon',
+            'oz' => 'Ounce',
+            'lb' => 'Pound',
+        ],
+        
+        // Status
+        'statuses' => [
+            'active' => 'Active',
+            'inactive' => 'Inactive',
+            'discontinued' => 'Discontinued',
+        ],
+        
+        // Allergens
+        'common_allergens' => [
+            'gluten' => 'Gluten',
+            'dairy' => 'Dairy',
+            'eggs' => 'Eggs',
+            'nuts' => 'Tree Nuts',
+            'peanuts' => 'Peanuts',
+            'soy' => 'Soy',
+            'fish' => 'Fish',
+            'shellfish' => 'Shellfish',
+            'sesame' => 'Sesame',
+        ],
+        
+        // Filters
+        'filter_by_category' => 'Filter by Category',
+        'filter_by_supplier' => 'Filter by Supplier',
+        'filter_by_status' => 'Filter by Status',
+        'filter_by_allergens' => 'Filter by Allergens',
+        'search_placeholder' => 'Search by name, code, or description...',
+        
+        // Nutritional Information
+        'nutrition' => [
+            'calories' => 'Calories',
+            'protein' => 'Protein (g)',
+            'carbs' => 'Carbohydrates (g)',
+            'fat' => 'Fat (g)',
+            'fiber' => 'Fiber (g)',
+            'sugar' => 'Sugar (g)',
+            'sodium' => 'Sodium (mg)',
+            'per_100g' => 'per 100g',
+        ],
+        
+        // Form Fields
+        'ingredient_code' => 'Ingredient Code',
+        'description' => 'Description',
+        'origin_country' => 'Origin Country',
+        'shelf_life' => 'Shelf Life (days)',
+        'storage_requirements' => 'Storage Requirements',
+        'minimum_order' => 'Minimum Order Quantity',
+        'lead_time' => 'Lead Time (days)',
+        'notes' => 'Notes',
+        
+        // Storage Requirements
+        'storage' => [
+            'ambient' => 'Ambient',
+            'refrigerated' => 'Refrigerated',
+            'frozen' => 'Frozen',
+            'dry' => 'Dry Storage',
+            'cool_dry' => 'Cool & Dry',
+        ],
+        
+        // Messages
+        'ingredient_added' => 'Ingredient added successfully',
+        'ingredient_updated' => 'Ingredient updated successfully',
+        'ingredient_deleted' => 'Ingredient deleted successfully',
+        'bulk_update_success' => 'Ingredients updated successfully',
+        'import_success' => 'Ingredients imported successfully',
+        'export_success' => 'Ingredients exported successfully',
+        
+        // Validation
+        'name_required' => 'Ingredient name is required',
+        'category_required' => 'Category is required',
+        'unit_required' => 'Unit is required',
+        'cost_required' => 'Cost per unit is required',
+        'cost_numeric' => 'Cost must be a valid number',
+        'shelf_life_numeric' => 'Shelf life must be a valid number',
+        
+        // Empty States
+        'no_ingredients' => 'No ingredients found',
+        'no_ingredients_message' => 'Start by adding your first ingredient to build your recipe database.',
+        'no_search_results' => 'No ingredients match your search criteria',
+        'try_different_search' => 'Try adjusting your search terms or filters',
+        
+        // Summary Cards
+        'total_ingredients' => 'Total Ingredients',
+        'active_ingredients' => 'Active Ingredients',
+        'categories_count' => 'Categories',
+        'avg_cost' => 'Average Cost',
+        'suppliers_count' => 'Suppliers',
+        'allergen_free' => 'Allergen-Free',
+        
+        // Tooltips
+        'ingredient_code_help' => 'Unique identifier for this ingredient',
+        'shelf_life_help' => 'Number of days ingredient stays fresh',
+        'allergen_help' => 'Select all allergens present in this ingredient',
+        'nutrition_help' => 'Nutritional values per 100g of ingredient',
+        
+        // Accessibility
+        'select_ingredient' => 'Select ingredient',
+        'ingredient_selected' => 'Ingredient selected',
+        'sort_by_name' => 'Sort by ingredient name',
+        'sort_by_category' => 'Sort by category',
+        'sort_by_cost' => 'Sort by cost',
+        'ingredient_details' => 'View ingredient details',
+        'edit_ingredient_details' => 'Edit ingredient details',
+        'delete_ingredient_confirm' => 'Delete this ingredient',
+    ],
+
     // Stock Levels Subsection
     'stock_levels' => [
         'title' => 'Stock Levels',

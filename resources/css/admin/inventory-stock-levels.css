@@ -242,6 +242,20 @@
     gap: var(--space-xs);
 }
 
+/* Table Responsive Container - Hide Scrollbar */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    /* Hide scrollbar but keep functionality */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+/* Hide scrollbar for WebKit browsers (Chrome, Safari, Edge) */
+.table-responsive::-webkit-scrollbar {
+    display: none;
+}
+
 /* Stock Levels Table */
 .stock-levels-table {
     width: 100%;
@@ -582,6 +596,14 @@
     .table-responsive {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        /* Hide scrollbar but keep functionality */
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* Internet Explorer 10+ */
+    }
+    
+    /* Hide scrollbar for WebKit browsers (Chrome, Safari, Edge) */
+    .table-responsive::-webkit-scrollbar {
+        display: none;
     }
     
     .stock-levels-table {

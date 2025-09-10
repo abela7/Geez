@@ -28,6 +28,14 @@ Route::prefix('admin/inventory/stock-levels')->name('admin.inventory.stock-level
     Route::get('/export', [App\Http\Controllers\Admin\Inventory\StockLevelsController::class, 'export'])->name('export');
 });
 
+// Inventory Ingredients Routes
+Route::prefix('admin/inventory/ingredients')->name('admin.inventory.ingredients.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Admin\Inventory\IngredientsController::class, 'index'])->name('index');
+    Route::get('/{ingredient}', [App\Http\Controllers\Admin\Inventory\IngredientsController::class, 'show'])->name('show');
+    Route::post('/bulk-action', [App\Http\Controllers\Admin\Inventory\IngredientsController::class, 'bulkAction'])->name('bulk-action');
+    Route::get('/export', [App\Http\Controllers\Admin\Inventory\IngredientsController::class, 'export'])->name('export');
+});
+
 Route::get('/admin/sales', function () {
     return view('admin.sales.index');
 });
