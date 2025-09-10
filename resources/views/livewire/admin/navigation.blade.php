@@ -119,21 +119,17 @@
                     <a href="/admin/inventory/purchasing" class="submenu-link {{ request()->is('admin/inventory/purchasing*') ? 'active' : '' }}">
                         {{ __('inventory.purchasing.nav_title') }}
                     </a>
-                    <a href="/admin/inventory/suppliers" class="submenu-link {{ request()->is('admin/inventory/suppliers*') ? 'active' : '' }} opacity-60">
-                        Suppliers
-                        <span class="text-xs ml-auto">{{ __('common.coming_soon') }}</span>
+                    <a href="/admin/inventory/suppliers" class="submenu-link {{ request()->is('admin/inventory/suppliers*') ? 'active' : '' }}">
+                        {{ __('inventory.suppliers.nav_title') }}
                     </a>
-                    <a href="/admin/inventory/alerts" class="submenu-link {{ request()->is('admin/inventory/alerts*') ? 'active' : '' }} opacity-60">
-                        Low-stock Alerts
-                        <span class="text-xs ml-auto">{{ __('common.coming_soon') }}</span>
+                    <a href="/admin/inventory/alerts" class="submenu-link {{ request()->is('admin/inventory/alerts*') ? 'active' : '' }}">
+                        {{ __('inventory.alerts.nav_title') }}
                     </a>
-                    <a href="/admin/inventory/analytics" class="submenu-link {{ request()->is('admin/inventory/analytics*') ? 'active' : '' }} opacity-60">
-                        Analytics
-                        <span class="text-xs ml-auto">{{ __('common.coming_soon') }}</span>
+                    <a href="/admin/inventory/analytics" class="submenu-link {{ request()->is('admin/inventory/analytics*') ? 'active' : '' }}">
+                        {{ __('inventory.analytics.nav_title') }}
                     </a>
-                    <a href="/admin/inventory/stocktakes" class="submenu-link {{ request()->is('admin/inventory/stocktakes*') ? 'active' : '' }} opacity-60">
-                        Stocktakes
-                        <span class="text-xs ml-auto">{{ __('common.coming_soon') }}</span>
+                    <a href="/admin/inventory/stocktakes" class="submenu-link {{ request()->is('admin/inventory/stocktakes*') ? 'active' : '' }}">
+                        {{ __('inventory.stocktakes.nav_title') }}
                     </a>
                 </div>
             </div>

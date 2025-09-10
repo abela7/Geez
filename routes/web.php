@@ -111,6 +111,21 @@ Route::prefix('admin/inventory/settings')->name('admin.inventory.settings.')->gr
         Route::post('/{id}/deactivate', [App\Http\Controllers\Admin\Inventory\SuppliersController::class, 'deactivate'])->name('deactivate');
     });
 
+// Alerts Routes (UI-only)
+Route::get('/admin/inventory/alerts', function () {
+    return view('admin.inventory.alerts.index');
+});
+
+// Analytics Routes (UI-only)
+Route::get('/admin/inventory/analytics', function () {
+    return view('admin.inventory.analytics.index');
+});
+
+// Stocktakes Routes (UI-only)
+Route::get('/admin/inventory/stocktakes', function () {
+    return view('admin.inventory.stocktakes.index');
+});
+
 Route::get('/admin/sales', function () {
     return view('admin.sales.index');
 });

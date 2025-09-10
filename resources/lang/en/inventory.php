@@ -1538,4 +1538,606 @@ return [
         'edit_supplier_details' => 'Edit supplier details',
         'delete_supplier_confirm' => 'Delete this supplier',
     ],
+
+    // Alerts Subsection
+    'alerts' => [
+        'title' => 'Inventory Alerts',
+        'nav_title' => 'Low-stock Alerts',
+        'subtitle' => 'Manage stock level alerts and monitor inventory thresholds',
+        
+        // Navigation & Actions
+        'add_alert_rule' => 'Add Alert Rule',
+        'edit_alert_rule' => 'Edit Alert Rule',
+        'delete_alert_rule' => 'Delete Alert Rule',
+        'view_alert_rule' => 'View Alert Rule Details',
+        'activate_rule' => 'Activate Rule',
+        'deactivate_rule' => 'Deactivate Rule',
+        
+        // Alert Status
+        'alert_statuses' => [
+            'ok' => 'OK',
+            'low' => 'Low Stock',
+            'out' => 'Out of Stock',
+            'inactive' => 'Inactive',
+        ],
+        
+        // Overview Cards
+        'items_ok' => 'Items OK',
+        'items_low' => 'Items Low',
+        'items_out' => 'Items Out',
+        'total_rules' => 'Total Rules',
+        'active_rules' => 'Active Rules',
+        'triggered_rules' => 'Triggered Rules',
+        
+        // Table Headers
+        'item' => 'Item',
+        'current_stock' => 'Current Stock',
+        'minimum_threshold' => 'Minimum Threshold',
+        'status' => 'Status',
+        'location' => 'Location',
+        'last_triggered' => 'Last Triggered',
+        'actions' => 'Actions',
+        
+        // Filters
+        'filters' => 'Filters',
+        'clear_filters' => 'Clear Filters',
+        'apply_filters' => 'Apply Filters',
+        'filter_by_status' => 'Filter by Status',
+        'filter_by_location' => 'Filter by Location',
+        'all_statuses' => 'All Statuses',
+        'all_locations' => 'All Locations',
+        'search_placeholder' => 'Search by item name or code...',
+        
+        // Form Fields
+        'select_item' => 'Select Item',
+        'item_field' => 'Inventory Item',
+        'threshold_field' => 'Minimum Threshold',
+        'location_field' => 'Location (Optional)',
+        'status_field' => 'Rule Status',
+        'select_location' => 'Select Location',
+        'enter_threshold' => 'Enter minimum stock level',
+        'rule_active' => 'Rule Active',
+        'rule_inactive' => 'Rule Inactive',
+        
+        // Alert Rule Details
+        'rule_details' => 'Alert Rule Details',
+        'item_information' => 'Item Information',
+        'rule_configuration' => 'Rule Configuration',
+        'alert_history' => 'Alert History',
+        'current_status' => 'Current Status',
+        
+        // Item Information
+        'item_name' => 'Item Name',
+        'item_code' => 'Item Code',
+        'item_category' => 'Category',
+        'item_unit' => 'Unit',
+        'current_stock_level' => 'Current Stock Level',
+        
+        // Rule Configuration
+        'threshold_value' => 'Threshold Value',
+        'rule_location' => 'Location',
+        'rule_status' => 'Rule Status',
+        'created_date' => 'Created Date',
+        'last_updated' => 'Last Updated',
+        
+        // Active Alerts Section
+        'active_alerts' => 'Active Alerts',
+        'active_alerts_subtitle' => 'Items currently below their threshold levels',
+        'no_active_alerts' => 'No Active Alerts',
+        'no_active_alerts_message' => 'All monitored items are currently above their threshold levels.',
+        'alert_triggered_at' => 'Triggered',
+        'view_all_alerts' => 'View All Alerts',
+        'create_po_for_item' => 'Create Purchase Order',
+        
+        // Alert History
+        'no_alert_history' => 'No alert history available',
+        'alert_triggered' => 'Alert Triggered',
+        'alert_resolved' => 'Alert Resolved',
+        'stock_replenished' => 'Stock Replenished',
+        
+        // Messages
+        'rule_created' => 'Alert rule created successfully',
+        'rule_updated' => 'Alert rule updated successfully',
+        'rule_deleted' => 'Alert rule deleted successfully',
+        'rule_activated' => 'Alert rule activated successfully',
+        'rule_deactivated' => 'Alert rule deactivated successfully',
+        'rule_already_exists' => 'Alert rule already exists for this item and location',
+        'no_rules' => 'No alert rules found',
+        'no_rules_message' => 'No alert rules yet. Add your first rule to start monitoring stock levels.',
+        'loading_rules' => 'Loading alert rules...',
+        'loading_alerts' => 'Loading active alerts...',
+        'error_loading' => 'Error loading alert data',
+        'retry' => 'Retry',
+        
+        // Validation
+        'item_required' => 'Item is required',
+        'threshold_required' => 'Minimum threshold is required',
+        'threshold_positive' => 'Threshold must be a positive number',
+        'threshold_numeric' => 'Threshold must be a valid number',
+        'location_max_length' => 'Location cannot exceed 255 characters',
+        
+        // Actions
+        'save_rule' => 'Save Alert Rule',
+        'cancel' => 'Cancel',
+        'close' => 'Close',
+        'edit' => 'Edit',
+        'delete' => 'Delete',
+        'activate' => 'Activate',
+        'deactivate' => 'Deactivate',
+        'confirm_delete' => 'Are you sure you want to delete this alert rule?',
+        'confirm_deactivate' => 'Are you sure you want to deactivate this alert rule?',
+        'delete_warning' => 'This action cannot be undone.',
+        'deactivate_warning' => 'Deactivated rules will not trigger alerts.',
+        
+        // Drawer/Modal
+        'rule_drawer_title' => 'Alert Rule Details',
+        'add_rule_title' => 'Add New Alert Rule',
+        'edit_rule_title' => 'Edit Alert Rule',
+        'close_drawer' => 'Close Drawer',
+        
+        // Status Indicators
+        'status_ok_description' => 'Stock level is above threshold',
+        'status_low_description' => 'Stock level is at or below threshold',
+        'status_out_description' => 'Item is out of stock',
+        'status_inactive_description' => 'Alert rule is inactive',
+        
+        // Quick Actions
+        'quick_actions' => 'Quick Actions',
+        'view_item' => 'View Item',
+        'create_po' => 'Create PO',
+        'adjust_stock' => 'Adjust Stock',
+        'edit_threshold' => 'Edit Threshold',
+        
+        // Bulk Actions
+        'bulk_actions' => 'Bulk Actions',
+        'activate_selected' => 'Activate Selected',
+        'deactivate_selected' => 'Deactivate Selected',
+        'delete_selected' => 'Delete Selected',
+        'export_selected' => 'Export Selected',
+        'rules_selected' => ':count rules selected',
+        
+        // Empty States
+        'no_rules_found' => 'No Alert Rules Found',
+        'no_rules_description' => 'No alert rules match your current filters. Try adjusting your search criteria or add your first alert rule.',
+        'add_first_rule' => 'Add First Rule',
+        'no_triggered_rules' => 'No Triggered Rules',
+        'no_triggered_rules_description' => 'All monitored items are currently at healthy stock levels.',
+        
+        // Pagination
+        'showing' => 'Showing',
+        'of' => 'of',
+        'rules' => 'rules',
+        'previous' => 'Previous',
+        'next' => 'Next',
+        'per_page' => 'per page',
+        
+        // Time Formats
+        'triggered_ago' => 'Triggered :time ago',
+        'never_triggered' => 'Never triggered',
+        'recently_triggered' => 'Recently triggered',
+        
+        // Tooltips
+        'click_row_details' => 'Click row to view details',
+        'item_help' => 'Select the inventory item to monitor',
+        'threshold_help' => 'Alert will trigger when stock falls to or below this level',
+        'location_help' => 'Optional: Monitor stock at a specific location',
+        'status_help' => 'Enable or disable this alert rule',
+        
+        // Alert Levels
+        'critical_alert' => 'Critical Alert',
+        'warning_alert' => 'Warning Alert',
+        'info_alert' => 'Info Alert',
+        
+        // Notifications
+        'alert_notification_title' => 'Low Stock Alert',
+        'alert_notification_message' => ':item is running low (Current: :current, Threshold: :threshold)',
+        'out_of_stock_notification' => ':item is out of stock',
+        
+        // Export/Import
+        'export_rules' => 'Export Rules',
+        'import_rules' => 'Import Rules',
+        'download_template' => 'Download Template',
+        'upload_file' => 'Upload File',
+        
+        // Mobile
+        'swipe_for_actions' => 'Swipe for actions',
+        'tap_to_view_details' => 'Tap to view details',
+        'pull_to_refresh' => 'Pull to refresh',
+        
+        // Accessibility
+        'sort_by' => 'Sort by',
+        'sort_ascending' => 'Sort ascending',
+        'sort_descending' => 'Sort descending',
+        'filter_menu' => 'Filter menu',
+        'close_drawer' => 'Close details drawer',
+        'open_drawer' => 'Open details drawer',
+        'select_rule' => 'Select alert rule',
+        'rule_selected' => 'Alert rule selected',
+        'sort_by_item' => 'Sort by item name',
+        'sort_by_status' => 'Sort by status',
+        'sort_by_threshold' => 'Sort by threshold',
+        'rule_details' => 'View rule details',
+        'edit_rule_details' => 'Edit rule details',
+        'delete_rule_confirm' => 'Delete this alert rule',
+        
+        // Integration
+        'create_po_from_alert' => 'Create Purchase Order from Alert',
+        'restock_item' => 'Restock Item',
+        'contact_supplier' => 'Contact Supplier',
+        'view_supplier' => 'View Supplier',
+        'stock_movement_history' => 'Stock Movement History',
+        
+        // Analytics
+        'alert_frequency' => 'Alert Frequency',
+        'most_triggered_items' => 'Most Triggered Items',
+        'alert_response_time' => 'Average Response Time',
+        'stock_out_duration' => 'Average Stock-out Duration',
+    ],
+
+    // Analytics Section
+    'analytics' => [
+        'title' => 'Inventory Analytics',
+        'nav_title' => 'Analytics',
+        'subtitle' => 'Insights and trends for inventory management',
+        
+        // Date Range Filters
+        'date_ranges' => [
+            'today' => 'Today',
+            'this_week' => 'This Week',
+            'this_month' => 'This Month',
+            'custom' => 'Custom Range',
+        ],
+        
+        // KPI Cards
+        'kpi_cards' => [
+            'total_inventory_value' => 'Total Inventory Value',
+            'top_usage_items' => 'Top 5 Items by Usage',
+            'top_cost_items' => 'Top 5 Items by Cost',
+            'waste_percentage' => 'Waste Percentage',
+        ],
+        
+        // Chart Titles
+        'charts' => [
+            'usage_trends' => 'Usage Trends',
+            'usage_trends_subtitle' => 'Ingredient consumption over time',
+            'category_breakdown' => 'Category Breakdown',
+            'category_breakdown_subtitle' => 'Spending by category',
+            'waste_vs_actual' => 'Waste vs Actual Use',
+            'waste_vs_actual_subtitle' => 'Expected vs actual consumption',
+            'supplier_performance' => 'Supplier Performance',
+            'supplier_performance_subtitle' => 'On-time delivery rates',
+        ],
+        
+        // Table Headers
+        'high_usage_table' => [
+            'title' => 'High-Usage Items',
+            'subtitle' => 'Most consumed ingredients',
+            'item' => 'Item',
+            'qty_used' => 'Qty Used',
+            'avg_cost' => 'Avg Cost',
+            'supplier' => 'Supplier',
+            'trend' => 'Trend',
+        ],
+        
+        'wastage_table' => [
+            'title' => 'Wastage Analysis',
+            'subtitle' => 'Items with highest waste',
+            'item' => 'Item',
+            'qty_wasted' => 'Qty Wasted',
+            'cost_wasted' => 'Cost Wasted',
+            'waste_percentage' => 'Waste %',
+            'reason' => 'Primary Reason',
+        ],
+        
+        'supplier_table' => [
+            'title' => 'Supplier Performance',
+            'subtitle' => 'Delivery and pricing trends',
+            'supplier' => 'Supplier',
+            'orders' => 'Orders',
+            'on_time_percentage' => 'On-Time %',
+            'avg_price_trend' => 'Avg Price Trend',
+            'rating' => 'Rating',
+        ],
+        
+        // Filters
+        'filters' => [
+            'date_range' => 'Date Range',
+            'category' => 'Category',
+            'supplier' => 'Supplier',
+            'location' => 'Location',
+            'apply_filters' => 'Apply Filters',
+            'clear_filters' => 'Clear Filters',
+            'export_data' => 'Export Data',
+        ],
+        
+        // Chart Labels
+        'chart_labels' => [
+            'usage' => 'Usage',
+            'waste' => 'Waste',
+            'expected' => 'Expected',
+            'actual' => 'Actual',
+            'on_time' => 'On Time',
+            'late' => 'Late',
+            'cost' => 'Cost',
+            'quantity' => 'Quantity',
+            'percentage' => 'Percentage',
+        ],
+        
+        // Status Messages
+        'messages' => [
+            'loading_analytics' => 'Loading analytics data...',
+            'no_data_available' => 'No analytics data available for the selected date range.',
+            'export_success' => 'Analytics data exported successfully',
+            'export_failed' => 'Failed to export analytics data',
+        ],
+        
+        // Empty States
+        'empty_states' => [
+            'no_usage_data' => 'No usage data available for the selected period.',
+            'no_waste_data' => 'No waste data recorded for the selected period.',
+            'no_supplier_data' => 'No supplier performance data available.',
+        ],
+        
+        // Tooltips
+        'tooltips' => [
+            'total_value' => 'Total monetary value of all inventory items',
+            'usage_trend' => 'Consumption pattern over the selected period',
+            'waste_percentage' => 'Percentage of inventory wasted vs consumed',
+            'supplier_rating' => 'Overall supplier performance rating',
+        ],
+        
+        // Time Formats
+        'time_formats' => [
+            'daily' => 'Daily',
+            'weekly' => 'Weekly',
+            'monthly' => 'Monthly',
+            'quarterly' => 'Quarterly',
+        ],
+        
+        // Currency and Units
+        'currency' => [
+            'symbol' => '$',
+            'format' => '$%s',
+        ],
+        
+        'units' => [
+            'kg' => 'kg',
+            'lbs' => 'lbs',
+            'liters' => 'L',
+            'pieces' => 'pcs',
+        ],
+        
+        // Trend Indicators
+        'trends' => [
+            'increasing' => 'Increasing',
+            'decreasing' => 'Decreasing',
+            'stable' => 'Stable',
+            'up' => '↗',
+            'down' => '↘',
+            'flat' => '→',
+        ],
+        
+        // Categories
+        'categories' => [
+            'meat' => 'Meat',
+            'vegetables' => 'Vegetables',
+            'dairy' => 'Dairy',
+            'grains' => 'Grains',
+            'beverages' => 'Beverages',
+            'spices' => 'Spices',
+            'oils' => 'Oils',
+            'other' => 'Other',
+        ],
+    ],
+
+    // Stocktakes Section
+    'stocktakes' => [
+        'title' => 'Stocktakes',
+        'nav_title' => 'Stocktakes',
+        'subtitle' => 'Physical inventory counts and variance tracking',
+        
+        // Actions
+        'new_stocktake' => 'New Stocktake',
+        'edit_stocktake' => 'Edit Stocktake',
+        'finalize_stocktake' => 'Finalize Stocktake',
+        'cancel_stocktake' => 'Cancel Stocktake',
+        'delete_stocktake' => 'Delete Stocktake',
+        'save_stocktake' => 'Save Stocktake',
+        'save_draft' => 'Save as Draft',
+        
+        // Table Headers
+        'stocktake_id' => 'Stocktake ID',
+        'date' => 'Date',
+        'performed_by' => 'Performed By',
+        'location' => 'Location',
+        'status' => 'Status',
+        'variance' => 'Variance',
+        'total_value' => 'Total Value',
+        'items_counted' => 'Items Counted',
+        'duration' => 'Duration',
+        
+        // Stocktake Details
+        'stocktake_details' => 'Stocktake Details',
+        'stocktake_summary' => 'Stocktake Summary',
+        'item_counts' => 'Item Counts',
+        'expected_qty' => 'Expected Qty',
+        'counted_qty' => 'Counted Qty',
+        'variance_qty' => 'Variance',
+        'variance_value' => 'Variance Value',
+        'unit_cost' => 'Unit Cost',
+        'total_variance' => 'Total Variance',
+        'total_items' => 'Total Items',
+        'items_with_variance' => 'Items with Variance',
+        
+        // Form Fields
+        'stocktake_date' => 'Stocktake Date',
+        'staff_member' => 'Staff Member',
+        'stocktake_location' => 'Location',
+        'notes' => 'Notes',
+        'item' => 'Item',
+        'expected_quantity' => 'Expected Quantity',
+        'actual_quantity' => 'Actual Quantity',
+        'add_item' => 'Add Item',
+        'remove_item' => 'Remove Item',
+        
+        // Statuses
+        'statuses' => [
+            'draft' => 'Draft',
+            'in_progress' => 'In Progress',
+            'completed' => 'Completed',
+            'cancelled' => 'Cancelled',
+        ],
+        
+        // Locations
+        'locations' => [
+            'main_kitchen' => 'Main Kitchen',
+            'cold_storage' => 'Cold Storage',
+            'freezer' => 'Freezer',
+            'dry_storage' => 'Dry Storage',
+            'bar' => 'Bar',
+            'prep_area' => 'Prep Area',
+            'all_locations' => 'All Locations',
+        ],
+        
+        // Filters
+        'filters' => [
+            'filter_by_date' => 'Filter by Date',
+            'filter_by_location' => 'Filter by Location',
+            'filter_by_status' => 'Filter by Status',
+            'date_range' => 'Date Range',
+            'all_statuses' => 'All Statuses',
+            'all_locations' => 'All Locations',
+            'apply_filters' => 'Apply Filters',
+            'clear_filters' => 'Clear Filters',
+        ],
+        
+        // Variance Indicators
+        'variance_types' => [
+            'positive' => 'Surplus',
+            'negative' => 'Shortage',
+            'zero' => 'No Variance',
+        ],
+        
+        // Messages
+        'messages' => [
+            'stocktake_saved' => 'Stocktake saved successfully',
+            'stocktake_finalized' => 'Stocktake finalized successfully',
+            'stocktake_deleted' => 'Stocktake deleted successfully',
+            'stocktake_cancelled' => 'Stocktake cancelled successfully',
+            'loading_stocktakes' => 'Loading stocktakes...',
+            'loading_details' => 'Loading stocktake details...',
+            'confirm_finalize' => 'Are you sure you want to finalize this stocktake? This action cannot be undone.',
+            'confirm_delete' => 'Are you sure you want to delete this stocktake?',
+            'confirm_cancel' => 'Are you sure you want to cancel this stocktake?',
+        ],
+        
+        // Validation
+        'validation' => [
+            'date_required' => 'Stocktake date is required',
+            'staff_required' => 'Staff member is required',
+            'location_required' => 'Location is required',
+            'items_required' => 'At least one item must be counted',
+            'quantity_numeric' => 'Quantity must be a valid number',
+            'quantity_positive' => 'Quantity must be positive or zero',
+        ],
+        
+        // Empty States
+        'empty_states' => [
+            'no_stocktakes' => 'No stocktakes recorded yet.',
+            'no_stocktakes_description' => 'Start your first stocktake to track inventory accuracy.',
+            'no_items' => 'No items added to this stocktake yet.',
+            'no_variance' => 'All items match expected quantities.',
+        ],
+        
+        // Drawer Titles
+        'drawer_titles' => [
+            'new_stocktake' => 'New Stocktake',
+            'edit_stocktake' => 'Edit Stocktake',
+            'stocktake_details' => 'Stocktake Details',
+        ],
+        
+        // Summary Stats
+        'summary_stats' => [
+            'total_stocktakes' => 'Total Stocktakes',
+            'completed_stocktakes' => 'Completed',
+            'draft_stocktakes' => 'Drafts',
+            'average_variance' => 'Avg Variance',
+            'last_stocktake' => 'Last Stocktake',
+        ],
+        
+        // Quick Actions
+        'quick_actions' => [
+            'view_details' => 'View Details',
+            'edit_counts' => 'Edit Counts',
+            'finalize' => 'Finalize',
+            'duplicate' => 'Duplicate',
+            'export' => 'Export',
+        ],
+        
+        // Bulk Actions
+        'bulk_actions' => [
+            'select_all' => 'Select All',
+            'bulk_finalize' => 'Bulk Finalize',
+            'bulk_delete' => 'Bulk Delete',
+            'export_selected' => 'Export Selected',
+        ],
+        
+        // Pagination
+        'pagination' => [
+            'showing' => 'Showing',
+            'to' => 'to',
+            'of' => 'of',
+            'stocktakes' => 'stocktakes',
+            'previous' => 'Previous',
+            'next' => 'Next',
+        ],
+        
+        // Time Formats
+        'time_formats' => [
+            'started_at' => 'Started at',
+            'completed_at' => 'Completed at',
+            'duration_minutes' => 'minutes',
+            'duration_hours' => 'hours',
+        ],
+        
+        // Tooltips
+        'tooltips' => [
+            'variance_explanation' => 'Difference between expected and counted quantities',
+            'finalize_explanation' => 'Lock this stocktake and update system inventory',
+            'draft_explanation' => 'Save progress without finalizing',
+            'positive_variance' => 'More stock found than expected',
+            'negative_variance' => 'Less stock found than expected',
+        ],
+        
+        // Instructions
+        'instructions' => [
+            'count_instructions' => 'Count each item physically and enter the actual quantity found.',
+            'variance_auto_calculated' => 'Variance will be calculated automatically.',
+            'finalize_warning' => 'Once finalized, counts cannot be changed.',
+            'draft_save_info' => 'Save as draft to continue counting later.',
+        ],
+        
+        // Staff Members (Mock Data)
+        'staff_members' => [
+            'john_doe' => 'John Doe',
+            'jane_smith' => 'Jane Smith',
+            'mike_johnson' => 'Mike Johnson',
+            'sarah_wilson' => 'Sarah Wilson',
+            'current_user' => 'Current User',
+        ],
+        
+        // Item Categories for Counting
+        'item_categories' => [
+            'vegetables' => 'Vegetables',
+            'meat' => 'Meat & Poultry',
+            'dairy' => 'Dairy Products',
+            'grains' => 'Grains & Cereals',
+            'beverages' => 'Beverages',
+            'spices' => 'Spices & Seasonings',
+            'oils' => 'Oils & Fats',
+            'frozen' => 'Frozen Items',
+            'canned' => 'Canned Goods',
+            'other' => 'Other Items',
+        ],
+    ],
 ];
