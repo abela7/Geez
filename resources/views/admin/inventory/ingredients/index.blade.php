@@ -185,21 +185,7 @@
     <!-- Ingredients Table -->
     <div class="table-card">
         <div class="card-header">
-            <div class="table-controls">
-                <h3>{{ __('inventory.ingredients.title') }}</h3>
-                <div class="bulk-actions" style="display: none;" id="bulk-actions">
-                    <select id="bulk-action-select" class="filter-select">
-                        <option value="">{{ __('inventory.ingredients.bulk_actions') }}</option>
-                        <option value="activate">{{ __('common.activate') }}</option>
-                        <option value="deactivate">{{ __('common.deactivate') }}</option>
-                        <option value="discontinue">{{ __('common.discontinue') }}</option>
-                        <option value="delete">{{ __('common.delete') }}</option>
-                    </select>
-                    <button onclick="executeBulkAction()" class="btn btn-secondary">
-                        {{ __('common.apply') }}
-                    </button>
-                </div>
-            </div>
+            <h3>{{ __('inventory.ingredients.title') }}</h3>
             <div class="sort-controls">
                 <label>{{ __('common.sort_by') }}:</label>
                 <select onchange="sortIngredients(this.value)" class="filter-select">
@@ -223,26 +209,16 @@
             <table class="ingredients-table">
                 <thead>
                     <tr>
-                        <th class="table-checkbox">
-                            <input type="checkbox" id="select-all" onchange="toggleSelectAll(this)">
-                        </th>
                         <th>{{ __('inventory.ingredients.ingredient_name') }}</th>
                         <th>{{ __('inventory.ingredients.category') }}</th>
                         <th>{{ __('inventory.ingredients.unit') }}</th>
                         <th>{{ __('inventory.ingredients.cost_per_unit') }}</th>
-                        <th>{{ __('inventory.ingredients.supplier') }}</th>
-                        <th>{{ __('inventory.ingredients.allergens') }}</th>
                         <th>{{ __('inventory.ingredients.status') }}</th>
-                        <th>{{ __('inventory.ingredients.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($ingredients as $ingredient)
                         <tr>
-                            <td class="table-checkbox">
-                                <input type="checkbox" class="ingredient-checkbox" value="{{ $ingredient->id }}" 
-                                       onchange="toggleBulkActions()">
-                            </td>
                             <td class="ingredient-name-cell">
                                 <div class="ingredient-name">{{ $ingredient->name }}</div>
                                 <div class="ingredient-code">{{ $ingredient->code }}</div>
@@ -254,53 +230,15 @@
                             </td>
                             <td>{{ $ingredient->unit }}</td>
                             <td class="cost-cell">${{ number_format($ingredient->cost_per_unit, 2) }}</td>
-                            <td class="supplier-cell">
-                                {{ $ingredient->supplier ? $ingredient->supplier->name : '-' }}
-                            </td>
-                            <td class="allergens-cell">
-                                @if(empty($ingredient->allergen_info))
-                                    <span class="allergen-free">{{ __('common.none') }}</span>
-                                @else
-                                    <div class="allergen-tags">
-                                        @foreach($ingredient->allergen_info as $allergen)
-                                            <span class="allergen-tag">{{ __('inventory.ingredients.common_allergens.' . $allergen) }}</span>
-                                        @endforeach
-                                    </div>
-                                @endif
-                            </td>
                             <td>
                                 <span class="status-badge status-{{ $ingredient->status }}">
                                     {{ __('inventory.ingredients.statuses.' . $ingredient->status) }}
                                 </span>
                             </td>
-                            <td class="actions-cell">
-                                <button onclick="viewIngredient({{ $ingredient->id }})" 
-                                        class="action-button view" 
-                                        title="{{ __('inventory.ingredients.view_details') }}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
-                                </button>
-                                <button onclick="editIngredient({{ $ingredient->id }})" 
-                                        class="action-button edit" 
-                                        title="{{ __('inventory.ingredients.edit_ingredient') }}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                    </svg>
-                                </button>
-                                <button onclick="deleteIngredient({{ $ingredient->id }})" 
-                                        class="action-button delete" 
-                                        title="{{ __('inventory.ingredients.delete_ingredient') }}">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </button>
-                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="empty-state">
+                            <td colspan="5" class="empty-state">
                                 <div class="empty-state-content">
                                     <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
@@ -331,23 +269,7 @@
         @endif
     </div>
 
-    <!-- Detail Drawer -->
-    <div id="ingredient-drawer" class="detail-drawer">
-        <div class="drawer-overlay" onclick="closeIngredientDrawer()"></div>
-        <div class="drawer-content">
-            <div class="drawer-header">
-                <h2 class="drawer-title">{{ __('inventory.ingredients.view_details') }}</h2>
-                <button onclick="closeIngredientDrawer()" class="drawer-close">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-            <div id="ingredient-details" class="drawer-body">
-                <!-- Ingredient details will be loaded here -->
-            </div>
-        </div>
-    </div>
+    <!-- Detail Drawer removed - not needed for simplified table -->
 </div>
 @endsection
 

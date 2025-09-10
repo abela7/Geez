@@ -36,6 +36,26 @@ Route::prefix('admin/inventory/ingredients')->name('admin.inventory.ingredients.
     Route::get('/export', [App\Http\Controllers\Admin\Inventory\IngredientsController::class, 'export'])->name('export');
 });
 
+// Inventory Settings Routes
+Route::prefix('admin/inventory/settings')->name('admin.inventory.settings.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'index'])->name('index');
+    
+    // Categories
+    Route::post('/categories', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'storeCategory'])->name('categories.store');
+    Route::put('/categories/{category}', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'updateCategory'])->name('categories.update');
+    Route::delete('/categories/{category}', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'deleteCategory'])->name('categories.delete');
+    
+    // Units
+    Route::post('/units', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'storeUnit'])->name('units.store');
+    Route::put('/units/{unit}', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'updateUnit'])->name('units.update');
+    Route::delete('/units/{unit}', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'deleteUnit'])->name('units.delete');
+    
+    // Types
+    Route::post('/types', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'storeType'])->name('types.store');
+    Route::put('/types/{type}', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'updateType'])->name('types.update');
+    Route::delete('/types/{type}', [App\Http\Controllers\Admin\Inventory\InventorySettingsController::class, 'deleteType'])->name('types.delete');
+});
+
 Route::get('/admin/sales', function () {
     return view('admin.sales.index');
 });

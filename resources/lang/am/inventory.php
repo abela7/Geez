@@ -427,4 +427,78 @@ return [
         'close_drawer' => 'Close details drawer',
         'open_drawer' => 'Open details drawer',
     ],
+
+    // Settings Subsection
+    'settings' => [
+        'title' => 'Inventory Settings',
+        'subtitle' => 'Manage categories, units, ingredient types, and cost structures',
+        'nav_title' => 'Settings',
+        
+        // Categories
+        'categories' => [
+            'title' => 'Categories',
+            'add_category' => 'Add Category',
+            'edit_category' => 'Edit Category',
+            'name' => 'Category Name',
+            'description' => 'Description',
+            'color' => 'Color',
+            'icon' => 'Icon',
+            'active' => 'Active',
+            'actions' => 'Actions',
+        ],
+        
+        // Units
+        'units' => [
+            'title' => 'Units',
+            'add_unit' => 'Add Unit',
+            'edit_unit' => 'Edit Unit',
+            'name' => 'Unit Name',
+            'symbol' => 'Symbol',
+            'type' => 'Type',
+            'description' => 'Description',
+            'base_conversion' => 'Base Conversion Factor',
+            'base_unit' => 'Base Unit',
+            'types' => [
+                'weight' => 'Weight',
+                'volume' => 'Volume',
+                'count' => 'Count',
+                'custom' => 'Custom',
+            ],
+        ],
+        
+        // Ingredient Types
+        'types' => [
+            'title' => 'Ingredient Types',
+            'add_type' => 'Add Type',
+            'edit_type' => 'Edit Type',
+            'name' => 'Type Name',
+            'description' => 'Description',
+            'measurement_type' => 'Measurement Type',
+            'compatible_units' => 'Compatible Units',
+            'color' => 'Color',
+            'properties' => 'Properties',
+        ],
+        
+        // Messages
+        'category_created' => 'Category created successfully',
+        'category_updated' => 'Category updated successfully',
+        'category_deleted' => 'Category deleted successfully',
+        'unit_created' => 'Unit created successfully',
+        'unit_updated' => 'Unit updated successfully',
+        'unit_deleted' => 'Unit deleted successfully',
+        'type_created' => 'Ingredient type created successfully',
+        'type_updated' => 'Ingredient type updated successfully',
+        'type_deleted' => 'Ingredient type deleted successfully',
+        
+        // Validation
+        'name_required' => 'Name is required',
+        'symbol_required' => 'Symbol is required',
+        'color_required' => 'Color is required',
+        'type_required' => 'Type is required',
+        
+        // Tabs
+        'categories_tab' => 'Categories',
+        'units_tab' => 'Units',
+        'types_tab' => 'Ingredient Types',
+    ],
 ];
