@@ -113,13 +113,11 @@
                     <a href="/admin/inventory/movements" class="submenu-link {{ request()->is('admin/inventory/movements*') ? 'active' : '' }}">
                         {{ __('inventory.movements.nav_title') }}
                     </a>
-                    <a href="/admin/inventory/locations" class="submenu-link {{ request()->is('admin/inventory/locations*') ? 'active' : '' }} opacity-60">
-                        Stock Locations
-                        <span class="text-xs ml-auto">{{ __('common.coming_soon') }}</span>
+                    <a href="/admin/inventory/locations" class="submenu-link {{ request()->is('admin/inventory/locations*') ? 'active' : '' }}">
+                        {{ __('inventory.locations.nav_title') }}
                     </a>
-                    <a href="/admin/inventory/purchasing" class="submenu-link {{ request()->is('admin/inventory/purchasing*') ? 'active' : '' }} opacity-60">
-                        Purchasing (POs)
-                        <span class="text-xs ml-auto">{{ __('common.coming_soon') }}</span>
+                    <a href="/admin/inventory/purchasing" class="submenu-link {{ request()->is('admin/inventory/purchasing*') ? 'active' : '' }}">
+                        {{ __('inventory.purchasing.nav_title') }}
                     </a>
                     <a href="/admin/inventory/suppliers" class="submenu-link {{ request()->is('admin/inventory/suppliers*') ? 'active' : '' }} opacity-60">
                         Suppliers

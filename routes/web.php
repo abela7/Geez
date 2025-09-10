@@ -78,6 +78,39 @@ Route::prefix('admin/inventory/settings')->name('admin.inventory.settings.')->gr
         Route::delete('/{id}', [App\Http\Controllers\Admin\Inventory\MovementsController::class, 'destroy'])->name('destroy');
     });
 
+    // Purchasing Routes
+    Route::prefix('admin/inventory/purchasing')->name('admin.inventory.purchasing.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Inventory\PurchasingController::class, 'index'])->name('index');
+        Route::post('/', [App\Http\Controllers\Admin\Inventory\PurchasingController::class, 'store'])->name('store');
+        Route::get('/{id}', [App\Http\Controllers\Admin\Inventory\PurchasingController::class, 'show'])->name('show');
+        Route::put('/{id}', [App\Http\Controllers\Admin\Inventory\PurchasingController::class, 'update'])->name('update');
+        Route::delete('/{id}', [App\Http\Controllers\Admin\Inventory\PurchasingController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/mark-received', [App\Http\Controllers\Admin\Inventory\PurchasingController::class, 'markReceived'])->name('mark-received');
+        Route::post('/{id}/cancel', [App\Http\Controllers\Admin\Inventory\PurchasingController::class, 'cancel'])->name('cancel');
+    });
+
+    // Locations Routes
+    Route::prefix('admin/inventory/locations')->name('admin.inventory.locations.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Inventory\LocationsController::class, 'index'])->name('index');
+        Route::post('/', [App\Http\Controllers\Admin\Inventory\LocationsController::class, 'store'])->name('store');
+        Route::get('/{id}', [App\Http\Controllers\Admin\Inventory\LocationsController::class, 'show'])->name('show');
+        Route::put('/{id}', [App\Http\Controllers\Admin\Inventory\LocationsController::class, 'update'])->name('update');
+        Route::delete('/{id}', [App\Http\Controllers\Admin\Inventory\LocationsController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/activate', [App\Http\Controllers\Admin\Inventory\LocationsController::class, 'activate'])->name('activate');
+        Route::post('/{id}/deactivate', [App\Http\Controllers\Admin\Inventory\LocationsController::class, 'deactivate'])->name('deactivate');
+    });
+
+    // Suppliers Routes
+    Route::prefix('admin/inventory/suppliers')->name('admin.inventory.suppliers.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Inventory\SuppliersController::class, 'index'])->name('index');
+        Route::post('/', [App\Http\Controllers\Admin\Inventory\SuppliersController::class, 'store'])->name('store');
+        Route::get('/{id}', [App\Http\Controllers\Admin\Inventory\SuppliersController::class, 'show'])->name('show');
+        Route::put('/{id}', [App\Http\Controllers\Admin\Inventory\SuppliersController::class, 'update'])->name('update');
+        Route::delete('/{id}', [App\Http\Controllers\Admin\Inventory\SuppliersController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/activate', [App\Http\Controllers\Admin\Inventory\SuppliersController::class, 'activate'])->name('activate');
+        Route::post('/{id}/deactivate', [App\Http\Controllers\Admin\Inventory\SuppliersController::class, 'deactivate'])->name('deactivate');
+    });
+
 Route::get('/admin/sales', function () {
     return view('admin.sales.index');
 });

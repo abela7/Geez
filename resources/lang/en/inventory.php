@@ -854,4 +854,688 @@ return [
         'location_help' => 'Select the location affected by this movement',
         'notes_help' => 'Add any additional notes about this movement',
     ],
+
+    // Purchasing Subsection
+    'purchasing' => [
+        'title' => 'Purchase Orders',
+        'nav_title' => 'Purchasing (POs)',
+        'subtitle' => 'Manage purchase orders, suppliers, and procurement processes',
+        
+        // Navigation & Actions
+        'new_purchase_order' => 'New Purchase Order',
+        'edit_purchase_order' => 'Edit Purchase Order',
+        'delete_purchase_order' => 'Delete Purchase Order',
+        'view_purchase_order' => 'View Purchase Order Details',
+        'duplicate_po' => 'Duplicate PO',
+        
+        // PO Status
+        'po_statuses' => [
+            'draft' => 'Draft',
+            'sent' => 'Sent',
+            'received' => 'Received',
+            'cancelled' => 'Cancelled',
+            'partial' => 'Partial',
+            'overdue' => 'Overdue',
+        ],
+        
+        // Table Headers
+        'po_number' => 'PO Number',
+        'supplier' => 'Supplier',
+        'order_date' => 'Order Date',
+        'delivery_date' => 'Expected Delivery',
+        'status' => 'Status',
+        'total' => 'Total Amount',
+        'items_count' => 'Items',
+        'created_by' => 'Created By',
+        
+        // Filters
+        'filter_by_supplier' => 'Filter by Supplier',
+        'filter_by_status' => 'Filter by Status',
+        'filter_by_date' => 'Filter by Date Range',
+        'all_suppliers' => 'All Suppliers',
+        'all_statuses' => 'All Statuses',
+        'order_date_from' => 'Order Date From',
+        'order_date_to' => 'Order Date To',
+        'delivery_date_from' => 'Delivery Date From',
+        'delivery_date_to' => 'Delivery Date To',
+        'search_po' => 'Search PO number, items...',
+        
+        // Form Fields
+        'select_supplier' => 'Select Supplier',
+        'po_number_auto' => 'PO Number (Auto-generated)',
+        'order_date_field' => 'Order Date',
+        'expected_delivery' => 'Expected Delivery Date',
+        'special_instructions' => 'Special Instructions',
+        'payment_terms' => 'Payment Terms',
+        'delivery_address' => 'Delivery Address',
+        
+        // Line Items
+        'line_items' => 'Line Items',
+        'add_line_item' => 'Add Line Item',
+        'remove_line_item' => 'Remove Line Item',
+        'item_name' => 'Item',
+        'quantity' => 'Quantity',
+        'unit_price' => 'Unit Price',
+        'line_total' => 'Line Total',
+        'select_item' => 'Select Item',
+        'enter_quantity' => 'Enter Quantity',
+        'enter_unit_price' => 'Enter Unit Price',
+        
+        // Totals
+        'subtotal' => 'Subtotal',
+        'tax_rate' => 'Tax Rate',
+        'tax_amount' => 'Tax Amount',
+        'shipping_cost' => 'Shipping Cost',
+        'discount' => 'Discount',
+        'grand_total' => 'Grand Total',
+        
+        // PO Details
+        'po_details' => 'Purchase Order Details',
+        'supplier_info' => 'Supplier Information',
+        'order_info' => 'Order Information',
+        'delivery_info' => 'Delivery Information',
+        'financial_summary' => 'Financial Summary',
+        'line_items_summary' => 'Line Items Summary',
+        
+        // Messages
+        'po_created' => 'Purchase order created successfully',
+        'po_updated' => 'Purchase order updated successfully',
+        'po_deleted' => 'Purchase order deleted successfully',
+        'po_sent' => 'Purchase order sent to supplier',
+        'po_received' => 'Purchase order marked as received',
+        'po_cancelled' => 'Purchase order cancelled',
+        'no_purchase_orders' => 'No purchase orders found',
+        'no_purchase_orders_message' => 'No purchase orders yet. Create your first one to start managing procurement.',
+        'loading_purchase_orders' => 'Loading purchase orders...',
+        'error_loading' => 'Error loading purchase orders',
+        'retry' => 'Retry',
+        
+        // Validation
+        'supplier_required' => 'Supplier is required',
+        'order_date_required' => 'Order date is required',
+        'delivery_date_required' => 'Expected delivery date is required',
+        'delivery_date_future' => 'Delivery date must be in the future',
+        'line_items_required' => 'At least one line item is required',
+        'item_required' => 'Item is required',
+        'quantity_required' => 'Quantity is required',
+        'quantity_positive' => 'Quantity must be positive',
+        'unit_price_required' => 'Unit price is required',
+        'unit_price_positive' => 'Unit price must be positive',
+        'invalid_date' => 'Invalid date format',
+        
+        // Actions
+        'save_po' => 'Save Purchase Order',
+        'send_po' => 'Send to Supplier',
+        'mark_received' => 'Mark as Received',
+        'cancel_po' => 'Cancel PO',
+        'cancel' => 'Cancel',
+        'close' => 'Close',
+        'edit' => 'Edit',
+        'delete' => 'Delete',
+        'duplicate' => 'Duplicate',
+        'print_po' => 'Print PO',
+        'export_pdf' => 'Export PDF',
+        'confirm_delete' => 'Are you sure you want to delete this purchase order?',
+        'confirm_cancel' => 'Are you sure you want to cancel this purchase order?',
+        'delete_warning' => 'This action cannot be undone.',
+        'cancel_warning' => 'Cancelled purchase orders cannot be modified.',
+        
+        // Drawer/Modal
+        'po_drawer_title' => 'Purchase Order Details',
+        'add_po_title' => 'Create New Purchase Order',
+        'edit_po_title' => 'Edit Purchase Order',
+        'close_drawer' => 'Close Drawer',
+        
+        // Summary & Stats
+        'total_purchase_orders' => 'Total Purchase Orders',
+        'draft_pos' => 'Draft POs',
+        'sent_pos' => 'Sent POs',
+        'received_pos' => 'Received POs',
+        'pending_pos' => 'Pending POs',
+        'total_value' => 'Total Value',
+        'this_month_value' => 'This Month Value',
+        'avg_po_value' => 'Average PO Value',
+        
+        // Suppliers
+        'supplier_details' => [
+            'name' => 'Supplier Name',
+            'contact_person' => 'Contact Person',
+            'email' => 'Email',
+            'phone' => 'Phone',
+            'address' => 'Address',
+            'payment_terms' => 'Payment Terms',
+        ],
+        
+        // Payment Terms
+        'payment_terms_options' => [
+            'net_30' => 'Net 30 Days',
+            'net_15' => 'Net 15 Days',
+            'net_7' => 'Net 7 Days',
+            'cod' => 'Cash on Delivery',
+            'prepaid' => 'Prepaid',
+            'net_60' => 'Net 60 Days',
+        ],
+        
+        // Time Formats
+        'days_ago' => ':count days ago',
+        'due_in_days' => 'Due in :count days',
+        'overdue_by_days' => 'Overdue by :count days',
+        
+        // Tooltips
+        'click_row_details' => 'Click row to view details',
+        'po_number_help' => 'Unique purchase order identifier',
+        'supplier_help' => 'Select the supplier for this purchase order',
+        'delivery_date_help' => 'Expected date when items will be delivered',
+        'line_items_help' => 'Add items to purchase with quantities and prices',
+        'special_instructions_help' => 'Any special delivery or handling instructions',
+        
+        // Status Descriptions
+        'status_descriptions' => [
+            'draft' => 'Purchase order is being prepared',
+            'sent' => 'Purchase order has been sent to supplier',
+            'received' => 'Items have been received and verified',
+            'cancelled' => 'Purchase order has been cancelled',
+            'partial' => 'Some items received, others pending',
+            'overdue' => 'Expected delivery date has passed',
+        ],
+        
+        // Calculations
+        'auto_calculate' => 'Auto-calculate',
+        'manual_entry' => 'Manual entry',
+        'tax_included' => 'Tax included',
+        'tax_excluded' => 'Tax excluded',
+        'currency_symbol' => '$',
+        
+        // Line Item Actions
+        'move_up' => 'Move Up',
+        'move_down' => 'Move Down',
+        'duplicate_line' => 'Duplicate Line',
+        'clear_line' => 'Clear Line',
+    ],
+
+    // Locations Subsection
+    'locations' => [
+        'title' => 'Stock Locations',
+        'nav_title' => 'Stock Locations',
+        'subtitle' => 'Manage storage locations, capacity, and inventory organization',
+        
+        // Navigation & Actions
+        'add_location' => 'Add Location',
+        'edit_location' => 'Edit Location',
+        'delete_location' => 'Delete Location',
+        'view_location' => 'View Location Details',
+        'activate_location' => 'Activate Location',
+        'deactivate_location' => 'Deactivate Location',
+        
+        // Location Types
+        'location_types' => [
+            'fridge' => 'Fridge',
+            'freezer' => 'Freezer',
+            'pantry' => 'Pantry',
+            'bar' => 'Bar',
+            'storage_room' => 'Storage Room',
+            'warehouse' => 'Warehouse',
+            'kitchen' => 'Kitchen',
+            'prep_area' => 'Prep Area',
+            'dry_storage' => 'Dry Storage',
+            'cold_storage' => 'Cold Storage',
+            'wine_cellar' => 'Wine Cellar',
+            'office' => 'Office',
+        ],
+        
+        // Location Status
+        'location_statuses' => [
+            'active' => 'Active',
+            'inactive' => 'Inactive',
+            'maintenance' => 'Maintenance',
+            'full' => 'Full',
+            'reserved' => 'Reserved',
+        ],
+        
+        // Table Headers
+        'location_name' => 'Location Name',
+        'type' => 'Type',
+        'items_stored' => 'Items Stored',
+        'capacity' => 'Capacity',
+        'status' => 'Status',
+        'description' => 'Description',
+        'temperature' => 'Temperature',
+        'created_date' => 'Created Date',
+        'last_updated' => 'Last Updated',
+        
+        // Filters
+        'filter_by_type' => 'Filter by Type',
+        'filter_by_status' => 'Filter by Status',
+        'all_types' => 'All Types',
+        'all_statuses' => 'All Statuses',
+        'search_locations' => 'Search locations...',
+        
+        // Form Fields
+        'location_name_field' => 'Location Name',
+        'select_type' => 'Select Type',
+        'location_description' => 'Location Description',
+        'select_status' => 'Select Status',
+        'capacity_percentage' => 'Capacity Percentage',
+        'max_capacity' => 'Maximum Capacity',
+        'current_capacity' => 'Current Capacity',
+        'temperature_range' => 'Temperature Range',
+        'special_requirements' => 'Special Requirements',
+        
+        // Location Details
+        'location_details' => 'Location Details',
+        'basic_info' => 'Basic Information',
+        'capacity_info' => 'Capacity Information',
+        'items_info' => 'Items Information',
+        'storage_conditions' => 'Storage Conditions',
+        'location_stats' => 'Location Statistics',
+        
+        // Messages
+        'location_created' => 'Location created successfully',
+        'location_updated' => 'Location updated successfully',
+        'location_deleted' => 'Location deleted successfully',
+        'location_activated' => 'Location activated successfully',
+        'location_deactivated' => 'Location deactivated successfully',
+        'no_locations' => 'No locations found',
+        'no_locations_message' => 'No stock locations yet. Add your first one to start organizing inventory.',
+        'loading_locations' => 'Loading locations...',
+        'error_loading' => 'Error loading locations',
+        'retry' => 'Retry',
+        
+        // Validation
+        'name_required' => 'Location name is required',
+        'type_required' => 'Location type is required',
+        'status_required' => 'Status is required',
+        'capacity_invalid' => 'Capacity must be between 0 and 100',
+        'name_unique' => 'Location name must be unique',
+        'name_min_length' => 'Location name must be at least 2 characters',
+        'description_max_length' => 'Description cannot exceed 500 characters',
+        
+        // Actions
+        'save_location' => 'Save Location',
+        'cancel' => 'Cancel',
+        'close' => 'Close',
+        'edit' => 'Edit',
+        'delete' => 'Delete',
+        'activate' => 'Activate',
+        'deactivate' => 'Deactivate',
+        'confirm_delete' => 'Are you sure you want to delete this location?',
+        'confirm_deactivate' => 'Are you sure you want to deactivate this location?',
+        'delete_warning' => 'This action cannot be undone. Items in this location will need to be moved.',
+        'deactivate_warning' => 'Items in this location will need to be moved to active locations.',
+        
+        // Drawer/Modal
+        'location_drawer_title' => 'Location Details',
+        'add_location_title' => 'Add New Location',
+        'edit_location_title' => 'Edit Location',
+        'close_drawer' => 'Close Drawer',
+        
+        // Summary & Stats
+        'total_locations' => 'Total Locations',
+        'active_locations' => 'Active Locations',
+        'inactive_locations' => 'Inactive Locations',
+        'locations_at_capacity' => 'At Capacity',
+        'average_capacity' => 'Average Capacity',
+        'total_items_stored' => 'Total Items Stored',
+        
+        // Capacity
+        'capacity_full' => 'Full',
+        'capacity_high' => 'High',
+        'capacity_medium' => 'Medium',
+        'capacity_low' => 'Low',
+        'capacity_empty' => 'Empty',
+        'capacity_unknown' => 'Unknown',
+        'capacity_percentage_format' => ':percentage% full',
+        'items_count_format' => ':count items',
+        'no_items' => 'No items',
+        
+        // Items in Location
+        'items_in_location' => 'Items in this Location',
+        'no_items_in_location' => 'No items currently stored in this location',
+        'item_name' => 'Item Name',
+        'item_quantity' => 'Quantity',
+        'item_unit' => 'Unit',
+        'date_added' => 'Date Added',
+        'move_item' => 'Move Item',
+        'view_item' => 'View Item',
+        
+        // Location Conditions
+        'temperature_controlled' => 'Temperature Controlled',
+        'humidity_controlled' => 'Humidity Controlled',
+        'climate_controlled' => 'Climate Controlled',
+        'secure_access' => 'Secure Access',
+        'refrigerated' => 'Refrigerated',
+        'frozen' => 'Frozen',
+        'dry_conditions' => 'Dry Conditions',
+        
+        // Tooltips
+        'click_row_details' => 'Click row to view details',
+        'location_name_help' => 'Enter a unique name for this location',
+        'type_help' => 'Select the type of storage location',
+        'capacity_help' => 'Enter the current capacity percentage (0-100)',
+        'description_help' => 'Add any additional details about this location',
+        'status_help' => 'Set whether this location is currently in use',
+        
+        // Status Descriptions
+        'status_descriptions' => [
+            'active' => 'Location is available for storing items',
+            'inactive' => 'Location is not currently in use',
+            'maintenance' => 'Location is under maintenance',
+            'full' => 'Location has reached maximum capacity',
+            'reserved' => 'Location is reserved for specific items',
+        ],
+        
+        // Location Analytics
+        'utilization_rate' => 'Utilization Rate',
+        'turnover_rate' => 'Turnover Rate',
+        'last_activity' => 'Last Activity',
+        'most_stored_item' => 'Most Stored Item',
+        'location_efficiency' => 'Location Efficiency',
+        
+        // Quick Actions
+        'quick_actions' => 'Quick Actions',
+        'view_items' => 'View Items',
+        'add_item' => 'Add Item',
+        'move_items' => 'Move Items',
+        'check_capacity' => 'Check Capacity',
+        'location_report' => 'Location Report',
+        
+        // Bulk Actions
+        'bulk_actions' => 'Bulk Actions',
+        'activate_selected' => 'Activate Selected',
+        'deactivate_selected' => 'Deactivate Selected',
+        'delete_selected' => 'Delete Selected',
+        'export_selected' => 'Export Selected',
+        'locations_selected' => ':count locations selected',
+        
+        // Import/Export
+        'import_locations' => 'Import Locations',
+        'export_locations' => 'Export Locations',
+        'download_template' => 'Download Template',
+        'upload_file' => 'Upload File',
+        
+        // Alerts
+        'capacity_alert' => 'Location is at :percentage% capacity',
+        'over_capacity' => 'Location is over capacity',
+        'maintenance_due' => 'Maintenance is due for this location',
+        'inactive_warning' => 'This location is inactive',
+        
+        // Time Formats
+        'created_ago' => 'Created :time ago',
+        'updated_ago' => 'Updated :time ago',
+        'last_used' => 'Last used :time ago',
+        'never_used' => 'Never used',
+    ],
+
+    // Suppliers Subsection
+    'suppliers' => [
+        'title' => 'Suppliers',
+        'nav_title' => 'Suppliers',
+        'subtitle' => 'Manage supplier information, contacts, and procurement relationships',
+        
+        // Navigation & Actions
+        'add_supplier' => 'Add Supplier',
+        'edit_supplier' => 'Edit Supplier',
+        'delete_supplier' => 'Delete Supplier',
+        'view_supplier' => 'View Supplier Details',
+        'activate_supplier' => 'Activate Supplier',
+        'deactivate_supplier' => 'Deactivate Supplier',
+        'create_po_for_supplier' => 'Create Purchase Order',
+        
+        // Supplier Status
+        'supplier_statuses' => [
+            'active' => 'Active',
+            'inactive' => 'Inactive',
+        ],
+        
+        // Table Headers
+        'supplier_name' => 'Supplier Name',
+        'contact_person' => 'Contact Person',
+        'phone_email' => 'Phone / Email',
+        'items_supplied' => 'Items Supplied',
+        'status' => 'Status',
+        'created_date' => 'Created Date',
+        'last_updated' => 'Last Updated',
+        'actions' => 'Actions',
+        
+        // Filters
+        'filters' => 'Filters',
+        'clear_filters' => 'Clear Filters',
+        'apply_filters' => 'Apply Filters',
+        'filter_by_status' => 'Filter by Status',
+        'all_statuses' => 'All Statuses',
+        'search_suppliers' => 'Search suppliers...',
+        'search_placeholder' => 'Search by name, contact, or email...',
+        
+        // Form Fields
+        'supplier_name_field' => 'Supplier Name',
+        'contact_person_field' => 'Contact Person',
+        'phone_field' => 'Phone Number',
+        'email_field' => 'Email Address',
+        'address_field' => 'Address',
+        'notes_field' => 'Notes',
+        'select_status' => 'Select Status',
+        'payment_terms' => 'Payment Terms',
+        
+        // Supplier Details
+        'supplier_details' => 'Supplier Details',
+        'basic_information' => 'Basic Information',
+        'contact_information' => 'Contact Information',
+        'business_information' => 'Business Information',
+        'items_information' => 'Items Information',
+        'purchase_history' => 'Purchase History',
+        'recent_orders' => 'Recent Purchase Orders',
+        'additional_info' => 'Additional Information',
+        
+        // Supplier Information
+        'supplier_code' => 'Supplier Code',
+        'business_name' => 'Business Name',
+        'tax_id' => 'Tax ID',
+        'website' => 'Website',
+        'established_date' => 'Established Date',
+        'credit_limit' => 'Credit Limit',
+        'credit_terms' => 'Credit Terms',
+        'delivery_terms' => 'Delivery Terms',
+        'minimum_order' => 'Minimum Order Amount',
+        'lead_time' => 'Lead Time (days)',
+        
+        // Payment Terms
+        'payment_terms_options' => [
+            'net_30' => 'Net 30 Days',
+            'net_15' => 'Net 15 Days',
+            'net_7' => 'Net 7 Days',
+            'cod' => 'Cash on Delivery',
+            'prepaid' => 'Prepaid',
+            'net_60' => 'Net 60 Days',
+        ],
+        
+        // Items Supplied
+        'items_supplied_count' => 'Items Supplied Count',
+        'no_items_supplied' => 'No items supplied',
+        'no_contact' => 'No contact',
+        'no_contact_info' => 'No contact info',
+        'items' => 'items',
+        'item_name' => 'Item Name',
+        'item_code' => 'Item Code',
+        'item_unit' => 'Unit',
+        'last_price' => 'Last Price',
+        'last_order_date' => 'Last Order Date',
+        'view_item_details' => 'View Item Details',
+        
+        // Purchase Orders
+        'purchase_orders' => 'Purchase Orders',
+        'no_purchase_orders' => 'No purchase orders',
+        'po_number' => 'PO Number',
+        'po_date' => 'Order Date',
+        'po_status' => 'Status',
+        'po_total' => 'Total Amount',
+        'view_po_details' => 'View PO Details',
+        
+        // Messages
+        'supplier_created' => 'Supplier created successfully',
+        'supplier_updated' => 'Supplier updated successfully',
+        'supplier_deleted' => 'Supplier deleted successfully',
+        'supplier_activated' => 'Supplier activated successfully',
+        'supplier_deactivated' => 'Supplier deactivated successfully',
+        'cannot_delete_has_items' => 'Cannot delete supplier with associated inventory items',
+        'no_suppliers' => 'No suppliers found',
+        'no_suppliers_message' => 'No suppliers yet. Add your first supplier to start managing procurement.',
+        'loading_suppliers' => 'Loading suppliers...',
+        'error_loading' => 'Error loading suppliers',
+        'retry' => 'Retry',
+        
+        // Validation
+        'name_required' => 'Supplier name is required',
+        'name_unique' => 'Supplier name must be unique',
+        'email_valid' => 'Email must be a valid email address',
+        'phone_valid' => 'Phone number format is invalid',
+        'status_required' => 'Status is required',
+        'name_min_length' => 'Supplier name must be at least 2 characters',
+        'name_max_length' => 'Supplier name cannot exceed 255 characters',
+        'contact_person_max_length' => 'Contact person name cannot exceed 255 characters',
+        'phone_max_length' => 'Phone number cannot exceed 20 characters',
+        'email_max_length' => 'Email cannot exceed 255 characters',
+        'address_max_length' => 'Address cannot exceed 500 characters',
+        'notes_max_length' => 'Notes cannot exceed 1000 characters',
+        
+        // Actions
+        'save_supplier' => 'Save Supplier',
+        'cancel' => 'Cancel',
+        'close' => 'Close',
+        'edit' => 'Edit',
+        'delete' => 'Delete',
+        'activate' => 'Activate',
+        'deactivate' => 'Deactivate',
+        'confirm_delete' => 'Are you sure you want to delete this supplier?',
+        'confirm_deactivate' => 'Are you sure you want to deactivate this supplier?',
+        'delete_warning' => 'This action cannot be undone. Make sure no inventory items are linked to this supplier.',
+        'deactivate_warning' => 'Deactivated suppliers cannot receive new purchase orders.',
+        
+        // Drawer/Modal
+        'supplier_drawer_title' => 'Supplier Details',
+        'add_supplier_title' => 'Add New Supplier',
+        'edit_supplier_title' => 'Edit Supplier',
+        'close_drawer' => 'Close Drawer',
+        
+        // Summary & Stats
+        'total_suppliers' => 'Total Suppliers',
+        'active_suppliers' => 'Active Suppliers',
+        'inactive_suppliers' => 'Inactive Suppliers',
+        'suppliers_with_orders' => 'Suppliers with Orders',
+        'average_lead_time' => 'Average Lead Time',
+        'total_purchase_value' => 'Total Purchase Value',
+        
+        // Quick Actions
+        'quick_actions' => 'Quick Actions',
+        'view_items' => 'View Items',
+        'create_po' => 'Create PO',
+        'view_orders' => 'View Orders',
+        'contact_supplier' => 'Contact Supplier',
+        'supplier_report' => 'Supplier Report',
+        
+        // Bulk Actions
+        'bulk_actions' => 'Bulk Actions',
+        'activate_selected' => 'Activate Selected',
+        'deactivate_selected' => 'Deactivate Selected',
+        'delete_selected' => 'Delete Selected',
+        'export_selected' => 'Export Selected',
+        'suppliers_selected' => ':count suppliers selected',
+        
+        // Import/Export
+        'import_suppliers' => 'Import Suppliers',
+        'export_suppliers' => 'Export Suppliers',
+        'download_template' => 'Download Template',
+        'upload_file' => 'Upload File',
+        
+        // Empty States
+        'no_suppliers_found' => 'No Suppliers Found',
+        'no_suppliers_description' => 'No suppliers match your current filters. Try adjusting your search criteria or add your first supplier.',
+        'add_first_supplier' => 'Add First Supplier',
+        'no_active_suppliers' => 'No Active Suppliers',
+        'no_active_suppliers_description' => 'All suppliers are currently inactive.',
+        
+        // Pagination
+        'showing' => 'Showing',
+        'of' => 'of',
+        'suppliers' => 'suppliers',
+        'previous' => 'Previous',
+        'next' => 'Next',
+        'per_page' => 'per page',
+        
+        // Time Formats
+        'created_ago' => 'Created :time ago',
+        'updated_ago' => 'Updated :time ago',
+        'last_contact' => 'Last contact :time ago',
+        'never_contacted' => 'Never contacted',
+        
+        // Tooltips
+        'click_row_details' => 'Click row to view details',
+        'supplier_name_help' => 'Enter the full business name of the supplier',
+        'contact_person_help' => 'Primary contact person at the supplier',
+        'phone_help' => 'Primary phone number for orders and inquiries',
+        'email_help' => 'Primary email address for communications',
+        'address_help' => 'Full business address of the supplier',
+        'notes_help' => 'Any additional notes about this supplier',
+        'status_help' => 'Set whether this supplier is currently active',
+        
+        // Status Descriptions
+        'status_descriptions' => [
+            'active' => 'Supplier is available for new orders',
+            'inactive' => 'Supplier is not currently accepting orders',
+        ],
+        
+        // Contact Methods
+        'contact_methods' => [
+            'phone' => 'Phone',
+            'email' => 'Email',
+            'fax' => 'Fax',
+            'website' => 'Website',
+        ],
+        
+        // Supplier Categories
+        'supplier_categories' => [
+            'food_beverage' => 'Food & Beverage',
+            'equipment' => 'Equipment',
+            'supplies' => 'Supplies',
+            'packaging' => 'Packaging',
+            'cleaning' => 'Cleaning',
+            'maintenance' => 'Maintenance',
+            'services' => 'Services',
+            'other' => 'Other',
+        ],
+        
+        // Performance Metrics
+        'performance_metrics' => 'Performance Metrics',
+        'on_time_delivery' => 'On-Time Delivery',
+        'quality_rating' => 'Quality Rating',
+        'response_time' => 'Response Time',
+        'order_accuracy' => 'Order Accuracy',
+        'price_competitiveness' => 'Price Competitiveness',
+        
+        // Alerts
+        'inactive_supplier_alert' => 'This supplier is inactive',
+        'no_contact_info' => 'Missing contact information',
+        'no_recent_orders' => 'No recent orders from this supplier',
+        'overdue_payment' => 'Overdue payment to this supplier',
+        
+        // Mobile
+        'swipe_for_actions' => 'Swipe for actions',
+        'tap_to_view_details' => 'Tap to view details',
+        'pull_to_refresh' => 'Pull to refresh',
+        
+        // Accessibility
+        'sort_by' => 'Sort by',
+        'sort_ascending' => 'Sort ascending',
+        'sort_descending' => 'Sort descending',
+        'filter_menu' => 'Filter menu',
+        'close_drawer' => 'Close details drawer',
+        'open_drawer' => 'Open details drawer',
+        'select_supplier' => 'Select supplier',
+        'supplier_selected' => 'Supplier selected',
+        'sort_by_name' => 'Sort by supplier name',
+        'sort_by_status' => 'Sort by status',
+        'sort_by_date' => 'Sort by date',
+        'supplier_details' => 'View supplier details',
+        'edit_supplier_details' => 'Edit supplier details',
+        'delete_supplier_confirm' => 'Delete this supplier',
+    ],
 ];
