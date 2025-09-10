@@ -2,7 +2,7 @@
      x-data="{ 
         sidebarOpen: false,
         sidebarCollapsed: (localStorage.getItem('sidebarCollapsed') === 'true' || localStorage.getItem('sidebarCollapsed') === null),
-        activeSubmenu: '{{ request()->is('admin/staff*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : (request()->is('admin/sales*') || request()->is('admin/finance*') ? 'finance' : '')) }}',
+        activeSubmenu: '{{ request()->is('admin/staff*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : (request()->is('admin/sales*') || request()->is('admin/finance*') ? 'finance' : (request()->is('admin/menu*') ? 'menu' : ''))) }}',
         toggleSidebar() {
             this.sidebarCollapsed = !this.sidebarCollapsed;
             localStorage.setItem('sidebarCollapsed', this.sidebarCollapsed);
@@ -211,6 +211,48 @@
                     </a>
                     <a href="/admin/staff/payroll" class="submenu-link {{ request()->is('admin/staff/payroll*') ? 'active' : '' }}">
                         {{ __('staff.nav_payroll') }}
+                    </a>
+                </div>
+            </div>
+
+            <!-- Menu Management (With Submenu) -->
+            <div class="nav-group" :class="{ 'active': activeSubmenu === 'menu' }">
+                <button @click="toggleSubmenu('menu')" 
+                        class="nav-link nav-link--parent {{ request()->is('admin/menu*') ? 'active' : '' }}">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    <span class="nav-text">{{ __('menu.nav_title') }}</span>
+                    <svg class="nav-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                
+                <div class="nav-submenu" 
+                     x-show="activeSubmenu === 'menu'" 
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 max-h-0"
+                     x-transition:enter-end="opacity-100 max-h-96"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 max-h-96"
+                     x-transition:leave-end="opacity-0 max-h-0">
+                    <a href="/admin/menu/food-items" class="submenu-link {{ request()->is('admin/menu/food-items*') ? 'active' : '' }}">
+                        {{ __('menu.food_items.title') }}
+                    </a>
+                    <a href="/admin/menu/categories" class="submenu-link {{ request()->is('admin/menu/categories*') ? 'active' : '' }}">
+                        {{ __('menu.categories.title') }}
+                    </a>
+                    <a href="/admin/menu/modifiers" class="submenu-link {{ request()->is('admin/menu/modifiers*') ? 'active' : '' }}">
+                        {{ __('menu.modifiers.title') }}
+                    </a>
+                    <a href="/admin/menu/dish-cost" class="submenu-link {{ request()->is('admin/menu/dish-cost*') ? 'active' : '' }}">
+                        {{ __('menu.dish_cost.title') }}
+                    </a>
+                    <a href="/admin/menu/pricing" class="submenu-link {{ request()->is('admin/menu/pricing*') ? 'active' : '' }}">
+                        {{ __('menu.pricing.title') }}
+                    </a>
+                    <a href="/admin/menu/design" class="submenu-link {{ request()->is('admin/menu/design*') ? 'active' : '' }}">
+                        {{ __('menu.design.title') }}
                     </a>
                 </div>
             </div>

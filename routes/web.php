@@ -147,6 +147,26 @@ Route::get('/admin/finance/settings', function () {
     return view('admin.finance.settings');
 });
 
+// Menu Management Routes
+Route::get('/admin/menu/food-items', function () {
+    return view('admin.menu.food-items');
+});
+Route::get('/admin/menu/categories', function () {
+    return view('admin.menu.categories');
+});
+Route::get('/admin/menu/modifiers', function () {
+    return view('admin.menu.modifiers');
+});
+Route::get('/admin/menu/dish-cost', function () {
+    return view('admin.menu.dish-cost');
+});
+Route::get('/admin/menu/pricing', function () {
+    return view('admin.menu.pricing');
+});
+Route::get('/admin/menu/design', function () {
+    return view('admin.menu.design');
+});
+
 // Staff Management Routes
 Route::get('/admin/staff', function () {
     return view('admin.staff.index');
