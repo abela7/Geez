@@ -2,7 +2,7 @@
      x-data="{ 
         sidebarOpen: false,
         sidebarCollapsed: (localStorage.getItem('sidebarCollapsed') === 'true' || localStorage.getItem('sidebarCollapsed') === null),
-        activeSubmenu: '{{ request()->is('admin/staff*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : (request()->is('admin/sales*') || request()->is('admin/finance*') ? 'finance' : (request()->is('admin/menu*') ? 'menu' : ''))) }}',
+        activeSubmenu: '{{ request()->is('admin/staff*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : (request()->is('admin/sales*') || request()->is('admin/finance*') ? 'finance' : (request()->is('admin/menu*') ? 'menu' : (request()->is('admin/customers*') ? 'customers' : '')))) }}',
         toggleSidebar() {
             this.sidebarCollapsed = !this.sidebarCollapsed;
             localStorage.setItem('sidebarCollapsed', this.sidebarCollapsed);
@@ -257,14 +257,36 @@
                 </div>
             </div>
 
-            <!-- Customers -->
-            <a href="/admin/customers" 
-               class="nav-link {{ request()->is('admin/customers*') ? 'active' : '' }}">
-                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
-                <span class="nav-text">{{ __('dashboard.nav_customers') }}</span>
-            </a>
+            <!-- Customer Management (With Submenu) -->
+            <div class="nav-group" :class="{ 'active': activeSubmenu === 'customers' }">
+                <button @click="toggleSubmenu('customers')" 
+                        class="nav-link nav-link--parent {{ request()->is('admin/customers*') ? 'active' : '' }}">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                    <span class="nav-text">{{ __('customers.nav_title') }}</span>
+                    <svg class="nav-chevron" :class="{ 'rotated': activeSubmenu === 'customers' }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </button>
+                <div class="submenu" x-show="activeSubmenu === 'customers'" x-transition>
+                    <a href="/admin/customers/directory" class="submenu-link {{ request()->is('admin/customers/directory*') ? 'active' : '' }}">
+                        {{ __('customers.directory.title') }}
+                    </a>
+                    <a href="/admin/customers/loyalty" class="submenu-link {{ request()->is('admin/customers/loyalty*') ? 'active' : '' }}">
+                        {{ __('customers.loyalty.title') }}
+                    </a>
+                    <a href="/admin/customers/reservations" class="submenu-link {{ request()->is('admin/customers/reservations*') ? 'active' : '' }}">
+                        {{ __('customers.reservations.title') }}
+                    </a>
+                    <a href="/admin/customers/analytics" class="submenu-link {{ request()->is('admin/customers/analytics*') ? 'active' : '' }}">
+                        {{ __('customers.analytics.title') }}
+                    </a>
+                    <a href="/admin/customers/feedback" class="submenu-link {{ request()->is('admin/customers/feedback*') ? 'active' : '' }}">
+                        {{ __('customers.feedback.title') }}
+                    </a>
+                </div>
+            </div>
 
             <!-- Reports -->
             <a href="/admin/reports" 

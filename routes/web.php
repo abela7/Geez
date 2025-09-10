@@ -167,6 +167,11 @@ Route::get('/admin/menu/design', function () {
     return view('admin.menu.design');
 });
 
+// Customer Management Routes
+Route::get('/admin/customers/directory', function () {
+    return view('admin.customers.directory');
+});
+
 // Staff Management Routes
 Route::get('/admin/staff', function () {
     return view('admin.staff.index');

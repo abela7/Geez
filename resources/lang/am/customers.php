@@ -1,218 +1,172 @@
 <?php
 
 return [
-    // Page Titles
-    'title' => 'Customer Management',
-    'subtitle' => 'Manage customer profiles and relationships',
-    
     // Navigation
-    'nav_title' => 'Customers',
+    'nav_title' => 'Customer Management',
     
-    // Content Placeholders
-    'placeholder_title' => 'Customer Management',
-    'placeholder_description' => 'Customer features will be implemented here with modular CSS and JavaScript.',
+    // Customer Directory
+    'directory' => [
+        'title' => 'Customer Directory',
+        'subtitle' => 'Manage customer profiles, contact information, and preferences',
+        'nav_title' => 'Customer Directory',
+        
+        // Actions
+        'add_customer' => 'Add Customer',
+        'import_customers' => 'Import Customers',
+        'export_customers' => 'Export Customers',
+        'edit_customer' => 'Edit Customer',
+        'delete_customer' => 'Delete Customer',
+        'save_customer' => 'Save Customer',
+        'cancel' => 'Cancel',
+        'close' => 'Close',
+        'add_first_customer' => 'Add Your First Customer',
+        
+        // Statistics
+        'total_customers' => 'Total Customers',
+        'new_this_month' => 'New This Month',
+        'vip_customers' => 'VIP Customers',
+        'active_customers' => 'Active Customers',
+        
+        // Search & Filters
+        'search_customers' => 'Search customers by name, email, or phone...',
+        'all_status' => 'All Status',
+        'all_frequency' => 'All Visit Frequency',
+        'all_locations' => 'All Locations',
+        'clear_filters' => 'Clear Filters',
+        'showing_results' => 'Showing :count of :total customers',
+        
+        // Status
+        'active' => 'Active',
+        'inactive' => 'Inactive',
+        'vip' => 'VIP',
+        
+        // Visit Frequency
+        'frequent_visitors' => 'Frequent Visitors',
+        'regular_visitors' => 'Regular Visitors',
+        'occasional_visitors' => 'Occasional Visitors',
+        'first_time' => 'First Time',
+        
+        // Location
+        'local' => 'Local',
+        'nearby' => 'Nearby',
+        'distant' => 'Distant',
+        
+        // Table Headers
+        'customer' => 'Customer',
+        'contact' => 'Contact',
+        'status' => 'Status',
+        'visits' => 'Visits',
+        'total_spent' => 'Total Spent',
+        'last_visit' => 'Last Visit',
+        'actions' => 'Actions',
+        
+        // Form Fields - Basic Info
+        'basic_info' => 'Basic Info',
+        'first_name' => 'First Name',
+        'last_name' => 'Last Name',
+        'date_of_birth' => 'Date of Birth',
+        'gender' => 'Gender',
+        'select_gender' => 'Select Gender',
+        'male' => 'Male',
+        'female' => 'Female',
+        'other' => 'Other',
+        'prefer_not_to_say' => 'Prefer not to say',
+        'customer_status' => 'Customer Status',
+        
+        // Form Fields - Contact Info
+        'contact_info' => 'Contact Info',
+        'email' => 'Email Address',
+        'phone' => 'Phone Number',
+        'address' => 'Address',
+        'city' => 'City',
+        'postal_code' => 'Postal Code',
+        
+        // Form Fields - Preferences
+        'preferences' => 'Preferences',
+        'preferred_seating' => 'Preferred Seating',
+        'no_preference' => 'No Preference',
+        'window_seat' => 'Window Seat',
+        'booth' => 'Booth',
+        'bar_seating' => 'Bar Seating',
+        'outdoor' => 'Outdoor',
+        'quiet_area' => 'Quiet Area',
+        'dietary_restrictions' => 'Dietary Restrictions',
+        'vegetarian' => 'Vegetarian',
+        'vegan' => 'Vegan',
+        'gluten_free' => 'Gluten Free',
+        'dairy_free' => 'Dairy Free',
+        'nut_allergy' => 'Nut Allergy',
+        'shellfish_allergy' => 'Shellfish Allergy',
+        'allergies' => 'Allergies & Special Requirements',
+        'allergies_placeholder' => 'Please describe any allergies or special dietary requirements...',
+        'communication_preferences' => 'Communication Preferences',
+        'email_notifications' => 'Email Notifications',
+        'sms_notifications' => 'SMS Notifications',
+        'promotional_offers' => 'Promotional Offers',
+        
+        // Form Fields - Notes
+        'notes' => 'Notes',
+        'customer_notes' => 'Customer Notes',
+        'notes_placeholder' => 'Add any notes about the customer\'s preferences, special occasions, etc...',
+        'internal_notes' => 'Internal Notes',
+        'internal_notes_placeholder' => 'Add internal staff notes (not visible to customer)...',
+        
+        // Customer Details Modal
+        'customer_details' => 'Customer Details',
+        'personal_information' => 'Personal Information',
+        'full_name' => 'Full Name',
+        'contact_information' => 'Contact Information',
+        'visit_history' => 'Visit History',
+        'total_visits' => 'Total Visits',
+        'average_per_visit' => 'Average per Visit',
+        'visit_frequency' => 'Visit Frequency',
+        
+        // Empty States
+        'no_customers_found' => 'No Customers Found',
+        'no_customers_message' => 'No customers match your current search and filter criteria. Try adjusting your filters or add a new customer.',
+        'loading_customers' => 'Loading customers...',
+        
+        // Messages
+        'customer_added' => 'Customer added successfully',
+        'customer_updated' => 'Customer updated successfully',
+        'customer_deleted' => 'Customer deleted successfully',
+        'customers_imported' => 'Customers imported successfully',
+        'customers_exported' => 'Customers exported successfully',
+        'delete_confirmation' => 'Are you sure you want to delete this customer? This action cannot be undone.',
+        'import_coming_soon' => 'Import functionality coming soon',
+        
+        // Validation
+        'first_name_required' => 'First name is required',
+        'last_name_required' => 'Last name is required',
+        'email_invalid' => 'Please enter a valid email address',
+        'phone_invalid' => 'Please enter a valid phone number',
+    ],
     
-    // Customer Overview
-    'customer_overview' => 'Customer Overview',
-    'total_customers' => 'Total Customers',
-    'active_customers' => 'Active Customers',
-    'new_customers' => 'New Customers',
-    'vip_customers' => 'VIP Customers',
-    'regular_customers' => 'Regular Customers',
-    'inactive_customers' => 'Inactive Customers',
+    // Loyalty Program
+    'loyalty' => [
+        'title' => 'Loyalty Program',
+        'subtitle' => 'Manage customer loyalty points, rewards, and membership tiers',
+        'nav_title' => 'Loyalty Program',
+    ],
     
-    // Customer Information
-    'customer' => 'Customer',
-    'customers' => 'Customers',
-    'customer_id' => 'Customer ID',
-    'customer_name' => 'Customer Name',
-    'first_name' => 'First Name',
-    'last_name' => 'Last Name',
-    'full_name' => 'Full Name',
-    'customer_photo' => 'Customer Photo',
-    'date_of_birth' => 'Date of Birth',
-    'gender' => 'Gender',
-    'age' => 'Age',
-    
-    // Contact Information
-    'contact_information' => 'Contact Information',
-    'phone_number' => 'Phone Number',
-    'mobile_number' => 'Mobile Number',
-    'email_address' => 'Email Address',
-    'home_address' => 'Home Address',
-    'billing_address' => 'Billing Address',
-    'delivery_address' => 'Delivery Address',
-    'city' => 'City',
-    'state' => 'State',
-    'postal_code' => 'Postal Code',
-    'country' => 'Country',
-    
-    // Customer Status & Types
-    'customer_status' => 'Customer Status',
-    'customer_type' => 'Customer Type',
-    'active' => 'Active',
-    'inactive' => 'Inactive',
-    'blocked' => 'Blocked',
-    'vip' => 'VIP',
-    'regular' => 'Regular',
-    'premium' => 'Premium',
-    'gold' => 'Gold',
-    'silver' => 'Silver',
-    'bronze' => 'Bronze',
-    
-    // Registration & Membership
-    'registration_date' => 'Registration Date',
-    'membership' => 'Membership',
-    'membership_number' => 'Membership Number',
-    'membership_type' => 'Membership Type',
-    'membership_status' => 'Membership Status',
-    'membership_expiry' => 'Membership Expiry',
-    'loyalty_points' => 'Loyalty Points',
-    'reward_points' => 'Reward Points',
-    'points_balance' => 'Points Balance',
-    'points_earned' => 'Points Earned',
-    'points_redeemed' => 'Points Redeemed',
-    
-    // Purchase History
-    'purchase_history' => 'Purchase History',
-    'order_history' => 'Order History',
-    'total_orders' => 'Total Orders',
-    'total_spent' => 'Total Spent',
-    'average_order_value' => 'Average Order Value',
-    'last_order_date' => 'Last Order Date',
-    'first_order_date' => 'First Order Date',
-    'favorite_items' => 'Favorite Items',
-    'most_ordered' => 'Most Ordered',
-    'recent_orders' => 'Recent Orders',
-    
-    // Customer Preferences
-    'preferences' => 'Preferences',
-    'dietary_preferences' => 'Dietary Preferences',
-    'allergies' => 'Allergies',
-    'special_requests' => 'Special Requests',
-    'preferred_payment' => 'Preferred Payment Method',
-    'preferred_delivery_time' => 'Preferred Delivery Time',
-    'communication_preferences' => 'Communication Preferences',
-    'marketing_consent' => 'Marketing Consent',
-    'newsletter_subscription' => 'Newsletter Subscription',
-    
-    // Dietary Options
-    'vegetarian' => 'Vegetarian',
-    'vegan' => 'Vegan',
-    'gluten_free' => 'Gluten Free',
-    'dairy_free' => 'Dairy Free',
-    'nut_free' => 'Nut Free',
-    'halal' => 'Halal',
-    'kosher' => 'Kosher',
-    'low_sodium' => 'Low Sodium',
-    'diabetic_friendly' => 'Diabetic Friendly',
-    
-    // Customer Feedback
-    'feedback' => 'Feedback',
-    'reviews' => 'Reviews',
-    'ratings' => 'Ratings',
-    'complaints' => 'Complaints',
-    'suggestions' => 'Suggestions',
-    'testimonials' => 'Testimonials',
-    'satisfaction_score' => 'Satisfaction Score',
-    'review_date' => 'Review Date',
-    'rating_score' => 'Rating Score',
-    
-    // Communication & Marketing
-    'communication' => 'Communication',
-    'marketing' => 'Marketing',
-    'send_message' => 'Send Message',
-    'send_email' => 'Send Email',
-    'send_sms' => 'Send SMS',
-    'email_campaign' => 'Email Campaign',
-    'sms_campaign' => 'SMS Campaign',
-    'promotional_offers' => 'Promotional Offers',
-    'birthday_offers' => 'Birthday Offers',
-    'anniversary_offers' => 'Anniversary Offers',
-    
-    // Customer Groups & Segments
-    'customer_groups' => 'Customer Groups',
-    'customer_segments' => 'Customer Segments',
-    'group_name' => 'Group Name',
-    'segment_criteria' => 'Segment Criteria',
-    'high_value_customers' => 'High Value Customers',
-    'frequent_customers' => 'Frequent Customers',
-    'new_customers_segment' => 'New Customers',
-    'dormant_customers' => 'Dormant Customers',
-    'at_risk_customers' => 'At Risk Customers',
-    
-    // Actions
-    'add_customer' => 'Add Customer',
-    'edit_customer' => 'Edit Customer',
-    'delete_customer' => 'Delete Customer',
-    'view_profile' => 'View Profile',
-    'update_profile' => 'Update Profile',
-    'block_customer' => 'Block Customer',
-    'unblock_customer' => 'Unblock Customer',
-    'merge_customers' => 'Merge Customers',
-    'export_customer_data' => 'Export Customer Data',
-    'send_birthday_wish' => 'Send Birthday Wish',
-    'add_loyalty_points' => 'Add Loyalty Points',
-    'redeem_points' => 'Redeem Points',
+    // Reservations
+    'reservations' => [
+        'title' => 'Reservations',
+        'subtitle' => 'Manage table bookings and reservation system',
+        'nav_title' => 'Reservations',
+    ],
     
     // Customer Analytics
-    'customer_analytics' => 'Customer Analytics',
-    'customer_lifetime_value' => 'Customer Lifetime Value',
-    'customer_acquisition_cost' => 'Customer Acquisition Cost',
-    'customer_retention_rate' => 'Customer Retention Rate',
-    'churn_rate' => 'Churn Rate',
-    'repeat_purchase_rate' => 'Repeat Purchase Rate',
-    'customer_growth' => 'Customer Growth',
-    'acquisition_channels' => 'Acquisition Channels',
+    'analytics' => [
+        'title' => 'Customer Analytics',
+        'subtitle' => 'Analyze customer behavior, trends, and insights',
+        'nav_title' => 'Customer Analytics',
+    ],
     
-    // Reports
-    'customer_reports' => 'Customer Reports',
-    'customer_list_report' => 'Customer List Report',
-    'purchase_behavior_report' => 'Purchase Behavior Report',
-    'loyalty_points_report' => 'Loyalty Points Report',
-    'customer_feedback_report' => 'Customer Feedback Report',
-    'birthday_report' => 'Birthday Report',
-    'anniversary_report' => 'Anniversary Report',
-    'inactive_customers_report' => 'Inactive Customers Report',
-    
-    // Messages & Alerts
-    'customer_added' => 'Customer added successfully',
-    'customer_updated' => 'Customer updated successfully',
-    'customer_deleted' => 'Customer deleted successfully',
-    'customer_blocked' => 'Customer blocked successfully',
-    'customer_unblocked' => 'Customer unblocked successfully',
-    'points_added' => 'Loyalty points added successfully',
-    'points_redeemed' => 'Points redeemed successfully',
-    'message_sent' => 'Message sent successfully',
-    'email_sent' => 'Email sent successfully',
-    'birthday_wish_sent' => 'Birthday wish sent successfully',
-    
-    // Validation Messages
-    'customer_name_required' => 'Customer name is required',
-    'phone_required' => 'Phone number is required',
-    'email_required' => 'Email address is required',
-    'email_unique' => 'Email address must be unique',
-    'phone_unique' => 'Phone number must be unique',
-    'invalid_email_format' => 'Invalid email format',
-    'invalid_phone_format' => 'Invalid phone format',
-    'invalid_date_format' => 'Invalid date format',
-    'points_insufficient' => 'Insufficient loyalty points',
-    
-    // Filters & Search
-    'filter_by_status' => 'Filter by Status',
-    'filter_by_type' => 'Filter by Type',
-    'filter_by_group' => 'Filter by Group',
-    'filter_by_registration_date' => 'Filter by Registration Date',
-    'search_customers' => 'Search customers...',
-    'search_by_name_phone_email' => 'Search by name, phone, or email',
-    
-    // Import/Export
-    'import_customers' => 'Import Customers',
-    'export_customers' => 'Export Customers',
-    'download_template' => 'Download Template',
-    'bulk_actions' => 'Bulk Actions',
-    'bulk_update' => 'Bulk Update',
-    'bulk_delete' => 'Bulk Delete',
-    'bulk_send_message' => 'Bulk Send Message',
-    'bulk_add_to_group' => 'Bulk Add to Group',
+    // Feedback & Reviews
+    'feedback' => [
+        'title' => 'Feedback & Reviews',
+        'subtitle' => 'Collect and manage customer feedback and reviews',
+        'nav_title' => 'Feedback & Reviews',
+    ],
 ];
