@@ -184,6 +184,32 @@ Route::get('/admin/customers/feedback', function () {
     return view('admin.customers.feedback');
 });
 
+// Reports Routes
+Route::get('/admin/reports/sales', function () {
+    return view('admin.reports.sales');
+});
+Route::get('/admin/reports/customers', function () {
+    return view('admin.reports.customers');
+});
+Route::get('/admin/reports/menu', function () {
+    return view('admin.reports.menu');
+});
+Route::get('/admin/reports/inventory', function () {
+    return view('admin.reports.inventory');
+});
+Route::get('/admin/reports/staff', function () {
+    return view('admin.reports.staff');
+});
+Route::get('/admin/reports/financial', function () {
+    return view('admin.reports.financial');
+});
+Route::get('/admin/reports/operational', function () {
+    return view('admin.reports.operational');
+});
+Route::get('/admin/reports/executive', function () {
+    return view('admin.reports.executive');
+});
+
 // Staff Management Routes
 Route::get('/admin/staff', function () {
     return view('admin.staff.index');
