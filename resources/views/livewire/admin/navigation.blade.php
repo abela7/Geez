@@ -2,7 +2,7 @@
      x-data="{ 
         sidebarOpen: false,
         sidebarCollapsed: (localStorage.getItem('sidebarCollapsed') === 'true' || localStorage.getItem('sidebarCollapsed') === null),
-        activeSubmenu: '{{ request()->is('admin/staff*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : (request()->is('admin/sales*') || request()->is('admin/finance*') ? 'finance' : (request()->is('admin/menu*') ? 'menu' : (request()->is('admin/customers*') ? 'customers' : '')))) }}',
+        activeSubmenu: '{{ request()->is('admin/staff*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : (request()->is('admin/sales*') || request()->is('admin/finance*') ? 'finance' : (request()->is('admin/menu*') ? 'menu' : (request()->is('admin/customers*') ? 'customers' : (request()->is('admin/reports*') ? 'reports' : ''))))) }}',
         toggleSidebar() {
             this.sidebarCollapsed = !this.sidebarCollapsed;
             localStorage.setItem('sidebarCollapsed', this.sidebarCollapsed);
@@ -296,14 +296,53 @@
                 </div>
             </div>
 
-            <!-- Reports -->
-            <a href="/admin/reports" 
-               class="nav-link {{ request()->is('admin/reports*') ? 'active' : '' }}">
-                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                </svg>
-                <span class="nav-text">{{ __('dashboard.nav_reports') }}</span>
-            </a>
+            <!-- Reports (With Submenu) -->
+            <div class="nav-group" :class="{ 'active': activeSubmenu === 'reports' }">
+                <button @click="toggleSubmenu('reports')" 
+                        class="nav-link nav-link--parent {{ request()->is('admin/reports*') ? 'active' : '' }}">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    <span class="nav-text">{{ __('reports.nav_title') }}</span>
+                    <svg class="nav-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                
+                <div class="nav-submenu" 
+                     x-show="activeSubmenu === 'reports'" 
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 max-h-0"
+                     x-transition:enter-end="opacity-100 max-h-96"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 max-h-96"
+                     x-transition:leave-end="opacity-0 max-h-0">
+                    <a href="/admin/reports/sales" class="submenu-link {{ request()->is('admin/reports/sales*') ? 'active' : '' }}">
+                        {{ __('reports.sales.title') }}
+                    </a>
+                    <a href="/admin/reports/customers" class="submenu-link {{ request()->is('admin/reports/customers*') ? 'active' : '' }}">
+                        {{ __('reports.customers.title') }}
+                    </a>
+                    <a href="/admin/reports/menu" class="submenu-link {{ request()->is('admin/reports/menu*') ? 'active' : '' }}">
+                        {{ __('reports.menu.title') }}
+                    </a>
+                    <a href="/admin/reports/inventory" class="submenu-link {{ request()->is('admin/reports/inventory*') ? 'active' : '' }}">
+                        {{ __('reports.inventory.title') }}
+                    </a>
+                    <a href="/admin/reports/staff" class="submenu-link {{ request()->is('admin/reports/staff*') ? 'active' : '' }}">
+                        {{ __('reports.staff.title') }}
+                    </a>
+                    <a href="/admin/reports/financial" class="submenu-link {{ request()->is('admin/reports/financial*') ? 'active' : '' }}">
+                        {{ __('reports.financial.title') }}
+                    </a>
+                    <a href="/admin/reports/operational" class="submenu-link {{ request()->is('admin/reports/operational*') ? 'active' : '' }}">
+                        {{ __('reports.operational.title') }}
+                    </a>
+                    <a href="/admin/reports/executive" class="submenu-link {{ request()->is('admin/reports/executive*') ? 'active' : '' }}">
+                        {{ __('reports.executive.title') }}
+                    </a>
+                </div>
+            </div>
 
             <!-- Settings -->
             <a href="/admin/settings" 
