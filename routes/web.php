@@ -210,6 +210,20 @@ Route::get('/admin/reports/executive', function () {
     return view('admin.reports.executive');
 });
 
+// Table & Room Management Routes
+Route::get('/admin/tables/rooms', function () {
+    return view('admin.tables.rooms');
+});
+Route::get('/admin/tables/categories', function () {
+    return view('admin.tables.categories');
+});
+Route::get('/admin/tables/types', function () {
+    return view('admin.tables.types');
+});
+Route::get('/admin/tables/layout', function () {
+    return view('admin.tables.layout');
+});
+
 // Staff Management Routes
 Route::get('/admin/staff', function () {
     return view('admin.staff.index');

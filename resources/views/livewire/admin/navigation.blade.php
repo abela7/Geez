@@ -2,7 +2,7 @@
      x-data="{ 
         sidebarOpen: false,
         sidebarCollapsed: (localStorage.getItem('sidebarCollapsed') === 'true' || localStorage.getItem('sidebarCollapsed') === null),
-        activeSubmenu: '{{ request()->is('admin/staff*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : (request()->is('admin/sales*') || request()->is('admin/finance*') ? 'finance' : (request()->is('admin/menu*') ? 'menu' : (request()->is('admin/customers*') ? 'customers' : (request()->is('admin/reports*') ? 'reports' : ''))))) }}',
+        activeSubmenu: '{{ request()->is('admin/staff*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : (request()->is('admin/sales*') || request()->is('admin/finance*') ? 'finance' : (request()->is('admin/menu*') ? 'menu' : (request()->is('admin/customers*') ? 'customers' : (request()->is('admin/reports*') ? 'reports' : (request()->is('admin/tables*') ? 'tables' : '')))))) }}',
         toggleSidebar() {
             this.sidebarCollapsed = !this.sidebarCollapsed;
             localStorage.setItem('sidebarCollapsed', this.sidebarCollapsed);
@@ -292,6 +292,42 @@
                     </a>
                     <a href="/admin/customers/feedback" class="submenu-link {{ request()->is('admin/customers/feedback*') ? 'active' : '' }}">
                         {{ __('customers.feedback.title') }}
+                    </a>
+                </div>
+            </div>
+
+            <!-- Table & Room Management (With Submenu) -->
+            <div class="nav-group" :class="{ 'active': activeSubmenu === 'tables' }">
+                <button @click="toggleSubmenu('tables')" 
+                        class="nav-link nav-link--parent {{ request()->is('admin/tables*') ? 'active' : '' }}">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    <span class="nav-text">{{ __('tables.nav_title') }}</span>
+                    <svg class="nav-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                
+                <div class="nav-submenu" 
+                     x-show="activeSubmenu === 'tables'" 
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 max-h-0"
+                     x-transition:enter-end="opacity-100 max-h-96"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 max-h-96"
+                     x-transition:leave-end="opacity-0 max-h-0">
+                    <a href="/admin/tables/rooms" class="submenu-link {{ request()->is('admin/tables/rooms*') ? 'active' : '' }}">
+                        {{ __('tables.rooms.title') }}
+                    </a>
+                    <a href="/admin/tables/categories" class="submenu-link {{ request()->is('admin/tables/categories*') ? 'active' : '' }}">
+                        {{ __('tables.categories.title') }}
+                    </a>
+                    <a href="/admin/tables/types" class="submenu-link {{ request()->is('admin/tables/types*') ? 'active' : '' }}">
+                        {{ __('tables.types.title') }}
+                    </a>
+                    <a href="/admin/tables/layout" class="submenu-link {{ request()->is('admin/tables/layout*') ? 'active' : '' }}">
+                        {{ __('tables.layout.title') }}
                     </a>
                 </div>
             </div>
