@@ -171,6 +171,18 @@ Route::get('/admin/menu/design', function () {
 Route::get('/admin/customers/directory', function () {
     return view('admin.customers.directory');
 });
+Route::get('/admin/customers/loyalty', function () {
+    return view('admin.customers.loyalty');
+});
+Route::get('/admin/customers/reservations', function () {
+    return view('admin.customers.reservations');
+});
+Route::get('/admin/customers/analytics', function () {
+    return view('admin.customers.analytics');
+});
+Route::get('/admin/customers/feedback', function () {
+    return view('admin.customers.feedback');
+});
 
 // Staff Management Routes
 Route::get('/admin/staff', function () {

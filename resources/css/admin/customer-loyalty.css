@@ -1,0 +1,1323 @@
+/* ========================================
+   CUSTOMER LOYALTY PROGRAM STYLES
+   Restaurant-OS Design System
+   ======================================== */
+
+/* ========================================
+   DESIGN TOKENS & VARIABLES
+   ======================================== */
+:root {
+    /* Loyalty program specific colors */
+    --color-loyalty-primary: #8b5cf6;
+    --color-loyalty-secondary: #7c3aed;
+    --color-loyalty-accent: #ede9fe;
+    --color-loyalty-success: #10b981;
+    --color-loyalty-warning: #f59e0b;
+    --color-loyalty-danger: #ef4444;
+    
+    /* Tier colors */
+    --color-tier-bronze: #cd7f32;
+    --color-tier-silver: #c0c0c0;
+    --color-tier-gold: #ffd700;
+    --color-tier-platinum: #e5e4e2;
+    
+    /* Points and rewards colors */
+    --color-points-earned: #10b981;
+    --color-points-redeemed: #f59e0b;
+    --color-points-expired: #ef4444;
+    
+    /* Statistics colors */
+    --color-stat-members: #3b82f6;
+    --color-stat-active: #10b981;
+    --color-stat-points: #8b5cf6;
+    --color-stat-rewards: #f59e0b;
+}
+
+[data-theme="dark"] {
+    --color-loyalty-accent: #3c1d6b;
+    --color-tier-bronze: #b8860b;
+    --color-tier-silver: #a9a9a9;
+    --color-tier-gold: #daa520;
+    --color-tier-platinum: #d3d3d3;
+}
+
+/* ========================================
+   LAYOUT & CONTAINER
+   ======================================== */
+.loyalty-program-container {
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header {
+    padding: 1.5rem 2rem;
+    background: var(--color-bg-primary);
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+/* ========================================
+   STATISTICS SECTION
+   ======================================== */
+.stats-section {
+    padding: 1.5rem 2rem;
+    background: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stat-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: white;
+}
+
+.stat-icon.total-members {
+    background: var(--color-stat-members);
+}
+
+.stat-icon.active-members {
+    background: var(--color-stat-active);
+}
+
+.stat-icon.points-issued {
+    background: var(--color-stat-points);
+}
+
+.stat-icon.rewards-redeemed {
+    background: var(--color-stat-rewards);
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+/* ========================================
+   CONTENT SECTION & TABS
+   ======================================== */
+.content-section {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.loyalty-tabs {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.tab-nav {
+    display: flex;
+    background: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border);
+    overflow-x: auto;
+    flex-shrink: 0;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+}
+
+.tab-btn:hover {
+    color: var(--color-text-primary);
+    background: var(--color-bg-tertiary);
+}
+
+.tab-btn.active {
+    color: var(--color-loyalty-primary);
+    border-bottom-color: var(--color-loyalty-primary);
+    background: var(--color-bg-primary);
+}
+
+.tab-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.tab-panel {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========================================
+   SEARCH & FILTERS
+   ======================================== */
+.search-filters-container {
+    padding: 1.5rem 2rem;
+    background: var(--color-bg-primary);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.search-bar {
+    flex: 1;
+}
+
+.search-input-wrapper {
+    position: relative;
+    max-width: 400px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-text-secondary);
+    pointer-events: none;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    font-size: 0.875rem;
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    transition: all 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--color-loyalty-primary);
+    box-shadow: 0 0 0 3px var(--color-loyalty-accent);
+}
+
+.filters-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-select,
+.filter-input {
+    min-width: 150px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    font-size: 0.875rem;
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-select:focus,
+.filter-input:focus {
+    outline: none;
+    border-color: var(--color-loyalty-primary);
+    box-shadow: 0 0 0 3px var(--color-loyalty-accent);
+}
+
+/* ========================================
+   MEMBERS SECTION
+   ======================================== */
+.members-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.members-list {
+    flex: 1;
+    padding: 1.5rem 2rem;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.member-card {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.member-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.member-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.member-avatar {
+    width: 3rem;
+    height: 3rem;
+    background: var(--color-bg-tertiary);
+    border-radius: var(--border-radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    font-size: 1.125rem;
+    flex-shrink: 0;
+}
+
+.member-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.member-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.member-email {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.member-tier {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.tier-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--border-radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    color: white;
+}
+
+.tier-badge.bronze {
+    background: var(--color-tier-bronze);
+}
+
+.tier-badge.silver {
+    background: var(--color-tier-silver);
+    color: var(--color-text-primary);
+}
+
+.tier-badge.gold {
+    background: var(--color-tier-gold);
+    color: var(--color-text-primary);
+}
+
+.tier-badge.platinum {
+    background: var(--color-tier-platinum);
+    color: var(--color-text-primary);
+}
+
+.member-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.member-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.stat-value {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.points-value {
+    color: var(--color-loyalty-primary);
+}
+
+.member-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.member-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+.status-indicator {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: var(--border-radius-full);
+}
+
+.status-indicator.active {
+    background: var(--color-loyalty-success);
+}
+
+.status-indicator.inactive {
+    background: var(--color-text-secondary);
+}
+
+.member-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    padding: 0.5rem;
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn:hover {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+}
+
+.action-btn.points {
+    color: var(--color-loyalty-primary);
+}
+
+.action-btn svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* ========================================
+   REWARDS SECTION
+   ======================================== */
+.rewards-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.rewards-header,
+.tiers-header,
+.transactions-header {
+    padding: 1.5rem 2rem;
+    background: var(--color-bg-primary);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.rewards-grid {
+    flex: 1;
+    padding: 1.5rem 2rem;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.reward-card {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.reward-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.reward-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.reward-info {
+    flex: 1;
+}
+
+.reward-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.reward-type {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.reward-points {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-loyalty-primary);
+}
+
+.reward-description {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+    margin-bottom: 1rem;
+}
+
+.reward-details {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.reward-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-loyalty-success);
+}
+
+.reward-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--border-radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.reward-status.active {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-loyalty-success);
+}
+
+.reward-status.inactive {
+    background: rgba(107, 114, 128, 0.1);
+    color: var(--color-text-secondary);
+}
+
+.reward-actions {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.25rem;
+}
+
+/* ========================================
+   TIERS SECTION
+   ======================================== */
+.tiers-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.tiers-grid {
+    flex: 1;
+    padding: 1.5rem 2rem;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.tier-card {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.tier-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.tier-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.tier-card.bronze::before {
+    background: var(--color-tier-bronze);
+}
+
+.tier-card.silver::before {
+    background: var(--color-tier-silver);
+}
+
+.tier-card.gold::before {
+    background: var(--color-tier-gold);
+}
+
+.tier-card.platinum::before {
+    background: var(--color-tier-platinum);
+}
+
+.tier-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.tier-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.tier-icon.bronze {
+    background: var(--color-tier-bronze);
+}
+
+.tier-icon.silver {
+    background: var(--color-tier-silver);
+}
+
+.tier-icon.gold {
+    background: var(--color-tier-gold);
+}
+
+.tier-icon.platinum {
+    background: var(--color-tier-platinum);
+}
+
+.tier-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.tier-info {
+    flex: 1;
+}
+
+.tier-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.tier-requirement {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.tier-benefits {
+    margin-bottom: 1rem;
+}
+
+.tier-benefits-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.tier-benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tier-benefits-list li {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    padding: 0.25rem 0;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.tier-benefits-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--color-loyalty-success);
+    font-weight: 600;
+}
+
+.tier-stats {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.tier-stat {
+    text-align: center;
+}
+
+.tier-stat-value {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.tier-stat-label {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+/* ========================================
+   TRANSACTIONS SECTION
+   ======================================== */
+.transactions-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.transaction-filters {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.transactions-table-wrapper {
+    flex: 1;
+    overflow: auto;
+    padding: 1.5rem 2rem;
+}
+
+.transactions-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+}
+
+.transactions-table th {
+    background: var(--color-bg-secondary);
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.transactions-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+    vertical-align: middle;
+}
+
+.transactions-table tr:hover {
+    background: var(--color-bg-tertiary);
+}
+
+.transaction-date {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+.transaction-customer {
+    font-weight: 500;
+}
+
+.transaction-type {
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--border-radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.transaction-type.earned {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-points-earned);
+}
+
+.transaction-type.redeemed {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--color-points-redeemed);
+}
+
+.transaction-type.expired {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-points-expired);
+}
+
+.transaction-points {
+    font-weight: 600;
+}
+
+.transaction-points.positive {
+    color: var(--color-points-earned);
+}
+
+.transaction-points.negative {
+    color: var(--color-points-redeemed);
+}
+
+.transaction-balance {
+    font-weight: 600;
+    color: var(--color-loyalty-primary);
+}
+
+/* ========================================
+   MODALS
+   ======================================== */
+.reward-modal,
+.member-details-modal,
+.points-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.reward-modal .modal-overlay,
+.member-details-modal .modal-overlay,
+.points-modal .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.reward-modal .modal-content,
+.member-details-modal .modal-content,
+.points-modal .modal-content {
+    position: relative;
+    background: var(--color-bg-primary);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-xl);
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.member-details-modal .modal-content.large {
+    max-width: 800px;
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.modal-close {
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+}
+
+.modal-body {
+    flex: 1;
+    overflow: auto;
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    padding: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+/* ========================================
+   FORMS
+   ======================================== */
+.reward-form,
+.points-form {
+    width: 100%;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.form-label.required::after {
+    content: ' *';
+    color: var(--color-loyalty-danger);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    font-size: 0.875rem;
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--color-loyalty-primary);
+    box-shadow: 0 0 0 3px var(--color-loyalty-accent);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.current-points-display {
+    background: var(--color-loyalty-accent);
+    padding: 1rem;
+    border-radius: var(--border-radius-md);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.current-points-label {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-right: 0.5rem;
+}
+
+.current-points-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-loyalty-primary);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 1200px) {
+    .members-list,
+    .rewards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+    
+    .tiers-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 1024px) {
+    .search-filters-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filters-container {
+        justify-content: flex-start;
+    }
+    
+    .transaction-filters {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .member-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .loyalty-program-container {
+        padding: 0;
+    }
+    
+    .page-header,
+    .stats-section,
+    .search-filters-container,
+    .members-list,
+    .rewards-grid,
+    .tiers-grid,
+    .transactions-table-wrapper {
+        padding: 1rem 1.5rem;
+    }
+    
+    .page-header-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    
+    .page-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .members-list,
+    .rewards-grid,
+    .tiers-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .member-card,
+    .reward-card,
+    .tier-card {
+        padding: 1rem;
+    }
+    
+    .filters-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .filter-select,
+    .filter-input {
+        min-width: auto;
+    }
+    
+    .transactions-table-wrapper {
+        overflow-x: auto;
+    }
+    
+    .transactions-table {
+        min-width: 800px;
+    }
+    
+    .modal-content {
+        margin: 1rem;
+        max-height: calc(100vh - 2rem);
+        max-width: calc(100vw - 2rem);
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .tab-nav {
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-header,
+    .stats-section,
+    .search-filters-container,
+    .members-list,
+    .rewards-grid,
+    .tiers-grid,
+    .transactions-table-wrapper {
+        padding: 1rem;
+    }
+    
+    .stat-card {
+        padding: 1rem;
+    }
+    
+    .stat-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+    
+    .stat-icon svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .member-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .member-tier {
+        position: static;
+        align-self: flex-end;
+    }
+    
+    .tab-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.75rem;
+    }
+    
+    .tab-icon {
+        width: 1rem;
+        height: 1rem;
+    }
+}
+
+/* ========================================
+   DARK THEME OVERRIDES
+   ======================================== */
+[data-theme="dark"] {
+    .stat-card:hover,
+    .member-card:hover,
+    .reward-card:hover,
+    .tier-card:hover {
+        background: #1f2937;
+    }
+    
+    .transactions-table tr:hover {
+        background: #1f2937;
+    }
+    
+    .tab-btn:hover {
+        background: #374151;
+    }
+    
+    .tab-btn.active {
+        background: #1f2937;
+    }
+    
+    .action-btn:hover {
+        background: #374151;
+    }
+    
+    .modal-close:hover {
+        background: #374151;
+    }
+    
+    .tier-icon.silver,
+    .tier-icon.gold,
+    .tier-icon.platinum {
+        color: var(--color-text-primary);
+    }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+@media print {
+    .loyalty-program-container {
+        padding: 0;
+    }
+    
+    .page-actions,
+    .modal-footer,
+    .member-action-buttons,
+    .reward-actions {
+        display: none !important;
+    }
+    
+    .members-list,
+    .rewards-grid,
+    .tiers-grid {
+        display: block;
+    }
+    
+    .member-card,
+    .reward-card,
+    .tier-card {
+        break-inside: avoid;
+        margin-bottom: 1rem;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    
+    .transactions-table {
+        font-size: 0.75rem;
+    }
+    
+    .transactions-table th,
+    .transactions-table td {
+        padding: 0.5rem;
+    }
+}
