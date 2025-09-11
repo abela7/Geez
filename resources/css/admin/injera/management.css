@@ -1,0 +1,1307 @@
+/* ========================================
+   INJERA MANAGEMENT PAGE STYLES
+   Restaurant-OS Design System
+   ======================================== */
+
+/* ========================================
+   DESIGN TOKENS & VARIABLES
+   ======================================== */
+:root {
+    /* Injera specific colors */
+    --color-injera-primary: #d97706;
+    --color-injera-secondary: #b45309;
+    --color-injera-accent: #fef3c7;
+    --color-injera-success: #10b981;
+    --color-injera-warning: #f59e0b;
+    --color-injera-danger: #ef4444;
+    
+    /* Production stage colors */
+    --color-stage-ingredients: #3b82f6;
+    --color-stage-mixing: #8b5cf6;
+    --color-stage-fermentation: #f59e0b;
+    --color-stage-baking: #d97706;
+    
+    /* Status colors */
+    --color-status-pending: #f59e0b;
+    --color-status-in-progress: #3b82f6;
+    --color-status-ready: #10b981;
+    --color-status-completed: #6b7280;
+    
+    /* Recommendation colors */
+    --color-recommend-good: #10b981;
+    --color-recommend-caution: #f59e0b;
+    --color-recommend-avoid: #ef4444;
+    
+    /* Stat card colors */
+    --color-stat-production: #d97706;
+    --color-stat-remaining: #3b82f6;
+    --color-stat-efficiency: #10b981;
+    --color-stat-recommendation: #8b5cf6;
+}
+
+[data-theme="dark"] {
+    --color-injera-accent: #92400e;
+}
+
+/* ========================================
+   LAYOUT & CONTAINER
+   ======================================== */
+.injera-container {
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header {
+    padding: 1.5rem 2rem;
+    background: var(--color-bg-primary);
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.page-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.page-title-section {
+    flex: 1;
+}
+
+.page-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0 0 0.5rem 0;
+    line-height: 1.2;
+}
+
+.page-subtitle {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.page-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.btn-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* ========================================
+   STATISTICS SECTION
+   ======================================== */
+.stats-section {
+    padding: 1.5rem 2rem;
+    background: var(--color-bg-primary);
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    border-color: var(--color-injera-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stat-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.stat-icon.production {
+    background: rgba(217, 119, 6, 0.1);
+    color: var(--color-stat-production);
+}
+
+.stat-icon.remaining {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--color-stat-remaining);
+}
+
+.stat-icon.efficiency {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-stat-efficiency);
+}
+
+.stat-icon.recommendation {
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--color-stat-recommendation);
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+    margin-bottom: 0.25rem;
+}
+
+.stat-change {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    display: inline-block;
+}
+
+.stat-change.positive {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+}
+
+.stat-change.negative {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+}
+
+.stat-note {
+    font-size: 0.75rem;
+    color: var(--color-text-tertiary);
+}
+
+/* ========================================
+   CONTENT TABS
+   ======================================== */
+.content-tabs {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.tab-navigation {
+    display: flex;
+    background: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    border-bottom: 3px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.tab-btn:hover {
+    color: var(--color-text-primary);
+    background: var(--color-bg-tertiary);
+}
+
+.tab-btn.active {
+    color: var(--color-injera-primary);
+    border-bottom-color: var(--color-injera-primary);
+    background: var(--color-bg-primary);
+}
+
+.tab-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.tab-content-area {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.tab-panel {
+    display: none;
+    padding: 1.5rem 2rem;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* ========================================
+   PRODUCTION STEPS
+   ======================================== */
+.production-steps-section {
+    margin-top: 2rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.step-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.step-card:hover {
+    border-color: var(--color-injera-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.step-number {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 2rem;
+    height: 2rem;
+    background: var(--color-injera-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.875rem;
+}
+
+.step-content {
+    padding: 1rem 1rem 1rem 4rem;
+    position: relative;
+}
+
+.step-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 0.5rem 0;
+}
+
+.step-description {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
+}
+
+.step-ingredients {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.ingredient-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: var(--color-bg-tertiary);
+    border-radius: 0.375rem;
+}
+
+.ingredient-name {
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+}
+
+.ingredient-amount {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-injera-primary);
+}
+
+.step-timing {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.timing-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: var(--color-bg-tertiary);
+    border-radius: 0.375rem;
+}
+
+.timing-label {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.timing-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.step-actions {
+    padding: 1rem;
+    background: var(--color-bg-tertiary);
+    border-top: 1px solid var(--color-border);
+    text-align: center;
+}
+
+/* ========================================
+   PRODUCTION TIMELINE
+   ======================================== */
+.production-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.timeline-batch {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    position: relative;
+}
+
+.batch-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.batch-id {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.batch-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.batch-status.in-progress {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--color-status-in-progress);
+}
+
+.batch-status.ready {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-status-ready);
+}
+
+.batch-progress {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--color-bg-tertiary);
+    border-radius: 0.5rem;
+    position: relative;
+}
+
+.progress-step.completed {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-injera-success);
+}
+
+.progress-step.current {
+    background: rgba(217, 119, 6, 0.1);
+    color: var(--color-injera-primary);
+    border: 2px solid var(--color-injera-primary);
+}
+
+.progress-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.progress-label {
+    font-size: 0.75rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+.progress-time {
+    font-size: 0.75rem;
+    color: var(--color-text-tertiary);
+}
+
+/* ========================================
+   FLOUR INVENTORY
+   ======================================== */
+.flour-inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.flour-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.flour-card:hover {
+    border-color: var(--color-injera-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.flour-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.flour-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.flour-status {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.flour-status.in-stock {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-injera-success);
+}
+
+.flour-status.low-stock {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--color-injera-warning);
+}
+
+.flour-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flour-amount {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+}
+
+.amount-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-injera-primary);
+}
+
+.amount-unit {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.flour-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    text-align: right;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.75rem;
+}
+
+.info-label {
+    color: var(--color-text-secondary);
+}
+
+.info-value {
+    color: var(--color-text-primary);
+    font-weight: 500;
+}
+
+/* ========================================
+   RECOMMENDATIONS
+   ======================================== */
+.recommendations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.recommendation-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.recommendation-card.production {
+    border-color: var(--color-stage-baking);
+}
+
+.recommendation-card.sales {
+    border-color: var(--color-recommend-good);
+}
+
+.recommendation-card.waste-reduction {
+    border-color: var(--color-recommend-caution);
+}
+
+.recommendation-header {
+    padding: 1rem 1.5rem;
+    background: var(--color-bg-tertiary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.recommendation-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-injera-primary);
+    color: white;
+}
+
+.recommendation-icon svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.recommendation-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    flex: 1;
+    margin-left: 0.75rem;
+}
+
+.recommendation-confidence {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-injera-primary);
+    background: rgba(217, 119, 6, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+}
+
+.recommendation-content {
+    padding: 1.5rem;
+}
+
+.recommendation-text {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
+}
+
+.recommendation-details,
+.recommendation-analysis,
+.waste-insights {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.detail-item,
+.analysis-item,
+.insight-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: var(--color-bg-tertiary);
+    border-radius: 0.375rem;
+}
+
+.detail-label,
+.analysis-label,
+.insight-label {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+.detail-value,
+.analysis-value,
+.insight-value {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.analysis-item.positive .analysis-value {
+    color: var(--color-recommend-good);
+}
+
+.analysis-item.neutral .analysis-value {
+    color: var(--color-text-secondary);
+}
+
+.recommendation-actions {
+    padding: 1rem 1.5rem;
+    background: var(--color-bg-tertiary);
+    border-top: 1px solid var(--color-border);
+    text-align: center;
+}
+
+/* ========================================
+   SALES METRICS
+   ======================================== */
+.sales-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.sales-metric-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.sales-metric-card:hover {
+    border-color: var(--color-injera-primary);
+}
+
+.metric-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.metric-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.metric-icon.food-service {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.metric-icon.direct-sales {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.metric-icon.waste {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.metric-icon.efficiency-rate {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+}
+
+.metric-content {
+    flex: 1;
+}
+
+.metric-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.metric-percentage,
+.metric-revenue,
+.metric-cost,
+.metric-target {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.metric-percentage {
+    color: var(--color-injera-primary);
+}
+
+.metric-revenue {
+    color: var(--color-injera-success);
+}
+
+.metric-cost.text-danger {
+    color: var(--color-injera-danger);
+}
+
+.metric-target {
+    color: var(--color-text-tertiary);
+}
+
+/* ========================================
+   MODAL STYLES
+   ======================================== */
+.production-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    position: relative;
+    background: var(--color-bg-primary);
+    border-radius: 0.75rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content.large {
+    max-width: 1000px;
+}
+
+.modal-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+}
+
+.close-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.modal-body {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+/* ========================================
+   PRODUCTION WIZARD
+   ======================================== */
+.production-wizard {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.wizard-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding: 0 2rem;
+}
+
+.wizard-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    position: relative;
+}
+
+.wizard-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 1rem;
+    left: 60%;
+    right: -40%;
+    height: 2px;
+    background: var(--color-border);
+    z-index: 0;
+}
+
+.wizard-step.active:not(:last-child)::after {
+    background: var(--color-injera-primary);
+}
+
+.step-circle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border: 2px solid var(--color-border);
+    position: relative;
+    z-index: 1;
+}
+
+.wizard-step.active .step-circle {
+    background: var(--color-injera-primary);
+    color: white;
+    border-color: var(--color-injera-primary);
+}
+
+.step-label {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    text-align: center;
+}
+
+.wizard-step.active .step-label {
+    color: var(--color-injera-primary);
+    font-weight: 600;
+}
+
+.wizard-content {
+    flex: 1;
+    margin-bottom: 2rem;
+}
+
+.wizard-panel {
+    display: none;
+}
+
+.wizard-panel.active {
+    display: block;
+}
+
+.wizard-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 1rem 0;
+    text-align: center;
+}
+
+.wizard-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+}
+
+/* ========================================
+   FORM STYLES
+   ======================================== */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+.form-input,
+.form-select {
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--color-injera-primary);
+    box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+}
+
+.input-with-suffix {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: var(--color-bg-primary);
+}
+
+.input-suffix {
+    padding: 0.75rem;
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-left: 1px solid var(--color-border);
+}
+
+.input-with-suffix input {
+    border: none;
+    flex: 1;
+}
+
+.yield-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: rgba(217, 119, 6, 0.1);
+    border-radius: 0.5rem;
+    color: var(--color-injera-primary);
+}
+
+.yield-value {
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.yield-unit {
+    font-size: 0.875rem;
+}
+
+/* ========================================
+   PRODUCTION SUMMARY
+   ======================================== */
+.production-summary {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+}
+
+.summary-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 1rem 0;
+    text-align: center;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: var(--color-bg-tertiary);
+    border-radius: 0.375rem;
+}
+
+.summary-label {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+.summary-value {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-injera-primary);
+}
+
+/* ========================================
+   CHART STYLES
+   ======================================== */
+.chart-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.chart-header {
+    padding: 1rem 1.5rem;
+    background: var(--color-bg-tertiary);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chart-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.chart-select {
+    padding: 0.375rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.375rem;
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-size: 0.75rem;
+}
+
+.chart-body {
+    padding: 1.5rem;
+    height: 300px;
+    position: relative;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Tablet styles */
+@media (max-width: 1024px) {
+    .page-header-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    
+    .page-actions {
+        justify-content: stretch;
+    }
+    
+    .page-actions .btn {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .recommendations-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .tab-navigation {
+        flex-wrap: wrap;
+    }
+    
+    .tab-btn {
+        flex: none;
+        min-width: 150px;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 640px) {
+    .page-header,
+    .stats-section,
+    .tab-panel {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .steps-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .batch-progress {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .flour-inventory-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .sales-metrics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .wizard-steps {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .wizard-step {
+        flex: none;
+        min-width: 120px;
+    }
+    
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        margin: 1rem;
+        max-height: calc(100vh - 2rem);
+    }
+}
+
+/* ========================================
+   DARK THEME ADJUSTMENTS
+   ======================================== */
+[data-theme="dark"] {
+    .stat-card:hover,
+    .step-card:hover,
+    .flour-card:hover,
+    .recommendation-card:hover,
+    .sales-metric-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .modal-overlay {
+        background: rgba(0, 0, 0, 0.7);
+    }
+    
+    .wizard-step:not(:last-child)::after {
+        background: #374151;
+    }
+    
+    .wizard-step.active:not(:last-child)::after {
+        background: var(--color-injera-primary);
+    }
+}

@@ -485,9 +485,134 @@ return [
         
         // Measurement Settings
         'standard_shot_size' => 'Standard Shot Size (ml)',
+        'double_shot_size' => 'Double Shot Size (ml)',
         'wine_pour_size' => 'Wine Pour Size (ml)',
         'beer_pour_size' => 'Beer Pour Size (ml)',
         'default_markup' => 'Default Markup %',
+        
+        // Drink Portions
+        'drink_portions' => 'Drink Portions',
+        'drink_portions_description' => 'Configure standard pour sizes and container conversion rates for accurate inventory tracking.',
+        'standard_pour_sizes' => 'Standard Pour Sizes',
+        'shot_hint' => 'Standard single shot measurement',
+        'double_shot_hint' => 'Standard double shot measurement',
+        'wine_pour_hint' => 'Standard wine glass pour',
+        'beer_pour_hint' => 'Standard beer serving size',
+        
+        // Container Conversions
+        'container_conversions' => 'Container Conversions',
+        'beer_conversions' => 'Beer Conversions',
+        'spirit_conversions' => 'Spirit Conversions',
+        'wine_conversions' => 'Wine Conversions',
+        
+        // Conversion Labels
+        'pint_to_glasses' => 'Pint to Glasses',
+        'gallon_to_pints' => 'Gallon to Pints',
+        'keg_to_pints' => 'Keg to Pints',
+        'bottle_to_singles' => 'Bottle to Single Shots',
+        'bottle_to_doubles' => 'Bottle to Double Shots',
+        'liter_to_singles' => 'Liter to Single Shots',
+        'wine_bottle_to_glasses' => 'Wine Bottle to Glasses',
+        'case_to_bottles' => 'Case to Bottles',
+        
+        // Units
+        'pint' => 'Pint',
+        'pints' => 'Pints',
+        'gallon' => 'Gallon',
+        'glasses' => 'Glasses',
+        'keg' => 'Keg',
+        'bottle_750ml' => 'Bottle (750ml)',
+        'liter' => 'Liter',
+        'single_shots' => 'Single Shots',
+        'double_shots' => 'Double Shots',
+        'wine_bottle' => 'Wine Bottle',
+        'wine_glasses' => 'Wine Glasses',
+        'case' => 'Case',
+        'bottles' => 'Bottles',
+        'shots' => 'Shots',
+        'servings' => 'Servings',
+        
+        // Conversion Hints
+        'pint_conversion_hint' => 'How many glasses can be poured from 1 pint',
+        'gallon_conversion_hint' => 'How many pints in 1 gallon',
+        'keg_conversion_hint' => 'How many pints in 1 standard keg',
+        'bottle_single_hint' => 'Single shots (25ml) from 750ml bottle',
+        'bottle_double_hint' => 'Double shots (50ml) from 750ml bottle',
+        'liter_conversion_hint' => 'Single shots from 1 liter bottle',
+        'wine_bottle_hint' => 'Wine glasses (150ml) from 750ml bottle',
+        'case_conversion_hint' => 'Number of bottles per case',
+        
+        // Inventory Alerts
+        'inventory_alerts' => 'Inventory Alerts',
+        'inventory_alerts_description' => 'Configure low stock thresholds and alert preferences to prevent stockouts.',
+        'low_stock_thresholds' => 'Low Stock Thresholds',
+        'alert_preferences' => 'Alert Preferences',
+        
+        // Threshold Settings
+        'beer_threshold' => 'Beer Threshold',
+        'spirits_threshold' => 'Spirits Threshold',
+        'wine_threshold' => 'Wine Threshold',
+        'mixers_threshold' => 'Mixers Threshold',
+        'pints_remaining' => 'pints remaining',
+        'shots_remaining' => 'shots remaining',
+        'glasses_remaining' => 'glasses remaining',
+        'servings_remaining' => 'servings remaining',
+        'beer_threshold_hint' => 'Alert when beer has this many pints left',
+        'spirits_threshold_hint' => 'Alert when spirits have this many shots left',
+        'wine_threshold_hint' => 'Alert when wine has this many glasses left',
+        'mixers_threshold_hint' => 'Alert when mixers have this many servings left',
+        
+        // Alert Methods
+        'alert_methods' => 'Alert Methods',
+        'dashboard_notifications' => 'Dashboard Notifications',
+        'email_notifications' => 'Email Notifications',
+        'sms_notifications' => 'SMS Notifications',
+        'alert_frequency' => 'Alert Frequency',
+        'immediate' => 'Immediate',
+        'daily_summary' => 'Daily Summary',
+        'weekly_summary' => 'Weekly Summary',
+        'alert_recipients' => 'Alert Recipients',
+        'alert_recipients_placeholder' => 'Enter email addresses separated by commas...',
+        'alert_recipients_hint' => 'Email addresses to receive low stock alerts',
+        
+        // General Settings
+        'general_settings' => 'General Settings',
+        'general_settings_description' => 'Configure basic bar operations and system preferences.',
+        'operating_settings' => 'Operating Settings',
+        'bar_name_placeholder' => 'Enter bar name...',
+        'markup_hint' => 'Default markup percentage for new drinks',
+        'features' => 'Features',
+        'enable_auto_update' => 'Enable Auto Update',
+        'auto_update_hint' => 'Automatically update inventory when drinks are sold',
+        'enable_real_time' => 'Enable Real-time Sync',
+        'real_time_hint' => 'Sync inventory changes in real-time with POS system',
+        
+        // Conversion Calculator
+        'conversion_calculator' => 'Conversion Calculator',
+        'calculator_description' => 'Use this calculator to quickly convert between different container sizes and serving units.',
+        'quick_calculator' => 'Quick Calculator',
+        'quantity' => 'Quantity',
+        'from_unit' => 'From Unit',
+        'to_unit' => 'To Unit',
+        'result' => 'Result',
+        'calculate' => 'Calculate',
+        
+        // Custom Conversions
+        'add_custom_conversion' => 'Add Custom Conversion',
+        'conversion_name' => 'Conversion Name',
+        'conversion_name_placeholder' => 'e.g., Magnum to Glasses',
+        'from_container' => 'From Container',
+        'from_container_placeholder' => 'e.g., Magnum Bottle',
+        'to_unit_label' => 'To Unit',
+        'to_unit_placeholder' => 'e.g., Glasses',
+        'conversion_rate' => 'Conversion Rate',
+        'conversion_rate_hint' => 'How many units the container converts to',
+        'conversion_notes_placeholder' => 'Optional notes about this conversion...',
+        'add_conversion' => 'Add Conversion',
+        
+        // Actions
+        'save_settings' => 'Save Settings',
+        'reset_defaults' => 'Reset to Defaults',
         
         // Inventory Settings
         'low_stock_threshold' => 'Low Stock Threshold',

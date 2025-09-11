@@ -546,8 +546,131 @@ Route::prefix('admin/bar/suppliers')->name('admin.bar.suppliers.')->group(functi
         return view('admin.bar.suppliers.index', compact('stats', 'suppliers'));
     })->name('index');
 });
-Route::get('/admin/bar/settings', function () {
-    return view('admin.bar.settings');
+Route::prefix('admin/bar/settings')->name('admin.bar.settings.')->group(function () {
+    Route::get('/', function () {
+        // Mock data for demonstration
+        $conversionRates = [
+            'standard_shot_size' => 25,
+            'double_shot_size' => 50,
+            'wine_pour_size' => 150,
+            'beer_pour_size' => 330,
+            'pint_to_glasses' => 80,
+            'gallon_to_pints' => 8,
+            'keg_to_pints' => 124,
+            'bottle_to_singles' => 30,
+            'bottle_to_doubles' => 15,
+            'liter_to_singles' => 40,
+            'wine_bottle_to_glasses' => 5,
+            'wine_case_to_bottles' => 12
+        ];
+        
+        $thresholds = [
+            'beer_threshold' => 3,
+            'spirits_threshold' => 10,
+            'wine_threshold' => 2,
+            'mixers_threshold' => 20
+        ];
+        
+        $settings = [
+            'bar_name' => 'Main Bar',
+            'default_markup' => 150,
+            'last_call_time' => '23:30',
+            'happy_hour_enabled' => true,
+            'age_verification' => true,
+            'stock_rotation' => true,
+            'waste_tracking' => false,
+            'auto_inventory_update' => true,
+            'real_time_sync' => false,
+            'alert_frequency' => 'daily',
+            'alert_methods' => ['dashboard', 'email']
+        ];
+        
+        return view('admin.bar.settings.index', compact('conversionRates', 'thresholds', 'settings'));
+    })->name('index');
+});
+
+// Tip Management Routes (Finance)
+Route::prefix('admin/finance/tips')->name('admin.finance.tips.')->group(function () {
+    Route::get('/', function () {
+        // Mock data for demonstration
+        $stats = [
+            'total_tips_today' => 245.75,
+            'pending_distribution' => 68.25,
+            'distributed_today' => 177.50,
+            'avg_per_staff' => 35.50,
+            'tips_change' => 15.3,
+            'pending_count' => 3,
+            'staff_count' => 5
+        ];
+        
+        $tipRules = [
+            'current_rule' => 'shared',
+            'direct' => ['receiver' => 100],
+            'shared' => ['front_of_house' => 60, 'kitchen' => 40],
+            'custom' => ['servers' => 45, 'bartenders' => 25, 'kitchen' => 20, 'management' => 10]
+        ];
+        
+        return view('admin.finance.tips.index', compact('stats', 'tipRules'));
+    })->name('index');
+});
+
+// Injera Management Routes
+Route::prefix('admin/injera')->name('admin.injera.')->group(function () {
+    Route::get('/', function () {
+        // Mock data for demonstration
+        $stats = [
+            'daily_production' => 43,
+            'injera_remaining' => 12,
+            'flour_efficiency' => 4.2,
+            'production_trend' => 8.5,
+            'estimated_hours' => 6
+        ];
+        
+        $inventory = [
+            'teff_flour' => ['amount' => 25.5, 'cost_per_kg' => 8.50, 'status' => 'in_stock'],
+            'wheat_flour' => ['amount' => 3.2, 'cost_per_kg' => 2.80, 'status' => 'low_stock'],
+            'water' => ['amount' => 50, 'cost_per_kg' => 0.01, 'status' => 'in_stock']
+        ];
+        
+        $batches = [
+            [
+                'id' => 1,
+                'batch_id' => 'INJ-001',
+                'status' => 'baking',
+                'current_step' => 4,
+                'teff_amount' => 10,
+                'wheat_amount' => 2,
+                'expected_yield' => 45,
+                'baker' => 'Almaz Tadesse',
+                'start_date' => '2024-01-13T08:00:00',
+                'completion_estimate' => '2024-01-16T16:00:00'
+            ],
+            [
+                'id' => 2,
+                'batch_id' => 'INJ-002', 
+                'status' => 'fermentation',
+                'current_step' => 3,
+                'teff_amount' => 8,
+                'wheat_amount' => 1.5,
+                'expected_yield' => 35,
+                'baker' => null,
+                'start_date' => '2024-01-14T09:00:00',
+                'completion_estimate' => '2024-01-17T12:00:00'
+            ]
+        ];
+        
+        $salesAnalysis = [
+            'food_service_usage' => 28,
+            'direct_sales' => 12,
+            'waste_count' => 3,
+            'efficiency_rate' => 91.2,
+            'revenue_today' => 36.00,
+            'waste_cost' => 6.03,
+            'recommendation' => 'GOOD'
+        ];
+        
+        return view('admin.injera.index', compact('stats', 'inventory', 'batches', 'salesAnalysis'));
+    })->name('index');
 });
 
 // Staff Management Routes

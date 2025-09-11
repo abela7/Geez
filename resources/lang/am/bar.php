@@ -471,9 +471,40 @@ return [
         
         // Measurement Settings
         'standard_shot_size' => 'Standard Shot Size (ml)',
+        'double_shot_size' => 'Double Shot Size (ml)',
         'wine_pour_size' => 'Wine Pour Size (ml)',
         'beer_pour_size' => 'Beer Pour Size (ml)',
         'default_markup' => 'Default Markup %',
+        
+        // Drink Portions
+        'drink_portions' => 'Drink Portions',
+        'drink_portions_description' => 'Configure standard pour sizes and container conversion rates for accurate inventory tracking.',
+        'standard_pour_sizes' => 'Standard Pour Sizes',
+        'container_conversions' => 'Container Conversions',
+        'beer_conversions' => 'Beer Conversions',
+        'spirit_conversions' => 'Spirit Conversions',
+        'wine_conversions' => 'Wine Conversions',
+        
+        // Conversion Labels
+        'pint_to_glasses' => 'Pint to Glasses',
+        'gallon_to_pints' => 'Gallon to Pints',
+        'bottle_to_singles' => 'Bottle to Single Shots',
+        'bottle_to_doubles' => 'Bottle to Double Shots',
+        
+        // Units
+        'pint' => 'Pint',
+        'gallon' => 'Gallon',
+        'glasses' => 'Glasses',
+        'single_shots' => 'Single Shots',
+        'double_shots' => 'Double Shots',
+        
+        // Inventory Alerts
+        'inventory_alerts' => 'Inventory Alerts',
+        'low_stock_thresholds' => 'Low Stock Thresholds',
+        'beer_threshold' => 'Beer Threshold',
+        'spirits_threshold' => 'Spirits Threshold',
+        'save_settings' => 'Save Settings',
+        'reset_defaults' => 'Reset to Defaults',
         
         // Inventory Settings
         'low_stock_threshold' => 'Low Stock Threshold',

@@ -169,6 +169,8 @@ return [
     'apply' => 'Apply',
     'stars' => 'stars',
     'days' => 'days',
+    'hours' => 'hours',
+    'week' => 'week',
     
     // Time & Dates
     'today' => 'Today',

@@ -158,8 +158,11 @@
                     <a href="/admin/sales" class="submenu-link {{ request()->is('admin/sales') && !request()->is('admin/sales/*') ? 'active' : '' }}">
                         {{ __('finance.sales_reports.title') }}
                     </a>
+                    <a href="/admin/finance/tips" class="submenu-link {{ request()->is('admin/finance/tips*') ? 'active' : '' }}">
+                        {{ __('finance.tips.title') }}
+                    </a>
                     <a href="/admin/finance/expenses" class="submenu-link {{ request()->is('admin/finance/expenses*') ? 'active' : '' }}">
-                        {{ __('finance.expenses') }}
+                        {{ __('finance.expenses.title') }}
                     </a>
                     <a href="/admin/finance/budgeting" class="submenu-link {{ request()->is('admin/finance/budgeting*') ? 'active' : '' }}">
                         {{ __('finance.budgeting.title') }}
@@ -372,6 +375,16 @@
                         {{ __('bar.settings.title') }}
                     </a>
                 </div>
+            </div>
+
+            <!-- Injera Management -->
+            <div class="nav-group">
+                <a href="/admin/injera" class="nav-link {{ request()->is('admin/injera*') ? 'active' : '' }}">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                    </svg>
+                    <span class="nav-text">{{ __('injera.nav_title') }}</span>
+                </a>
             </div>
 
             <!-- Reports (With Submenu) -->
