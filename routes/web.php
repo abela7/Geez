@@ -224,6 +224,135 @@ Route::get('/admin/tables/layout', function () {
     return view('admin.tables.layout');
 });
 
+// Bar Management Routes
+Route::prefix('admin/bar/inventory')->name('admin.bar.inventory.')->group(function () {
+    Route::get('/', function () {
+        // Mock data for demonstration
+        $stats = [
+            'total_beverages' => 156,
+            'low_stock_count' => 12,
+            'out_of_stock_count' => 3,
+            'total_value' => 15420.50
+        ];
+        
+        $beverages = collect([
+            (object) [
+                'id' => 1,
+                'name' => 'Johnnie Walker Black Label',
+                'beverage_type' => 'spirits',
+                'brand' => 'Johnnie Walker',
+                'current_stock' => 8.5,
+                'minimum_stock' => 5.0,
+                'unit' => 'bottles',
+                'storage_location' => 'spirit_cabinet',
+                'abv' => 40,
+                'barcode' => '5000267013200',
+                'stock_status' => 'in_stock'
+            ],
+            (object) [
+                'id' => 2,
+                'name' => 'Heineken Beer',
+                'beverage_type' => 'beer',
+                'brand' => 'Heineken',
+                'current_stock' => 2.0,
+                'minimum_stock' => 10.0,
+                'unit' => 'cases',
+                'storage_location' => 'beer_cooler',
+                'abv' => 5,
+                'barcode' => '8712000000000',
+                'stock_status' => 'low_stock'
+            ],
+            (object) [
+                'id' => 3,
+                'name' => 'Cabernet Sauvignon 2020',
+                'beverage_type' => 'wine',
+                'brand' => 'Kendall-Jackson',
+                'current_stock' => 0.0,
+                'minimum_stock' => 6.0,
+                'unit' => 'bottles',
+                'storage_location' => 'wine_cellar',
+                'abv' => 13.5,
+                'barcode' => '0123456789012',
+                'stock_status' => 'out_of_stock'
+            ]
+        ]);
+        
+        return view('admin.bar.inventory.index', compact('stats', 'beverages'));
+    })->name('index');
+});
+Route::prefix('admin/bar/recipes')->name('admin.bar.recipes.')->group(function () {
+    Route::get('/', function () {
+        // Mock data for demonstration
+        $stats = [
+            'total_recipes' => 45,
+            'signature_recipes' => 8,
+            'popular_recipes' => 12,
+            'avg_cost_per_drink' => 8.50
+        ];
+        
+        $recipes = collect([
+            (object) [
+                'id' => 1,
+                'name' => 'Classic Old Fashioned',
+                'recipe_type' => 'classic_cocktail',
+                'difficulty' => 'medium',
+                'glass_type' => 'lowball',
+                'preparation_time' => 3,
+                'cost_per_drink' => 12.50,
+                'ingredients_count' => 4,
+                'description' => 'A timeless whiskey cocktail with sugar, bitters, and orange peel.',
+            ],
+            (object) [
+                'id' => 2,
+                'name' => 'Signature Martini',
+                'recipe_type' => 'signature_cocktail',
+                'difficulty' => 'easy',
+                'glass_type' => 'martini',
+                'preparation_time' => 2,
+                'cost_per_drink' => 15.00,
+                'ingredients_count' => 3,
+                'description' => 'Our house special martini with premium gin and dry vermouth.',
+            ],
+            (object) [
+                'id' => 3,
+                'name' => 'Virgin Mojito',
+                'recipe_type' => 'mocktail',
+                'difficulty' => 'easy',
+                'glass_type' => 'highball',
+                'preparation_time' => 5,
+                'cost_per_drink' => 6.50,
+                'ingredients_count' => 5,
+                'description' => 'Refreshing non-alcoholic mojito with mint, lime, and soda water.',
+            ],
+            (object) [
+                'id' => 4,
+                'name' => 'Flaming Shot',
+                'recipe_type' => 'shot',
+                'difficulty' => 'expert',
+                'glass_type' => 'shot_glass',
+                'preparation_time' => 2,
+                'cost_per_drink' => 8.00,
+                'ingredients_count' => 2,
+                'description' => 'Spectacular flaming shot that requires expert handling.',
+            ]
+        ]);
+        
+        return view('admin.bar.recipes.index', compact('stats', 'recipes'));
+    })->name('index');
+});
+Route::get('/admin/bar/pricing', function () {
+    return view('admin.bar.pricing');
+});
+Route::get('/admin/bar/analytics', function () {
+    return view('admin.bar.analytics');
+});
+Route::get('/admin/bar/suppliers', function () {
+    return view('admin.bar.suppliers');
+});
+Route::get('/admin/bar/settings', function () {
+    return view('admin.bar.settings');
+});
+
 // Staff Management Routes
 Route::get('/admin/staff', function () {
     return view('admin.staff.index');

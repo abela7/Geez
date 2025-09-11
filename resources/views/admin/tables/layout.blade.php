@@ -164,6 +164,22 @@
                     <input type="number" id="selected-table-capacity" class="property-input" min="1" max="20">
                 </div>
                 
+                <div class="property-group">
+                    <label class="property-label">{{ __('tables.types.width') }} (cm)</label>
+                    <input type="number" id="selected-table-width" class="property-input" min="50" max="300" step="5">
+                </div>
+                
+                <div class="property-group">
+                    <label class="property-label">{{ __('tables.types.height') }} (cm)</label>
+                    <input type="number" id="selected-table-height" class="property-input" min="50" max="300" step="5">
+                </div>
+                
+                <div class="property-group">
+                    <label class="property-label">{{ __('tables.layout.table_rotation') }} (°)</label>
+                    <input type="range" id="selected-table-rotation" class="property-range" min="0" max="360" step="15" value="0">
+                    <span class="rotation-value" id="rotation-value">0°</span>
+                </div>
+                
                 <div class="property-actions">
                     <button type="button" class="btn btn-sm btn-secondary update-table-btn">
                         {{ __('common.update') }}

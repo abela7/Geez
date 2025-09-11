@@ -16,9 +16,12 @@ class TableLayoutDesigner {
         this.zoomLevel = 1.0;
         this.gridSize = 20;
         this.isDragging = false;
+        this.isResizing = false;
         this.dragOffset = { x: 0, y: 0 };
+        this.resizeStartSize = { width: 0, height: 0 };
         this.canvasSize = { width: 800, height: 600 };
         this.nextTableId = 1;
+        this.pixelsPerCm = 3.78; // Conversion factor: 1cm = 3.78px at 96 DPI
         
         this.init();
     }
@@ -61,6 +64,9 @@ class TableLayoutDesigner {
         
         // Responsive events
         this.bindResponsiveEvents();
+        
+        // Property panel events
+        this.bindPropertyEvents();
     }
 
     /**
@@ -128,17 +134,33 @@ class TableLayoutDesigner {
                 }
             });
 
-            // Mouse move for dragging
+            // Mouse move for dragging and resizing
             document.addEventListener('mousemove', (e) => {
                 if (this.isDragging) {
                     this.handleTableDrag(e);
                 }
+                if (this.isResizing) {
+                    this.handleTableResize(e);
+                }
             });
 
-            // Mouse up to stop dragging
+            // Mouse up to stop dragging/resizing
             document.addEventListener('mouseup', () => {
                 if (this.isDragging) {
                     this.stopTableDrag();
+                }
+                if (this.isResizing) {
+                    this.stopTableResize();
+                }
+            });
+
+            // Handle resize handle clicks
+            roomCanvas.addEventListener('mousedown', (e) => {
+                if (e.target.classList.contains('canvas-table') && 
+                    this.isClickOnResizeHandle(e)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.startTableResize(e);
                 }
             });
 
@@ -642,6 +664,9 @@ class TableLayoutDesigner {
         const tableType = this.tableTypes.find(t => t.id === tableData.typeId);
         const tableId = this.generateTableId(this.selectedRoom.code, tableData.tableNumber);
 
+        const defaultWidth = this.getDefaultTableWidth(tableType.shape, tableData.capacity);
+        const defaultHeight = this.getDefaultTableHeight(tableType.shape, tableData.capacity);
+
         const newTable = {
             id: this.nextTableId++,
             roomId: this.selectedRoom.id,
@@ -654,8 +679,11 @@ class TableLayoutDesigner {
             capacity: tableData.capacity,
             x: 50, // Default position (percentage)
             y: 50,
-            width: this.getDefaultTableWidth(tableType.shape, tableData.capacity),
-            height: this.getDefaultTableHeight(tableType.shape, tableData.capacity),
+            width: defaultWidth, // Pixels for display
+            height: defaultHeight, // Pixels for display
+            widthCm: this.pixelsToCm(defaultWidth), // Centimeters for storage
+            heightCm: this.pixelsToCm(defaultHeight), // Centimeters for storage
+            rotation: 0,
             createdAt: new Date()
         };
 
@@ -669,40 +697,76 @@ class TableLayoutDesigner {
     }
 
     /**
-     * Get default table dimensions based on shape and capacity
+     * Get default table dimensions based on shape and capacity (in pixels)
      */
     getDefaultTableWidth(shape, capacity) {
-        const baseSize = Math.max(60, capacity * 15); // Minimum 60px, 15px per person
+        // Standard table sizes in centimeters converted to pixels
+        let baseCm;
+        
+        switch (capacity) {
+            case 1:
+            case 2:
+                baseCm = 60; // 60cm for 1-2 people
+                break;
+            case 3:
+            case 4:
+                baseCm = 80; // 80cm for 3-4 people
+                break;
+            case 5:
+            case 6:
+                baseCm = 120; // 120cm for 5-6 people
+                break;
+            default:
+                baseCm = 150; // 150cm for 7+ people
+        }
         
         switch (shape) {
             case 'rectangle':
-                return baseSize * 1.4; // Wider rectangles
+                return this.cmToPixels(baseCm * 1.2); // Wider rectangles
             case 'circle':
             case 'square':
-                return baseSize;
+                return this.cmToPixels(baseCm);
             case 'oval':
-                return baseSize * 1.6; // Wider ovals
+                return this.cmToPixels(baseCm * 1.4); // Wider ovals
             default:
-                return baseSize;
+                return this.cmToPixels(baseCm);
         }
     }
 
     /**
-     * Get default table height
+     * Get default table height (in pixels)
      */
     getDefaultTableHeight(shape, capacity) {
-        const baseSize = Math.max(60, capacity * 15);
+        // Standard table sizes in centimeters converted to pixels
+        let baseCm;
+        
+        switch (capacity) {
+            case 1:
+            case 2:
+                baseCm = 60; // 60cm for 1-2 people
+                break;
+            case 3:
+            case 4:
+                baseCm = 80; // 80cm for 3-4 people
+                break;
+            case 5:
+            case 6:
+                baseCm = 120; // 120cm for 5-6 people
+                break;
+            default:
+                baseCm = 150; // 150cm for 7+ people
+        }
         
         switch (shape) {
             case 'rectangle':
-                return baseSize * 0.8; // Shorter rectangles
+                return this.cmToPixels(baseCm * 0.8); // Shorter rectangles
             case 'circle':
             case 'square':
-                return baseSize;
+                return this.cmToPixels(baseCm);
             case 'oval':
-                return baseSize * 0.7; // Shorter ovals
+                return this.cmToPixels(baseCm * 0.7); // Shorter ovals
             default:
-                return baseSize;
+                return this.cmToPixels(baseCm);
         }
     }
 
@@ -1069,8 +1133,12 @@ class TableLayoutDesigner {
             propertiesSection.style.display = 'block';
             
             document.getElementById('selected-table-number').value = table.tableNumber;
-            document.getElementById('selected-table-name').value = table.tableName;
+            document.getElementById('selected-table-name').value = table.tableName || '';
             document.getElementById('selected-table-capacity').value = table.capacity;
+            document.getElementById('selected-table-width').value = table.widthCm || this.pixelsToCm(table.width);
+            document.getElementById('selected-table-height').value = table.heightCm || this.pixelsToCm(table.height);
+            document.getElementById('selected-table-rotation').value = table.rotation || 0;
+            document.getElementById('rotation-value').textContent = `${table.rotation || 0}°`;
         }
     }
 
@@ -1306,7 +1374,7 @@ class TableLayoutDesigner {
      * Generate layout CSV
      */
     generateLayoutCSV(tables) {
-        const headers = ['Table ID', 'Table Number', 'Table Name', 'Type', 'Shape', 'Capacity', 'X Position', 'Y Position', 'Width', 'Height'];
+        const headers = ['Table ID', 'Table Number', 'Table Name', 'Type', 'Shape', 'Capacity', 'X Position (%)', 'Y Position (%)', 'Width (cm)', 'Height (cm)', 'Rotation (°)'];
         
         const rows = tables.map(table => [
             table.tableId,
@@ -1317,13 +1385,253 @@ class TableLayoutDesigner {
             table.capacity,
             table.x.toFixed(2),
             table.y.toFixed(2),
-            table.width,
-            table.height
+            table.widthCm || this.pixelsToCm(table.width),
+            table.heightCm || this.pixelsToCm(table.height),
+            table.rotation || 0
         ]);
         
         return [headers, ...rows].map(row => 
             row.map(field => `"${String(field).replace(/"/g, '""')}"`).join(',')
         ).join('\n');
+    }
+
+    /**
+     * Bind property panel events
+     */
+    bindPropertyEvents() {
+        // Update table button
+        const updateBtn = document.querySelector('.update-table-btn');
+        if (updateBtn) {
+            updateBtn.addEventListener('click', () => {
+                this.updateSelectedTable();
+            });
+        }
+
+        // Delete table button
+        const deleteBtn = document.querySelector('.delete-table-btn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => {
+                if (this.selectedTable) {
+                    this.deleteTable(this.selectedTable);
+                }
+            });
+        }
+
+        // Width/height inputs
+        const widthInput = document.getElementById('selected-table-width');
+        const heightInput = document.getElementById('selected-table-height');
+        const rotationInput = document.getElementById('selected-table-rotation');
+
+        if (widthInput) {
+            widthInput.addEventListener('input', () => {
+                this.updateTableDimensions();
+            });
+        }
+
+        if (heightInput) {
+            heightInput.addEventListener('input', () => {
+                this.updateTableDimensions();
+            });
+        }
+
+        if (rotationInput) {
+            rotationInput.addEventListener('input', (e) => {
+                const rotation = e.target.value;
+                document.getElementById('rotation-value').textContent = `${rotation}°`;
+                this.updateTableRotation(rotation);
+            });
+        }
+    }
+
+    /**
+     * Update selected table properties
+     */
+    updateSelectedTable() {
+        if (!this.selectedTable) return;
+
+        const tableNumber = document.getElementById('selected-table-number').value;
+        const tableName = document.getElementById('selected-table-name').value;
+        const capacity = parseInt(document.getElementById('selected-table-capacity').value);
+        const width = parseInt(document.getElementById('selected-table-width').value);
+        const height = parseInt(document.getElementById('selected-table-height').value);
+
+        // Validate required fields
+        if (!tableNumber || !capacity || !width || !height) {
+            this.showNotification('Please fill in all required fields', 'error');
+            return;
+        }
+
+        // Check for duplicate table number (if changed)
+        if (tableNumber !== this.selectedTable.tableNumber) {
+            const newTableId = this.generateTableId(this.selectedRoom.code, tableNumber);
+            if (this.tables.some(t => t.tableId === newTableId && t.id !== this.selectedTable.id)) {
+                this.showNotification('Table number already exists in this room', 'error');
+                return;
+            }
+            this.selectedTable.tableId = newTableId;
+        }
+
+        // Update table properties
+        this.selectedTable.tableNumber = tableNumber;
+        this.selectedTable.tableName = tableName;
+        this.selectedTable.capacity = capacity;
+        this.selectedTable.widthCm = width;
+        this.selectedTable.heightCm = height;
+        this.selectedTable.width = this.cmToPixels(width);
+        this.selectedTable.height = this.cmToPixels(height);
+        this.selectedTable.updatedAt = new Date();
+
+        // Update visual representation
+        this.updateTableElement(this.selectedTable);
+        this.updateTableContent(this.selectedTable);
+        this.updateMobileTableList();
+
+        this.showNotification('Table updated successfully', 'success');
+    }
+
+    /**
+     * Update table dimensions in real-time
+     */
+    updateTableDimensions() {
+        if (!this.selectedTable) return;
+
+        const width = parseInt(document.getElementById('selected-table-width').value);
+        const height = parseInt(document.getElementById('selected-table-height').value);
+
+        if (width && height) {
+            this.selectedTable.widthCm = width;
+            this.selectedTable.heightCm = height;
+            this.selectedTable.width = this.cmToPixels(width);
+            this.selectedTable.height = this.cmToPixels(height);
+            this.updateTableElement(this.selectedTable);
+        }
+    }
+
+    /**
+     * Update table rotation
+     */
+    updateTableRotation(rotation) {
+        if (!this.selectedTable) return;
+
+        this.selectedTable.rotation = rotation;
+        if (this.selectedTable.element) {
+            this.selectedTable.element.style.transform = `rotate(${rotation}deg)`;
+        }
+    }
+
+    /**
+     * Update table element dimensions and position
+     */
+    updateTableElement(table) {
+        if (!table.element) return;
+
+        table.element.style.width = `${table.width}px`;
+        table.element.style.height = `${table.height}px`;
+        table.element.style.left = `${table.x}%`;
+        table.element.style.top = `${table.y}%`;
+        
+        if (table.rotation) {
+            table.element.style.transform = `rotate(${table.rotation}deg)`;
+        }
+    }
+
+    /**
+     * Convert centimeters to pixels
+     */
+    cmToPixels(cm) {
+        return Math.round(cm * this.pixelsPerCm);
+    }
+
+    /**
+     * Convert pixels to centimeters
+     */
+    pixelsToCm(pixels) {
+        return Math.round(pixels / this.pixelsPerCm);
+    }
+
+    /**
+     * Check if click is on resize handle
+     */
+    isClickOnResizeHandle(e) {
+        const table = e.target.closest('.canvas-table');
+        if (!table || !table.classList.contains('selected')) return false;
+
+        const rect = table.getBoundingClientRect();
+        const handleSize = 12;
+        const handleX = rect.right - handleSize;
+        const handleY = rect.bottom - handleSize;
+
+        return e.clientX >= handleX && e.clientX <= rect.right &&
+               e.clientY >= handleY && e.clientY <= rect.bottom;
+    }
+
+    /**
+     * Start table resize
+     */
+    startTableResize(e) {
+        if (!this.selectedTable) return;
+
+        this.isResizing = true;
+        this.resizeStartSize = {
+            width: this.selectedTable.width,
+            height: this.selectedTable.height
+        };
+
+        this.selectedTable.element.classList.add('resizing');
+        document.body.style.cursor = 'nw-resize';
+        
+        // Store initial mouse position
+        this.resizeStartMouse = { x: e.clientX, y: e.clientY };
+    }
+
+    /**
+     * Handle table resize
+     */
+    handleTableResize(e) {
+        if (!this.isResizing || !this.selectedTable) return;
+
+        const deltaX = e.clientX - this.resizeStartMouse.x;
+        const deltaY = e.clientY - this.resizeStartMouse.y;
+
+        // Calculate new dimensions
+        let newWidth = Math.max(40, this.resizeStartSize.width + deltaX);
+        let newHeight = Math.max(40, this.resizeStartSize.height + deltaY);
+
+        // Constrain to reasonable limits (50cm to 300cm)
+        const minSize = this.cmToPixels(50);
+        const maxSize = this.cmToPixels(300);
+        
+        newWidth = Math.max(minSize, Math.min(newWidth, maxSize));
+        newHeight = Math.max(minSize, Math.min(newHeight, maxSize));
+
+        // Update table
+        this.selectedTable.width = newWidth;
+        this.selectedTable.height = newHeight;
+        this.selectedTable.widthCm = this.pixelsToCm(newWidth);
+        this.selectedTable.heightCm = this.pixelsToCm(newHeight);
+
+        // Update visual
+        this.updateTableElement(this.selectedTable);
+        
+        // Update property inputs
+        document.getElementById('selected-table-width').value = this.selectedTable.widthCm;
+        document.getElementById('selected-table-height').value = this.selectedTable.heightCm;
+    }
+
+    /**
+     * Stop table resize
+     */
+    stopTableResize() {
+        if (this.selectedTable && this.selectedTable.element) {
+            this.selectedTable.element.classList.remove('resizing');
+        }
+        
+        this.isResizing = false;
+        document.body.style.cursor = '';
+        
+        if (this.selectedTable) {
+            this.showNotification(`Table resized to ${this.selectedTable.widthCm}×${this.selectedTable.heightCm}cm`, 'success');
+        }
     }
 }
 

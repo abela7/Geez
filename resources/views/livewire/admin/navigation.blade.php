@@ -2,7 +2,7 @@
      x-data="{ 
         sidebarOpen: false,
         sidebarCollapsed: (localStorage.getItem('sidebarCollapsed') === 'true' || localStorage.getItem('sidebarCollapsed') === null),
-        activeSubmenu: '{{ request()->is('admin/staff*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : (request()->is('admin/sales*') || request()->is('admin/finance*') ? 'finance' : (request()->is('admin/menu*') ? 'menu' : (request()->is('admin/customers*') ? 'customers' : (request()->is('admin/reports*') ? 'reports' : (request()->is('admin/tables*') ? 'tables' : '')))))) }}',
+        activeSubmenu: '{{ request()->is('admin/staff*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : (request()->is('admin/sales*') || request()->is('admin/finance*') ? 'finance' : (request()->is('admin/menu*') ? 'menu' : (request()->is('admin/customers*') ? 'customers' : (request()->is('admin/reports*') ? 'reports' : (request()->is('admin/tables*') ? 'tables' : (request()->is('admin/bar*') ? 'bar' : ''))))))) }}',
         toggleSidebar() {
             this.sidebarCollapsed = !this.sidebarCollapsed;
             localStorage.setItem('sidebarCollapsed', this.sidebarCollapsed);
@@ -328,6 +328,48 @@
                     </a>
                     <a href="/admin/tables/layout" class="submenu-link {{ request()->is('admin/tables/layout*') ? 'active' : '' }}">
                         {{ __('tables.layout.title') }}
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bar Management (With Submenu) -->
+            <div class="nav-group" :class="{ 'active': activeSubmenu === 'bar' }">
+                <button @click="toggleSubmenu('bar')" 
+                        class="nav-link nav-link--parent {{ request()->is('admin/bar*') ? 'active' : '' }}">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18l-2 9H5L3 3zm0 0l-.5-2M7 13v8a2 2 0 002 2h6a2 2 0 002-2v-8"/>
+                    </svg>
+                    <span class="nav-text">{{ __('bar.nav_title') }}</span>
+                    <svg class="nav-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                
+                <div class="nav-submenu" 
+                     x-show="activeSubmenu === 'bar'" 
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 max-h-0"
+                     x-transition:enter-end="opacity-100 max-h-96"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 max-h-96"
+                     x-transition:leave-end="opacity-0 max-h-0">
+                    <a href="/admin/bar/inventory" class="submenu-link {{ request()->is('admin/bar/inventory*') ? 'active' : '' }}">
+                        {{ __('bar.inventory.title') }}
+                    </a>
+                    <a href="/admin/bar/recipes" class="submenu-link {{ request()->is('admin/bar/recipes*') ? 'active' : '' }}">
+                        {{ __('bar.recipes.title') }}
+                    </a>
+                    <a href="/admin/bar/pricing" class="submenu-link {{ request()->is('admin/bar/pricing*') ? 'active' : '' }}">
+                        {{ __('bar.pricing.title') }}
+                    </a>
+                    <a href="/admin/bar/analytics" class="submenu-link {{ request()->is('admin/bar/analytics*') ? 'active' : '' }}">
+                        {{ __('bar.analytics.title') }}
+                    </a>
+                    <a href="/admin/bar/suppliers" class="submenu-link {{ request()->is('admin/bar/suppliers*') ? 'active' : '' }}">
+                        {{ __('bar.suppliers.title') }}
+                    </a>
+                    <a href="/admin/bar/settings" class="submenu-link {{ request()->is('admin/bar/settings*') ? 'active' : '' }}">
+                        {{ __('bar.settings.title') }}
                     </a>
                 </div>
             </div>
