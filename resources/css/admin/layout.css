@@ -3,8 +3,9 @@
    Modern, clean, and visually striking design system
    ========================================================================== */
 
-/* Import Sidebar Styles */
+/* Import Component Styles */
 @import './sidebar.css';
+@import './header.css';
 
 /* ==========================================================================
    1. DESIGN TOKENS & CSS VARIABLES

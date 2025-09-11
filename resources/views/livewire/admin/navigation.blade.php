@@ -37,8 +37,18 @@
         <div class="sidebar-header">
             <div class="sidebar-brand-wrap">
                 <a href="/admin/dashboard" class="sidebar-brand">
-                    <div class="sidebar-brand-icon">
-                        <span>G</span>
+                    <div class="sidebar-brand-logo">
+                        @if(config('app.logo_url'))
+                            <img src="{{ config('app.logo_url') }}" 
+                                 alt="{{ __('dashboard.app_name') }}" 
+                                 class="brand-logo-image">
+                        @else
+                            <div class="brand-logo-placeholder">
+                                <svg class="logo-placeholder-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                        @endif
                     </div>
                     <span class="sidebar-brand-text">{{ __('dashboard.app_name') }}</span>
                 </a>
@@ -180,8 +190,11 @@
             <div class="nav-group" :class="{ 'active': activeSubmenu === 'staff' }">
                 <button @click="toggleSubmenu('staff')" 
                         class="nav-link nav-link--parent {{ request()->is('admin/staff*') ? 'active' : '' }}">
-                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     </svg>
                     <span class="nav-text">{{ __('dashboard.nav_staff') }}</span>
                     <svg class="nav-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -339,8 +352,10 @@
             <div class="nav-group" :class="{ 'active': activeSubmenu === 'bar' }">
                 <button @click="toggleSubmenu('bar')" 
                         class="nav-link nav-link--parent {{ request()->is('admin/bar*') ? 'active' : '' }}">
-                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18l-2 9H5L3 3zm0 0l-.5-2M7 13v8a2 2 0 002 2h6a2 2 0 002-2v-8"/>
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M19 3H5l7 8 7-8Z"></path>
+                        <path d="M12 11v8"></path>
+                        <path d="M8 22h8"></path>
                     </svg>
                     <span class="nav-text">{{ __('bar.nav_title') }}</span>
                     <svg class="nav-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -17,6 +17,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Logo URL
+    |--------------------------------------------------------------------------
+    |
+    | This value is the URL to the application logo that will be displayed
+    | in the admin sidebar. This can be set from the settings page.
+    |
+    */
+
+    'logo_url' => env('APP_LOGO_URL', null),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

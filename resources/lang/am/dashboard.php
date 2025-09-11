@@ -39,7 +39,11 @@ return [
     // User Menu
     'user_menu' => 'User menu',
     'user_profile' => 'Profile',
+    'user_settings' => 'Settings',
     'user_logout' => 'Logout',
+    'admin_role' => 'Administrator',
+    'toggle_theme' => 'Toggle Theme',
+    'search_placeholder' => 'Search...',
     
     // Dashboard Content
     'welcome_message' => 'ወደ ግዕዝ ሬስቶራንት አስተዳደር እንኳን ደህና መጡ',
