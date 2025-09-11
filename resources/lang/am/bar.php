@@ -106,7 +106,31 @@ return [
         'all_types' => 'All Types',
         'all_difficulties' => 'All Difficulties',
         'all_glasses' => 'All Glasses',
+        'all_status' => 'All Status',
+        'active' => 'Active',
+        'inactive' => 'Inactive',
         'popularity' => 'Popularity',
+        'clear_filters' => 'Clear Filters',
+        
+        // Sorting
+        'sort_by_name' => 'Sort by Name',
+        'sort_by_cost' => 'Sort by Cost',
+        'sort_by_difficulty' => 'Sort by Difficulty',
+        'sort_by_popularity' => 'Sort by Popularity',
+        'sort_by_created' => 'Sort by Created',
+        
+        // Additional Labels
+        'actions' => 'Actions',
+        'add_first_recipe' => 'Add First Recipe',
+        'languages' => 'Languages',
+        'recipe_ingredients' => 'Recipe Ingredients',
+        'select_beverage' => 'Select Beverage',
+        'recipe_name_placeholder' => 'Enter recipe name...',
+        'description_placeholder' => 'Describe this cocktail recipe...',
+        'instructions_placeholder' => 'Enter step-by-step instructions...',
+        'garnish_placeholder' => 'e.g., Orange peel, Cherry, Lime wedge',
+        'cost_hint' => 'Calculated from ingredient costs',
+        'markup' => 'Markup',
         
         // Actions
         'add_recipe' => 'Add Recipe',
@@ -185,6 +209,54 @@ return [
         'happy_hour_setup' => 'Happy Hour Setup',
         'export_prices' => 'Export Prices',
         
+        // Statistics
+        'total_drinks' => 'Total Drinks',
+        'avg_price' => 'Average Price',
+        'avg_margin' => 'Average Margin',
+        'active' => 'Active',
+        'inactive' => 'Inactive',
+        
+        // Search & Filters
+        'search_drinks' => 'Search drinks...',
+        'all_categories' => 'All Categories',
+        'all_prices' => 'All Prices',
+        'under_10' => 'Under $10',
+        'over_50' => 'Over $50',
+        'clear_filters' => 'Clear Filters',
+        'sort_by_name' => 'Sort by Name',
+        'sort_by_price' => 'Sort by Price',
+        'sort_by_margin' => 'Sort by Margin',
+        'sort_by_category' => 'Sort by Category',
+        
+        // Empty State
+        'no_prices_found' => 'No Pricing Found',
+        'no_prices_description' => 'Set up pricing for your drinks and beverages.',
+        'setup_pricing' => 'Setup Pricing',
+        
+        // Table Headers
+        'drink_name' => 'Drink Name',
+        'category' => 'Category',
+        
+        // Bulk Update Form
+        'update_method' => 'Update Method',
+        'update_type' => 'Update Type',
+        'percentage_increase' => 'Percentage Increase/Decrease',
+        'fixed_amount' => 'Fixed Amount Change',
+        'target_margin' => 'Target Profit Margin',
+        'update_values' => 'Update Values',
+        'percentage_value' => 'Percentage Value',
+        'percentage_hint' => 'Positive values increase prices, negative values decrease',
+        'fixed_value' => 'Fixed Amount',
+        'fixed_hint' => 'Amount to add or subtract from current prices',
+        'margin_value' => 'Target Margin',
+        'margin_hint' => 'Desired profit margin percentage',
+        'apply_to_categories' => 'Apply to Categories',
+        'apply_changes' => 'Apply Changes',
+        
+        // Happy Hour Form
+        'enable_happy_hour' => 'Enable Happy Hour',
+        'save_happy_hour' => 'Save Happy Hour Settings',
+        
         // Pricing Details
         'base_price' => 'Base Price',
         'happy_hour_price' => 'Happy Hour Price',
@@ -235,6 +307,45 @@ return [
         'happy_hour_impact' => 'Happy Hour Impact',
         'peak_hours' => 'Peak Hours',
         
+        // Additional Metrics
+        'avg_price' => 'Average Price',
+        'avg_margin' => 'Average Margin',
+        'consistent' => 'Consistent',
+        
+        // Time Periods
+        'quarter' => 'Quarter',
+        'custom_range' => 'Custom Range',
+        'daily' => 'Daily',
+        'weekly' => 'Weekly',
+        'monthly' => 'Monthly',
+        
+        // Date Range
+        'date_range' => 'Date Range',
+        'start_date' => 'Start Date',
+        'end_date' => 'End Date',
+        'select_date_range' => 'Select Date Range',
+        'quick_presets' => 'Quick Presets',
+        'last_7_days' => 'Last 7 Days',
+        'last_30_days' => 'Last 30 Days',
+        'last_quarter' => 'Last Quarter',
+        'last_year' => 'Last Year',
+        'apply_date_range' => 'Apply Date Range',
+        'export_report' => 'Export Report',
+        
+        // Insights
+        'performance_insights' => 'Performance Insights',
+        'top_selling_description' => 'Best performing drink this period',
+        'profitable_description' => 'Highest profit margin drink',
+        'happy_hour_description' => 'Sales increase during happy hour',
+        'turnover_description' => 'Monthly inventory turnover rate',
+        
+        // Quick Reports
+        'quick_reports' => 'Quick Reports',
+        'daily_report_description' => 'Today\'s bar performance summary',
+        'weekly_report_description' => 'Weekly sales and trends analysis',
+        'monthly_report_description' => 'Comprehensive monthly bar report',
+        'wastage_report_description' => 'Inventory waste and loss analysis',
+        
         // Charts
         'sales_by_category' => 'Sales by Category',
         'popular_drinks' => 'Popular Drinks',
@@ -263,6 +374,52 @@ return [
         'contact_supplier' => 'Contact Supplier',
         'place_order' => 'Place Order',
         'view_catalog' => 'View Catalog',
+        'import_suppliers' => 'Import Suppliers',
+        'export_suppliers' => 'Export Suppliers',
+        'save_supplier' => 'Save Supplier',
+        
+        // Statistics
+        'total_suppliers' => 'Total Suppliers',
+        'active_suppliers' => 'Active Suppliers',
+        'avg_rating' => 'Average Rating',
+        
+        // Search & Filters
+        'search_suppliers' => 'Search suppliers...',
+        'all_specialties' => 'All Specialties',
+        'all_ratings' => 'All Ratings',
+        'clear_filters' => 'Clear Filters',
+        'sort_by_name' => 'Sort by Name',
+        'sort_by_rating' => 'Sort by Rating',
+        'sort_by_orders' => 'Sort by Orders',
+        'sort_by_delivery' => 'Sort by Delivery Time',
+        
+        // Empty State
+        'no_suppliers_found' => 'No Suppliers Found',
+        'no_suppliers_description' => 'Add suppliers to manage your beverage inventory supply chain.',
+        'add_first_supplier' => 'Add First Supplier',
+        
+        // Form Labels
+        'supplier_name_placeholder' => 'Enter supplier company name...',
+        'contact_details' => 'Contact Details',
+        'business_terms' => 'Business Terms',
+        'performance' => 'Performance',
+        'contact_person_placeholder' => 'Contact person name...',
+        'phone_placeholder' => '+1-555-0123',
+        'email_placeholder' => 'contact@supplier.com',
+        'website_placeholder' => 'https://supplier.com',
+        'address_placeholder' => 'Full business address...',
+        'description_placeholder' => 'Describe the supplier and their services...',
+        'performance_notes' => 'Performance Notes',
+        'performance_notes_placeholder' => 'Notes about supplier performance, reliability, quality...',
+        'supplier_details' => 'Supplier Details',
+        'credit_limit' => 'Credit Limit',
+        'active' => 'Active',
+        
+        // Payment Terms
+        'net_30' => 'Net 30 Days',
+        'net_15' => 'Net 15 Days',
+        'cod' => 'Cash on Delivery',
+        'prepaid' => 'Prepaid',
         
         // Supplier Details
         'supplier_name' => 'Supplier Name',
@@ -340,7 +497,6 @@ return [
     'cocktail' => 'Cocktail',
     'cocktails' => 'Cocktails',
     'recipe' => 'Recipe',
-    'recipes' => 'Recipes',
     'ingredient' => 'Ingredient',
     'ingredients' => 'Ingredients',
     'stock_level' => 'Stock Level',

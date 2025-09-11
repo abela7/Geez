@@ -165,6 +165,10 @@ return [
     'page' => 'Page',
     'first' => 'First',
     'last' => 'Last',
+    'to' => 'to',
+    'apply' => 'Apply',
+    'stars' => 'stars',
+    'days' => 'days',
     
     // Time & Dates
     'today' => 'Today',
@@ -176,6 +180,15 @@ return [
     'last_month' => 'Last Month',
     'this_year' => 'This Year',
     'last_year' => 'Last Year',
+    
+    // Days of the week
+    'monday' => 'Monday',
+    'tuesday' => 'Tuesday',
+    'wednesday' => 'Wednesday',
+    'thursday' => 'Thursday',
+    'friday' => 'Friday',
+    'saturday' => 'Saturday',
+    'sunday' => 'Sunday',
     
     // Additional Common Terms
     'servings' => 'servings',
@@ -191,6 +204,12 @@ return [
     'sort_descending' => 'Sort Descending',
     'close_drawer' => 'Close Drawer',
     'actions' => 'Actions',
+    'basic_information' => 'Basic Information',
+    'details' => 'Details',
+    'minutes' => 'minutes',
+    'select' => 'Select',
+    'grid_view' => 'Grid View',
+    'list_view' => 'List View',
     'select' => 'Select',
     'tools' => 'Tools',
     'tables' => 'Tables',

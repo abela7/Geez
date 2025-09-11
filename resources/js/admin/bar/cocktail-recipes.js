@@ -1,286 +1,386 @@
 /**
- * Cocktail Recipes JavaScript
+ * Bar Cocktail Recipes Page JavaScript
  * Restaurant-OS Admin Panel
  * 
- * Handles cocktail recipe creation, editing, and management
+ * Handles recipe management, creation, editing, and organization
  */
 
-class CocktailRecipesManager {
+class BarCocktailRecipesPage {
     constructor() {
         this.recipes = [];
         this.filteredRecipes = [];
-        this.searchTerm = '';
-        this.filters = {
-            type: '',
-            difficulty: '',
-            glass: ''
-        };
-        this.currentRecipe = null;
-        this.isEditing = false;
         this.currentView = 'grid';
-        this.ingredientCounter = 0;
+        this.currentRecipe = null;
+        this.isLoading = false;
         
         this.init();
     }
 
     /**
-     * Initialize the recipes manager
+     * Initialize the recipes page
      */
     init() {
         this.bindEvents();
         this.generateDummyData();
+        this.loadRecipes();
         this.updateStatistics();
-        this.renderRecipes();
+        this.setupFormTabs();
+        this.setupLanguageTabs();
     }
 
     /**
      * Bind event listeners
      */
     bindEvents() {
-        // Search and filter events
-        this.bindSearchEvents();
-        
-        // Modal events
-        this.bindModalEvents();
-        
-        // Action button events
-        this.bindActionEvents();
-        
-        // Form events
-        this.bindFormEvents();
-        
-        // View toggle events
-        this.bindViewEvents();
-    }
-
-    /**
-     * Bind search and filter events
-     */
-    bindSearchEvents() {
-        const recipesSearch = document.getElementById('recipes-search');
-        const typeFilter = document.getElementById('type-filter');
-        const difficultyFilter = document.getElementById('difficulty-filter');
-        const glassFilter = document.getElementById('glass-filter');
-        const clearFiltersBtn = document.querySelector('.clear-filters-btn');
-
-        if (recipesSearch) {
-            recipesSearch.addEventListener('input', (e) => {
-                this.searchTerm = e.target.value.toLowerCase();
-                this.filterAndRenderRecipes();
-            });
+        // Search functionality
+        const searchInput = document.getElementById('recipe-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', this.debounce(this.handleSearch.bind(this), 300));
         }
 
-        if (typeFilter) {
-            typeFilter.addEventListener('change', (e) => {
-                this.filters.type = e.target.value;
-                this.filterAndRenderRecipes();
-            });
+        // Filter functionality
+        const statusFilter = document.getElementById('status-filter');
+        if (statusFilter) {
+            statusFilter.addEventListener('change', this.handleFilter.bind(this));
         }
 
-        if (difficultyFilter) {
-            difficultyFilter.addEventListener('change', (e) => {
-                this.filters.difficulty = e.target.value;
-                this.filterAndRenderRecipes();
-            });
+        const sortFilter = document.getElementById('sort-filter');
+        if (sortFilter) {
+            sortFilter.addEventListener('change', this.handleSort.bind(this));
         }
 
-        if (glassFilter) {
-            glassFilter.addEventListener('change', (e) => {
-                this.filters.glass = e.target.value;
-                this.filterAndRenderRecipes();
-            });
-        }
-
-        if (clearFiltersBtn) {
-            clearFiltersBtn.addEventListener('click', () => this.clearFilters());
-        }
-    }
-
-    /**
-     * Bind modal events
-     */
-    bindModalEvents() {
-        // Recipe modal
-        this.bindModalCloseEvents('recipe-modal', () => this.closeRecipeModal());
-
-        // Escape key to close modals
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.closeRecipeModal();
-            }
-        });
-    }
-
-    /**
-     * Bind modal close events
-     */
-    bindModalCloseEvents(modalId, closeCallback) {
-        const modal = document.getElementById(modalId);
-        if (!modal) return;
-
-        const closeBtn = modal.querySelector('.modal-close');
-        const cancelBtn = modal.querySelector('.cancel-recipe-btn');
-        const overlay = modal.querySelector('.modal-overlay');
-
-        if (closeBtn) closeBtn.addEventListener('click', closeCallback);
-        if (cancelBtn) cancelBtn.addEventListener('click', closeCallback);
-        if (overlay) overlay.addEventListener('click', closeCallback);
-    }
-
-    /**
-     * Bind action button events
-     */
-    bindActionEvents() {
-        // Add recipe button
-        document.querySelectorAll('.add-recipe-btn').forEach(btn => {
-            btn.addEventListener('click', () => this.openRecipeModal());
-        });
-
-        // Export recipes button
-        const exportBtn = document.querySelector('.export-recipes-btn');
-        if (exportBtn) {
-            exportBtn.addEventListener('click', () => this.exportRecipes());
-        }
-
-        // Event delegation for dynamic buttons
-        document.addEventListener('click', (e) => {
-            // Recipe card click
-            if (e.target.closest('.recipe-card') && !e.target.closest('.recipe-action-btn')) {
-                const recipeId = parseInt(e.target.closest('.recipe-card').dataset.recipeId);
-                this.viewRecipeDetails(recipeId);
-            }
-            
-            // Recipe action buttons
-            if (e.target.closest('.recipe-action-btn')) {
-                e.stopPropagation();
-                const action = e.target.closest('.recipe-action-btn').dataset.action;
-                const recipeId = parseInt(e.target.closest('.recipe-card').dataset.recipeId);
-                
-                if (action === 'view') {
-                    this.viewRecipeDetails(recipeId);
-                } else if (action === 'edit') {
-                    this.editRecipe(recipeId);
-                } else if (action === 'delete') {
-                    this.deleteRecipe(recipeId);
-                } else if (action === 'print') {
-                    this.printRecipe(recipeId);
-                }
-            }
-        });
-    }
-
-    /**
-     * Bind form events
-     */
-    bindFormEvents() {
-        const recipeForm = document.getElementById('recipe-form');
-        if (recipeForm) {
-            recipeForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.saveRecipe();
-            });
-        }
-
-        // Add ingredient button
-        const addIngredientBtn = document.querySelector('.add-ingredient-btn');
-        if (addIngredientBtn) {
-            addIngredientBtn.addEventListener('click', () => this.addIngredientRow());
-        }
-    }
-
-    /**
-     * Bind view toggle events
-     */
-    bindViewEvents() {
-        document.querySelectorAll('.view-btn').forEach(btn => {
+        // View toggle
+        const viewButtons = document.querySelectorAll('.view-btn');
+        viewButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const view = e.target.closest('.view-btn').dataset.view;
+                const view = e.currentTarget.dataset.view;
                 this.switchView(view);
             });
         });
 
-        const sortSelect = document.getElementById('sort-select');
-        if (sortSelect) {
-            sortSelect.addEventListener('change', () => {
-                this.sortRecipes();
-            });
+        // Clear filters
+        const clearFiltersBtn = document.querySelector('.clear-filters-btn');
+        if (clearFiltersBtn) {
+            clearFiltersBtn.addEventListener('click', this.clearFilters.bind(this));
         }
+
+        // Add recipe buttons
+        const addRecipeButtons = document.querySelectorAll('.add-recipe-btn');
+        addRecipeButtons.forEach(btn => {
+            btn.addEventListener('click', this.showAddRecipeModal.bind(this));
+        });
+
+        // Modal close functionality
+        const modalClose = document.querySelector('.modal-close');
+        if (modalClose) {
+            modalClose.addEventListener('click', this.closeRecipeModal.bind(this));
+        }
+
+        const modalOverlay = document.querySelector('.modal-overlay');
+        if (modalOverlay) {
+            modalOverlay.addEventListener('click', this.closeRecipeModal.bind(this));
+        }
+
+        const cancelBtn = document.querySelector('.cancel-btn');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', this.closeRecipeModal.bind(this));
+        }
+
+        // Export recipes button
+        const exportRecipesBtn = document.querySelector('.export-recipes-btn');
+        if (exportRecipesBtn) {
+            exportRecipesBtn.addEventListener('click', this.exportRecipes.bind(this));
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', this.handleKeyboardShortcuts.bind(this));
     }
 
     /**
-     * Generate dummy data
+     * Generate dummy data for demonstration
      */
     generateDummyData() {
         this.recipes = [
             {
                 id: 1,
-                name: 'Classic Mojito',
-                type: 'classic_cocktail',
-                difficulty: 'easy',
-                glassType: 'highball',
+                name: 'Classic Old Fashioned',
+                type: 'classic',
+                difficulty: 'medium',
+                glassType: 'lowball',
                 preparationTime: 3,
-                servingSize: 300,
-                costPerDrink: 4.50,
-                sellingPrice: 12.00,
-                garnish: 'Fresh mint sprig',
-                instructions: 'Muddle mint leaves, add rum and lime juice, top with soda water',
-                notes: 'Use fresh mint for best flavor',
+                servingSize: 1,
+                cost: 12.50,
+                price: 18.00,
+                description: 'A timeless whiskey cocktail with sugar, bitters, and orange peel.',
+                garnish: 'Orange peel',
                 ingredients: [
-                    { name: 'White Rum', quantity: 60, unit: 'ml' },
-                    { name: 'Fresh Lime Juice', quantity: 30, unit: 'ml' },
-                    { name: 'Simple Syrup', quantity: 20, unit: 'ml' },
-                    { name: 'Fresh Mint Leaves', quantity: 8, unit: 'leaves' },
-                    { name: 'Soda Water', quantity: 120, unit: 'ml' }
+                    { name: 'Bourbon Whiskey', quantity: 60, unit: 'ml' },
+                    { name: 'Simple Syrup', quantity: 10, unit: 'ml' },
+                    { name: 'Angostura Bitters', quantity: 3, unit: 'dashes' },
+                    { name: 'Orange Peel', quantity: 1, unit: 'piece' }
                 ],
-                createdAt: new Date('2024-01-15'),
-                updatedAt: new Date('2024-01-15')
+                instructions: [
+                    'Add simple syrup and bitters to glass',
+                    'Add whiskey and stir with ice',
+                    'Strain into glass with fresh ice',
+                    'Garnish with orange peel'
+                ],
+                active: true,
+                created: '2024-01-15',
+                popularity: 85
             },
             {
                 id: 2,
-                name: 'Ethiopian Coffee Martini',
-                type: 'signature_cocktail',
-                difficulty: 'medium',
+                name: 'Signature Martini',
+                type: 'signature',
+                difficulty: 'easy',
                 glassType: 'martini',
-                preparationTime: 5,
-                servingSize: 120,
-                costPerDrink: 6.75,
-                sellingPrice: 18.00,
-                garnish: 'Coffee beans',
-                instructions: 'Shake all ingredients with ice, double strain into chilled martini glass',
-                notes: 'Signature drink featuring Ethiopian coffee',
+                preparationTime: 2,
+                servingSize: 1,
+                cost: 15.00,
+                price: 22.00,
+                description: 'Our house special martini with premium gin and dry vermouth.',
+                garnish: 'Olive or lemon twist',
                 ingredients: [
-                    { name: 'Vodka', quantity: 45, unit: 'ml' },
-                    { name: 'Ethiopian Coffee Liqueur', quantity: 30, unit: 'ml' },
-                    { name: 'Fresh Espresso', quantity: 30, unit: 'ml' },
-                    { name: 'Simple Syrup', quantity: 15, unit: 'ml' }
+                    { name: 'Premium Gin', quantity: 60, unit: 'ml' },
+                    { name: 'Dry Vermouth', quantity: 10, unit: 'ml' },
+                    { name: 'Olive', quantity: 1, unit: 'piece' }
                 ],
-                createdAt: new Date('2024-01-16'),
-                updatedAt: new Date('2024-01-16')
+                instructions: [
+                    'Chill martini glass',
+                    'Add gin and vermouth to mixing glass with ice',
+                    'Stir until well chilled',
+                    'Strain into chilled glass',
+                    'Garnish with olive or lemon twist'
+                ],
+                active: true,
+                created: '2024-01-20',
+                popularity: 92
             },
             {
                 id: 3,
-                name: 'Virgin Tropical Punch',
+                name: 'Virgin Mojito',
                 type: 'mocktail',
                 difficulty: 'easy',
-                glassType: 'hurricane',
-                preparationTime: 2,
-                servingSize: 350,
-                costPerDrink: 2.25,
-                sellingPrice: 8.00,
-                garnish: 'Pineapple wedge and cherry',
-                instructions: 'Mix all juices, add grenadine, serve over ice',
-                notes: 'Popular non-alcoholic option',
+                glassType: 'highball',
+                preparationTime: 5,
+                servingSize: 1,
+                cost: 6.50,
+                price: 12.00,
+                description: 'Refreshing non-alcoholic mojito with mint, lime, and soda water.',
+                garnish: 'Fresh mint sprig',
                 ingredients: [
-                    { name: 'Pineapple Juice', quantity: 150, unit: 'ml' },
-                    { name: 'Orange Juice', quantity: 100, unit: 'ml' },
-                    { name: 'Cranberry Juice', quantity: 50, unit: 'ml' },
-                    { name: 'Grenadine', quantity: 15, unit: 'ml' },
-                    { name: 'Lime Juice', quantity: 15, unit: 'ml' }
+                    { name: 'Fresh Mint Leaves', quantity: 8, unit: 'leaves' },
+                    { name: 'Lime Juice', quantity: 30, unit: 'ml' },
+                    { name: 'Simple Syrup', quantity: 20, unit: 'ml' },
+                    { name: 'Soda Water', quantity: 150, unit: 'ml' },
+                    { name: 'Ice', quantity: 1, unit: 'cup' }
                 ],
-                createdAt: new Date('2024-01-17'),
-                updatedAt: new Date('2024-01-17')
+                instructions: [
+                    'Muddle mint leaves in glass',
+                    'Add lime juice and simple syrup',
+                    'Fill with ice',
+                    'Top with soda water',
+                    'Stir gently and garnish with mint'
+                ],
+                active: true,
+                created: '2024-01-25',
+                popularity: 78
+            },
+            {
+                id: 4,
+                name: 'Flaming Shot',
+                type: 'shot',
+                difficulty: 'expert',
+                glassType: 'shot',
+                preparationTime: 2,
+                servingSize: 1,
+                cost: 8.00,
+                price: 15.00,
+                description: 'Spectacular flaming shot that requires expert handling.',
+                garnish: 'None',
+                ingredients: [
+                    { name: 'Sambuca', quantity: 25, unit: 'ml' },
+                    { name: 'Kahlua', quantity: 15, unit: 'ml' }
+                ],
+                instructions: [
+                    'Layer Kahlua in shot glass',
+                    'Float Sambuca on top',
+                    'Light carefully with long lighter',
+                    'Serve immediately with safety precautions'
+                ],
+                active: true,
+                created: '2024-02-01',
+                popularity: 65
             }
         ];
+    }
+
+    /**
+     * Load and display recipes
+     */
+    loadRecipes() {
+        this.isLoading = true;
+        
+        // Simulate loading delay
+        setTimeout(() => {
+            this.filteredRecipes = [...this.recipes];
+            this.renderRecipes();
+            this.isLoading = false;
+        }, 500);
+    }
+
+    /**
+     * Render recipes based on current view
+     */
+    renderRecipes() {
+        if (this.currentView === 'grid') {
+            this.renderGridView();
+        } else {
+            this.renderListView();
+        }
+    }
+
+    /**
+     * Render grid view
+     */
+    renderGridView() {
+        const gridContainer = document.getElementById('recipes-grid');
+        if (!gridContainer) return;
+
+        if (this.filteredRecipes.length === 0) {
+            this.showEmptyState();
+            return;
+        }
+
+        gridContainer.innerHTML = this.filteredRecipes.map(recipe => `
+            <div class="recipe-card" data-recipe-id="${recipe.id}">
+                <div class="recipe-header">
+                        <div class="recipe-badges">
+                        <span class="recipe-difficulty-badge ${recipe.difficulty}">${recipe.difficulty}</span>
+                        <span class="recipe-type-badge ${recipe.type}">${recipe.type}</span>
+                    </div>
+                </div>
+                <div class="recipe-body" onclick="recipeManager.showRecipeDetails(${recipe.id})">
+                    <h3 class="recipe-title">${recipe.name}</h3>
+                    <p class="recipe-description">${recipe.description}</p>
+                    <div class="recipe-meta">
+                        <div class="recipe-meta-item">
+                            <svg class="recipe-meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            ${recipe.preparationTime} min
+                    </div>
+                        <div class="recipe-meta-item">
+                            <svg class="recipe-meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
+                            ${recipe.glassType}
+                    </div>
+                        <div class="recipe-meta-item">
+                            <svg class="recipe-meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                            </svg>
+                            ${recipe.ingredients.length} ingredients
+                    </div>
+                    </div>
+                </div>
+                <div class="recipe-actions">
+                    <div class="recipe-cost">$${recipe.cost.toFixed(2)}</div>
+                    <div class="recipe-action-buttons">
+                        <button class="recipe-action-btn" onclick="recipeManager.editRecipe(${recipe.id})" title="Edit">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                    </button>
+                        <button class="recipe-action-btn" onclick="recipeManager.printRecipe(${recipe.id})" title="Print">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                        </svg>
+                    </button>
+                        <button class="recipe-action-btn" onclick="recipeManager.duplicateRecipe(${recipe.id})" title="Duplicate">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                        </svg>
+                    </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    /**
+     * Render list view
+     */
+    renderListView() {
+        const tableBody = document.querySelector('.recipes-table-body');
+        if (!tableBody) return;
+
+        if (this.filteredRecipes.length === 0) {
+            this.showEmptyState();
+            return;
+        }
+
+        tableBody.innerHTML = this.filteredRecipes.map(recipe => `
+            <tr data-recipe-id="${recipe.id}" onclick="recipeManager.showRecipeDetails(${recipe.id})">
+                <td class="recipe-name-cell">
+                    <div class="recipe-title">${recipe.name}</div>
+                    <div class="recipe-description">${recipe.description}</div>
+                </td>
+                <td><span class="recipe-type-badge ${recipe.type}">${recipe.type}</span></td>
+                <td><span class="recipe-difficulty-badge ${recipe.difficulty}">${recipe.difficulty}</span></td>
+                <td>${recipe.glassType}</td>
+                <td>$${recipe.cost.toFixed(2)}</td>
+                <td>${recipe.ingredients.length}</td>
+                <td>
+                    <div class="recipe-action-buttons">
+                        <button class="recipe-action-btn" onclick="event.stopPropagation(); recipeManager.editRecipe(${recipe.id})" title="Edit">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </button>
+                        <button class="recipe-action-btn" onclick="event.stopPropagation(); recipeManager.printRecipe(${recipe.id})" title="Print">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    /**
+     * Switch between grid and list view
+     */
+    switchView(view) {
+        this.currentView = view;
+        
+        const gridView = document.getElementById('recipes-grid');
+        const listView = document.getElementById('recipes-list');
+        const viewButtons = document.querySelectorAll('.view-btn');
+        
+        // Update button states
+        viewButtons.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.view === view) {
+                btn.classList.add('active');
+            }
+        });
+        
+        // Show/hide views
+        if (view === 'grid') {
+            gridView.style.display = 'grid';
+            listView.style.display = 'none';
+            this.renderGridView();
+        } else {
+            gridView.style.display = 'none';
+            listView.style.display = 'block';
+            this.renderListView();
+        }
+        
+        // Save preference
+        localStorage.setItem('recipes_view_preference', view);
     }
 
     /**
@@ -288,145 +388,179 @@ class CocktailRecipesManager {
      */
     updateStatistics() {
         const totalRecipes = this.recipes.length;
-        const signatureRecipes = this.recipes.filter(r => r.type === 'signature_cocktail').length;
-        const popularRecipes = Math.floor(totalRecipes * 0.3); // 30% are popular
-        const avgCost = totalRecipes > 0 
-            ? (this.recipes.reduce((sum, r) => sum + r.costPerDrink, 0) / totalRecipes).toFixed(2)
-            : '0.00';
+        const signatureRecipes = this.recipes.filter(r => r.type === 'signature').length;
+        const popularRecipes = this.recipes.filter(r => r.popularity > 80).length;
+        const avgCost = this.recipes.reduce((sum, r) => sum + r.cost, 0) / totalRecipes || 0;
 
         document.getElementById('total-recipes').textContent = totalRecipes;
         document.getElementById('signature-recipes').textContent = signatureRecipes;
         document.getElementById('popular-recipes').textContent = popularRecipes;
-        document.getElementById('avg-cost').textContent = `$${avgCost}`;
+        document.getElementById('avg-cost').textContent = `$${avgCost.toFixed(2)}`;
     }
 
     /**
-     * Filter and render recipes
+     * Handle search input
      */
-    filterAndRenderRecipes() {
-        this.filteredRecipes = this.recipes.filter(recipe => {
-            // Search filter
-            const searchMatch = !this.searchTerm || 
-                recipe.name.toLowerCase().includes(this.searchTerm) ||
-                recipe.instructions.toLowerCase().includes(this.searchTerm) ||
-                recipe.ingredients.some(ing => ing.name.toLowerCase().includes(this.searchTerm));
-
-            // Type filter
-            const typeMatch = !this.filters.type || recipe.type === this.filters.type;
-
-            // Difficulty filter
-            const difficultyMatch = !this.filters.difficulty || recipe.difficulty === this.filters.difficulty;
-
-            // Glass filter
-            const glassMatch = !this.filters.glass || recipe.glassType === this.filters.glass;
-
-            return searchMatch && typeMatch && difficultyMatch && glassMatch;
-        });
-
+    handleSearch(event) {
+        const searchTerm = event.target.value.toLowerCase().trim();
+        
+        if (searchTerm === '') {
+            this.filteredRecipes = [...this.recipes];
+        } else {
+            this.filteredRecipes = this.recipes.filter(recipe => 
+                recipe.name.toLowerCase().includes(searchTerm) ||
+                recipe.description.toLowerCase().includes(searchTerm) ||
+                recipe.type.toLowerCase().includes(searchTerm)
+            );
+        }
+        
         this.renderRecipes();
     }
 
     /**
-     * Render recipes
+     * Handle filter changes
      */
-    renderRecipes() {
-        const recipesGrid = document.getElementById('recipes-grid');
-        if (!recipesGrid) return;
-
-        const recipesToShow = this.filteredRecipes.length ? this.filteredRecipes : this.recipes;
-
-        if (recipesToShow.length === 0) {
-            recipesGrid.innerHTML = `
-                <div class="empty-state">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                    </svg>
-                    <h3>${this.searchTerm || Object.values(this.filters).some(f => f) ? 'No recipes found' : 'No Recipes Yet'}</h3>
-                    <p>${this.searchTerm || Object.values(this.filters).some(f => f) ? 'No recipes match your current search and filter criteria.' : 'Start by adding your first cocktail recipe.'}</p>
-                    ${!this.searchTerm && !Object.values(this.filters).some(f => f) ? '<button class="btn btn-primary add-recipe-btn">Add Recipe</button>' : ''}
-                </div>
-            `;
-            return;
-        }
-
-        recipesGrid.innerHTML = recipesToShow.map(recipe => `
-            <div class="recipe-card" data-recipe-id="${recipe.id}" data-type="${recipe.type}">
-                <div class="recipe-header">
-                    <div class="recipe-info">
-                        <div class="recipe-name">${recipe.name}</div>
-                        <div class="recipe-badges">
-                            <span class="recipe-badge type-${recipe.type}">${this.formatType(recipe.type)}</span>
-                            <span class="recipe-badge difficulty-${recipe.difficulty}">${this.formatDifficulty(recipe.difficulty)}</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="recipe-details">
-                    <div class="recipe-detail">
-                        <span class="detail-label">Glass</span>
-                        <span class="detail-value">${this.formatGlassType(recipe.glassType)}</span>
-                    </div>
-                    <div class="recipe-detail">
-                        <span class="detail-label">Prep Time</span>
-                        <span class="detail-value">${recipe.preparationTime} min</span>
-                    </div>
-                    <div class="recipe-detail">
-                        <span class="detail-label">Cost</span>
-                        <span class="detail-value">$${recipe.costPerDrink.toFixed(2)}</span>
-                    </div>
-                    <div class="recipe-detail">
-                        <span class="detail-label">Price</span>
-                        <span class="detail-value">$${recipe.sellingPrice.toFixed(2)}</span>
-                    </div>
-                    <div class="recipe-detail">
-                        <span class="detail-label">Ingredients</span>
-                        <span class="detail-value">${recipe.ingredients.length} items</span>
-                    </div>
-                </div>
-                
-                <div class="recipe-actions">
-                    <button class="recipe-action-btn view" data-action="view" title="View Details">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                        </svg>
-                    </button>
-                    <button class="recipe-action-btn edit" data-action="edit" title="Edit Recipe">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                        </svg>
-                    </button>
-                    <button class="recipe-action-btn delete" data-action="delete" title="Delete Recipe">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        `).join('');
+    handleFilter() {
+        const statusFilter = document.getElementById('status-filter').value;
+        
+        this.filteredRecipes = this.recipes.filter(recipe => {
+            if (statusFilter === 'active') return recipe.active;
+            if (statusFilter === 'inactive') return !recipe.active;
+            return true;
+        });
+        
+        this.renderRecipes();
     }
 
     /**
-     * Open recipe modal
+     * Handle sort changes
      */
-    openRecipeModal(recipe = null) {
-        this.currentRecipe = recipe;
-        this.isEditing = !!recipe;
+    handleSort() {
+        const sortBy = document.getElementById('sort-filter').value;
         
-        const modal = document.getElementById('recipe-modal');
-        const title = document.getElementById('recipe-modal-title');
-        
-        if (modal && title) {
-            title.textContent = this.isEditing ? 'Edit Recipe' : 'Add Recipe';
-            
-            if (this.isEditing) {
-                this.populateRecipeForm(recipe);
-            } else {
-                this.resetRecipeForm();
+        this.filteredRecipes.sort((a, b) => {
+            switch (sortBy) {
+                case 'name':
+                    return a.name.localeCompare(b.name);
+                case 'cost':
+                    return a.cost - b.cost;
+                case 'difficulty':
+                    const difficultyOrder = { easy: 1, medium: 2, hard: 3, expert: 4 };
+                    return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
+                case 'popularity':
+                    return b.popularity - a.popularity;
+                case 'created':
+                    return new Date(b.created) - new Date(a.created);
+                default:
+                    return 0;
             }
-            
+        });
+        
+        this.renderRecipes();
+    }
+
+    /**
+     * Clear all filters
+     */
+    clearFilters() {
+        document.getElementById('recipe-search').value = '';
+        document.getElementById('status-filter').value = '';
+        document.getElementById('sort-filter').value = 'name';
+        
+        this.filteredRecipes = [...this.recipes];
+        this.renderRecipes();
+    }
+
+    /**
+     * Show empty state
+     */
+    showEmptyState() {
+        const gridView = document.getElementById('recipes-grid');
+        const listView = document.getElementById('recipes-list');
+        const emptyState = document.querySelector('.empty-state');
+        
+        if (gridView) gridView.style.display = 'none';
+        if (listView) listView.style.display = 'none';
+        if (emptyState) emptyState.style.display = 'block';
+    }
+
+    /**
+     * Show recipe details modal
+     */
+    showRecipeDetails(recipeId) {
+        const recipe = this.recipes.find(r => r.id === recipeId);
+        if (!recipe) return;
+
+        // For now, just show an alert with recipe details
+        alert(`Recipe: ${recipe.name}\nType: ${recipe.type}\nDifficulty: ${recipe.difficulty}\nCost: $${recipe.cost.toFixed(2)}\nIngredients: ${recipe.ingredients.length}`);
+    }
+
+    /**
+     * Setup form tabs functionality
+     */
+    setupFormTabs() {
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const targetTab = e.target.dataset.tab;
+                
+                // Update button states
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Update panel visibility
+                tabPanels.forEach(panel => {
+                    panel.classList.remove('active');
+                    if (panel.dataset.tab === targetTab) {
+                        panel.classList.add('active');
+                    }
+                });
+            });
+        });
+    }
+
+    /**
+     * Setup language tabs functionality
+     */
+    setupLanguageTabs() {
+        const langButtons = document.querySelectorAll('.lang-btn');
+        const langPanels = document.querySelectorAll('.lang-panel');
+
+        langButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const targetLang = e.target.dataset.lang || e.target.closest('.lang-btn').dataset.lang;
+                
+                // Update button states
+                langButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Update panel visibility
+                langPanels.forEach(panel => {
+                    panel.classList.remove('active');
+                    if (panel.dataset.lang === targetLang) {
+                        panel.classList.add('active');
+                    }
+                });
+            });
+        });
+    }
+
+    /**
+     * Show add recipe modal
+     */
+    showAddRecipeModal() {
+        const modal = document.getElementById('recipe-modal');
+        if (modal) {
             modal.style.display = 'flex';
-            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            
+            // Reset form
+            this.resetRecipeForm();
+            
+            // Update modal title
+            document.getElementById('recipe-modal-title').textContent = 'Add Recipe';
         }
     }
 
@@ -437,210 +571,147 @@ class CocktailRecipesManager {
         const modal = document.getElementById('recipe-modal');
         if (modal) {
             modal.style.display = 'none';
-            modal.setAttribute('aria-hidden', 'true');
-            this.resetRecipeForm();
-            this.currentRecipe = null;
-            this.isEditing = false;
+            document.body.style.overflow = '';
         }
     }
 
     /**
-     * Add ingredient row
+     * Reset recipe form
      */
-    addIngredientRow() {
-        const ingredientsList = document.getElementById('ingredients-list');
-        if (!ingredientsList) return;
-
-        const ingredientId = this.ingredientCounter++;
-        const ingredientHtml = `
-            <div class="ingredient-item" data-ingredient-id="${ingredientId}">
-                <input type="text" class="ingredient-name-input" placeholder="Ingredient name..." required>
-                <input type="number" class="ingredient-quantity-input" placeholder="Qty" min="0" step="0.1" required>
-                <select class="ingredient-unit-select" required>
-                    <option value="">Unit</option>
-                    <option value="ml">ml</option>
-                    <option value="cl">cl</option>
-                    <option value="oz">oz</option>
-                    <option value="dash">dash</option>
-                    <option value="splash">splash</option>
-                    <option value="drops">drops</option>
-                    <option value="pieces">pieces</option>
-                    <option value="leaves">leaves</option>
-                    <option value="wedges">wedges</option>
-                </select>
-                <button type="button" class="remove-ingredient-btn" onclick="window.cocktailRecipesManager.removeIngredientRow(${ingredientId})">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                    </svg>
-                </button>
-            </div>
-        `;
-        
-        ingredientsList.insertAdjacentHTML('beforeend', ingredientHtml);
-    }
-
-    /**
-     * Remove ingredient row
-     */
-    removeIngredientRow(ingredientId) {
-        const ingredientItem = document.querySelector(`[data-ingredient-id="${ingredientId}"]`);
-        if (ingredientItem) {
-            ingredientItem.remove();
-        }
-    }
-
-    /**
-     * Utility formatting methods
-     */
-    formatType(type) {
-        const typeMap = {
-            classic_cocktail: 'Classic',
-            signature_cocktail: 'Signature',
-            mocktail: 'Mocktail',
-            shot: 'Shot',
-            mixed_drink: 'Mixed',
-            frozen_drink: 'Frozen',
-            hot_drink: 'Hot'
-        };
-        return typeMap[type] || type;
-    }
-
-    formatDifficulty(difficulty) {
-        const difficultyMap = {
-            easy: 'Easy',
-            medium: 'Medium',
-            hard: 'Hard',
-            expert: 'Expert'
-        };
-        return difficultyMap[difficulty] || difficulty;
-    }
-
-    formatGlassType(glassType) {
-        const glassMap = {
-            highball: 'Highball',
-            lowball: 'Lowball',
-            martini: 'Martini',
-            wine_glass: 'Wine Glass',
-            champagne_flute: 'Champagne',
-            beer_mug: 'Beer Mug',
-            shot_glass: 'Shot Glass',
-            hurricane: 'Hurricane'
-        };
-        return glassMap[glassType] || 'N/A';
-    }
-
-    /**
-     * Clear all filters
-     */
-    clearFilters() {
-        this.searchTerm = '';
-        this.filters = { type: '', difficulty: '', glass: '' };
-        
-        document.getElementById('recipes-search').value = '';
-        document.getElementById('type-filter').value = '';
-        document.getElementById('difficulty-filter').value = '';
-        document.getElementById('glass-filter').value = '';
-        
-        this.filterAndRenderRecipes();
-    }
-
-    /**
-     * Switch view
-     */
-    switchView(view) {
-        this.currentView = view;
-        
-        // Update button states
-        document.querySelectorAll('.view-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`[data-view="${view}"]`).classList.add('active');
-        
-        // For now, only grid view is implemented
-        if (view === 'list') {
-            this.showNotification('List view coming soon', 'info');
-        }
-    }
-
-    /**
-     * Show notification
-     */
-    showNotification(message, type = 'info') {
-        console.log(`${type.toUpperCase()}: ${message}`);
-        // In a real implementation, this would show a toast notification
-    }
-
-    /**
-     * Placeholder methods for future implementation
-     */
-    populateRecipeForm(recipe) {
-        // Populate form with recipe data
-        console.log('Populating form with recipe:', recipe);
-    }
-
     resetRecipeForm() {
-        // Reset form to defaults
         const form = document.getElementById('recipe-form');
-        if (form) form.reset();
-        
-        // Clear ingredients
-        const ingredientsList = document.getElementById('ingredients-list');
-        if (ingredientsList) ingredientsList.innerHTML = '';
-        
-        // Add one default ingredient row
-        this.addIngredientRow();
+        if (form) {
+            form.reset();
+            
+            // Reset to first tab
+            document.querySelector('.tab-btn[data-tab="basic"]').click();
+            
+            // Reset to English language
+            const englishBtn = document.querySelector('.lang-btn[data-lang="en"]');
+            if (englishBtn) {
+                englishBtn.click();
+            }
+        }
     }
 
-    saveRecipe() {
-        console.log('Save recipe functionality - coming soon');
-        this.showNotification('Recipe saved successfully', 'success');
-        this.closeRecipeModal();
-    }
-
+    /**
+     * Edit recipe
+     */
     editRecipe(recipeId) {
         const recipe = this.recipes.find(r => r.id === recipeId);
-        if (recipe) {
-            this.openRecipeModal(recipe);
-        }
+        if (!recipe) return;
+
+        alert(`Edit recipe: ${recipe.name}`);
     }
 
-    deleteRecipe(recipeId) {
-        const recipe = this.recipes.find(r => r.id === recipeId);
-        if (recipe && confirm(`Delete recipe "${recipe.name}"?`)) {
-            this.recipes = this.recipes.filter(r => r.id !== recipeId);
-            this.updateStatistics();
-            this.filterAndRenderRecipes();
-            this.showNotification('Recipe deleted successfully', 'success');
-        }
-    }
-
-    viewRecipeDetails(recipeId) {
-        const recipe = this.recipes.find(r => r.id === recipeId);
-        if (recipe) {
-            console.log('View recipe details:', recipe);
-            this.showNotification('Recipe details view coming soon', 'info');
-        }
-    }
-
+    /**
+     * Print recipe
+     */
     printRecipe(recipeId) {
         const recipe = this.recipes.find(r => r.id === recipeId);
-        if (recipe) {
-            console.log('Print recipe:', recipe);
-            this.showNotification('Recipe printing coming soon', 'info');
+        if (!recipe) return;
+
+        // Create printable content
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>${recipe.name} - Recipe</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        h1 { color: #333; }
+                        .ingredients, .instructions { margin: 20px 0; }
+                        .ingredients li, .instructions li { margin: 5px 0; }
+                    </style>
+                </head>
+                <body>
+                    <h1>${recipe.name}</h1>
+                    <p><strong>Type:</strong> ${recipe.type}</p>
+                    <p><strong>Difficulty:</strong> ${recipe.difficulty}</p>
+                    <p><strong>Glass:</strong> ${recipe.glassType}</p>
+                    <p><strong>Prep Time:</strong> ${recipe.preparationTime} minutes</p>
+                    <p>${recipe.description}</p>
+                    
+                    <h3>Ingredients:</h3>
+                    <ul class="ingredients">
+                        ${recipe.ingredients.map(ing => `<li>${ing.quantity} ${ing.unit} ${ing.name}</li>`).join('')}
+                    </ul>
+                    
+                    <h3>Instructions:</h3>
+                    <ol class="instructions">
+                        ${recipe.instructions.map(inst => `<li>${inst}</li>`).join('')}
+                    </ol>
+                    
+                    ${recipe.garnish ? `<p><strong>Garnish:</strong> ${recipe.garnish}</p>` : ''}
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+    /**
+     * Duplicate recipe
+     */
+    duplicateRecipe(recipeId) {
+        const recipe = this.recipes.find(r => r.id === recipeId);
+        if (!recipe) return;
+
+        alert(`Duplicate recipe: ${recipe.name}`);
+    }
+
+    /**
+     * Export recipes
+     */
+    exportRecipes() {
+        alert('Export recipes functionality will be implemented');
+    }
+
+    /**
+     * Handle keyboard shortcuts
+     */
+    handleKeyboardShortcuts(event) {
+        if (event.ctrlKey || event.metaKey) {
+            switch (event.key) {
+                case 'k':
+                    event.preventDefault();
+                    document.getElementById('recipe-search').focus();
+                    break;
+                case '1':
+                    event.preventDefault();
+                    this.switchView('grid');
+                    break;
+                case '2':
+                    event.preventDefault();
+                    this.switchView('list');
+                    break;
+            }
         }
     }
 
-    exportRecipes() {
-        console.log('Export recipes functionality - coming soon');
-        this.showNotification('Export functionality coming soon', 'info');
-    }
-
-    sortRecipes() {
-        console.log('Sort recipes functionality - coming soon');
+    /**
+     * Debounce utility function
+     */
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
     }
 }
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.cocktailRecipesManager = new CocktailRecipesManager();
+// Initialize the page when DOM is loaded
+let recipeManager;
+
+document.addEventListener('DOMContentLoaded', function() {
+    recipeManager = new BarCocktailRecipesPage();
+    
+    // Restore view preference
+    const savedView = localStorage.getItem('recipes_view_preference') || 'grid';
+    recipeManager.switchView(savedView);
 });

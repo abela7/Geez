@@ -340,14 +340,211 @@ Route::prefix('admin/bar/recipes')->name('admin.bar.recipes.')->group(function (
         return view('admin.bar.recipes.index', compact('stats', 'recipes'));
     })->name('index');
 });
-Route::get('/admin/bar/pricing', function () {
-    return view('admin.bar.pricing');
+Route::prefix('admin/bar/pricing')->name('admin.bar.pricing.')->group(function () {
+    Route::get('/', function () {
+        // Mock data for demonstration
+        $stats = [
+            'total_drinks' => 45,
+            'avg_price' => 12.50,
+            'avg_margin' => 58.2,
+            'happy_hour_status' => 'Active'
+        ];
+        
+        $drinks = collect([
+            (object) [
+                'id' => 1,
+                'name' => 'Johnnie Walker Black Label',
+                'category' => 'spirits',
+                'base_price' => 18.00,
+                'happy_hour_price' => 14.40,
+                'cost_price' => 8.50,
+                'profit_margin' => 52.8,
+                'markup_percentage' => 111.8,
+                'active' => true
+            ],
+            (object) [
+                'id' => 2,
+                'name' => 'Heineken Beer',
+                'category' => 'beer',
+                'base_price' => 8.00,
+                'happy_hour_price' => 6.40,
+                'cost_price' => 3.50,
+                'profit_margin' => 56.3,
+                'markup_percentage' => 128.6,
+                'active' => true
+            ],
+            (object) [
+                'id' => 3,
+                'name' => 'House Red Wine',
+                'category' => 'wine',
+                'base_price' => 12.00,
+                'happy_hour_price' => 9.60,
+                'cost_price' => 5.00,
+                'profit_margin' => 58.3,
+                'markup_percentage' => 140.0,
+                'active' => true
+            ],
+            (object) [
+                'id' => 4,
+                'name' => 'Classic Martini',
+                'category' => 'cocktails',
+                'base_price' => 16.00,
+                'happy_hour_price' => 12.80,
+                'cost_price' => 6.50,
+                'profit_margin' => 59.4,
+                'markup_percentage' => 146.2,
+                'active' => true
+            ],
+            (object) [
+                'id' => 5,
+                'name' => 'Virgin Mojito',
+                'category' => 'mocktails',
+                'base_price' => 9.00,
+                'happy_hour_price' => 7.20,
+                'cost_price' => 3.00,
+                'profit_margin' => 66.7,
+                'markup_percentage' => 200.0,
+                'active' => true
+            ]
+        ]);
+        
+        return view('admin.bar.pricing.index', compact('stats', 'drinks'));
+    })->name('index');
 });
-Route::get('/admin/bar/analytics', function () {
-    return view('admin.bar.analytics');
+Route::prefix('admin/bar/analytics')->name('admin.bar.analytics.')->group(function () {
+    Route::get('/', function () {
+        // Mock data for demonstration
+        $stats = [
+            'total_revenue' => 15420.50,
+            'drinks_sold' => 1247,
+            'avg_order_value' => 28.75,
+            'peak_hour' => '8 PM',
+            'revenue_change' => 12.5,
+            'drinks_change' => 8.3,
+            'aov_change' => -2.1
+        ];
+        
+        $analytics = [
+            'sales_by_category' => [
+                ['category' => 'Cocktails', 'sales' => 8500, 'percentage' => 55.1],
+                ['category' => 'Beer', 'sales' => 3200, 'percentage' => 20.8],
+                ['category' => 'Wine', 'sales' => 2400, 'percentage' => 15.6],
+                ['category' => 'Spirits', 'sales' => 900, 'percentage' => 5.8],
+                ['category' => 'Mocktails', 'sales' => 420, 'percentage' => 2.7]
+            ],
+            'popular_drinks' => [
+                ['name' => 'Classic Martini', 'sales' => 156, 'revenue' => 2496],
+                ['name' => 'Heineken Beer', 'sales' => 142, 'revenue' => 1136],
+                ['name' => 'House Red Wine', 'sales' => 98, 'revenue' => 1176],
+                ['name' => 'Old Fashioned', 'sales' => 87, 'revenue' => 1566],
+                ['name' => 'Virgin Mojito', 'sales' => 76, 'revenue' => 684]
+            ],
+            'insights' => [
+                'top_selling_drink' => 'Classic Martini',
+                'most_profitable' => 'Virgin Mojito',
+                'happy_hour_impact' => '+35%',
+                'inventory_turnover' => '4.2x'
+            ]
+        ];
+        
+        return view('admin.bar.analytics.index', compact('stats', 'analytics'));
+    })->name('index');
 });
-Route::get('/admin/bar/suppliers', function () {
-    return view('admin.bar.suppliers');
+Route::prefix('admin/bar/suppliers')->name('admin.bar.suppliers.')->group(function () {
+    Route::get('/', function () {
+        // Mock data for demonstration
+        $stats = [
+            'total_suppliers' => 8,
+            'active_suppliers' => 7,
+            'total_orders' => 119,
+            'avg_rating' => 4.6
+        ];
+        
+        $suppliers = collect([
+            (object) [
+                'id' => 1,
+                'name' => 'Premium Wine Distributors',
+                'specialty' => 'wine_distributor',
+                'contact_person' => 'Sarah Johnson',
+                'phone_number' => '+1-555-0123',
+                'email_address' => 'sarah@premiumwines.com',
+                'website' => 'https://premiumwines.com',
+                'address' => '123 Wine Street, Napa Valley, CA',
+                'payment_terms' => 'net_30',
+                'delivery_days' => 3,
+                'minimum_order' => 500.00,
+                'delivery_rating' => 4.8,
+                'quality_rating' => 4.9,
+                'price_rating' => 4.2,
+                'last_order_date' => '2024-01-15',
+                'total_orders' => 24,
+                'average_delivery_time' => 2.5,
+                'active' => true
+            ],
+            (object) [
+                'id' => 2,
+                'name' => 'Craft Beer Supply Co.',
+                'specialty' => 'beer_distributor',
+                'contact_person' => 'Mike Rodriguez',
+                'phone_number' => '+1-555-0456',
+                'email_address' => 'mike@craftbeersupply.com',
+                'website' => 'https://craftbeersupply.com',
+                'address' => '456 Brewery Lane, Portland, OR',
+                'payment_terms' => 'net_15',
+                'delivery_days' => 2,
+                'minimum_order' => 300.00,
+                'delivery_rating' => 4.9,
+                'quality_rating' => 4.7,
+                'price_rating' => 4.5,
+                'last_order_date' => '2024-01-20',
+                'total_orders' => 18,
+                'average_delivery_time' => 1.8,
+                'active' => true
+            ],
+            (object) [
+                'id' => 3,
+                'name' => 'Elite Spirits International',
+                'specialty' => 'spirits_distributor',
+                'contact_person' => 'James Wilson',
+                'phone_number' => '+1-555-0789',
+                'email_address' => 'james@elitespirits.com',
+                'website' => 'https://elitespirits.com',
+                'address' => '789 Distillery Road, Louisville, KY',
+                'payment_terms' => 'net_30',
+                'delivery_days' => 5,
+                'minimum_order' => 1000.00,
+                'delivery_rating' => 4.6,
+                'quality_rating' => 4.8,
+                'price_rating' => 3.9,
+                'last_order_date' => '2024-01-10',
+                'total_orders' => 32,
+                'average_delivery_time' => 4.2,
+                'active' => true
+            ],
+            (object) [
+                'id' => 4,
+                'name' => 'Fresh Coffee Roasters',
+                'specialty' => 'coffee_supplier',
+                'contact_person' => 'Lisa Chen',
+                'phone_number' => '+1-555-0321',
+                'email_address' => 'lisa@freshcoffee.com',
+                'website' => 'https://freshcoffee.com',
+                'address' => '321 Roast Avenue, Seattle, WA',
+                'payment_terms' => 'net_15',
+                'delivery_days' => 1,
+                'minimum_order' => 150.00,
+                'delivery_rating' => 5.0,
+                'quality_rating' => 4.9,
+                'price_rating' => 4.6,
+                'last_order_date' => '2024-01-25',
+                'total_orders' => 45,
+                'average_delivery_time' => 1.2,
+                'active' => true
+            ]
+        ]);
+        
+        return view('admin.bar.suppliers.index', compact('stats', 'suppliers'));
+    })->name('index');
 });
 Route::get('/admin/bar/settings', function () {
     return view('admin.bar.settings');
