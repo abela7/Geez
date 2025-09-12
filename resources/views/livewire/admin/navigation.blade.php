@@ -2,7 +2,7 @@
      x-data="{ 
         sidebarOpen: false,
         sidebarCollapsed: (localStorage.getItem('sidebarCollapsed') === 'true' || localStorage.getItem('sidebarCollapsed') === null),
-        activeSubmenu: '{{ request()->is('admin/staff*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : (request()->is('admin/sales*') || request()->is('admin/finance*') ? 'finance' : (request()->is('admin/menu*') ? 'menu' : (request()->is('admin/customers*') ? 'customers' : (request()->is('admin/reports*') ? 'reports' : (request()->is('admin/tables*') ? 'tables' : (request()->is('admin/bar*') ? 'bar' : ''))))))) }}',
+        activeSubmenu: '{{ request()->is('admin/staff*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : (request()->is('admin/sales*') || request()->is('admin/finance*') ? 'finance' : (request()->is('admin/menu*') ? 'menu' : (request()->is('admin/customers*') ? 'customers' : (request()->is('admin/reports*') ? 'reports' : (request()->is('admin/tables*') ? 'tables' : (request()->is('admin/bar*') ? 'bar' : (request()->is('admin/injera*') ? 'injera' : '')))))))) }}',
         toggleSidebar() {
             this.sidebarCollapsed = !this.sidebarCollapsed;
             localStorage.setItem('sidebarCollapsed', this.sidebarCollapsed);
@@ -392,14 +392,49 @@
                 </div>
             </div>
 
-            <!-- Injera Management -->
-            <div class="nav-group">
-                <a href="/admin/injera" class="nav-link {{ request()->is('admin/injera*') ? 'active' : '' }}">
+            <!-- Injera Management (With Submenu) -->
+            <div class="nav-group" :class="{ 'active': activeSubmenu === 'injera' }">
+                <button @click="toggleSubmenu('injera')" 
+                        class="nav-link nav-link--parent {{ request()->is('admin/injera*') ? 'active' : '' }}">
                     <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                     </svg>
                     <span class="nav-text">{{ __('injera.nav_title') }}</span>
-                </a>
+                    <svg class="nav-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                
+                <div class="nav-submenu" 
+                     x-show="activeSubmenu === 'injera'" 
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 max-h-0"
+                     x-transition:enter-end="opacity-100 max-h-96"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 max-h-96"
+                     x-transition:leave-end="opacity-0 max-h-0">
+                    <a href="/admin/injera" class="submenu-link {{ request()->is('admin/injera') && !request()->is('admin/injera/*') ? 'active' : '' }}">
+                        {{ __('injera.overview.title') }}
+                    </a>
+                    <a href="/admin/injera/flour-management" class="submenu-link {{ request()->is('admin/injera/flour-management*') ? 'active' : '' }}">
+                        {{ __('injera.flour_management.title') }}
+                    </a>
+                    <a href="/admin/injera/bucket-configurations" class="submenu-link {{ request()->is('admin/injera/bucket-configurations*') ? 'active' : '' }}">
+                        {{ __('injera.bucket_configurations.title') }}
+                    </a>
+                    <a href="/admin/injera/production-batches" class="submenu-link {{ request()->is('admin/injera/production-batches*') ? 'active' : '' }}">
+                        {{ __('injera.production_batches.title') }}
+                    </a>
+                    <a href="/admin/injera/stock-levels" class="submenu-link {{ request()->is('admin/injera/stock-levels*') ? 'active' : '' }}">
+                        {{ __('injera.stock_levels.title') }}
+                    </a>
+                    <a href="/admin/injera/cost-analysis" class="submenu-link {{ request()->is('admin/injera/cost-analysis*') ? 'active' : '' }}">
+                        {{ __('injera.cost_analysis.title') }}
+                    </a>
+                    <a href="/admin/injera/orders" class="submenu-link {{ request()->is('admin/injera/orders*') ? 'active' : '' }}">
+                        {{ __('injera.orders.title') }}
+                    </a>
+                </div>
             </div>
 
             <!-- Reports (With Submenu) -->

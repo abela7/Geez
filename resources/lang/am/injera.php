@@ -4,6 +4,29 @@ return [
     // Navigation
     'nav_title' => 'Injera Management',
     
+    // Subsection Titles
+    'overview' => [
+        'title' => 'Overview',
+    ],
+    'flour_management' => [
+        'title' => 'Flour Management',
+    ],
+    'bucket_configurations' => [
+        'title' => 'Bucket Configurations',
+    ],
+    'production_batches' => [
+        'title' => 'Production Batches',
+    ],
+    'stock_levels' => [
+        'title' => 'Stock Levels',
+    ],
+    'cost_analysis' => [
+        'title' => 'Cost Analysis',
+    ],
+    'orders' => [
+        'title' => 'Orders & Allocation',
+    ],
+    
     // Main Management
     'management' => [
         'title' => 'Injera Management',

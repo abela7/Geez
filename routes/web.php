@@ -715,3 +715,15 @@ Route::get('/language/{locale}', [LanguageController::class, 'switch'])
     ->name('language.switch')
     ->where('locale', 'en|am|ti');
 
+// Injera Management Routes
+Route::prefix('admin/injera')->name('admin.injera.')->group(function () {
+    // Flour Management Routes
+    Route::prefix('flour-management')->name('flour-management.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Injera\FlourManagementController::class, 'index'])->name('index');
+        Route::post('/', [App\Http\Controllers\Admin\Injera\FlourManagementController::class, 'store'])->name('store');
+        Route::put('/{flour}', [App\Http\Controllers\Admin\Injera\FlourManagementController::class, 'update'])->name('update');
+        Route::delete('/{flour}', [App\Http\Controllers\Admin\Injera\FlourManagementController::class, 'destroy'])->name('destroy');
+        Route::post('/update-stock', [App\Http\Controllers\Admin\Injera\FlourManagementController::class, 'updateStock'])->name('update-stock');
+    });
+});
+
