@@ -28,7 +28,15 @@ export default defineConfig({
             'resources/css/admin/inventory-purchasing.css',
             'resources/js/admin/inventory-purchasing.js',
             'resources/css/admin/inventory-locations.css',
-            'resources/js/admin/inventory-locations.js'
+            'resources/js/admin/inventory-locations.js',
+            'resources/css/admin/injera/flour-management.css',
+            'resources/js/admin/injera/flour-management.js',
+            'resources/css/admin/injera/bucket-configurations.css',
+            'resources/js/admin/injera/bucket-configurations.js',
+            'resources/css/admin/injera/production-batches.css',
+            'resources/js/admin/injera/production-batches.js',
+            'resources/css/admin/injera/injera-stock-levels.css',
+            'resources/js/admin/injera/injera-stock-levels.js'
             ],
             refresh: true,
         }),

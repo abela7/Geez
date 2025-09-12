@@ -725,5 +725,31 @@ Route::prefix('admin/injera')->name('admin.injera.')->group(function () {
         Route::delete('/{flour}', [App\Http\Controllers\Admin\Injera\FlourManagementController::class, 'destroy'])->name('destroy');
         Route::post('/update-stock', [App\Http\Controllers\Admin\Injera\FlourManagementController::class, 'updateStock'])->name('update-stock');
     });
+    
+    // Bucket Configurations Routes
+    Route::prefix('bucket-configurations')->name('bucket-configurations.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Injera\BucketConfigurationsController::class, 'index'])->name('index');
+        Route::post('/', [App\Http\Controllers\Admin\Injera\BucketConfigurationsController::class, 'store'])->name('store');
+        Route::put('/{bucket}', [App\Http\Controllers\Admin\Injera\BucketConfigurationsController::class, 'update'])->name('update');
+        Route::delete('/{bucket}', [App\Http\Controllers\Admin\Injera\BucketConfigurationsController::class, 'destroy'])->name('destroy');
+        Route::post('/{bucket}/duplicate', [App\Http\Controllers\Admin\Injera\BucketConfigurationsController::class, 'duplicate'])->name('duplicate');
+    });
+    
+    // Production Batches Routes
+    Route::prefix('production-batches')->name('production-batches.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Injera\ProductionBatchesController::class, 'index'])->name('index');
+        Route::post('/', [App\Http\Controllers\Admin\Injera\ProductionBatchesController::class, 'store'])->name('store');
+        Route::post('/{batch}/update-stage', [App\Http\Controllers\Admin\Injera\ProductionBatchesController::class, 'updateStage'])->name('update-stage');
+        Route::post('/{batch}/complete', [App\Http\Controllers\Admin\Injera\ProductionBatchesController::class, 'complete'])->name('complete');
+        Route::post('/{batch}/cancel', [App\Http\Controllers\Admin\Injera\ProductionBatchesController::class, 'cancel'])->name('cancel');
+    });
+    
+    // Injera Stock Levels Routes
+    Route::prefix('injera-stock-levels')->name('injera-stock-levels.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Injera\InjeraStockLevelsController::class, 'index'])->name('index');
+        Route::put('/', [App\Http\Controllers\Admin\Injera\InjeraStockLevelsController::class, 'update'])->name('update');
+        Route::post('/add-stock', [App\Http\Controllers\Admin\Injera\InjeraStockLevelsController::class, 'addStock'])->name('add-stock');
+        Route::post('/reserve-stock', [App\Http\Controllers\Admin\Injera\InjeraStockLevelsController::class, 'reserveStock'])->name('reserve-stock');
+    });
 });
 

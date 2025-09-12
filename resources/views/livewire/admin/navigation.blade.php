@@ -425,8 +425,8 @@
                     <a href="/admin/injera/production-batches" class="submenu-link {{ request()->is('admin/injera/production-batches*') ? 'active' : '' }}">
                         {{ __('injera.production_batches.title') }}
                     </a>
-                    <a href="/admin/injera/stock-levels" class="submenu-link {{ request()->is('admin/injera/stock-levels*') ? 'active' : '' }}">
-                        {{ __('injera.stock_levels.title') }}
+                    <a href="/admin/injera/injera-stock-levels" class="submenu-link {{ request()->is('admin/injera/injera-stock-levels*') ? 'active' : '' }}">
+                        {{ __('injera.injera_stock_levels.title') }}
                     </a>
                     <a href="/admin/injera/cost-analysis" class="submenu-link {{ request()->is('admin/injera/cost-analysis*') ? 'active' : '' }}">
                         {{ __('injera.cost_analysis.title') }}
