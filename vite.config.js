@@ -36,7 +36,11 @@ export default defineConfig({
             'resources/css/admin/injera/production-batches.css',
             'resources/js/admin/injera/production-batches.js',
             'resources/css/admin/injera/injera-stock-levels.css',
-            'resources/js/admin/injera/injera-stock-levels.js'
+            'resources/js/admin/injera/injera-stock-levels.js',
+            'resources/css/admin/injera/cost-analysis.css',
+            'resources/js/admin/injera/cost-analysis.js',
+            'resources/css/admin/injera/orders.css',
+            'resources/js/admin/injera/orders.js'
             ],
             refresh: true,
         }),

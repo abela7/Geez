@@ -4,22 +4,22 @@
 @section('page_title', __('injera.injera_stock_levels.title'))
 
 @section('content')
-<div class="injera-stock-levels-container">
+<div class="admin-content">
     <!-- Page Header -->
     <div class="page-header">
-        <div class="header-content">
+        <div class="page-header-content">
             <h1 class="page-title">{{ __('injera.injera_stock_levels.title') }}</h1>
             <p class="page-subtitle">{{ __('injera.injera_stock_levels.subtitle') }}</p>
         </div>
-        <div class="header-actions">
+        <div class="page-header-actions">
             <button class="btn btn-secondary" onclick="exportStockLevels()">
-                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
                 {{ __('injera.injera_stock_levels.export_stock') }}
             </button>
             <button class="btn btn-primary" onclick="openAddStockModal()">
-                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
                 {{ __('injera.injera_stock_levels.add_stock') }}
@@ -30,52 +30,60 @@
     <!-- Summary Cards -->
     <div class="summary-cards">
         <div class="summary-card">
-            <div class="summary-card-header">
-                <h3 class="summary-card-title">{{ __('injera.injera_stock_levels.total_injera') }}</h3>
-                <svg class="summary-card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="summary-card-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                 </svg>
             </div>
-            <p class="summary-card-value">{{ $statistics['total_injera'] }}</p>
-            <p class="summary-card-subtitle">{{ __('injera.injera_stock_levels.pieces') }}</p>
+            <div class="summary-card-content">
+                <h3 class="summary-card-title">{{ __('injera.injera_stock_levels.total_injera') }}</h3>
+                <div class="summary-card-value">{{ $statistics['total_injera'] }}</div>
+                <div class="summary-card-subtitle">{{ __('injera.injera_stock_levels.pieces') }}</div>
+            </div>
         </div>
 
         <div class="summary-card">
-            <div class="summary-card-header">
-                <h3 class="summary-card-title">{{ __('injera.injera_stock_levels.available_injera') }}</h3>
-                <svg class="summary-card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="summary-card-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>
-            <p class="summary-card-value">{{ $statistics['available_injera'] }}</p>
-            <p class="summary-card-subtitle">{{ __('injera.injera_stock_levels.pieces') }}</p>
+            <div class="summary-card-content">
+                <h3 class="summary-card-title">{{ __('injera.injera_stock_levels.available_injera') }}</h3>
+                <div class="summary-card-value">{{ $statistics['available_injera'] }}</div>
+                <div class="summary-card-subtitle">{{ __('injera.injera_stock_levels.pieces') }}</div>
+            </div>
         </div>
 
         <div class="summary-card">
-            <div class="summary-card-header">
-                <h3 class="summary-card-title">{{ __('injera.injera_stock_levels.expiring_today') }}</h3>
-                <svg class="summary-card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="summary-card-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>
-            <p class="summary-card-value">{{ $statistics['expiring_today'] }}</p>
-            <p class="summary-card-subtitle">{{ __('injera.injera_stock_levels.pieces') }}</p>
+            <div class="summary-card-content">
+                <h3 class="summary-card-title">{{ __('injera.injera_stock_levels.expiring_today') }}</h3>
+                <div class="summary-card-value">{{ $statistics['expiring_today'] }}</div>
+                <div class="summary-card-subtitle">{{ __('injera.injera_stock_levels.pieces') }}</div>
+            </div>
         </div>
 
         <div class="summary-card">
-            <div class="summary-card-header">
-                <h3 class="summary-card-title">{{ __('injera.injera_stock_levels.total_value') }}</h3>
-                <svg class="summary-card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="summary-card-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
                 </svg>
             </div>
-            <p class="summary-card-value">${{ number_format($statistics['total_value'], 2) }}</p>
-            <p class="summary-card-subtitle">{{ __('injera.injera_stock_levels.inventory_value') }}</p>
+            <div class="summary-card-content">
+                <h3 class="summary-card-title">{{ __('injera.injera_stock_levels.total_value') }}</h3>
+                <div class="summary-card-value">${{ number_format($statistics['total_value'], 2) }}</div>
+                <div class="summary-card-subtitle">{{ __('injera.injera_stock_levels.inventory_value') }}</div>
+            </div>
         </div>
     </div>
 
     <!-- Filters Section -->
-    <div class="filters-section">
+    <div class="filters-container">
         <div class="filters-content">
             <div class="search-filter">
                 <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,37 +93,25 @@
                        id="stockSearch" 
                        class="search-input" 
                        placeholder="{{ __('injera.injera_stock_levels.search_placeholder') }}"
-                       value="{{ request('search') }}">
+                       onkeyup="searchStock()">
             </div>
 
             <div class="filter-group">
-                <select id="qualityFilter" class="filter-select">
+                <select id="qualityFilter" class="filter-select" onchange="filterStock()">
                     <option value="">{{ __('injera.injera_stock_levels.all_qualities') }}</option>
-                    <option value="A" {{ request('quality') === 'A' ? 'selected' : '' }}>
-                        {{ __('injera.injera_stock_levels.grade_a') }}
-                    </option>
-                    <option value="B" {{ request('quality') === 'B' ? 'selected' : '' }}>
-                        {{ __('injera.injera_stock_levels.grade_b') }}
-                    </option>
-                    <option value="C" {{ request('quality') === 'C' ? 'selected' : '' }}>
-                        {{ __('injera.injera_stock_levels.grade_c') }}
-                    </option>
+                    <option value="A">{{ __('injera.injera_stock_levels.grade_a') }}</option>
+                    <option value="B">{{ __('injera.injera_stock_levels.grade_b') }}</option>
+                    <option value="C">{{ __('injera.injera_stock_levels.grade_c') }}</option>
                 </select>
 
-                <select id="statusFilter" class="filter-select">
+                <select id="statusFilter" class="filter-select" onchange="filterStock()">
                     <option value="">{{ __('injera.injera_stock_levels.all_statuses') }}</option>
-                    <option value="fresh" {{ request('status') === 'fresh' ? 'selected' : '' }}>
-                        {{ __('injera.injera_stock_levels.fresh') }}
-                    </option>
-                    <option value="expiring_soon" {{ request('status') === 'expiring_soon' ? 'selected' : '' }}>
-                        {{ __('injera.injera_stock_levels.expiring_soon') }}
-                    </option>
-                    <option value="expired" {{ request('status') === 'expired' ? 'selected' : '' }}>
-                        {{ __('injera.injera_stock_levels.expired') }}
-                    </option>
+                    <option value="fresh">{{ __('injera.injera_stock_levels.fresh') }}</option>
+                    <option value="expiring_soon">{{ __('injera.injera_stock_levels.expiring_soon') }}</option>
+                    <option value="expired">{{ __('injera.injera_stock_levels.expired') }}</option>
                 </select>
 
-                <button class="btn btn-outline" onclick="clearFilters()">
+                <button class="btn btn-secondary" onclick="clearFilters()">
                     {{ __('injera.injera_stock_levels.clear_filters') }}
                 </button>
             </div>
@@ -172,7 +168,7 @@
                         <td class="batch-name">
                             <div class="batch-info">
                                 <span class="batch-title">{{ $stock['batch_number'] }}</span>
-                                <span class="batch-date">{{ \Carbon\Carbon::parse($stock['production_date'])->format('M j, Y') }}</span>
+                                <span class="batch-notes">{{ \Carbon\Carbon::parse($stock['production_date'])->format('M j, Y') }}</span>
                             </div>
                         </td>
                         <td>
@@ -180,29 +176,36 @@
                                 {{ $stock['quality_grade'] }}
                             </span>
                         </td>
-                        <td class="stock-info">
-                            <div class="stock-value">
-                                {{ $stock['current_stock'] }} {{ __('injera.injera_stock_levels.pieces') }}
+                        <td class="stock-cell">
+                            <div class="stock-info">
+                                <span class="stock-value">{{ $stock['current_stock'] }}</span>
+                                <span class="stock-unit">{{ __('injera.injera_stock_levels.pieces') }}</span>
                             </div>
                         </td>
-                        <td class="stock-info">
-                            <div class="stock-value">
-                                {{ $stock['reserved_stock'] }} {{ __('injera.injera_stock_levels.pieces') }}
+                        <td class="stock-cell">
+                            <div class="stock-info">
+                                <span class="stock-value reserved">{{ $stock['reserved_stock'] }}</span>
+                                <span class="stock-unit">{{ __('injera.injera_stock_levels.pieces') }}</span>
                             </div>
                         </td>
-                        <td class="stock-info">
-                            <div class="stock-value">
-                                {{ $stock['available_stock'] }} {{ __('injera.injera_stock_levels.pieces') }}
+                        <td class="stock-cell">
+                            <div class="stock-info">
+                                <span class="stock-value available">{{ $stock['available_stock'] }}</span>
+                                <span class="stock-unit">{{ __('injera.injera_stock_levels.pieces') }}</span>
                             </div>
                         </td>
-                        <td class="storage-info">
-                            <div class="storage-primary">{{ $stock['storage_location'] }}</div>
-                            <div class="storage-secondary">${{ number_format($stock['cost_per_injera'], 2) }}/{{ __('injera.injera_stock_levels.piece') }}</div>
+                        <td class="location-cell">
+                            <div class="location-info">
+                                <span class="location-name">{{ $stock['storage_location'] }}</span>
+                                <span class="location-cost">${{ number_format($stock['cost_per_injera'], 2) }}/{{ __('injera.injera_stock_levels.piece') }}</span>
+                            </div>
                         </td>
-                        <td class="expiry-info">
-                            <div class="expiry-primary">{{ \Carbon\Carbon::parse($stock['expiry_date'])->format('M j, Y') }}</div>
-                            <div class="expiry-secondary {{ $stock['days_until_expiry'] <= 1 ? 'urgent' : ($stock['days_until_expiry'] <= 3 ? 'warning' : 'normal') }}">
-                                {{ $stock['days_until_expiry'] }} {{ __('injera.injera_stock_levels.days_left') }}
+                        <td class="expiry-cell">
+                            <div class="expiry-info">
+                                <span class="expiry-date">{{ \Carbon\Carbon::parse($stock['expiry_date'])->format('M j, Y') }}</span>
+                                <span class="expiry-countdown {{ $stock['days_until_expiry'] <= 1 ? 'critical' : ($stock['days_until_expiry'] <= 3 ? 'warning' : 'normal') }}">
+                                    {{ $stock['days_until_expiry'] }} {{ __('injera.injera_stock_levels.days_left') }}
+                                </span>
                             </div>
                         </td>
                         <td>
@@ -212,17 +215,17 @@
                         </td>
                         <td class="actions-cell">
                             <div class="action-buttons">
-                                <button class="action-btn" onclick="updateStock({{ $stock['id'] }})" title="{{ __('injera.injera_stock_levels.update_stock') }}">
+                                <button class="action-btn edit" onclick="updateStock({{ $stock['id'] }})" title="{{ __('injera.injera_stock_levels.update_stock') }}">
                                     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                     </svg>
                                 </button>
-                                <button class="action-btn" onclick="reserveStock({{ $stock['id'] }})" title="{{ __('injera.injera_stock_levels.reserve_stock') }}">
+                                <button class="action-btn reserve" onclick="reserveStock({{ $stock['id'] }})" title="{{ __('injera.injera_stock_levels.reserve_stock') }}">
                                     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
                                 </button>
-                                <button class="action-btn danger" onclick="viewStockDetails({{ $stock['id'] }})" title="{{ __('injera.injera_stock_levels.view_details') }}">
+                                <button class="action-btn view" onclick="viewStockDetails({{ $stock['id'] }})" title="{{ __('injera.injera_stock_levels.view_details') }}">
                                     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>

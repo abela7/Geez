@@ -6,7 +6,6 @@
 // Global variables
 let currentStockId = null;
 let stockData = [];
-let sortDirection = {};
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
@@ -26,21 +25,18 @@ function initializePage() {
     
     // Initialize tooltips
     initializeTooltips();
-    
-    // Initialize sorting
-    initializeSorting();
 }
 
 /**
  * Load stock data from the table
  */
 function loadStockData() {
-    const rows = document.querySelectorAll('.stock-row');
+    const rows = document.querySelectorAll('.table-row');
     stockData = Array.from(rows).map(row => ({
         id: row.dataset.stockId || null,
         quality: row.dataset.quality,
         status: row.dataset.status,
-        currentStock: parseInt(row.querySelector('.quantity-value').textContent),
+        currentStock: parseInt(row.querySelector('.stock-value').textContent),
         element: row
     }));
 }
@@ -50,7 +46,7 @@ function loadStockData() {
  */
 function setupEventListeners() {
     // Search functionality
-    const searchInput = document.getElementById('searchInput');
+    const searchInput = document.getElementById('stockSearch');
     if (searchInput) {
         searchInput.addEventListener('input', debounce(searchStock, 300));
     }
@@ -171,83 +167,6 @@ function hideTooltip(e) {
 }
 
 /**
- * Initialize sorting functionality
- */
-function initializeSorting() {
-    const sortableHeaders = document.querySelectorAll('.sortable');
-    sortableHeaders.forEach(header => {
-        header.addEventListener('click', function() {
-            const sortKey = this.dataset.sort;
-            sortTable(sortKey);
-        });
-    });
-}
-
-/**
- * Sort table by column
- */
-function sortTable(sortKey) {
-    const tbody = document.querySelector('.data-table tbody');
-    const rows = Array.from(tbody.querySelectorAll('.table-row'));
-    
-    // Toggle sort direction
-    sortDirection[sortKey] = sortDirection[sortKey] === 'asc' ? 'desc' : 'asc';
-    const direction = sortDirection[sortKey];
-    
-    // Sort rows
-    rows.sort((a, b) => {
-        let aValue, bValue;
-        
-        switch(sortKey) {
-            case 'batch_number':
-                aValue = a.querySelector('.batch-title').textContent;
-                bValue = b.querySelector('.batch-title').textContent;
-                break;
-            case 'current_stock':
-                aValue = parseInt(a.querySelector('.stock-value').textContent);
-                bValue = parseInt(b.querySelector('.stock-value').textContent);
-                break;
-            case 'expiry_date':
-                aValue = new Date(a.querySelector('.expiry-primary').textContent);
-                bValue = new Date(b.querySelector('.expiry-primary').textContent);
-                break;
-            default:
-                aValue = a.querySelector(`[data-${sortKey}]`)?.textContent || '';
-                bValue = b.querySelector(`[data-${sortKey}]`)?.textContent || '';
-        }
-        
-        if (direction === 'asc') {
-            return aValue > bValue ? 1 : -1;
-        } else {
-            return aValue < bValue ? 1 : -1;
-        }
-    });
-    
-    // Re-append sorted rows
-    rows.forEach(row => tbody.appendChild(row));
-    
-    // Update sort icons
-    updateSortIcons(sortKey, direction);
-}
-
-/**
- * Update sort icons
- */
-function updateSortIcons(activeSortKey, direction) {
-    const sortableHeaders = document.querySelectorAll('.sortable');
-    sortableHeaders.forEach(header => {
-        const icon = header.querySelector('.sort-icon');
-        if (header.dataset.sort === activeSortKey) {
-            icon.style.transform = direction === 'asc' ? 'rotate(180deg)' : 'rotate(0deg)';
-            icon.style.opacity = '1';
-        } else {
-            icon.style.transform = 'rotate(0deg)';
-            icon.style.opacity = '0.5';
-        }
-    });
-}
-
-/**
  * Search stock function
  */
 function searchStock() {
@@ -256,10 +175,12 @@ function searchStock() {
     
     rows.forEach(row => {
         const batchNumber = row.querySelector('.batch-title').textContent.toLowerCase();
-        const storageLocation = row.querySelector('.storage-primary').textContent.toLowerCase();
+        const storageLocation = row.querySelector('.location-name').textContent.toLowerCase();
+        const notes = row.querySelector('.batch-notes')?.textContent.toLowerCase() || '';
         
         const matches = batchNumber.includes(searchTerm) || 
-                       storageLocation.includes(searchTerm);
+                       storageLocation.includes(searchTerm) || 
+                       notes.includes(searchTerm);
         
         row.style.display = matches ? '' : 'none';
     });
@@ -288,11 +209,10 @@ function filterStock() {
  * Clear all filters
  */
 function clearFilters() {
-    document.getElementById('stockSearch').value = '';
     document.getElementById('qualityFilter').value = '';
     document.getElementById('statusFilter').value = '';
+    document.getElementById('stockSearch').value = '';
     
-    // Show all rows
     const rows = document.querySelectorAll('.table-row');
     rows.forEach(row => {
         row.style.display = '';
@@ -303,11 +223,12 @@ function clearFilters() {
  * Refresh data
  */
 function refreshData() {
-    showNotification('Refreshing data...', 'info');
+    showNotification('Refreshing stock data...', 'info');
     
     // Simulate refresh
     setTimeout(() => {
-        showNotification('Data refreshed successfully!', 'success');
+        showNotification('Stock data refreshed successfully!', 'success');
+        loadStockData();
     }, 1000);
 }
 

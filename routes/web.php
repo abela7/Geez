@@ -751,5 +751,20 @@ Route::prefix('admin/injera')->name('admin.injera.')->group(function () {
         Route::post('/add-stock', [App\Http\Controllers\Admin\Injera\InjeraStockLevelsController::class, 'addStock'])->name('add-stock');
         Route::post('/reserve-stock', [App\Http\Controllers\Admin\Injera\InjeraStockLevelsController::class, 'reserveStock'])->name('reserve-stock');
     });
+    
+    // Cost Analysis Routes
+    Route::prefix('cost-analysis')->name('cost-analysis.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Injera\CostAnalysisController::class, 'index'])->name('index');
+        Route::post('/export', [App\Http\Controllers\Admin\Injera\CostAnalysisController::class, 'export'])->name('export');
+    });
+    
+    // Orders & Allocation Routes
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Injera\OrdersController::class, 'index'])->name('index');
+        Route::post('/', [App\Http\Controllers\Admin\Injera\OrdersController::class, 'store'])->name('store');
+        Route::put('/{order}/status', [App\Http\Controllers\Admin\Injera\OrdersController::class, 'updateStatus'])->name('update-status');
+        Route::post('/allocate', [App\Http\Controllers\Admin\Injera\OrdersController::class, 'allocate'])->name('allocate');
+        Route::post('/{order}/cancel', [App\Http\Controllers\Admin\Injera\OrdersController::class, 'cancel'])->name('cancel');
+    });
 });
 
