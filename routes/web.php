@@ -698,6 +698,33 @@ Route::get('/admin/staff/payroll', function () {
     return view('admin.staff.payroll');
 });
 
+// Shift Management (Rota) Routes
+Route::prefix('admin/shifts')->name('admin.shifts.')->group(function () {
+    Route::get('/overview', [App\Http\Controllers\Admin\Shifts\OverviewController::class, 'index'])->name('overview.index');
+    Route::get('/manage', [App\Http\Controllers\Admin\Shifts\ManageController::class, 'index'])->name('manage.index');
+    Route::get('/manage/create', [App\Http\Controllers\Admin\Shifts\ManageController::class, 'create'])->name('manage.create');
+    Route::post('/manage', [App\Http\Controllers\Admin\Shifts\ManageController::class, 'store'])->name('manage.store');
+    Route::get('/manage/{id}/edit', [App\Http\Controllers\Admin\Shifts\ManageController::class, 'edit'])->name('manage.edit');
+    Route::put('/manage/{id}', [App\Http\Controllers\Admin\Shifts\ManageController::class, 'update'])->name('manage.update');
+    Route::delete('/manage/{id}', [App\Http\Controllers\Admin\Shifts\ManageController::class, 'destroy'])->name('manage.destroy');
+    
+        Route::get('/assignments', [App\Http\Controllers\Admin\Shifts\AssignmentsController::class, 'index'])->name('assignments.index');
+        Route::post('/assignments/assign', [App\Http\Controllers\Admin\Shifts\AssignmentsController::class, 'assign'])->name('assignments.assign');
+        Route::delete('/assignments/unassign', [App\Http\Controllers\Admin\Shifts\AssignmentsController::class, 'unassign'])->name('assignments.unassign');
+        Route::post('/assignments/availability', [App\Http\Controllers\Admin\Shifts\AssignmentsController::class, 'getAvailability'])->name('assignments.availability');
+        Route::patch('/assignments/status', [App\Http\Controllers\Admin\Shifts\AssignmentsController::class, 'updateStatus'])->name('assignments.status');
+    
+    Route::get('/templates', [App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'index'])->name('templates.index');
+    Route::get('/templates/create', [App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'create'])->name('templates.create');
+    Route::post('/templates', [App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'store'])->name('templates.store');
+    Route::get('/templates/{id}/edit', [App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'edit'])->name('templates.edit');
+    Route::put('/templates/{id}', [App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'update'])->name('templates.update');
+    Route::delete('/templates/{id}', [App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'destroy'])->name('templates.destroy');
+    Route::post('/templates/{id}/apply', [App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'apply'])->name('templates.apply');
+    Route::post('/templates/{id}/duplicate', [App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'duplicate'])->name('templates.duplicate');
+    Route::post('/templates/{id}/preview', [App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'preview'])->name('templates.preview');
+});
+
 Route::get('/admin/customers', function () {
     return view('admin.customers.index');
 });
@@ -708,6 +735,63 @@ Route::get('/admin/reports', function () {
 
 Route::get('/admin/settings', function () {
     return view('admin.settings.index');
+});
+
+    // To-Do Management Routes
+    Route::prefix('admin/todos')->name('admin.todos.')->group(function () {
+    // Overview/Dashboard Routes
+    Route::prefix('overview')->name('overview.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Todos\OverviewController::class, 'index'])->name('index');
+    });
+    
+    // Staff Lists Routes
+    Route::prefix('staff-lists')->name('staff-lists.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Todos\StaffListsController::class, 'index'])->name('index');
+        Route::get('/{staff}', [App\Http\Controllers\Admin\Todos\StaffListsController::class, 'show'])->name('show');
+        Route::post('/{staff}/assign', [App\Http\Controllers\Admin\Todos\StaffListsController::class, 'assign'])->name('assign');
+        Route::put('/{todo}/update-status', [App\Http\Controllers\Admin\Todos\StaffListsController::class, 'updateStatus'])->name('update-status');
+    });
+    
+    // Templates Routes
+    Route::prefix('templates')->name('templates.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Todos\TemplatesController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\Admin\Todos\TemplatesController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\Admin\Todos\TemplatesController::class, 'store'])->name('store');
+        Route::get('/{template}', [App\Http\Controllers\Admin\Todos\TemplatesController::class, 'show'])->name('show');
+        Route::get('/{template}/edit', [App\Http\Controllers\Admin\Todos\TemplatesController::class, 'edit'])->name('edit');
+        Route::put('/{template}', [App\Http\Controllers\Admin\Todos\TemplatesController::class, 'update'])->name('update');
+        Route::delete('/{template}', [App\Http\Controllers\Admin\Todos\TemplatesController::class, 'destroy'])->name('destroy');
+        Route::post('/{template}/duplicate', [App\Http\Controllers\Admin\Todos\TemplatesController::class, 'duplicate'])->name('duplicate');
+    });
+    
+    // Schedules Routes
+    Route::prefix('schedules')->name('schedules.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Todos\SchedulesController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\Admin\Todos\SchedulesController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\Admin\Todos\SchedulesController::class, 'store'])->name('store');
+        Route::get('/{schedule}', [App\Http\Controllers\Admin\Todos\SchedulesController::class, 'show'])->name('show');
+        Route::get('/{schedule}/edit', [App\Http\Controllers\Admin\Todos\SchedulesController::class, 'edit'])->name('edit');
+        Route::put('/{schedule}', [App\Http\Controllers\Admin\Todos\SchedulesController::class, 'update'])->name('update');
+        Route::delete('/{schedule}', [App\Http\Controllers\Admin\Todos\SchedulesController::class, 'destroy'])->name('destroy');
+        Route::post('/{schedule}/activate', [App\Http\Controllers\Admin\Todos\SchedulesController::class, 'activate'])->name('activate');
+        Route::post('/{schedule}/deactivate', [App\Http\Controllers\Admin\Todos\SchedulesController::class, 'deactivate'])->name('deactivate');
+    });
+    
+    // Progress Tracking Routes
+    Route::prefix('progress')->name('progress.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Todos\ProgressController::class, 'index'])->name('index');
+        Route::post('/export', [App\Http\Controllers\Admin\Todos\ProgressController::class, 'export'])->name('export');
+        Route::get('/staff/{staff}', [App\Http\Controllers\Admin\Todos\ProgressController::class, 'staffDetails'])->name('staff-details');
+    });
+});
+
+// Demo Routes
+Route::get('/admin/demo/logo-animations', function () {
+    return view('admin.demo.logo-animations');
+});
+
+Route::get('/admin/demo/simple-test', function () {
+    return view('admin.demo.simple-test');
 });
 
 // Language switching routes
@@ -765,6 +849,53 @@ Route::prefix('admin/injera')->name('admin.injera.')->group(function () {
         Route::put('/{order}/status', [App\Http\Controllers\Admin\Injera\OrdersController::class, 'updateStatus'])->name('update-status');
         Route::post('/allocate', [App\Http\Controllers\Admin\Injera\OrdersController::class, 'allocate'])->name('allocate');
         Route::post('/{order}/cancel', [App\Http\Controllers\Admin\Injera\OrdersController::class, 'cancel'])->name('cancel');
+    });
+});
+
+    // Activity Tracking Routes
+    Route::prefix('admin/activities')->name('admin.activities.')->group(function () {
+        // Activity Management Routes
+        Route::prefix('manage')->name('manage.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\Activities\ManageController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Admin\Activities\ManageController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\Admin\Activities\ManageController::class, 'store'])->name('store');
+            Route::get('/{activity}', [App\Http\Controllers\Admin\Activities\ManageController::class, 'show'])->name('show');
+            Route::get('/{activity}/edit', [App\Http\Controllers\Admin\Activities\ManageController::class, 'edit'])->name('edit');
+            Route::put('/{activity}', [App\Http\Controllers\Admin\Activities\ManageController::class, 'update'])->name('update');
+            Route::delete('/{activity}', [App\Http\Controllers\Admin\Activities\ManageController::class, 'destroy'])->name('destroy');
+            Route::post('/{activity}/duplicate', [App\Http\Controllers\Admin\Activities\ManageController::class, 'duplicate'])->name('duplicate');
+            Route::get('/settings', [App\Http\Controllers\Admin\Activities\ManageController::class, 'settings'])->name('settings');
+            Route::post('/settings/categories', [App\Http\Controllers\Admin\Activities\ManageController::class, 'storeCategory'])->name('store_category');
+            Route::put('/settings/categories/{category}', [App\Http\Controllers\Admin\Activities\ManageController::class, 'updateCategory'])->name('update_category');
+            Route::delete('/settings/categories/{category}', [App\Http\Controllers\Admin\Activities\ManageController::class, 'deleteCategory'])->name('delete_category');
+            Route::post('/settings/departments', [App\Http\Controllers\Admin\Activities\ManageController::class, 'storeDepartment'])->name('store_department');
+            Route::put('/settings/departments/{department}', [App\Http\Controllers\Admin\Activities\ManageController::class, 'updateDepartment'])->name('update_department');
+            Route::delete('/settings/departments/{department}', [App\Http\Controllers\Admin\Activities\ManageController::class, 'deleteDepartment'])->name('delete_department');
+        });
+    
+    // Staff Activity Logging Routes
+    Route::prefix('logging')->name('logging.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Activities\LoggingController::class, 'index'])->name('index');
+        Route::post('/start', [App\Http\Controllers\Admin\Activities\LoggingController::class, 'startActivity'])->name('start');
+        Route::post('/stop', [App\Http\Controllers\Admin\Activities\LoggingController::class, 'stopActivity'])->name('stop');
+        Route::post('/pause', [App\Http\Controllers\Admin\Activities\LoggingController::class, 'pauseActivity'])->name('pause');
+        Route::post('/resume', [App\Http\Controllers\Admin\Activities\LoggingController::class, 'resumeActivity'])->name('resume');
+        Route::get('/current', [App\Http\Controllers\Admin\Activities\LoggingController::class, 'getCurrentActivities'])->name('current');
+        Route::get('/history', [App\Http\Controllers\Admin\Activities\LoggingController::class, 'getHistory'])->name('history');
+    });
+    
+    // Activity Analytics Routes
+    Route::prefix('analytics')->name('analytics.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Activities\AnalyticsController::class, 'index'])->name('index');
+        Route::get('/staff/{staff}', [App\Http\Controllers\Admin\Activities\AnalyticsController::class, 'staffAnalytics'])->name('staff');
+        Route::get('/export', [App\Http\Controllers\Admin\Activities\AnalyticsController::class, 'export'])->name('export');
+    });
+    
+    // Activity Assignment Routes
+    Route::prefix('assignments')->name('assignments.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\Activities\AssignmentsController::class, 'index'])->name('index');
+        Route::post('/assign', [App\Http\Controllers\Admin\Activities\AssignmentsController::class, 'assignToStaff'])->name('assign');
+        Route::delete('/unassign', [App\Http\Controllers\Admin\Activities\AssignmentsController::class, 'unassignFromStaff'])->name('unassign');
     });
 });
 

@@ -2,7 +2,7 @@
      x-data="{ 
         sidebarOpen: false,
         sidebarCollapsed: (localStorage.getItem('sidebarCollapsed') === 'true' || localStorage.getItem('sidebarCollapsed') === null),
-        activeSubmenu: '{{ request()->is('admin/staff*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : (request()->is('admin/sales*') || request()->is('admin/finance*') ? 'finance' : (request()->is('admin/menu*') ? 'menu' : (request()->is('admin/customers*') ? 'customers' : (request()->is('admin/reports*') ? 'reports' : (request()->is('admin/tables*') ? 'tables' : (request()->is('admin/bar*') ? 'bar' : (request()->is('admin/injera*') ? 'injera' : '')))))))) }}',
+        activeSubmenu: '{{ request()->is('admin/staff*') || request()->is('admin/shifts*') ? 'staff' : (request()->is('admin/inventory*') ? 'inventory' : (request()->is('admin/sales*') || request()->is('admin/finance*') ? 'finance' : (request()->is('admin/menu*') ? 'menu' : (request()->is('admin/customers*') ? 'customers' : (request()->is('admin/reports*') ? 'reports' : (request()->is('admin/tables*') ? 'tables' : (request()->is('admin/bar*') ? 'bar' : (request()->is('admin/injera*') ? 'injera' : (request()->is('admin/todos*') ? 'todos' : (request()->is('admin/activities*') ? 'activities' : '')))))))))) }}',
         toggleSidebar() {
             this.sidebarCollapsed = !this.sidebarCollapsed;
             localStorage.setItem('sidebarCollapsed', this.sidebarCollapsed);
@@ -227,6 +227,20 @@
                     </a>
                     <a href="/admin/staff/payroll" class="submenu-link {{ request()->is('admin/staff/payroll*') ? 'active' : '' }}">
                         {{ __('staff.nav_payroll') }}
+                    </a>
+                    <div class="submenu-separator"></div>
+                    <div class="submenu-section-title">{{ __('shifts.management.section_title') }}</div>
+                    <a href="/admin/shifts/overview" class="submenu-link {{ request()->is('admin/shifts/overview*') ? 'active' : '' }}">
+                        {{ __('shifts.overview.title') }}
+                    </a>
+                    <a href="/admin/shifts/manage" class="submenu-link {{ request()->is('admin/shifts/manage*') ? 'active' : '' }}">
+                        {{ __('shifts.manage.title') }}
+                    </a>
+                    <a href="/admin/shifts/assignments" class="submenu-link {{ request()->is('admin/shifts/assignments*') ? 'active' : '' }}">
+                        {{ __('shifts.assignments.title') }}
+                    </a>
+                    <a href="/admin/shifts/templates" class="submenu-link {{ request()->is('admin/shifts/templates*') ? 'active' : '' }}">
+                        {{ __('shifts.templates.title') }}
                     </a>
                 </div>
             </div>
@@ -481,6 +495,81 @@
                     </a>
                     <a href="/admin/reports/executive" class="submenu-link {{ request()->is('admin/reports/executive*') ? 'active' : '' }}">
                         {{ __('reports.executive.title') }}
+                    </a>
+                </div>
+            </div>
+
+            <!-- To-Do Management (With Submenu) -->
+            <div class="nav-group" :class="{ 'active': activeSubmenu === 'todos' }">
+                <button @click="toggleSubmenu('todos')" 
+                        class="nav-link nav-link--parent {{ request()->is('admin/todos*') ? 'active' : '' }}">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                    <span class="nav-text">{{ __('todos.management.title') }}</span>
+                    <svg class="nav-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                
+                <div class="nav-submenu" 
+                     x-show="activeSubmenu === 'todos'" 
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 max-h-0"
+                     x-transition:enter-end="opacity-100 max-h-96"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 max-h-96"
+                     x-transition:leave-end="opacity-0 max-h-0">
+                    <a href="{{ route('admin.todos.overview.index') }}" class="submenu-link {{ request()->routeIs('admin.todos.overview.*') ? 'active' : '' }}">
+                        {{ __('todos.overview.title') }}
+                    </a>
+                    <a href="{{ route('admin.todos.staff-lists.index') }}" class="submenu-link {{ request()->routeIs('admin.todos.staff-lists.*') ? 'active' : '' }}">
+                        {{ __('todos.staff_lists.title') }}
+                    </a>
+                    <a href="{{ route('admin.todos.templates.index') }}" class="submenu-link {{ request()->routeIs('admin.todos.templates.*') ? 'active' : '' }}">
+                        {{ __('todos.templates.title') }}
+                    </a>
+                    <a href="{{ route('admin.todos.schedules.index') }}" class="submenu-link {{ request()->routeIs('admin.todos.schedules.*') ? 'active' : '' }}">
+                        {{ __('todos.schedules.title') }}
+                    </a>
+                    <a href="{{ route('admin.todos.progress.index') }}" class="submenu-link {{ request()->routeIs('admin.todos.progress.*') ? 'active' : '' }}">
+                        {{ __('todos.progress.title') }}
+                    </a>
+                </div>
+            </div>
+
+            <!-- Activity Tracking (With Submenu) -->
+            <div class="nav-group" :class="{ 'active': activeSubmenu === 'activities' }">
+                <button @click="toggleSubmenu('activities')" 
+                        class="nav-link nav-link--parent {{ request()->is('admin/activities*') ? 'active' : '' }}">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="nav-text">{{ __('activities.management.title') }}</span>
+                    <svg class="nav-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                
+                <div class="nav-submenu" 
+                     x-show="activeSubmenu === 'activities'" 
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 max-h-0"
+                     x-transition:enter-end="opacity-100 max-h-96"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 max-h-96"
+                     x-transition:leave-end="opacity-0 max-h-0">
+                    <a href="{{ route('admin.activities.manage.index') }}" class="submenu-link {{ request()->routeIs('admin.activities.manage.*') ? 'active' : '' }}">
+                        {{ __('activities.manage.title') }}
+                    </a>
+                    <a href="{{ route('admin.activities.logging.index') }}" class="submenu-link {{ request()->routeIs('admin.activities.logging.*') ? 'active' : '' }}">
+                        {{ __('activities.logging.title') }}
+                    </a>
+                    <a href="{{ route('admin.activities.analytics.index') }}" class="submenu-link {{ request()->routeIs('admin.activities.analytics.*') ? 'active' : '' }}">
+                        {{ __('activities.analytics.title') }}
+                    </a>
+                    <a href="{{ route('admin.activities.assignments.index') }}" class="submenu-link {{ request()->routeIs('admin.activities.assignments.*') ? 'active' : '' }}">
+                        {{ __('activities.assignments.title') }}
                     </a>
                 </div>
             </div>
