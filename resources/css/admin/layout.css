@@ -305,14 +305,15 @@ body {
 
 /* Card Components */
 .card {
-  background-color: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-surface-card-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--color-surface-card-shadow);
   transition: all var(--transition-base);
 }
 
 .card:hover {
+  background-color: var(--color-surface-card-hover);
   box-shadow: var(--shadow-md);
   border-color: var(--color-border-strong);
 }

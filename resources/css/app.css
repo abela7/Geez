@@ -199,8 +199,8 @@
 @layer utilities {
   /* Enhanced Backgrounds */
   .bg-main { background-color: rgb(var(--color-main-bg)); }
-  .bg-card { background-color: rgb(var(--color-card-bg)); }
-  .bg-card-hover { background-color: rgb(var(--color-card-hover)); }
+  .bg-card { background-color: var(--color-surface-card); }
+  .bg-card-hover { background-color: var(--color-surface-card-hover); }
   .bg-primary-btn { background-color: rgb(var(--color-primary-btn)); }
   .bg-secondary-btn { background-color: rgb(var(--color-secondary-btn)); }
   
@@ -226,6 +226,10 @@
   
   /* Enhanced Borders */
   .border-main { border-color: rgb(var(--color-borders)); }
+  .border-card { border-color: var(--color-surface-card-border); }
+  
+  /* Card Utilities */
+  .shadow-card { box-shadow: var(--color-surface-card-shadow); }
   
   /* Notification Colors */
   .bg-success { background-color: rgb(var(--color-success)); }

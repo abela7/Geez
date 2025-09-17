@@ -57,6 +57,8 @@
   --color-surface-card-hover: #F9FAFB;
   --color-surface-card-rgb: 255 255 255;
   --color-surface-card-hover-rgb: 249 250 251;
+  --color-surface-card-border: rgba(229, 231, 235, 0.8);
+  --color-surface-card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 
   /* Icon & border helpers - Subtle and modern */
   --color-border-base: #E5E7EB;
@@ -81,6 +83,89 @@
   /* User avatar */
   --user-avatar-text: #FFFFFF;
   --user-avatar-shadow: rgba(255, 255, 255, 0.25);
+  
+  /* Modal and overlay backgrounds */
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+  --modal-overlay-heavy: rgba(0, 0, 0, 0.7);
+  --modal-overlay-dark: rgba(0, 0, 0, 0.8);
+  
+  /* Status indicators with transparency */
+  --status-info-soft: rgba(99, 102, 241, 0.2);
+  --status-warning-soft: rgba(245, 158, 11, 0.2);
+  --status-error-soft: rgba(239, 68, 68, 0.2);
+  --status-success-soft: rgba(16, 185, 129, 0.2);
+  --status-info-border: rgba(99, 102, 241, 0.3);
+  --status-info-subtle: rgba(99, 102, 241, 0.1);
+  
+  /* Focus ring */
+  --focus-ring: rgba(48, 25, 52, 0.1);
+  
+  /* Finance & Category Colors */
+  --finance-primary: #3b82f6;
+  --finance-secondary: #1e40af;
+  --finance-success: #10b981;
+  --finance-warning: #f59e0b;
+  --finance-danger: #ef4444;
+  --finance-info: #06b6d4;
+  
+  /* Revenue & Financial Metrics */
+  --color-revenue: #10b981;
+  --color-revenue-bg: rgba(16, 185, 129, 0.1);
+  --color-expenses: #ef4444;
+  --color-expenses-bg: rgba(239, 68, 68, 0.1);
+  --color-profit: #3b82f6;
+  --color-profit-bg: rgba(59, 130, 246, 0.1);
+  --color-margin: #8b5cf6;
+  --color-margin-bg: rgba(139, 92, 246, 0.1);
+  
+  /* Category Colors */
+  --category-food: #f59e0b;
+  --category-food-bg: rgba(245, 158, 11, 0.1);
+  --category-utilities: #3b82f6;
+  --category-utilities-bg: rgba(59, 130, 246, 0.1);
+  --category-rent: #8b5cf6;
+  --category-rent-bg: rgba(139, 92, 246, 0.1);
+  --category-marketing: #ec4899;
+  --category-marketing-bg: rgba(236, 72, 153, 0.1);
+  --category-equipment: #06b6d4;
+  --category-equipment-bg: rgba(6, 182, 212, 0.1);
+  --category-maintenance: #84cc16;
+  --category-maintenance-bg: rgba(132, 204, 22, 0.1);
+  --category-other: #6b7280;
+  --category-other-bg: rgba(107, 114, 128, 0.1);
+  
+  /* Budget Status Colors */
+  --budget-on-track: #10b981;
+  --budget-on-track-bg: rgba(16, 185, 129, 0.1);
+  --budget-warning: #f59e0b;
+  --budget-warning-bg: rgba(245, 158, 11, 0.1);
+  --budget-over-budget: #ef4444;
+  --budget-over-budget-bg: rgba(239, 68, 68, 0.1);
+  --budget-under-budget: #3b82f6;
+  --budget-under-budget-bg: rgba(59, 130, 246, 0.1);
+  
+  /* Financial Report Types */
+  --report-income-statement: #10b981;
+  --report-balance-sheet: #3b82f6;
+  --report-cash-flow: #06b6d4;
+  --report-profit-loss: #f59e0b;
+  --report-expense-analysis: #ef4444;
+  --report-tax-reports: #8b5cf6;
+  
+  /* Status Colors */
+  --status-completed: #10b981;
+  --status-completed-bg: rgba(16, 185, 129, 0.1);
+  --status-processing: #f59e0b;
+  --status-processing-bg: rgba(245, 158, 11, 0.1);
+  --status-failed: #ef4444;
+  --status-failed-bg: rgba(239, 68, 68, 0.1);
+  --status-scheduled: #6b7280;
+  --status-scheduled-bg: rgba(107, 114, 128, 0.1);
+  
+  /* Progress & Loading */
+  --progress-bg: #f3f4f6;
+  --progress-fill: #10b981;
+  --loading-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
 
   /* Interactive controls */
   --surface-control: rgba(var(--color-surface-card-rgb), 0.78);
@@ -279,6 +364,8 @@
   --color-surface-card-hover: #334155;
   --color-surface-card-rgb: 30 41 59;
   --color-surface-card-hover-rgb: 51 65 85;
+  --color-surface-card-border: rgba(51, 65, 85, 0.6);
+  --color-surface-card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.15);
 
   --color-border-base: #334155;
   --color-border-base-rgb: 51 65 85;
@@ -301,6 +388,89 @@
   /* User avatar */
   --user-avatar-text: #FFFFFF;
   --user-avatar-shadow: rgba(0, 0, 0, 0.3);
+  
+  /* Modal and overlay backgrounds */
+  --modal-overlay: rgba(0, 0, 0, 0.6);
+  --modal-overlay-heavy: rgba(0, 0, 0, 0.8);
+  --modal-overlay-dark: rgba(0, 0, 0, 0.9);
+  
+  /* Status indicators with transparency */
+  --status-info-soft: rgba(99, 102, 241, 0.25);
+  --status-warning-soft: rgba(245, 158, 11, 0.25);
+  --status-error-soft: rgba(239, 68, 68, 0.25);
+  --status-success-soft: rgba(16, 185, 129, 0.25);
+  --status-info-border: rgba(99, 102, 241, 0.4);
+  --status-info-subtle: rgba(99, 102, 241, 0.15);
+  
+  /* Focus ring */
+  --focus-ring: rgba(167, 139, 250, 0.2);
+  
+  /* Finance & Category Colors - Enhanced for dark theme */
+  --finance-primary: #60a5fa;
+  --finance-secondary: #3b82f6;
+  --finance-success: #34d399;
+  --finance-warning: #fbbf24;
+  --finance-danger: #f87171;
+  --finance-info: #22d3ee;
+  
+  /* Revenue & Financial Metrics - Dark theme */
+  --color-revenue: #34d399;
+  --color-revenue-bg: rgba(52, 211, 153, 0.15);
+  --color-expenses: #f87171;
+  --color-expenses-bg: rgba(248, 113, 113, 0.15);
+  --color-profit: #60a5fa;
+  --color-profit-bg: rgba(96, 165, 250, 0.15);
+  --color-margin: #a78bfa;
+  --color-margin-bg: rgba(167, 139, 250, 0.15);
+  
+  /* Category Colors - Dark theme */
+  --category-food: #fbbf24;
+  --category-food-bg: rgba(251, 191, 36, 0.15);
+  --category-utilities: #60a5fa;
+  --category-utilities-bg: rgba(96, 165, 250, 0.15);
+  --category-rent: #a78bfa;
+  --category-rent-bg: rgba(167, 139, 250, 0.15);
+  --category-marketing: #f472b6;
+  --category-marketing-bg: rgba(244, 114, 182, 0.15);
+  --category-equipment: #22d3ee;
+  --category-equipment-bg: rgba(34, 211, 238, 0.15);
+  --category-maintenance: #a3e635;
+  --category-maintenance-bg: rgba(163, 230, 53, 0.15);
+  --category-other: #9ca3af;
+  --category-other-bg: rgba(156, 163, 175, 0.15);
+  
+  /* Budget Status Colors - Dark theme */
+  --budget-on-track: #34d399;
+  --budget-on-track-bg: rgba(52, 211, 153, 0.15);
+  --budget-warning: #fbbf24;
+  --budget-warning-bg: rgba(251, 191, 36, 0.15);
+  --budget-over-budget: #f87171;
+  --budget-over-budget-bg: rgba(248, 113, 113, 0.15);
+  --budget-under-budget: #60a5fa;
+  --budget-under-budget-bg: rgba(96, 165, 250, 0.15);
+  
+  /* Financial Report Types - Dark theme */
+  --report-income-statement: #34d399;
+  --report-balance-sheet: #60a5fa;
+  --report-cash-flow: #22d3ee;
+  --report-profit-loss: #fbbf24;
+  --report-expense-analysis: #f87171;
+  --report-tax-reports: #a78bfa;
+  
+  /* Status Colors - Dark theme */
+  --status-completed: #34d399;
+  --status-completed-bg: rgba(52, 211, 153, 0.15);
+  --status-processing: #fbbf24;
+  --status-processing-bg: rgba(251, 191, 36, 0.15);
+  --status-failed: #f87171;
+  --status-failed-bg: rgba(248, 113, 113, 0.15);
+  --status-scheduled: #9ca3af;
+  --status-scheduled-bg: rgba(156, 163, 175, 0.15);
+  
+  /* Progress & Loading - Dark theme */
+  --progress-bg: #374151;
+  --progress-fill: #34d399;
+  --loading-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
 
   --surface-control: rgba(var(--color-surface-card-rgb), 0.78);
   --surface-control-hover: rgba(var(--color-surface-card-hover-rgb), 0.85);

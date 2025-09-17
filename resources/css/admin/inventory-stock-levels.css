@@ -469,7 +469,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: var(--modal-overlay);
     backdrop-filter: blur(4px);
 }
 
@@ -678,28 +678,28 @@
     }
     
     .summary-icon-primary {
-        background-color: rgba(99, 102, 241, 0.2);
+        background-color: var(--status-info-soft);
     }
     
     .summary-icon-warning {
-        background-color: rgba(245, 158, 11, 0.2);
+        background-color: var(--status-warning-soft);
     }
     
     .summary-icon-danger {
-        background-color: rgba(239, 68, 68, 0.2);
+        background-color: var(--status-error-soft);
     }
     
     .summary-icon-success {
-        background-color: rgba(16, 185, 129, 0.2);
+        background-color: var(--status-success-soft);
     }
     
     .bulk-actions-bar {
-        background-color: rgba(99, 102, 241, 0.1);
-        border-color: rgba(99, 102, 241, 0.3);
+        background-color: var(--status-info-subtle);
+        border-color: var(--status-info-border);
     }
     
     .drawer-overlay {
-        background-color: rgba(0, 0, 0, 0.7);
+        background-color: var(--modal-overlay-heavy);
     }
 }
 
@@ -747,7 +747,7 @@
     }
     
     .drawer-overlay {
-        background-color: rgba(0, 0, 0, 0.8);
+        background-color: var(--modal-overlay-dark);
     }
 }
 

@@ -306,12 +306,12 @@
 
 .budget-category-card.over-budget {
     border-color: var(--color-budget-danger);
-    background: rgba(239, 68, 68, 0.05);
+    background: var(--budget-over-budget-bg);
 }
 
 .budget-category-card.warning {
     border-color: var(--color-budget-warning);
-    background: rgba(245, 158, 11, 0.05);
+    background: var(--budget-warning-bg);
 }
 
 .category-header {
@@ -514,7 +514,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--modal-overlay);
     backdrop-filter: blur(4px);
 }
 

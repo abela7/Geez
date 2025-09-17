@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
-@section('title', __('finance.expenses') . ' - ' . config('app.name'))
-@section('page_title', __('finance.expenses'))
+@section('title', __('finance.expenses.title') . ' - ' . config('app.name'))
+@section('page_title', __('finance.expenses.title'))
 
 @push('styles')
     @vite('resources/css/admin/expenses.css')
@@ -17,8 +17,8 @@
     <div class="page-header">
         <div class="page-header-content">
             <div class="page-title-section">
-                <h1 class="page-title">{{ __('finance.expenses') }}</h1>
-                <p class="page-subtitle">{{ __('finance.expenses_subtitle') }}</p>
+                <h1 class="page-title">{{ __('finance.expenses.title') }}</h1>
+                <p class="page-subtitle">{{ __('finance.expenses.subtitle') }}</p>
             </div>
             <div class="page-actions">
                 <button type="button" class="btn btn-secondary export-btn">
