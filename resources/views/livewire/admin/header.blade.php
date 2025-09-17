@@ -19,14 +19,14 @@
         </h1>
         
         <!-- Search Bar (Desktop) -->
-        <div class="header-search">
+        <div class="header-search hidden lg:block w-full max-w-md">
             <div class="relative">
-                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="search-icon h-4 w-4 text-[#bfa56b] dark:text-[#daa520]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
                 <input 
                     type="text" 
-                    class="search-input" 
+                    class="search-input w-full rounded-full border border-[#eadfd0] bg-white/60 px-4 py-2 pl-11 text-sm text-[#301934] shadow-[inset_0_2px_6px_rgba(48,25,52,0.06)] transition focus:border-[#daa520] focus:bg-white/95 focus:shadow-[0_0_0_3px_rgba(218,165,32,0.18)] focus:outline-none dark:border-[#3a3654] dark:bg-[#262330]/70 dark:text-[#F1ECE2] dark:focus:bg-[#35324a]" 
                     placeholder="{{ __('dashboard.search_placeholder') }}"
                 >
             </div>
@@ -39,7 +39,7 @@
         <div class="relative">
             <button 
                 wire:click="toggleNotifications"
-                class="notification-btn"
+                class="notification-btn flex h-10 w-10 items-center justify-center rounded-[1.15rem] border border-[#eadfd0] bg-white/70 text-[#4D4052] shadow-[0_18px_32px_-18px_rgba(48,25,52,0.5)] backdrop-blur-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:border-[#daa52070] hover:bg-white/90 hover:text-[#301934] dark:border-[#3a3654] dark:bg-[#262330]/80 dark:text-[#F1ECE2] dark:hover:bg-[#35324a]"
                 aria-label="{{ __('dashboard.notifications') }}"
             >
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,11 +57,11 @@
         <div class="user-menu" x-data="{ open: false }">
             <button 
                 @click="open = !open"
-                class="user-menu-trigger"
+                class="user-menu-trigger group flex items-center gap-3 rounded-[1.4rem] border border-[#eadfd0] bg-white/75 px-3 py-2 text-[#301934] shadow-[0_24px_40px_-20px_rgba(48,25,52,0.55)] backdrop-blur transition duration-200 ease-out hover:-translate-y-0.5 hover:border-[#daa52070] hover:bg-white/95 dark:border-[#3a3654] dark:bg-[#262330]/85 dark:text-[#F1ECE2] dark:hover:bg-[#35324a]"
                 :aria-expanded="open"
                 aria-label="{{ __('dashboard.user_menu') }}"
             >
-                <div class="user-avatar">
+                <div class="user-avatar flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#daa520] via-[#b28945] to-[#301934] text-sm font-semibold text-white shadow-[inset_0_1px_4px_rgba(255,255,255,0.35)]">
                     {{ substr(auth()->user()->name ?? 'A', 0, 1) }}
                 </div>
                 <div class="user-info">

@@ -26,6 +26,10 @@
     --color-white: 255 255 255;
     --color-black: 0 0 0;
     
+    /* Light Theme Specific Variables */
+    --color-bg-light: 255 255 255; /* #FFFFFF Pure White */
+    --color-text-light: 0 0 0; /* #000000 Pure Black */
+    
     /* Notification Colors */
     --color-success: 16 185 129; /* #10B981 Green */
     --color-warning: 245 158 11; /* #F59E0B Amber */
@@ -45,6 +49,10 @@
     --color-secondary-btn: 93 80 99; /* #5D5063 Dark Purple Gray */
     --color-borders: 77 64 82; /* #4D4052 Purple Gray */
     --color-icons: 205 175 86; /* #CDAF56 Light Gold */
+    
+    /* Dark Theme Overrides for Light Theme Variables */
+    --color-bg-light: 26 26 46; /* Dark background for dark theme */
+    --color-text-light: 241 236 226; /* Light text for dark theme */
   }
 }
 
@@ -196,11 +204,17 @@
   .bg-primary-btn { background-color: rgb(var(--color-primary-btn)); }
   .bg-secondary-btn { background-color: rgb(var(--color-secondary-btn)); }
   
+  /* Light Theme Specific Backgrounds */
+  .bg-light { background-color: rgb(var(--color-bg-light)); }
+  
   /* Enhanced Text */
   .text-primary { color: var(--color-text-primary); }
   .text-secondary { color: var(--color-text-secondary); }
   .text-muted { color: var(--color-text-muted); }
   .text-icons { color: rgb(var(--color-icons)); }
+  
+  /* Light Theme Specific Text */
+  .text-light { color: rgb(var(--color-text-light)); }
   
   /* Button Text Colors */
   .text-primary-btn { color: var(--color-primary); }

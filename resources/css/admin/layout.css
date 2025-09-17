@@ -25,6 +25,10 @@
   --color-border: rgba(77, 64, 82, 0.15);
   --color-border-strong: rgba(77, 64, 82, 0.25);
   
+  /* Light Theme Specific Variables */
+  --color-bg-light: #FFFFFF; /* Pure White */
+  --color-text-light: #000000; /* Pure Black */
+  
   /* Status Colors */
   --color-success: #059669;
   --color-success-bg: #D1FAE5;
@@ -107,6 +111,10 @@
   --color-text-muted: #8A8A8A;
   --color-border: rgba(218, 165, 32, 0.15);
   --color-border-strong: rgba(218, 165, 32, 0.25);
+  
+  /* Dark Theme Overrides for Light Theme Variables */
+  --color-bg-light: #1A1A1A; /* Dark background for dark theme */
+  --color-text-light: #F1ECE2; /* Light text for dark theme */
   
   /* Adjusted shadows for dark theme */
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
