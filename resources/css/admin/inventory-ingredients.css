@@ -27,13 +27,13 @@
 .page-title {
     font-size: 28px;
     font-weight: bold;
-    color: #1f2937;
+    color: var(--neutral-900);
     margin: 0 0 8px 0;
 }
 
 .page-subtitle {
     font-size: 16px;
-    color: #6b7280;
+    color: var(--neutral-600);
     margin: 0;
 }
 
@@ -52,11 +52,11 @@
 }
 
 .summary-card {
-    background: white;
-    border: 1px solid #e5e7eb;
+    background: var(--color-surface-card);
+    border: 1px solid var(--neutral-200);
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm);
 }
 
 .summary-card-header {
@@ -69,27 +69,27 @@
 .summary-card-title {
     font-size: 14px;
     font-weight: 500;
-    color: #6b7280;
+    color: var(--neutral-600);
     margin: 0;
 }
 
 .summary-card-icon {
     width: 20px;
     height: 20px;
-    color: #9ca3af;
+    color: var(--neutral-500);
 }
 
 .summary-card-value {
     font-size: 24px;
     font-weight: bold;
-    color: #1f2937;
+    color: var(--neutral-900);
     margin: 0;
 }
 
 /* Filters Section */
 .filters-section {
-    background: white;
-    border: 1px solid #e5e7eb;
+    background: var(--color-surface-card);
+    border: 1px solid var(--neutral-200);
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 30px;
@@ -105,14 +105,14 @@
 .filters-title {
     font-size: 18px;
     font-weight: 600;
-    color: #1f2937;
+    color: var(--neutral-900);
     margin: 0;
 }
 
 .filters-toggle {
     background: none;
     border: none;
-    color: #3b82f6;
+    color: var(--color-info);
     cursor: pointer;
     font-size: 14px;
     padding: 8px 12px;
@@ -123,7 +123,7 @@
 }
 
 .filters-toggle:hover {
-    background-color: #eff6ff;
+    background-color: rgba(var(--color-info-rgb), 0.12);
 }
 
 .filters-grid {
@@ -141,17 +141,17 @@
 .filter-label {
     font-size: 14px;
     font-weight: 500;
-    color: #1f2937;
+    color: var(--neutral-900);
 }
 
 .filter-input,
 .filter-select {
     padding: 8px 12px;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--neutral-300);
     border-radius: 6px;
     font-size: 14px;
-    background: white;
-    color: #1f2937;
+    background: var(--color-surface-card);
+    color: var(--neutral-900);
     width: 100%;
     box-sizing: border-box;
 }
@@ -159,8 +159,8 @@
 .filter-input:focus,
 .filter-select:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: var(--color-info);
+    box-shadow: 0 0 0 3px rgba(var(--color-info-rgb), 0.1);
 }
 
 .filters-actions {
@@ -173,8 +173,8 @@
 
 /* Table Card - CLEAN & SIMPLE */
 .table-card {
-    background: white;
-    border: 1px solid #e5e7eb;
+    background: var(--color-surface-card);
+    border: 1px solid var(--neutral-200);
     border-radius: 8px;
     overflow: hidden;
     margin-bottom: 20px;
@@ -186,8 +186,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background: #f9fafb;
-    border-bottom: 1px solid #e5e7eb;
+    background: var(--neutral-50);
+    border-bottom: 1px solid var(--neutral-200);
     flex-wrap: wrap;
     gap: 16px;
 }
@@ -204,31 +204,31 @@
     width: 100%;
     border-collapse: collapse;
     margin: 0;
-    background: white;
+    background: var(--color-surface-card);
 }
 
 .ingredients-table th,
 .ingredients-table td {
     padding: 16px 12px;
     text-align: left;
-    border-bottom: 1px solid #f3f4f6;
+    border-bottom: 1px solid var(--neutral-100);
     vertical-align: middle;
 }
 
 .ingredients-table th {
-    background: #f9fafb;
+    background: var(--neutral-50);
     font-weight: 600;
-    color: #374151;
+    color: var(--neutral-800);
     font-size: 14px;
-    border-bottom: 2px solid #e5e7eb;
+    border-bottom: 2px solid var(--neutral-200);
 }
 
 .ingredients-table tbody tr {
-    background: white;
+    background: var(--color-surface-card);
 }
 
 .ingredients-table tbody tr:hover {
-    background: #f9fafb;
+    background: var(--neutral-50);
 }
 
 /* Column Widths - Simple */
@@ -250,18 +250,18 @@
 /* Ingredient Name Cell */
 .ingredient-name-cell {
     font-weight: 500;
-    color: #1f2937;
+    color: var(--neutral-900);
 }
 
 .ingredient-name {
     font-weight: 500;
-    color: #1f2937;
+    color: var(--neutral-900);
     margin-bottom: 4px;
 }
 
 .ingredient-code {
     font-size: 12px;
-    color: #6b7280;
+    color: var(--neutral-600);
 }
 
 /* Category Badges - Simple */
@@ -274,23 +274,23 @@
     text-transform: capitalize;
 }
 
-.category-proteins { background: #dcfce7; color: #166534; }
-.category-vegetables { background: #dcfce7; color: #166534; }
-.category-fruits { background: #fef3c7; color: #92400e; }
-.category-grains { background: #e0e7ff; color: #3730a3; }
-.category-dairy { background: #dbeafe; color: #1e40af; }
-.category-spices { background: #fee2e2; color: #dc2626; }
-.category-oils { background: #fed7aa; color: #ea580c; }
-.category-beverages { background: #cffafe; color: #0891b2; }
-.category-condiments { background: #ecfdf5; color: #059669; }
-.category-sweeteners { background: #fce7f3; color: #be185d; }
-.category-nuts { background: #f3e8ff; color: #7c3aed; }
-.category-other { background: #f3f4f6; color: #374151; }
+.category-proteins { background: var(--status-success-soft-bg); color: var(--status-success-soft-text); }
+.category-vegetables { background: var(--status-success-soft-bg); color: var(--status-success-soft-text); }
+.category-fruits { background: var(--status-warning-soft-bg); color: var(--status-warning-soft-text); }
+.category-grains { background: rgba(var(--color-info-rgb), 0.18); color: rgba(var(--color-info-rgb), 0.9); }
+.category-dairy { background: rgba(var(--color-info-rgb), 0.18); color: rgba(var(--color-info-rgb), 0.85); }
+.category-spices { background: var(--status-error-soft-bg); color: var(--status-error-soft-text); }
+.category-oils { background: rgba(var(--color-warning-rgb), 0.2); color: rgba(var(--color-warning-rgb), 0.75); }
+.category-beverages { background: rgba(var(--color-info-rgb), 0.16); color: rgba(var(--color-info-rgb), 0.7); }
+.category-condiments { background: var(--status-success-soft-bg); color: var(--status-success-soft-text); }
+.category-sweeteners { background: rgba(var(--color-accent-rgb), 0.18); color: rgba(var(--color-accent-rgb), 0.75); }
+.category-nuts { background: rgba(var(--color-accent-rgb), 0.18); color: rgba(var(--color-accent-rgb), 0.85); }
+.category-other { background: var(--neutral-100); color: var(--neutral-800); }
 
 /* Cost Cell */
 .cost-cell {
     font-weight: 600;
-    color: #1f2937;
+    color: var(--neutral-900);
 }
 
 /* Status Badges - Simple */
@@ -304,18 +304,18 @@
 }
 
 .status-active {
-    background: #dcfce7;
-    color: #166534;
+    background: var(--status-success-soft-bg);
+    color: var(--status-success-soft-text);
 }
 
 .status-inactive {
-    background: #fef3c7;
-    color: #92400e;
+    background: var(--status-warning-soft-bg);
+    color: var(--status-warning-soft-text);
 }
 
 .status-discontinued {
-    background: #fee2e2;
-    color: #dc2626;
+    background: var(--status-error-soft-bg);
+    color: var(--status-error-soft-text);
 }
 
 /* Empty State */
@@ -334,18 +334,18 @@
 .empty-state-icon {
     width: 64px;
     height: 64px;
-    color: #9ca3af;
+    color: var(--neutral-500);
 }
 
 .empty-state h3 {
     font-size: 18px;
     font-weight: 600;
-    color: #1f2937;
+    color: var(--neutral-900);
     margin: 0;
 }
 
 .empty-state p {
-    color: #6b7280;
+    color: var(--neutral-600);
     margin: 0;
 }
 
@@ -355,13 +355,13 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background: #f9fafb;
-    border-top: 1px solid #e5e7eb;
+    background: var(--neutral-50);
+    border-top: 1px solid var(--neutral-200);
 }
 
 .pagination-info {
     font-size: 14px;
-    color: #6b7280;
+    color: var(--neutral-600);
 }
 
 .pagination-controls {
@@ -439,19 +439,25 @@
     
     .table-card {
         box-shadow: none;
-        border: 1px solid #000;
+        border: 1px solid var(--neutral-950);
     }
     
     .ingredients-table th,
     .ingredients-table td {
-        border: 1px solid #000;
+        border: 1px solid var(--neutral-950);
         padding: 8px;
     }
     
     .status-badge,
     .category-badge {
-        border: 1px solid #000;
+        border: 1px solid var(--neutral-950);
         background: none !important;
-        color: #000 !important;
+        color: var(--neutral-950) !important;
     }
 }
+
+
+
+
+
+

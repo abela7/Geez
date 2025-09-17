@@ -1,0 +1,371 @@
+/* ======================================================================
+   Admin Theme Tokens
+   Centralised background & typography palette for all modules
+   ====================================================================== */
+
+:root,
+:root[data-theme="light"] {
+  /* Modern Light Theme - Clean & Professional */
+  /* Core background surfaces */
+  --color-bg-primary: #FAFBFC; /* Soft neutral gray */
+  --color-bg-secondary: #FFFFFF;
+  --color-bg-tertiary: #F5F7FA;
+
+  /* Brand & accent colours - Professional Purple & Gold */
+  --color-primary: #5B3E96; /* Modern purple */
+  --color-secondary: #7C3AED; /* Vibrant purple */
+  --color-accent: #F59E0B; /* Professional amber */
+
+  /* Typography - High contrast for readability */
+  --color-text-primary: #111827; /* Near black */
+  --color-text-secondary: #4B5563; /* Medium gray */
+  --color-text-muted: #9CA3AF; /* Light gray */
+
+  /* Borders & outlines */
+  --color-border: rgba(77, 64, 82, 0.15);
+  --color-border-strong: rgba(77, 64, 82, 0.25);
+
+  /* Utility (legacy) tokens */
+  --color-bg-light: #FFFFFF;
+  --color-text-light: #000000;
+  --color-bg-light-rgb: 255 255 255;
+  --color-text-light-rgb: 0 0 0;
+
+  /* Status palette */
+  --color-success: #059669;
+  --color-success-bg: #D1FAE5;
+  --color-warning: #D97706;
+  --color-warning-bg: #FED7AA;
+  --color-error: #DC2626;
+  --color-error-bg: #FEE2E2;
+  --color-info: #2563EB;
+  --color-info-bg: #DBEAFE;
+
+  /* RGB equivalents (Tailwind + utilities) */
+  --color-bg-primary-rgb: 250 251 252;
+  --color-bg-secondary-rgb: 255 255 255;
+  --color-bg-tertiary-rgb: 245 247 250;
+  --color-primary-rgb: 91 62 150;
+  --color-secondary-rgb: 124 58 237;
+  --color-accent-rgb: 245 158 11;
+  --color-text-primary-rgb: 17 24 39;
+  --color-text-secondary-rgb: 75 85 99;
+  --color-text-muted-rgb: 156 163 175;
+
+  /* Surface helpers - Modern card design */
+  --color-surface-card: #FFFFFF;
+  --color-surface-card-hover: #F9FAFB;
+  --color-surface-card-rgb: 255 255 255;
+  --color-surface-card-hover-rgb: 249 250 251;
+
+  /* Icon & border helpers - Subtle and modern */
+  --color-border-base: #E5E7EB;
+  --color-border-base-rgb: 229 231 235;
+  --color-icon-default: #6B7280;
+  --color-icon-default-rgb: 107 114 128;
+  --color-icon-accent: #F59E0B;
+  --color-icon-accent-rgb: 245 158 11;
+  --color-white-rgb: 255 255 255;
+  --color-black-rgb: 0 0 0;
+
+  /* Elevated panels (header/footer) - Glass morphism */
+  --surface-panel: #FFFFFF;
+  --surface-panel-hover: rgba(255, 255, 255, 0.95);
+  --surface-panel-border: rgba(var(--color-border-base-rgb), 0.5);
+  --surface-panel-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  
+  /* Dropdown menu items */
+  --dropdown-item-hover: rgba(205, 175, 86, 0.12);
+  --dropdown-item-hover-text: var(--color-text-primary);
+  
+  /* User avatar */
+  --user-avatar-text: #FFFFFF;
+  --user-avatar-shadow: rgba(255, 255, 255, 0.25);
+
+  /* Interactive controls */
+  --surface-control: rgba(var(--color-surface-card-rgb), 0.78);
+  --surface-control-hover: rgba(var(--color-surface-card-rgb), 0.92);
+  --surface-control-active: rgba(var(--color-surface-card-rgb), 0.98);
+  --surface-control-border: rgba(var(--color-border-base-rgb), 0.55);
+  --surface-control-shadow: 0 16px 32px -24px rgba(var(--color-primary-rgb), 0.45);
+
+  /* Sidebar / navigation - Enhanced with beautiful colors */
+  --surface-sidebar: #FFFFFF;
+  --surface-sidebar-border: rgba(var(--color-border-base-rgb), 0.5);
+  --surface-sidebar-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.05);
+  --surface-sidebar-hover: #F8F9FA;
+  --surface-sidebar-active: #CDAF56;
+  --surface-sidebar-active-border: #CDAF56;
+  --surface-sidebar-active-shadow: 0 4px 12px 0 rgba(205, 175, 86, 0.25);
+  --surface-sidebar-active-gradient: linear-gradient(135deg, #CDAF56 0%, #DAA520 100%);
+  --surface-sidebar-text: #000000; /* Pure black for light theme */
+  --surface-sidebar-muted: #6B7280;
+  --surface-sidebar-active-text: #FFFFFF;
+  --surface-sidebar-icon: #4B5563; /* Subtle gray for icons */
+  --surface-sidebar-icon-hover: #CDAF56; /* Golden hover */
+  --surface-sidebar-icon-active: #FFFFFF;
+  
+  /* Sidebar overlays and effects */
+  --sidebar-mobile-overlay: rgba(0, 0, 0, 0.5);
+  --sidebar-submenu-active-bg: rgba(205, 175, 86, 0.1);
+  --sidebar-logo-gradient: rgba(255, 255, 255, 0.2);
+  --sidebar-icon-drop-shadow: rgba(0, 0, 0, 0.15);
+  --sidebar-icon-hover-opacity: rgba(var(--color-primary-rgb), 0.9);
+  
+  /* Timeline/Wire effect between sections */
+  --sidebar-timeline-color: rgba(205, 175, 86, 0.3);
+  --sidebar-timeline-active: #CDAF56;
+  --sidebar-section-divider: rgba(107, 114, 128, 0.2);
+
+  /* Buttons - Modern with subtle effects */
+  --button-primary-bg: var(--color-primary);
+  --button-primary-hover-bg: var(--color-secondary);
+  --button-primary-text: #FFFFFF;
+  --button-primary-border: transparent;
+  --button-primary-shadow: 0 4px 6px -1px rgba(var(--color-primary-rgb), 0.2), 0 2px 4px -1px rgba(var(--color-primary-rgb), 0.12);
+  --button-primary-hover-shadow: 0 10px 15px -3px rgba(var(--color-primary-rgb), 0.3), 0 4px 6px -2px rgba(var(--color-primary-rgb), 0.15);
+  --button-secondary-bg: #F3F4F6;
+  --button-secondary-hover-bg: #E5E7EB;
+  --button-secondary-text: var(--color-text-primary);
+  --button-secondary-border: transparent;
+  --button-secondary-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+  /* Badges - Clean and modern */
+  --badge-critical-bg: #EF4444;
+  --badge-critical-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+  --badge-critical-text: #FFFFFF;
+  --badge-success-bg: #10B981;
+  --badge-warning-bg: #F59E0B;
+  --badge-info-bg: #3B82F6;
+
+  /* Dividers */
+  --divider-subtle: rgba(var(--color-border-base-rgb), 0.5);
+  
+  /* Transitions - Smooth animations */
+  --transition-colors: colors 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-shadow: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-transform: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-all: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Modern effects */
+  --blur-glass: blur(10px);
+  --blur-heavy: blur(20px);
+  
+  /* Navigation specific tokens */
+  --nav-item-height: 44px;
+  --nav-item-padding: 0.75rem 1rem;
+  --nav-item-radius: 8px;
+  --nav-item-transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --nav-active-indicator-width: 3px;
+  --nav-icon-size: 20px;
+  --nav-submenu-indent: 2.5rem;
+  
+  /* Hover effects */
+  --hover-scale: scale(1.02);
+  --hover-brightness: brightness(1.05);
+  --active-scale: scale(0.98);
+}
+
+[data-theme="dark"],
+.dark {
+  --neutral-950: #0B0F19;
+  --neutral-900: #111827;
+  --neutral-800: #1E2535;
+  --neutral-700: #2A3244;
+  --neutral-600: #3A4356;
+  --neutral-500: #6B7280;
+  --neutral-400: #9CA3AF;
+  --neutral-300: #4B5563;
+  --neutral-200: #374151;
+  --neutral-100: #1F2937;
+  --neutral-50: #111827;
+
+  --neutral-950-rgb: 11 15 25;
+  --neutral-900-rgb: 17 24 39;
+  --neutral-800-rgb: 30 37 53;
+  --neutral-700-rgb: 42 50 68;
+  --neutral-600-rgb: 58 67 86;
+  --neutral-500-rgb: 107 114 128;
+  --neutral-400-rgb: 156 163 175;
+  --neutral-300-rgb: 75 85 99;
+  --neutral-200-rgb: 55 65 81;
+  --neutral-100-rgb: 31 41 55;
+  --neutral-50-rgb: 17 24 39;
+
+  --status-success-soft-bg: rgba(var(--color-success-rgb), 0.24);
+  --status-success-soft-text: rgba(var(--color-success-rgb), 0.88);
+  --status-warning-soft-bg: rgba(var(--color-warning-rgb), 0.28);
+  --status-warning-soft-text: rgba(var(--color-warning-rgb), 0.9);
+  --status-error-soft-bg: rgba(var(--color-error-rgb), 0.26);
+  --status-error-soft-text: rgba(var(--color-error-rgb), 0.9);
+  --status-info-soft-bg: rgba(var(--color-info-rgb), 0.28);
+  --status-info-soft-text: rgba(var(--color-info-rgb), 0.9);
+  --neutral-950: #0B0F19;
+  --neutral-900: #111827;
+  --neutral-800: #1E2535;
+  --neutral-700: #2A3244;
+  --neutral-600: #3A4356;
+  --neutral-500: #6B7280;
+  --neutral-400: #9CA3AF;
+  --neutral-300: #4B5563;
+  --neutral-200: #374151;
+  --neutral-100: #1F2937;
+  --neutral-50: #111827;
+
+  --neutral-950-rgb: 11 15 25;
+  --neutral-900-rgb: 17 24 39;
+  --neutral-800-rgb: 30 37 53;
+  --neutral-700-rgb: 42 50 68;
+  --neutral-600-rgb: 58 67 86;
+  --neutral-500-rgb: 107 114 128;
+  --neutral-400-rgb: 156 163 175;
+  --neutral-300-rgb: 75 85 99;
+  --neutral-200-rgb: 55 65 81;
+  --neutral-100-rgb: 31 41 55;
+  --neutral-50-rgb: 17 24 39;
+
+  --status-success-soft-bg: rgba(var(--color-success-rgb), 0.24);
+  --status-success-soft-text: rgba(var(--color-success-rgb), 0.88);
+  --status-warning-soft-bg: rgba(var(--color-warning-rgb), 0.28);
+  --status-warning-soft-text: rgba(var(--color-warning-rgb), 0.9);
+  --status-error-soft-bg: rgba(var(--color-error-rgb), 0.26);
+  --status-error-soft-text: rgba(var(--color-error-rgb), 0.9);
+  --status-info-soft-bg: rgba(var(--color-info-rgb), 0.28);
+  --status-info-soft-text: rgba(var(--color-info-rgb), 0.9);
+  /* Modern Dark Theme - Sophisticated & Clean */
+  /* Core background surfaces */
+  --color-bg-primary: #0F172A; /* Rich slate */
+  --color-bg-secondary: #1E293B; /* Elevated slate */
+  --color-bg-tertiary: #334155; /* Light slate */
+
+  /* Brand & accent colours - Vibrant on dark */
+  --color-primary: #A78BFA; /* Soft purple */
+  --color-secondary: #C084FC; /* Light purple */
+  --color-accent: #FBBF24; /* Bright amber */
+
+  /* Typography - Optimized for dark backgrounds */
+  --color-text-primary: #F1F5F9; /* Off white */
+  --color-text-secondary: #CBD5E1; /* Light gray */
+  --color-text-muted: #94A3B8; /* Medium gray */
+
+  --color-border: rgba(218, 165, 32, 0.15);
+  --color-border-strong: rgba(218, 165, 32, 0.25);
+
+  --color-bg-light: #1A1A1A;
+  --color-text-light: #F1ECE2;
+  --color-bg-light-rgb: 26 26 32;
+  --color-text-light-rgb: 241 236 226;
+
+  --color-success: #34D399;
+  --color-success-bg: rgba(52, 211, 153, 0.12);
+  --color-warning: #F59E0B;
+  --color-warning-bg: rgba(245, 158, 11, 0.14);
+  --color-error: #F87171;
+  --color-error-bg: rgba(248, 113, 113, 0.12);
+  --color-info: #60A5FA;
+  --color-info-bg: rgba(96, 165, 250, 0.12);
+
+  --color-bg-primary-rgb: 15 23 42;
+  --color-bg-secondary-rgb: 30 41 59;
+  --color-bg-tertiary-rgb: 51 65 85;
+  --color-primary-rgb: 167 139 250;
+  --color-secondary-rgb: 192 132 252;
+  --color-accent-rgb: 251 191 36;
+  --color-text-primary-rgb: 241 245 249;
+  --color-text-secondary-rgb: 203 213 225;
+  --color-text-muted-rgb: 148 163 184;
+
+  --color-surface-card: #1E293B;
+  --color-surface-card-hover: #334155;
+  --color-surface-card-rgb: 30 41 59;
+  --color-surface-card-hover-rgb: 51 65 85;
+
+  --color-border-base: #334155;
+  --color-border-base-rgb: 51 65 85;
+  --color-icon-default: #94A3B8;
+  --color-icon-default-rgb: 148 163 184;
+  --color-icon-accent: #FBBF24;
+  --color-icon-accent-rgb: 251 191 36;
+  --color-white-rgb: 255 255 255;
+  --color-black-rgb: 0 0 0;
+
+  --surface-panel: #1E293B;
+  --surface-panel-hover: rgba(30, 41, 59, 0.95);
+  --surface-panel-border: rgba(var(--color-border-base-rgb), 0.5);
+  --surface-panel-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  
+  /* Dropdown menu items */
+  --dropdown-item-hover: rgba(205, 175, 86, 0.15);
+  --dropdown-item-hover-text: var(--color-text-primary);
+  
+  /* User avatar */
+  --user-avatar-text: #FFFFFF;
+  --user-avatar-shadow: rgba(0, 0, 0, 0.3);
+
+  --surface-control: rgba(var(--color-surface-card-rgb), 0.78);
+  --surface-control-hover: rgba(var(--color-surface-card-hover-rgb), 0.85);
+  --surface-control-active: rgba(var(--color-surface-card-hover-rgb), 0.92);
+  --surface-control-border: rgba(var(--color-border-base-rgb), 0.45);
+  --surface-control-shadow: 0 20px 38px -24px rgba(0, 0, 0, 0.65);
+
+  --surface-sidebar: rgba(30, 41, 59, 0.95);
+  --surface-sidebar-border: rgba(var(--color-border-base-rgb), 0.5);
+  --surface-sidebar-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);
+  --surface-sidebar-hover: rgba(51, 65, 85, 0.6);
+  --surface-sidebar-active: #CDAF56;
+  --surface-sidebar-active-border: #CDAF56;
+  --surface-sidebar-active-shadow: 0 4px 12px 0 rgba(205, 175, 86, 0.4);
+  --surface-sidebar-active-gradient: linear-gradient(135deg, #CDAF56 0%, #DAA520 100%);
+  --surface-sidebar-text: #FFFFFF; /* Pure white for dark theme */
+  --surface-sidebar-muted: #94A3B8;
+  --surface-sidebar-active-text: #0F172A; /* Dark text on golden background */
+  --surface-sidebar-icon: #94A3B8; /* Light gray for icons */
+  --surface-sidebar-icon-hover: #CDAF56; /* Golden hover */
+  --surface-sidebar-icon-active: #0F172A;
+  
+  /* Sidebar overlays and effects */
+  --sidebar-mobile-overlay: rgba(0, 0, 0, 0.7);
+  --sidebar-submenu-active-bg: rgba(205, 175, 86, 0.15);
+  --sidebar-logo-gradient: rgba(30, 41, 59, 0.3);
+  --sidebar-icon-drop-shadow: rgba(0, 0, 0, 0.3);
+  --sidebar-icon-hover-opacity: rgba(var(--color-primary-rgb), 0.8);
+  
+  /* Timeline/Wire effect between sections */
+  --sidebar-timeline-color: rgba(205, 175, 86, 0.4);
+  --sidebar-timeline-active: #CDAF56;
+  --sidebar-section-divider: rgba(148, 163, 184, 0.3);
+
+  --button-primary-bg: var(--color-primary);
+  --button-primary-hover-bg: var(--color-secondary);
+  --button-primary-text: #0F172A;
+  --button-primary-border: transparent;
+  --button-primary-shadow: 0 4px 6px -1px rgba(var(--color-primary-rgb), 0.3), 0 2px 4px -1px rgba(var(--color-primary-rgb), 0.2);
+  --button-primary-hover-shadow: 0 10px 15px -3px rgba(var(--color-primary-rgb), 0.4), 0 4px 6px -2px rgba(var(--color-primary-rgb), 0.25);
+  --button-secondary-bg: rgba(51, 65, 85, 0.5);
+  --button-secondary-hover-bg: rgba(51, 65, 85, 0.8);
+  --button-secondary-text: var(--color-text-primary);
+  --button-secondary-border: transparent;
+  --button-secondary-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+
+  --badge-critical-bg: #EF4444;
+  --badge-critical-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+  --badge-critical-text: #FFFFFF;
+  --badge-success-bg: #10B981;
+  --badge-warning-bg: #F59E0B;
+  --badge-info-bg: #3B82F6;
+
+  --divider-subtle: rgba(var(--color-border-base-rgb), 0.3);
+  
+  /* Transitions - Smooth animations */
+  --transition-colors: colors 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-shadow: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-transform: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-all: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Modern effects */
+  --blur-glass: blur(10px);
+  --blur-heavy: blur(20px);
+}
+
+
+

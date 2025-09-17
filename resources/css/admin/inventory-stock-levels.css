@@ -7,17 +7,17 @@
     /* Stock Status Colors */
     --stock-ok: var(--color-success);
     --stock-low: var(--color-warning);
-    --stock-out: var(--color-danger);
+    --stock-out: var(--color-error);
     --stock-critical: var(--color-error);
     --stock-overstocked: var(--color-info);
     
     /* Category Colors */
-    --category-ingredients: #10B981;
-    --category-beverages: #3B82F6;
-    --category-supplies: #8B5CF6;
-    --category-packaging: #F59E0B;
-    --category-cleaning: #EF4444;
-    --category-equipment: #6B7280;
+    --category-ingredients: var(--color-success);
+    --category-beverages: var(--color-info);
+    --category-supplies: rgba(var(--color-accent-rgb), 0.9);
+    --category-packaging: var(--color-warning);
+    --category-cleaning: var(--color-error);
+    --category-equipment: var(--neutral-600);
     
     /* Component Spacing */
     --stock-card-padding: var(--space-lg);
@@ -100,18 +100,18 @@
 }
 
 .summary-icon-primary {
-    background-color: var(--color-primary-light);
+    background-color: var(--status-info-soft-bg);
     color: var(--color-primary);
 }
 
 .summary-icon-warning {
-    background-color: var(--color-warning-light);
+    background-color: var(--status-warning-soft-bg);
     color: var(--color-warning);
 }
 
 .summary-icon-danger {
-    background-color: var(--color-danger-light);
-    color: var(--color-danger);
+    background-color: var(--status-error-soft-bg);
+    color: var(--color-error);
 }
 
 .summary-icon-success {
@@ -191,7 +191,7 @@
 
 /* Bulk Actions Bar */
 .bulk-actions-bar {
-    background: var(--color-primary-light);
+    background: var(--status-info-soft-bg);
     border: 1px solid var(--color-primary);
     border-radius: var(--radius-md);
     padding: var(--space-md);
@@ -350,13 +350,13 @@
 }
 
 .status-low {
-    background-color: var(--color-warning-light);
-    color: var(--color-warning-dark);
+    background-color: var(--status-warning-soft-bg);
+    color: var(--status-warning-soft-text);
 }
 
 .status-out {
-    background-color: var(--color-danger-light);
-    color: var(--color-danger-dark);
+    background-color: var(--status-error-soft-bg);
+    color: var(--status-error-soft-text);
 }
 
 .status-critical {
@@ -670,11 +670,11 @@
 /* Dark Theme Overrides */
 @media (prefers-color-scheme: dark) {
     :root {
-        --stock-ok: #10B981;
-        --stock-low: #F59E0B;
-        --stock-out: #EF4444;
-        --stock-critical: #DC2626;
-        --stock-overstocked: #3B82F6;
+        --stock-ok: var(--color-success);
+        --stock-low: var(--color-warning);
+        --stock-out: var(--color-error);
+        --stock-critical: var(--status-error-soft-text);
+        --stock-overstocked: var(--color-info);
     }
     
     .summary-icon-primary {
@@ -719,21 +719,21 @@
     
     .table-card {
         box-shadow: none;
-        border: 1px solid #000;
+        border: 1px solid var(--neutral-950);
     }
     
     .stock-levels-table th,
     .stock-levels-table td {
-        border: 1px solid #000;
+        border: 1px solid var(--neutral-950);
         padding: 8px;
     }
     
     .status-badge,
     .category-badge,
     .location-badge {
-        border: 1px solid #000;
+        border: 1px solid var(--neutral-950);
         background-color: transparent !important;
-        color: #000 !important;
+        color: var(--neutral-950) !important;
     }
 }
 
@@ -759,3 +759,10 @@
         animation: none;
     }
 }
+
+
+
+
+
+
+

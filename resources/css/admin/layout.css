@@ -4,41 +4,16 @@
    ========================================================================== */
 
 /* Import Component Styles */
+@import './theme.css';
 @import './sidebar.css';
 @import './header.css';
+@import './footer.css';
 
 /* ==========================================================================
    1. DESIGN TOKENS & CSS VARIABLES
    Core design tokens for colors, spacing, radii, shadows, and animations
    ========================================================================== */
 :root {
-  /* Light Theme Colors */
-  --color-bg-primary: #F1ECE2; /* Cream */
-  --color-bg-secondary: #FFFFFF;
-  --color-bg-tertiary: #FAF8F3;
-  --color-primary: #301934; /* Eggplant */
-  --color-secondary: #4D4052; /* Plum Gray */
-  --color-accent: #DAA520; /* Gold */
-  --color-text-primary: #1A1A1A;
-  --color-text-secondary: #4D4052;
-  --color-text-muted: #6B6B6B;
-  --color-border: rgba(77, 64, 82, 0.15);
-  --color-border-strong: rgba(77, 64, 82, 0.25);
-  
-  /* Light Theme Specific Variables */
-  --color-bg-light: #FFFFFF; /* Pure White */
-  --color-text-light: #000000; /* Pure Black */
-  
-  /* Status Colors */
-  --color-success: #059669;
-  --color-success-bg: #D1FAE5;
-  --color-warning: #D97706;
-  --color-warning-bg: #FED7AA;
-  --color-error: #DC2626;
-  --color-error-bg: #FEE2E2;
-  --color-info: #2563EB;
-  --color-info-bg: #DBEAFE;
-  
   /* Spacing Scale */
   --space-xs: 0.25rem;  /* 4px */
   --space-sm: 0.5rem;   /* 8px */
@@ -47,21 +22,21 @@
   --space-xl: 2rem;     /* 32px */
   --space-2xl: 3rem;    /* 48px */
   --space-3xl: 4rem;    /* 64px */
-  
+
   /* Border Radius */
   --radius-sm: 0.375rem;   /* 6px */
   --radius-md: 0.5rem;     /* 8px */
   --radius-lg: 0.75rem;    /* 12px */
   --radius-xl: 1rem;       /* 16px */
   --radius-full: 9999px;
-  
+
   /* Shadows */
   --shadow-xs: 0 1px 2px 0 rgba(48, 25, 52, 0.05);
   --shadow-sm: 0 1px 3px 0 rgba(48, 25, 52, 0.1), 0 1px 2px 0 rgba(48, 25, 52, 0.06);
   --shadow-md: 0 4px 6px -1px rgba(48, 25, 52, 0.1), 0 2px 4px -1px rgba(48, 25, 52, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(48, 25, 52, 0.1), 0 4px 6px -2px rgba(48, 25, 52, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(48, 25, 52, 0.1), 0 10px 10px -5px rgba(48, 25, 52, 0.04);
-  
+
   /* Typography */
   --font-size-xs: 0.75rem;     /* 12px */
   --font-size-sm: 0.875rem;    /* 14px */
@@ -71,12 +46,12 @@
   --font-size-2xl: 1.5rem;     /* 24px */
   --font-size-3xl: 1.875rem;   /* 30px */
   --font-size-4xl: 2.25rem;    /* 36px */
-  
+
   /* Line Heights */
   --line-height-tight: 1.25;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.75;
-  
+
   /* Z-Index Scale */
   --z-dropdown: 1000;
   --z-sticky: 1020;
@@ -85,12 +60,12 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
-  
+
   /* Transitions */
   --transition-fast: 150ms ease-in-out;
   --transition-base: 200ms ease-in-out;
   --transition-slow: 300ms ease-in-out;
-  
+
   /* Animation Curves */
   --ease-in-out-cubic: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-out-cubic: cubic-bezier(0, 0, 0.2, 1);
@@ -100,22 +75,6 @@
 /* Dark Theme Overrides */
 [data-theme="dark"],
 .dark {
-  --color-bg-primary: #1A1A1A;
-  --color-bg-secondary: #252525;
-  --color-bg-tertiary: #2A2A2A;
-  --color-primary: #CDAF56; /* Khaki Gold */
-  --color-secondary: #DAA520; /* Gold */
-  --color-accent: #4D4052; /* Plum Gray */
-  --color-text-primary: #F1ECE2;
-  --color-text-secondary: #B8B0A0;
-  --color-text-muted: #8A8A8A;
-  --color-border: rgba(218, 165, 32, 0.15);
-  --color-border-strong: rgba(218, 165, 32, 0.25);
-  
-  /* Dark Theme Overrides for Light Theme Variables */
-  --color-bg-light: #1A1A1A; /* Dark background for dark theme */
-  --color-text-light: #F1ECE2; /* Light text for dark theme */
-  
   /* Adjusted shadows for dark theme */
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
@@ -469,3 +428,4 @@ body {
   .xl\\:col-span-1 { grid-column: span 1 / span 1; }
   .xl\\:col-span-2 { grid-column: span 2 / span 2; }
 }
+

@@ -444,72 +444,72 @@
 
 /* Category Badges */
 .category-appetizer { 
-    background: var(--color-warning-light, #fef3c7); 
-    color: var(--color-warning-dark, #92400e); 
+    background: var(--color-warning-light, var(--status-warning-soft-bg)); 
+    color: var(--color-warning-dark, var(--status-warning-soft-text)); 
 }
 .category-main_course { 
-    background: var(--color-success-light, #dcfce7); 
-    color: var(--color-success-dark, #166534); 
+    background: var(--color-success-light, var(--status-success-soft-bg)); 
+    color: var(--color-success-dark, var(--status-success-soft-text)); 
 }
 .category-dessert { 
-    background: var(--color-pink-light, #fce7f3); 
-    color: var(--color-pink-dark, #be185d); 
+    background: var(--color-pink-light, rgba(var(--color-accent-rgb), 0.18)); 
+    color: var(--color-pink-dark, rgba(var(--color-accent-rgb), 0.75)); 
 }
 .category-beverage { 
-    background: var(--color-primary-light, #dbeafe); 
-    color: var(--color-primary-dark, #1e40af); 
+    background: var(--status-info-soft-bg), 0.18)); 
+    color: var(--color-primary-dark, rgba(var(--color-info-rgb), 0.85)); 
 }
 .category-sauce { 
-    background: var(--color-purple-light, #f3e8ff); 
-    color: var(--color-purple-dark, #7c3aed); 
+    background: var(--color-purple-light, rgba(var(--color-accent-rgb), 0.18)); 
+    color: var(--color-purple-dark, rgba(var(--color-accent-rgb), 0.85)); 
 }
 .category-side_dish { 
-    background: var(--color-emerald-light, #ecfdf5); 
-    color: var(--color-emerald-dark, #059669); 
+    background: var(--color-emerald-light, var(--status-success-soft-bg)); 
+    color: var(--color-emerald-dark, var(--status-success-soft-text)); 
 }
 .category-soup { 
-    background: var(--color-danger-light, #fef2f2); 
-    color: var(--color-danger-dark, #dc2626); 
+    background: var(--status-error-soft-bg)); 
+    color: var(--color-danger-dark, var(--status-error-soft-text)); 
 }
 .category-salad { 
-    background: var(--color-green-light, #f0fdf4); 
-    color: var(--color-green-dark, #16a34a); 
+    background: var(--color-green-light, rgba(var(--color-success-rgb), 0.2)); 
+    color: var(--color-green-dark, rgba(var(--color-success-rgb), 0.85)); 
 }
 
 /* Difficulty Badges */
 .difficulty-easy { 
-    background: var(--color-success-light, #dcfce7); 
-    color: var(--color-success-dark, #166534); 
+    background: var(--color-success-light, var(--status-success-soft-bg)); 
+    color: var(--color-success-dark, var(--status-success-soft-text)); 
 }
 .difficulty-medium { 
-    background: var(--color-warning-light, #fef3c7); 
-    color: var(--color-warning-dark, #92400e); 
+    background: var(--color-warning-light, var(--status-warning-soft-bg)); 
+    color: var(--color-warning-dark, var(--status-warning-soft-text)); 
 }
 .difficulty-hard { 
-    background: var(--color-danger-light, #fed7d7); 
-    color: var(--color-danger-dark, #c53030); 
+    background: var(--status-error-soft-bg), 0.2)); 
+    color: var(--color-danger-dark, rgba(var(--color-error-rgb), 0.85)); 
 }
 .difficulty-expert { 
-    background: var(--color-secondary-light, #e2e8f0); 
-    color: var(--color-secondary-dark, #2d3748); 
+    background: var(--color-secondary-light, rgba(var(--neutral-300-rgb), 1)); 
+    color: var(--color-secondary-dark, var(--neutral-800)); 
 }
 
 /* Status Badges */
 .status-active { 
-    background: var(--color-success-light, #dcfce7); 
-    color: var(--color-success-dark, #166534); 
+    background: var(--color-success-light, var(--status-success-soft-bg)); 
+    color: var(--color-success-dark, var(--status-success-soft-text)); 
 }
 .status-inactive { 
-    background: var(--color-muted-light, #f3f4f6); 
-    color: var(--color-muted-dark, #6b7280); 
+    background: var(--color-muted-light, var(--neutral-100)); 
+    color: var(--color-muted-dark, var(--neutral-600)); 
 }
 .status-draft { 
-    background: var(--color-warning-light, #fef3c7); 
-    color: var(--color-warning-dark, #92400e); 
+    background: var(--color-warning-light, var(--status-warning-soft-bg)); 
+    color: var(--color-warning-dark, var(--status-warning-soft-text)); 
 }
 .status-testing { 
-    background: var(--color-primary-light, #dbeafe); 
-    color: var(--color-primary-dark, #1e40af); 
+    background: var(--status-info-soft-bg), 0.18)); 
+    color: var(--color-primary-dark, rgba(var(--color-info-rgb), 0.85)); 
 }
 
 /* Professional Empty State */
@@ -544,7 +544,7 @@
 /* Pagination */
 .pagination-wrapper {
     padding: 20px;
-    border-top: 1px solid #f3f4f6;
+    border-top: 1px solid var(--neutral-100);
     display: flex;
     justify-content: center;
 }
@@ -655,20 +655,27 @@
     
     .table-card {
         box-shadow: none;
-        border: 1px solid #000;
+        border: 1px solid var(--neutral-950);
     }
     
     .recipes-table th,
     .recipes-table td {
-        border: 1px solid #000;
+        border: 1px solid var(--neutral-950);
         padding: 8px;
     }
     
     .category-badge,
     .difficulty-badge,
     .status-badge {
-        border: 1px solid #000;
+        border: 1px solid var(--neutral-950);
         background: none !important;
-        color: #000 !important;
+        color: var(--neutral-950) !important;
     }
 }
+
+
+
+
+
+
+

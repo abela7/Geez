@@ -6,30 +6,30 @@
 @layer base {
   :root {
     /* Light Theme Colors */
-    --color-main-bg: 241 236 226; /* #F1ECE2 Cream */
-    --color-card-bg: 255 255 255; /* #FFFFFF White */
-    --color-card-hover: 248 245 240; /* #F8F5F0 Light Cream */
-    --color-text-primary: 48 25 52; /* #301934 Dark Purple */
-    --color-text-secondary: 77 64 82; /* #4D4052 Purple Gray */
-    --color-text-muted: 138 127 140; /* #8A7F8C Muted Purple */
-    --color-primary-btn: 218 165 32; /* #DAA520 Goldenrod */
-    --color-secondary-btn: 77 64 82; /* #4D4052 Purple Gray */
-    --color-borders: 229 222 209; /* #E5DED1 Light Beige */
-    --color-icons: 218 165 32; /* #DAA520 Goldenrod */
-    
+    --color-main-bg: var(--color-bg-primary-rgb);
+    --color-card-bg: var(--color-surface-card-rgb);
+    --color-card-hover: var(--color-surface-card-hover-rgb);
+    --color-text-primary: var(--color-primary-rgb);
+    --color-text-secondary: var(--color-secondary-rgb);
+    --color-text-muted: var(--color-text-muted-rgb);
+    --color-primary-btn: var(--color-accent-rgb);
+    --color-secondary-btn: var(--color-secondary-rgb);
+    --color-borders: var(--color-border-base-rgb);
+    --color-icons: var(--color-icon-default-rgb);
+
     /* Legacy colors for backward compatibility */
-    --color-cream: 241 236 226;
-    --color-eggplant: 48 25 52;
-    --color-plum-gray: 77 64 82;
-    --color-gold: 218 165 32;
-    --color-khaki: 205 175 86;
-    --color-white: 255 255 255;
-    --color-black: 0 0 0;
-    
+    --color-cream: var(--color-bg-primary-rgb);
+    --color-eggplant: var(--color-primary-rgb);
+    --color-plum-gray: var(--color-secondary-rgb);
+    --color-gold: var(--color-accent-rgb);
+    --color-khaki: var(--color-khaki-rgb);
+    --color-white: var(--color-white-rgb);
+    --color-black: var(--color-black-rgb);
+
     /* Light Theme Specific Variables */
-    --color-bg-light: 255 255 255; /* #FFFFFF Pure White */
-    --color-text-light: 0 0 0; /* #000000 Pure Black */
-    
+    --color-bg-light: var(--color-bg-light-rgb);
+    --color-text-light: var(--color-text-light-rgb);
+
     /* Notification Colors */
     --color-success: 16 185 129; /* #10B981 Green */
     --color-warning: 245 158 11; /* #F59E0B Amber */
@@ -39,20 +39,20 @@
 
   .dark {
     /* Dark Theme Colors */
-    --color-main-bg: 26 26 46; /* #1A1A2E Very Dark Blue */
-    --color-card-bg: 45 43 66; /* #2D2B42 Dark Purple */
-    --color-card-hover: 54 51 77; /* #36334D Lighter Dark Purple */
-    --color-text-primary: 241 236 226; /* #F1ECE2 Cream */
-    --color-text-secondary: 209 203 193; /* #D1CBC1 Light Gray */
-    --color-text-muted: 157 150 163; /* #9D96A3 Muted Purple */
-    --color-primary-btn: 205 175 86; /* #CDAF56 Light Gold */
-    --color-secondary-btn: 93 80 99; /* #5D5063 Dark Purple Gray */
-    --color-borders: 77 64 82; /* #4D4052 Purple Gray */
-    --color-icons: 205 175 86; /* #CDAF56 Light Gold */
-    
+    --color-main-bg: var(--color-bg-primary-rgb);
+    --color-card-bg: var(--color-surface-card-rgb);
+    --color-card-hover: var(--color-surface-card-hover-rgb);
+    --color-text-primary: var(--color-text-primary-rgb);
+    --color-text-secondary: var(--color-text-secondary-rgb);
+    --color-text-muted: var(--color-text-muted-rgb);
+    --color-primary-btn: var(--color-accent-rgb);
+    --color-secondary-btn: var(--color-secondary-rgb);
+    --color-borders: var(--color-border-base-rgb);
+    --color-icons: var(--color-icon-default-rgb);
+
     /* Dark Theme Overrides for Light Theme Variables */
-    --color-bg-light: 26 26 46; /* Dark background for dark theme */
-    --color-text-light: 241 236 226; /* Light text for dark theme */
+    --color-bg-light: var(--color-bg-light-rgb);
+    --color-text-light: var(--color-text-light-rgb);
   }
 }
 
