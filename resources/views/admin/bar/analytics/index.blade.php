@@ -4,7 +4,7 @@
 @section('page_title', __('bar.analytics.title'))
 
 @push('styles')
-    @vite('resources/css/admin/bar/analytics.css')
+    {{-- CSS styles will be loaded via main layout --}}
 @endpush
 
 @push('scripts')

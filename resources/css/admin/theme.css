@@ -11,9 +11,9 @@
   --color-bg-secondary: #FFFFFF;
   --color-bg-tertiary: #F5F7FA;
 
-  /* Brand & accent colours - Professional Purple & Gold */
-  --color-primary: #5B3E96; /* Modern purple */
-  --color-secondary: #7C3AED; /* Vibrant purple */
+  /* Brand & accent colours - Professional Gold & Purple */
+  --color-primary: #CDAF56; /* Golden primary */
+  --color-secondary: #DAA520; /* Darker gold */
   --color-accent: #F59E0B; /* Professional amber */
 
   /* Typography - High contrast for readability */
@@ -45,8 +45,8 @@
   --color-bg-primary-rgb: 250 251 252;
   --color-bg-secondary-rgb: 255 255 255;
   --color-bg-tertiary-rgb: 245 247 250;
-  --color-primary-rgb: 91 62 150;
-  --color-secondary-rgb: 124 58 237;
+  --color-primary-rgb: 205 175 86;
+  --color-secondary-rgb: 218 165 32;
   --color-accent-rgb: 245 158 11;
   --color-text-primary-rgb: 17 24 39;
   --color-text-secondary-rgb: 75 85 99;
@@ -324,8 +324,8 @@
   --color-bg-tertiary: #334155; /* Light slate */
 
   /* Brand & accent colours - Vibrant on dark */
-  --color-primary: #A78BFA; /* Soft purple */
-  --color-secondary: #C084FC; /* Light purple */
+  --color-primary: #CDAF56; /* Golden primary */
+  --color-secondary: #DAA520; /* Darker gold */
   --color-accent: #FBBF24; /* Bright amber */
 
   /* Typography - Optimized for dark backgrounds */
@@ -353,8 +353,8 @@
   --color-bg-primary-rgb: 15 23 42;
   --color-bg-secondary-rgb: 30 41 59;
   --color-bg-tertiary-rgb: 51 65 85;
-  --color-primary-rgb: 167 139 250;
-  --color-secondary-rgb: 192 132 252;
+  --color-primary-rgb: 205 175 86;
+  --color-secondary-rgb: 218 165 32;
   --color-accent-rgb: 251 191 36;
   --color-text-primary-rgb: 241 245 249;
   --color-text-secondary-rgb: 203 213 225;

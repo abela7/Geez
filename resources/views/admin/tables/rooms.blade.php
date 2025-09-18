@@ -4,7 +4,7 @@
 @section('page_title', __('tables.rooms.title'))
 
 @push('styles')
-    @vite('resources/css/admin/tables/rooms-management.css')
+    {{-- CSS styles will be loaded via main layout --}}
 @endpush
 
 @push('scripts')

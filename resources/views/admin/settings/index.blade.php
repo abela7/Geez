@@ -4,7 +4,7 @@
 @section('page_title', __('settings.title'))
 
 @push('styles')
-    @vite('resources/css/admin/restaurant-settings.css')
+    {{-- CSS styles will be loaded via main layout --}}
 @endpush
 
 @push('scripts')

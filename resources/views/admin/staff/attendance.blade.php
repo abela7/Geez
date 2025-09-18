@@ -7,214 +7,404 @@
 @vite(['resources/css/admin/staff-attendance.css'])
 @endpush
 
-@push('scripts')
-@vite(['resources/js/admin/staff-attendance.js'])
-@endpush
-
 @section('content')
-<div class="admin-container" x-data="{ showAttendanceDrawer: false }">
+<div class="space-y-6" x-data="{ showAttendanceDrawer: false }">
     <!-- Page Header -->
-    <div class="page-header">
-        <div class="page-header-content">
-            <div class="page-title-section">
-                <h1 class="page-title">{{ __('staff.attendance.title') }}</h1>
-                <p class="page-subtitle">{{ __('staff.attendance.subtitle') }}</p>
-            </div>
-            <div class="page-actions">
-                <button class="btn btn-secondary" id="exportBtn">
-                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    {{ __('staff.attendance.export') }}
-                </button>
-                <button class="btn btn-primary" @click="showAttendanceDrawer = true">
-                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    {{ __('staff.attendance.add_attendance') }}
-                </button>
-            </div>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl">{{ __('staff.attendance.title') }}</h1>
+            <p class="text-sm">{{ __('staff.attendance.subtitle') }}</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3">
+            <!-- Filters -->
+            <form method="GET" class="flex gap-2">
+                <input type="date" name="date" value="{{ $date }}" class="form-select" onchange="this.form.submit()">
+                <select name="staff_type_id" class="form-select" onchange="this.form.submit()">
+                    <option value="">{{ __('staff.all_types') }}</option>
+                    @foreach($staffTypes as $type)
+                        <option value="{{ $type->id }}" @selected($staffTypeId === $type->id)>{{ $type->display_name }}</option>
+                    @endforeach
+                </select>
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="">{{ __('staff.attendance.all_statuses') }}</option>
+                    <option value="present" @selected($status === 'present')>{{ __('staff.attendance.present') }}</option>
+                    <option value="absent" @selected($status === 'absent')>{{ __('staff.attendance.absent') }}</option>
+                    <option value="late" @selected($status === 'late')>{{ __('staff.attendance.late') }}</option>
+                    <option value="overtime" @selected($status === 'overtime')>{{ __('staff.attendance.overtime') }}</option>
+                </select>
+            </form>
+            <!-- Action Buttons -->
+            <button onclick="alert('{{ __('common.coming_soon') }}')" class="btn btn-secondary">
+                <i class="fas fa-download"></i>
+                {{ __('staff.attendance.export') }}
+            </button>
+            <button @click="showAttendanceDrawer = true" class="btn btn-primary">
+                <i class="fas fa-plus"></i>
+                {{ __('staff.attendance.add_attendance') }}
+            </button>
         </div>
     </div>
 
-    <!-- Quick Insights Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <!-- Total Staff Today -->
-        <div class="card attendance-insight-card">
-            <div class="attendance-insight-header">
-                <div class="attendance-insight-icon attendance-icon-primary">
-                    <svg class="attendance-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
+    <!-- Today's Overview Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Total Staff -->
+        <div class="card bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+            <div class="card-body">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-100 text-sm font-medium">{{ __('staff.attendance.total_staff_today') }}</p>
+                        <p class="text-3xl font-bold">{{ $todayStats['total_staff'] }}</p>
+                    </div>
+                    <div class="p-3 bg-white bg-opacity-20 rounded-full">
+                        <i class="fas fa-users text-xl"></i>
+                    </div>
                 </div>
-                <span class="attendance-insight-label">{{ __('staff.attendance.total_staff_today') }}</span>
+                <p class="text-blue-100 text-sm mt-4">{{ __('staff.attendance.scheduled') }}</p>
             </div>
-            <div class="attendance-insight-value">24</div>
-            <div class="attendance-insight-trend">{{ __('staff.attendance.scheduled') }}</div>
         </div>
 
         <!-- Present Count -->
-        <div class="card attendance-insight-card">
-            <div class="attendance-insight-header">
-                <div class="attendance-insight-icon attendance-icon-success">
-                    <svg class="attendance-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
+        <div class="card bg-gradient-to-r from-green-500 to-green-600 text-white">
+            <div class="card-body">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-green-100 text-sm font-medium">{{ __('staff.attendance.present_count') }}</p>
+                        <p class="text-3xl font-bold">{{ $todayStats['present_count'] }}</p>
+                    </div>
+                    <div class="p-3 bg-white bg-opacity-20 rounded-full">
+                        <i class="fas fa-check-circle text-xl"></i>
+                    </div>
                 </div>
-                <span class="attendance-insight-label">{{ __('staff.attendance.present_count') }}</span>
+                <p class="text-green-100 text-sm mt-4">{{ $todayStats['attendance_rate'] }}% {{ __('staff.attendance.attendance_rate') }}</p>
             </div>
-            <div class="attendance-insight-value">21</div>
-            <div class="attendance-insight-trend attendance-trend-positive">87.5% {{ __('staff.attendance.attendance_rate') }}</div>
         </div>
 
         <!-- Absent Count -->
-        <div class="card attendance-insight-card">
-            <div class="attendance-insight-header">
-                <div class="attendance-insight-icon attendance-icon-error">
-                    <svg class="attendance-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
+        <div class="card bg-gradient-to-r from-red-500 to-red-600 text-white">
+            <div class="card-body">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-red-100 text-sm font-medium">{{ __('staff.attendance.absent_count') }}</p>
+                        <p class="text-3xl font-bold">{{ $todayStats['absent_count'] }}</p>
+                    </div>
+                    <div class="p-3 bg-white bg-opacity-20 rounded-full">
+                        <i class="fas fa-times-circle text-xl"></i>
+                    </div>
                 </div>
-                <span class="attendance-insight-label">{{ __('staff.attendance.absent_count') }}</span>
+                <p class="text-red-100 text-sm mt-4">{{ __('staff.attendance.unexcused') }}</p>
             </div>
-            <div class="attendance-insight-value">2</div>
-            <div class="attendance-insight-trend attendance-trend-negative">{{ __('staff.attendance.unexcused') }}</div>
         </div>
 
         <!-- Late Arrivals -->
-        <div class="card attendance-insight-card">
-            <div class="attendance-insight-header">
-                <div class="attendance-insight-icon attendance-icon-warning">
-                    <svg class="attendance-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
+        <div class="card bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+            <div class="card-body">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-orange-100 text-sm font-medium">{{ __('staff.attendance.late_arrivals') }}</p>
+                        <p class="text-3xl font-bold">{{ $todayStats['late_count'] }}</p>
+                    </div>
+                    <div class="p-3 bg-white bg-opacity-20 rounded-full">
+                        <i class="fas fa-clock text-xl"></i>
+                    </div>
                 </div>
-                <span class="attendance-insight-label">{{ __('staff.attendance.late_arrivals') }}</span>
+                <p class="text-orange-100 text-sm mt-4">{{ __('staff.attendance.within_grace_period') }}</p>
             </div>
-            <div class="attendance-insight-value">1</div>
-            <div class="attendance-insight-trend attendance-trend-warning">{{ __('staff.attendance.within_grace_period') }}</div>
         </div>
     </div>
 
-    <!-- Attendance Drawer -->
-    <x-drawer 
-        :show="false" 
-        :title="__('staff.attendance.add_attendance')" 
-        with-close-button 
-        class="w-11/12 lg:w-1/3"
-        position="right"
-        x-model="showAttendanceDrawer"
-    >
-        <!-- Attendance Form -->
-        <form id="attendanceForm" class="drawer-form h-full">
-            <!-- Staff Selection -->
-            <div class="form-group">
-                <label for="staffSelect">
-                    {{ __('staff.attendance.select_staff') }}
-                </label>
-                <select 
-                    id="staffSelect" 
-                    name="staff_id" 
-                    required
-                >
-                    <option value="">{{ __('staff.attendance.choose_staff') }}</option>
-                    <option value="1">Sarah Johnson - {{ __('staff.waiter') }}</option>
-                    <option value="2">Michael Chen - {{ __('staff.chef') }}</option>
-                    <option value="3">Amina Yusuf - {{ __('staff.cashier') }}</option>
-                    <option value="4">Daniel Tesfaye - {{ __('staff.supervisor') }}</option>
-                    <option value="5">Hanna Gebremedhin - {{ __('staff.manager') }}</option>
-                    <option value="6">Samuel Alemu - {{ __('staff.cleaner') }}</option>
-                </select>
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <!-- Left Column - Attendance Records -->
+        <div class="xl:col-span-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{ __('staff.attendance.attendance_records') }}</h3>
+                    <div class="flex items-center gap-2">
+                        <input type="text" name="search" value="{{ $search }}" placeholder="{{ __('staff.attendance.search_staff') }}" 
+                               class="form-select" style="width: 200px;" 
+                               onchange="document.querySelector('form').submit()">
+                        <span class="text-sm text-gray-500">{{ $attendanceRecords->total() }} {{ __('staff.attendance.records') }}</span>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    @if($attendanceRecords->count() > 0)
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50 dark:bg-gray-800">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            {{ __('staff.attendance.staff_member') }}
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            {{ __('staff.attendance.clock_in') }}
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            {{ __('staff.attendance.clock_out') }}
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            {{ __('staff.attendance.hours_worked') }}
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            {{ __('staff.attendance.status') }}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                                    @foreach($attendanceRecords as $record)
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div class="flex-shrink-0 h-10 w-10">
+                                                        <div class="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                                {{ substr($record->staff->first_name, 0, 1) }}{{ substr($record->staff->last_name, 0, 1) }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="ml-4">
+                                                        <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                                            {{ $record->staff->full_name }}
+                                                        </div>
+                                                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                                                            {{ $record->staff->staffType->display_name ?? 'N/A' }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                                {{ $record->clock_in->format('H:i') }}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                                {{ $record->clock_out ? $record->clock_out->format('H:i') : '-' }}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                                {{ $record->hours_worked ? number_format($record->hours_worked, 1) . 'h' : '-' }}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+                                                    {{ $record->status === 'present' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 
+                                                       ($record->status === 'late' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : 
+                                                        ($record->status === 'absent' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' : 
+                                                         'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200')) }}">
+                                                    {{ __('staff.attendance.' . $record->status) }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                            {{ $attendanceRecords->links() }}
+                        </div>
+                    @else
+                        <div class="flex flex-col items-center justify-center py-12 text-gray-500 dark:text-gray-400">
+                            <i class="fas fa-calendar-times text-4xl mb-4"></i>
+                            <p>{{ __('staff.attendance.no_records') }}</p>
+                            <p class="text-sm">{{ __('staff.attendance.no_records_description') }}</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - Currently Clocked In & Recent Activity -->
+        <div class="space-y-6">
+            <!-- Currently Clocked In -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{ __('staff.attendance.currently_clocked_in') }}</h3>
+                    <span class="text-sm text-gray-500">{{ $currentlyClocked->count() }} {{ __('staff.attendance.active') }}</span>
+                </div>
+                <div class="card-body">
+                    @if($currentlyClocked->count() > 0)
+                        <div class="space-y-3">
+                            @foreach($currentlyClocked as $record)
+                                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="flex-shrink-0">
+                                            <div class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                                                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ $record->staff->full_name }}</h4>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $record->staff->staffType->display_name ?? 'N/A' }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $record->clock_in->format('H:i') }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                                            {{ $record->clock_in->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="flex flex-col items-center justify-center py-8 text-gray-500 dark:text-gray-400">
+                            <i class="fas fa-user-clock text-3xl mb-3"></i>
+                            <p class="text-sm">{{ __('staff.attendance.no_one_clocked_in') }}</p>
+                        </div>
+                    @endif
+                </div>
             </div>
 
-            <!-- Date -->
-            <div class="form-group">
-                <label for="attendanceDate">
-                    {{ __('staff.attendance.date') }}
-                </label>
-                <input 
-                    type="date" 
-                    id="attendanceDate" 
-                    name="date" 
-                    required
-                    value="{{ date('Y-m-d') }}"
-                />
+            <!-- Recent Activity -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{ __('staff.attendance.recent_activity') }}</h3>
+                    <span class="text-sm text-gray-500">{{ __('staff.attendance.last_7_days') }}</span>
+                </div>
+                <div class="card-body">
+                    @if($recentActivity->count() > 0)
+                        <div class="space-y-3">
+                            @foreach($recentActivity->take(8) as $record)
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="flex-shrink-0">
+                                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs
+                                                {{ $record->status === 'present' ? 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300' : 
+                                                   ($record->status === 'late' ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-300' : 
+                                                    'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300') }}">
+                                                <i class="fas fa-{{ $record->status === 'present' ? 'check' : ($record->status === 'late' ? 'clock' : 'times') }}"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ $record->staff->full_name }}</h4>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $record->clock_in->format('M j, H:i') }}</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs px-2 py-1 rounded-full
+                                        {{ $record->status === 'present' ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 
+                                           ($record->status === 'late' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300' : 
+                                            'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300') }}">
+                                        {{ __('staff.attendance.' . $record->status) }}
+                                    </span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="flex flex-col items-center justify-center py-8 text-gray-500 dark:text-gray-400">
+                            <i class="fas fa-history text-3xl mb-3"></i>
+                            <p class="text-sm">{{ __('staff.attendance.no_recent_activity') }}</p>
+                        </div>
+                    @endif
+                </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Check In Time -->
-            <div class="form-group">
-                <label for="checkInTime">
-                    {{ __('staff.attendance.check_in_time') }}
-                </label>
-                <input 
-                    type="time" 
-                    id="checkInTime" 
-                    name="check_in_time" 
-                    required
-                />
-            </div>
-
-            <!-- Check Out Time -->
-            <div class="form-group">
-                <label for="checkOutTime">
-                    {{ __('staff.attendance.check_out_time') }}
-                </label>
-                <input 
-                    type="time" 
-                    id="checkOutTime" 
-                    name="check_out_time"
-                />
-            </div>
-
-            <!-- Status -->
-            <div class="form-group">
-                <label for="attendanceStatus">
-                    {{ __('staff.attendance.status') }}
-                </label>
-                <select 
-                    id="attendanceStatus" 
-                    name="status" 
-                    required
-                >
-                    <option value="present">{{ __('staff.attendance.present') }}</option>
-                    <option value="absent">{{ __('staff.attendance.absent') }}</option>
-                    <option value="late">{{ __('staff.attendance.late') }}</option>
-                    <option value="on_leave">{{ __('staff.attendance.on_leave') }}</option>
-                </select>
-            </div>
-
-            <!-- Notes -->
-            <div class="form-group">
-                <label for="attendanceNotes">
-                    {{ __('staff.attendance.notes') }}
-                </label>
-                <textarea 
-                    id="attendanceNotes" 
-                    name="notes" 
-                    rows="3"
-                    placeholder="{{ __('staff.attendance.notes_placeholder') }}"
-                ></textarea>
-            </div>
-        </form>
-
-        <x-slot:actions>
-            <div class="drawer-actions">
-                <button 
-                    type="button" 
-                    @click="showAttendanceDrawer = false"
-                    class="drawer-btn drawer-btn-secondary"
-                >
-                    {{ __('staff.attendance.cancel') }}
+    <!-- Add Attendance Modal -->
+    <div x-show="showAttendanceDrawer" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 overflow-hidden" 
+         style="display: none;">
+        
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black bg-opacity-50" @click="showAttendanceDrawer = false"></div>
+        
+        <!-- Drawer -->
+        <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white dark:bg-gray-900 shadow-xl"
+             x-transition:enter="transition ease-out duration-300 transform"
+             x-transition:enter-start="translate-x-full"
+             x-transition:enter-end="translate-x-0"
+             x-transition:leave="transition ease-in duration-200 transform"
+             x-transition:leave-start="translate-x-0"
+             x-transition:leave-end="translate-x-full">
+            
+            <!-- Header -->
+            <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">{{ __('staff.attendance.add_attendance') }}</h3>
+                <button @click="showAttendanceDrawer = false" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <i class="fas fa-times"></i>
                 </button>
-                <button 
-                    type="button" 
-                    @click="saveAttendance()"
-                    class="drawer-btn drawer-btn-primary"
-                >
-                    {{ __('staff.attendance.save') }}
-                </button>
             </div>
-        </x-slot:actions>
-    </x-drawer>
+            
+            <!-- Form -->
+            <div class="p-6">
+                <form class="space-y-4" onsubmit="alert('{{ __('common.coming_soon') }}'); return false;">
+                    <!-- Staff Selection -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            {{ __('staff.attendance.select_staff') }}
+                        </label>
+                        <select class="form-select w-full" required>
+                            <option value="">{{ __('staff.attendance.choose_staff') }}</option>
+                            @foreach($allStaff as $staff)
+                                <option value="{{ $staff->id }}">{{ $staff->full_name }} - {{ $staff->staffType->display_name ?? 'N/A' }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <!-- Date -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            {{ __('staff.attendance.date') }}
+                        </label>
+                        <input type="date" class="form-select w-full" value="{{ now()->format('Y-m-d') }}" required>
+                    </div>
+                    
+                    <!-- Clock In Time -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            {{ __('staff.attendance.clock_in_time') }}
+                        </label>
+                        <input type="time" class="form-select w-full" required>
+                    </div>
+                    
+                    <!-- Clock Out Time -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            {{ __('staff.attendance.clock_out_time') }}
+                        </label>
+                        <input type="time" class="form-select w-full">
+                    </div>
+                    
+                    <!-- Status -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            {{ __('staff.attendance.status') }}
+                        </label>
+                        <select class="form-select w-full" required>
+                            <option value="present">{{ __('staff.attendance.present') }}</option>
+                            <option value="absent">{{ __('staff.attendance.absent') }}</option>
+                            <option value="late">{{ __('staff.attendance.late') }}</option>
+                            <option value="overtime">{{ __('staff.attendance.overtime') }}</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Notes -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            {{ __('staff.attendance.notes') }}
+                        </label>
+                        <textarea class="form-select w-full" rows="3" placeholder="{{ __('staff.attendance.notes_placeholder') }}"></textarea>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" @click="showAttendanceDrawer = false" class="btn btn-secondary">
+                            {{ __('common.cancel') }}
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            {{ __('staff.attendance.save') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+
+@push('scripts')
+@vite(['resources/js/admin/staff-attendance.js'])
+@endpush
 @endsection

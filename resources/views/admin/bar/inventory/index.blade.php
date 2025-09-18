@@ -4,7 +4,7 @@
 @section('page_title', __('bar.inventory.title'))
 
 @push('styles')
-@vite(['resources/css/admin/bar-inventory.css'])
+{{-- CSS styles will be loaded via main layout --}}
 @endpush
 
 @section('content')

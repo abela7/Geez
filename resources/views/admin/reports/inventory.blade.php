@@ -4,7 +4,7 @@
 @section('page_title', __('reports.inventory.title'))
 
 @push('styles')
-    @vite('resources/css/admin/reports/inventory-reports.css')
+    {{-- CSS styles will be loaded via main layout --}}
 @endpush
 
 @push('scripts')

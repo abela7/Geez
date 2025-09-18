@@ -4,7 +4,7 @@
 @section('page_title', __('reports.financial.title'))
 
 @push('styles')
-    @vite('resources/css/admin/reports/financial-reports.css')
+    {{-- CSS styles will be loaded via main layout --}}
 @endpush
 
 @push('scripts')

@@ -4,7 +4,7 @@
 @section('page_title', __('reports.menu.title'))
 
 @push('styles')
-    @vite('resources/css/admin/reports/menu-reports.css')
+    {{-- CSS styles will be loaded via main layout --}}
 @endpush
 
 @push('scripts')

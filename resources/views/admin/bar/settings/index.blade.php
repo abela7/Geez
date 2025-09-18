@@ -4,7 +4,7 @@
 @section('page_title', __('bar.settings.title'))
 
 @push('styles')
-    @vite('resources/css/admin/bar/settings.css')
+    {{-- CSS styles will be loaded via main layout --}}
 @endpush
 
 @push('scripts')

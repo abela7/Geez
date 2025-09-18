@@ -4,7 +4,7 @@
 @section('page_title', __('tables.layout.title'))
 
 @push('styles')
-    @vite('resources/css/admin/tables/table-layout.css')
+    {{-- CSS styles will be loaded via main layout --}}
 @endpush
 
 @push('scripts')

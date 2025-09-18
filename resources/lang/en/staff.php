@@ -1,278 +1,363 @@
 <?php
 
 return [
-    // Page Titles
+    'settings' => [
+        'section_title' => 'Settings',
+        'nav_title' => 'Staff Settings',
+        'title' => 'Staff Settings',
+        'description' => 'Manage staff-related configurations and settings',
+        'staff_types' => [
+            'title' => 'Staff Types',
+            'description' => 'Manage staff roles and position types',
+            'manage_button' => 'Manage Staff Types',
+        ],
+    ],
+
+    'types' => [
+        'title' => 'Staff Types',
+        'create' => 'Create Staff Type',
+        'edit' => 'Edit Staff Type',
+        'show' => 'Staff Type Details',
+        'list' => 'Staff Types List',
+        'trashed' => 'Deleted Staff Types',
+        
+        // Form fields
+        'name' => 'Internal Name',
+        'name_help' => 'Lowercase with underscores (e.g., system_admin)',
+        'display_name' => 'Display Name',
+        'display_name_help' => 'Human-readable name shown in the interface',
+        'description' => 'Description',
+        'description_help' => 'Role responsibilities and access level',
+        'priority' => 'Priority Level',
+        'priority_help' => 'Higher numbers = more access (0-100)',
+        'is_active' => 'Active',
+        'is_active_help' => 'Whether this staff type can be assigned to new staff',
+        
+        // Actions
+        'add_new' => 'Add New Staff Type',
+        'edit_type' => 'Edit Staff Type',
+        'view_details' => 'View Details',
+        'delete_type' => 'Delete Staff Type',
+        'restore_type' => 'Restore Staff Type',
+        'force_delete' => 'Permanently Delete',
+        'toggle_active' => 'Toggle Active Status',
+        'activate' => 'Activate',
+        'deactivate' => 'Deactivate',
+        
+        // Messages
+        'created_successfully' => 'Staff type ":name" created successfully.',
+        'updated_successfully' => 'Staff type ":name" updated successfully.',
+        'deleted_successfully' => 'Staff type ":name" deleted successfully.',
+        'restored_successfully' => 'Staff type ":name" restored successfully.',
+        'force_deleted_successfully' => 'Staff type ":name" permanently deleted.',
+        'activated_successfully' => 'Staff type ":name" activated successfully.',
+        'deactivated_successfully' => 'Staff type ":name" deactivated successfully.',
+        
+        // Errors
+        'cannot_delete_has_active_staff' => 'Cannot delete staff type with active staff members.',
+        'cannot_force_delete_has_staff' => 'Cannot permanently delete staff type with staff members.',
+        'not_found' => 'Staff type not found.',
+        
+        // Status
+        'active' => 'Active',
+        'inactive' => 'Inactive',
+        'deleted' => 'Deleted',
+        
+        // Stats
+        'total_staff' => 'Total Staff',
+        'active_staff' => 'Active Staff',
+        'no_staff_assigned' => 'No staff assigned',
+        'staff_count' => '{0} No staff|{1} 1 staff member|[2,*] :count staff members',
+        
+        // Priority levels
+        'priority_levels' => [
+            'system' => 'System Level (100)',
+            'administrative' => 'Administrative (80-99)',
+            'management' => 'Management (60-79)',
+            'supervisory' => 'Supervisory (40-59)',
+            'operational' => 'Operational (20-39)',
+            'basic' => 'Basic (0-19)',
+        ],
+        
+        // Confirmations
+        'confirm_delete' => 'Are you sure you want to delete this staff type?',
+        'confirm_force_delete' => 'Are you sure you want to permanently delete this staff type? This action cannot be undone.',
+        'confirm_restore' => 'Are you sure you want to restore this staff type?',
+        'confirm_toggle_active' => 'Are you sure you want to change the active status of this staff type?',
+        
+        // Additional fields
+        'details' => 'Staff Type Details',
+        'assigned_staff' => 'Assigned Staff',
+        'priority_level_preview' => 'Priority Level Preview',
+        'edit_warning' => 'This staff type is assigned to :count staff member(s). Changes may affect their access permissions.',
+        'no_types_found' => 'No Staff Types Found',
+        'no_types_description' => 'Create your first staff type to organize your team roles and permissions.',
+        'no_trashed_types' => 'No Deleted Staff Types',
+        'no_trashed_description' => 'All staff types are currently active. Deleted types will appear here.',
+        'back_to_list' => 'Back to Staff Types',
+        'trashed_notice' => 'These staff types have been deleted but can be restored. Staff types with assigned members cannot be permanently deleted.',
+        'has_staff_members' => 'Has staff members',
+    ],
+    
+    // Staff CRUD
     'title' => 'Staff Management',
-    'subtitle' => 'Manage restaurant staff and employee information',
+    'list' => 'Staff List',
+    'create' => 'Add Staff Member',
+    'edit' => 'Edit Staff Member',
+    'show' => 'Staff Details',
+    'trashed' => 'Deleted Staff',
+    
+    // Actions
+    'add_new' => 'Add New Staff Member',
+    'edit_staff' => 'Edit Staff Member',
+    'view_details' => 'View Details',
+    'delete_staff' => 'Delete Staff Member',
+    'restore_staff' => 'Restore Staff Member',
+    'force_delete' => 'Permanently Delete',
+    'toggle_status' => 'Toggle Status',
+    'activate' => 'Activate',
+    'deactivate' => 'Deactivate',
+    'suspend' => 'Suspend',
+    
+    // Fields
+    'full_name' => 'Full Name',
+    'first_name' => 'First Name',
+    'first_name_help' => 'Enter the staff member\'s first name',
+    'last_name' => 'Last Name',
+    'last_name_help' => 'Enter the staff member\'s last name',
+    'username' => 'Username',
+    'username_help' => 'Unique username for login (letters, numbers, underscores only)',
+    'password' => 'Password',
+    'password_help' => 'Minimum 8 characters (leave blank to keep current password when editing)',
+    'password_confirmation' => 'Confirm Password',
+    'email' => 'Email Address',
+    'email_help' => 'Optional email address for notifications',
+    'phone' => 'Phone Number',
+    'phone_help' => 'Contact phone number',
+    'staff_type' => 'Staff Type',
+    'staff_type_help' => 'Select the role/position for this staff member',
+    'status' => 'Status',
+    'status_help' => 'Current employment status',
+    'hire_date' => 'Hire Date',
+    'hire_date_help' => 'Date when the staff member was hired',
+    'years_of_service' => 'years of service',
+    'year_of_service' => 'year of service',
+    'months_of_service' => 'months of service',
+    'month_of_service' => 'month of service',
+    'days_of_service' => 'days of service',
+    'day_of_service' => 'day of service',
+    
+    // Messages
+    'created_successfully' => 'Staff member ":name" created successfully.',
+    'updated_successfully' => 'Staff member ":name" updated successfully.',
+    'deleted_successfully' => 'Staff member ":name" deleted successfully.',
+    'restored_successfully' => 'Staff member ":name" restored successfully.',
+    'force_deleted_successfully' => 'Staff member ":name" permanently deleted.',
+    'activated_successfully' => 'Staff member ":name" activated successfully.',
+    'deactivated_successfully' => 'Staff member ":name" deactivated successfully.',
+    'suspended_successfully' => 'Staff member ":name" suspended successfully.',
+    
+    // Errors
+    'cannot_delete_self' => 'You cannot delete your own account.',
+    'cannot_force_delete_self' => 'You cannot permanently delete your own account.',
+    'cannot_deactivate_self' => 'You cannot deactivate your own account.',
+    'unauthorized_access' => 'You do not have permission to manage staff.',
+    'not_found' => 'Staff member not found.',
+    
+    // Search & Filters
+    'search_placeholder' => 'Search by name, username, or email...',
+    'filter_by_type' => 'Filter by Staff Type',
+    'filter_by_status' => 'Filter by Status',
+    'all_types' => 'All Types',
+    'all_statuses' => 'All Statuses',
+    
+    // Empty States
+    'no_staff_found' => 'No Staff Members Found',
+    'no_staff_description' => 'Add your first staff member to get started.',
+    'no_trashed_staff' => 'No Deleted Staff Members',
+    'no_trashed_description' => 'All staff members are currently active. Deleted staff will appear here.',
+    'no_search_results' => 'No staff members match your search criteria.',
+    
+    // Stats
+    'total_staff' => 'Total Staff',
+    'active_staff' => 'Active Staff',
+    'inactive_staff' => 'Inactive Staff',
+    'suspended_staff' => 'Suspended Staff',
+    'staff_count' => '{0} No staff|{1} 1 staff member|[2,*] :count staff members',
+    
+    // Confirmations
+    'confirm_delete' => 'Are you sure you want to delete this staff member?',
+    'confirm_force_delete' => 'Are you sure you want to permanently delete this staff member? This action cannot be undone.',
+    'confirm_restore' => 'Are you sure you want to restore this staff member?',
+    'confirm_toggle_status' => 'Are you sure you want to change the status of this staff member?',
+    'delete_warning' => 'This staff member will be moved to trash and can be restored later.',
+    'force_delete_warning' => 'This action will permanently delete the staff member and cannot be undone.',
+    'trashed_notice' => 'These staff members have been deleted but can be restored. Staff members cannot be permanently deleted if they have related records.',
+    
+    // Additional
+    'view_active_staff' => 'View Active Staff',
+    'no_profile_created' => 'No profile has been created for this staff member yet.',
+    'create_profile' => 'Create Profile',
+    'employee_id' => 'Employee ID',
+    
+    // Profile & Details
+    'profile' => 'Profile',
+    'personal_info' => 'Personal Information',
+    'employment_info' => 'Employment Information',
+    'contact_info' => 'Contact Information',
+    'account_info' => 'Account Information',
+    'last_login' => 'Last Login',
+    'never_logged_in' => 'Never logged in',
+    'member_since' => 'Member since',
+    'view_profile' => 'View Profile',
+    'add_staff' => 'Add Staff Member',
+    
+    // Staff status values
+    'status_values' => [
+        'active' => 'Active',
+        'inactive' => 'Inactive',
+        'suspended' => 'Suspended',
+    ],
     
     // Navigation
-    'nav_title' => 'Staff',
-    
-    // Content Placeholders
-    'placeholder_title' => 'Staff Management',
-    'placeholder_description' => 'Staff features will be implemented here with modular CSS and JavaScript.',
-    
-    // Sub-navigation
-    'nav_overview' => 'Overview',
-    'nav_directory' => 'Directory', 
+    'nav_overview' => 'Staff Overview',
+    'nav_directory' => 'Staff Directory', 
     'nav_performance' => 'Performance',
     'nav_attendance' => 'Attendance',
     'nav_tasks' => 'Tasks',
     'nav_payroll' => 'Payroll',
     
-    // Directory
-    'directory_subtitle' => 'View and manage employee directory and contact information',
-    'view_grid' => 'Grid view',
-    'view_list' => 'List view',
-    
-    // Quick Actions
-    'quick_actions' => 'Quick Actions',
-    'add_employee' => 'Add Employee',
-    'view_attendance' => 'View Attendance',
+    // Profile page
+    'show' => 'Staff Profile',
+    'edit_staff' => 'Edit Staff Member',
     'assign_task' => 'Assign Task',
-    'generate_payroll' => 'Generate Payroll',
-    'staff_reports' => 'Staff Reports',
+    'total_hours' => 'Total Hours',
+    'attendance_rate' => 'Attendance Rate',
+    'task_completion_rate' => 'Task Completion Rate',
+    'performance_review' => 'Performance Rating',
+    'overview' => 'Overview',
+    'attendance' => 'Attendance',
+    'tasks' => 'Tasks',
+    'payroll' => 'Payroll',
+    'performance' => 'Performance',
+    'shifts' => 'Shifts',
+    'years_of_service' => 'years of service',
+    'staff_type' => 'Staff Type',
     
-    // Recent Activity
-    'recent_activity' => 'Recent Activity',
-    'no_recent_activity' => 'No recent activity to display',
-    'activity_employee_added' => 'New employee added',
-    'activity_attendance_marked' => 'Attendance marked',
-    'activity_task_assigned' => 'Task assigned',
-    'activity_leave_approved' => 'Leave request approved',
-    
-    // Staff Overview
-    'staff_overview' => 'Staff Overview',
-    'total_staff' => 'Total Staff',
-    'active_staff' => 'Active Staff',
-    'inactive_staff' => 'Inactive Staff',
-    'on_duty' => 'On Duty',
-    'off_duty' => 'Off Duty',
-    'on_leave' => 'On Leave',
-    
-    // Employee Information
-    'employee' => 'Employee',
-    'employees' => 'Employees',
-    'employee_id' => 'Employee ID',
-    'employee_name' => 'Employee Name',
-    'first_name' => 'First Name',
-    'last_name' => 'Last Name',
-    'full_name' => 'Full Name',
-    'employee_photo' => 'Employee Photo',
-    'date_of_birth' => 'Date of Birth',
-    'gender' => 'Gender',
-    'nationality' => 'Nationality',
-    'id_number' => 'ID Number',
-    'passport_number' => 'Passport Number',
-    
-    // Contact Information
-    'contact_information' => 'Contact Information',
-    'phone_number' => 'Phone Number',
-    'email_address' => 'Email Address',
-    'home_address' => 'Home Address',
-    'emergency_contact' => 'Emergency Contact',
-    'emergency_phone' => 'Emergency Phone',
-    'emergency_relationship' => 'Emergency Relationship',
-    
-    // Employment Details
-    'employment_details' => 'Employment Details',
-    'position' => 'Position',
-    'department' => 'Department',
-    'job_title' => 'Job Title',
-    'employment_type' => 'Employment Type',
-    'employment_status' => 'Employment Status',
-    'hire_date' => 'Hire Date',
-    'start_date' => 'Start Date',
-    'end_date' => 'End Date',
-    'probation_period' => 'Probation Period',
-    'contract_type' => 'Contract Type',
-    
-    // Employment Types
-    'full_time' => 'Full Time',
-    'part_time' => 'Part Time',
-    'contract' => 'Contract',
-    'temporary' => 'Temporary',
-    'intern' => 'Intern',
-    'volunteer' => 'Volunteer',
-    
-    // Employment Status
-    'active' => 'Active',
-    'inactive' => 'Inactive',
-    'terminated' => 'Terminated',
-    'resigned' => 'Resigned',
-    'suspended' => 'Suspended',
-    'probation' => 'On Probation',
-    
-    // Positions & Departments
-    'positions' => 'Positions',
+    // Directory page
+    'directory_subtitle' => 'Manage and view all staff members in your organization',
+    'search_placeholder' => 'Search staff by name, email, or employee ID...',
     'departments' => 'Departments',
-    'manager' => 'Manager',
-    'supervisor' => 'Supervisor',
-    'chef' => 'Chef',
-    'cook' => 'Cook',
-    'waiter' => 'Waiter',
-    'waitress' => 'Waitress',
-    'cashier' => 'Cashier',
-    'cleaner' => 'Cleaner',
-    'security' => 'Security',
+    'all_departments' => 'All Departments',
     'kitchen' => 'Kitchen',
     'service' => 'Service',
     'administration' => 'Administration',
     'maintenance' => 'Maintenance',
-    
-    // Salary & Compensation
-    'salary_compensation' => 'Salary & Compensation',
-    'basic_salary' => 'Basic Salary',
-    'hourly_rate' => 'Hourly Rate',
-    'overtime_rate' => 'Overtime Rate',
-    'allowances' => 'Allowances',
-    'deductions' => 'Deductions',
-    'gross_salary' => 'Gross Salary',
-    'net_salary' => 'Net Salary',
-    'payment_frequency' => 'Payment Frequency',
-    'bank_account' => 'Bank Account',
-    'account_number' => 'Account Number',
-    'bank_name' => 'Bank Name',
-    
-    // Work Schedule
-    'work_schedule' => 'Work Schedule',
-    'shift' => 'Shift',
-    'shifts' => 'Shifts',
-    'morning_shift' => 'Morning Shift',
-    'afternoon_shift' => 'Afternoon Shift',
-    'evening_shift' => 'Evening Shift',
-    'night_shift' => 'Night Shift',
-    'start_time' => 'Start Time',
-    'end_time' => 'End Time',
-    'break_time' => 'Break Time',
-    'working_hours' => 'Working Hours',
-    'weekly_hours' => 'Weekly Hours',
-    'overtime_hours' => 'Overtime Hours',
-    
-    // Attendance & Time Tracking
-    'attendance' => 'Attendance',
-    'time_tracking' => 'Time Tracking',
-    'clock_in' => 'Clock In',
-    'clock_out' => 'Clock Out',
-    'check_in_time' => 'Check In Time',
-    'check_out_time' => 'Check Out Time',
-    'total_hours' => 'Total Hours',
-    'late_arrival' => 'Late Arrival',
-    'early_departure' => 'Early Departure',
-    'absent' => 'Absent',
-    'present' => 'Present',
-    'attendance_rate' => 'Attendance Rate',
-    
-    // Leave Management
-    'leave_management' => 'Leave Management',
-    'leave_request' => 'Leave Request',
-    'leave_balance' => 'Leave Balance',
-    'annual_leave' => 'Annual Leave',
-    'sick_leave' => 'Sick Leave',
-    'maternity_leave' => 'Maternity Leave',
-    'paternity_leave' => 'Paternity Leave',
-    'emergency_leave' => 'Emergency Leave',
-    'unpaid_leave' => 'Unpaid Leave',
-    'leave_from' => 'Leave From',
-    'leave_to' => 'Leave To',
-    'leave_days' => 'Leave Days',
-    'leave_reason' => 'Leave Reason',
-    'leave_status' => 'Leave Status',
-    'approved' => 'Approved',
-    'rejected' => 'Rejected',
-    'pending_approval' => 'Pending Approval',
-    
-    // Performance & Training
-    'performance' => 'Performance',
-    'training' => 'Training',
-    'performance_review' => 'Performance Review',
-    'training_record' => 'Training Record',
-    'skills' => 'Skills',
-    'certifications' => 'Certifications',
-    'achievements' => 'Achievements',
-    'goals' => 'Goals',
-    'feedback' => 'Feedback',
-    
-    // Actions
-    'add_employee' => 'Add Employee',
-    'edit_employee' => 'Edit Employee',
-    'delete_employee' => 'Delete Employee',
-    'view_profile' => 'View Profile',
-    'update_profile' => 'Update Profile',
-    'assign_shift' => 'Assign Shift',
-    'record_attendance' => 'Record Attendance',
-    'approve_leave' => 'Approve Leave',
-    'reject_leave' => 'Reject Leave',
-    'generate_payslip' => 'Generate Payslip',
-    'print_payslip' => 'Print Payslip',
-    
-    // Reports
-    'staff_reports' => 'Staff Reports',
-    'attendance_report' => 'Attendance Report',
-    'payroll_report' => 'Payroll Report',
-    'leave_report' => 'Leave Report',
-    'performance_report' => 'Performance Report',
-    'staff_summary' => 'Staff Summary',
-    
-    // Messages & Alerts
-    'employee_added' => 'Employee added successfully',
-    'employee_updated' => 'Employee updated successfully',
-    'employee_deleted' => 'Employee deleted successfully',
-    'attendance_recorded' => 'Attendance recorded successfully',
-    'leave_approved' => 'Leave request approved',
-    'leave_rejected' => 'Leave request rejected',
-    'payslip_generated' => 'Payslip generated successfully',
-    'shift_assigned' => 'Shift assigned successfully',
-    
-    // Validation Messages
-    'employee_name_required' => 'Employee name is required',
-    'employee_id_required' => 'Employee ID is required',
-    'employee_id_unique' => 'Employee ID must be unique',
-    'position_required' => 'Position is required',
-    'hire_date_required' => 'Hire date is required',
-    'salary_required' => 'Salary is required',
-    'phone_required' => 'Phone number is required',
-    'email_required' => 'Email address is required',
-    'invalid_email_format' => 'Invalid email format',
-    'invalid_phone_format' => 'Invalid phone format',
-    
-    // Filters & Search
-    'filter_by_department' => 'Filter by Department',
-    'filter_by_position' => 'Filter by Position',
-    'filter_by_status' => 'Filter by Status',
-    'search_employees' => 'Search employees...',
-    'search_by_name_id' => 'Search by name or ID',
-    'all_departments' => 'All Departments',
-    'all_positions' => 'All Positions',
+    'all_types' => 'All Types',
     'all_statuses' => 'All Statuses',
+    'view_grid' => 'Grid View',
+    'view_list' => 'List View',
     
-    // Import/Export
-    'import_employees' => 'Import Employees',
-    'export_employees' => 'Export Employees',
-    'download_template' => 'Download Template',
-    'bulk_actions' => 'Bulk Actions',
-    'bulk_update' => 'Bulk Update',
-    'bulk_delete' => 'Bulk Delete',
+    // Profile Page
+    'relationship' => 'Relationship',
+    'emergency_contacts' => 'Emergency Contacts',
+    'last_login_ip' => 'Last Login IP',
+    'date_of_birth' => 'Date of Birth',
+    'records_last_30_days' => 'Records (Last 30 Days)',
+    'recent_attendance' => 'Recent Attendance',
+    'no_attendance_records' => 'No Attendance Records',
+    'no_attendance_description' => 'No attendance records found for this staff member.',
+    'attendance_patterns' => 'Attendance Patterns',
+    'attendance_charts_description' => 'Visual attendance patterns and trends will be displayed here.',
+    'active_tasks' => 'Active Tasks',
+    'completion_rate' => 'Completion Rate',
+    'overdue_tasks' => 'Overdue Tasks',
+    'assigned' => 'Assigned',
+    'due' => 'Due',
+    'overdue' => 'Overdue',
+    'start_task' => 'Start Task',
+    'complete_task' => 'Complete Task',
+    'no_active_tasks' => 'No Active Tasks',
+    'no_active_tasks_description' => 'This staff member has no active task assignments.',
+    'task_performance' => 'Task Performance',
+    'task_analytics_description' => 'Task completion analytics and performance metrics will be displayed here.',
+    'last_gross_pay' => 'Last Gross Pay',
+    'total_earnings_6_months' => 'Total Earnings (6 Months)',
+    'payroll_records' => 'Payroll Records',
+    'recent_payroll' => 'Recent Payroll',
+    'generate_payroll' => 'Generate Payroll',
+    'pay_period' => 'Pay Period',
+    'regular_hours' => 'Regular Hours',
+    'overtime_hours' => 'Overtime Hours',
+    'gross_pay' => 'Gross Pay',
+    'deductions' => 'Deductions',
+    'net_pay' => 'Net Pay',
+    'no_payroll_records' => 'No Payroll Records',
+    'no_payroll_description' => 'No payroll records found for this staff member.',
+    'earnings_trend' => 'Earnings Trend',
+    'earnings_chart_description' => 'Earnings trends and payroll history charts will be displayed here.',
+    'overall_rating' => 'Overall Rating',
+    'total_reviews' => 'Total Reviews',
+    'last_review' => 'Last Review',
+    'rating_trend' => 'Rating Trend',
+    'latest_performance_review' => 'Latest Performance Review',
+    'review_period' => 'Review Period',
+    'reviewed_by' => 'Reviewed By',
+    'punctuality' => 'Punctuality',
+    'quality' => 'Quality',
+    'teamwork' => 'Teamwork',
+    'customer_service' => 'Customer Service',
+    'strengths' => 'Strengths',
+    'areas_for_improvement' => 'Areas for Improvement',
+    'goals' => 'Goals',
+    'performance_history' => 'Performance History',
+    'new_review' => 'New Review',
+    'reviewer' => 'Reviewer',
+    'no_performance_reviews' => 'No Performance Reviews',
+    'no_performance_description' => 'No performance reviews found for this staff member.',
+    'performance_trends' => 'Performance Trends',
+    'performance_chart_description' => 'Performance trends and rating history charts will be displayed here.',
+    'upcoming_shifts' => 'Upcoming Shifts',
+    'next_shift' => 'Next Shift',
+    'scheduled_hours' => 'Scheduled Hours',
+    'assign_shift' => 'Assign Shift',
+    'shift' => 'Shift',
+    'hours' => 'hours',
+    'confirm_shift' => 'Confirm Shift',
+    'no_upcoming_shifts' => 'No Upcoming Shifts',
+    'no_upcoming_shifts_description' => 'No upcoming shifts scheduled for this staff member.',
+    'shift_templates' => 'Shift Templates',
+    'shift_templates_description' => 'Recurring shift templates and schedules will be managed here.',
+    'shift_history' => 'Shift History',
+    'shift_history_description' => 'Past shift assignments and completion history will be displayed here.',
+    'task_completion_rate' => 'Task Completion Rate',
     
     // Performance Management
     'performance' => [
         'title' => 'Staff Performance',
-        'subtitle' => 'Track and analyze employee performance metrics and reviews',
+        'subtitle' => 'Monitor and manage staff performance metrics and reviews',
         'overall_score' => 'Overall Score',
         'top_performers' => 'Top Performers',
         'needs_improvement' => 'Needs Improvement',
         'reviews_due' => 'Reviews Due',
         'improvement_this_month' => '+2.3% this month',
-        'above_target' => 'above target',
-        'below_target' => 'below target',
-        'this_week' => 'this week',
+        'above_target' => 'Above target',
+        'below_target' => 'Below target',
+        'this_week' => 'This week',
+        'trends_title' => 'Performance Trends',
         'performance_trends' => 'Performance Trends',
+        'top_performers_title' => 'Top Performers',
+        'top_performers_list' => 'Top Performers',
+        'export_report' => 'Export Report',
+        'filter_monthly' => 'Monthly',
+        'filter_quarterly' => 'Quarterly',
+        'filter_yearly' => 'Yearly',
         'three_months' => '3M',
         'six_months' => '6M',
         'one_year' => '1Y',
-        'top_performers_list' => 'Top Performers',
         'kitchen_staff' => 'Kitchen Staff',
         'service_staff' => 'Service Staff',
+        'management' => 'Management',
         'score' => 'Score',
         'quick_actions' => 'Quick Actions',
         'schedule_review' => 'Schedule Review',
@@ -286,555 +371,65 @@ return [
         'due_tomorrow' => 'Due tomorrow',
         'due_this_week' => 'Due this week',
         'due_next_week' => 'Due next week',
+        'due_in_days' => 'Due in :days days',
+        'due_on_date' => 'Due :date',
+        'overdue' => 'Overdue',
         'key_metrics' => 'Key Metrics',
         'punctuality' => 'Punctuality',
         'productivity' => 'Productivity',
         'customer_satisfaction' => 'Customer Satisfaction',
         'teamwork' => 'Teamwork',
-        'filter_monthly' => 'Monthly',
-        'filter_quarterly' => 'Quarterly',
-        'filter_yearly' => 'Yearly',
-        'export_report' => 'Export Report',
+        'no_trends_data' => 'No performance trends data available',
+        'no_top_performers' => 'No top performers data available',
+        'no_upcoming_reviews' => 'No upcoming reviews scheduled',
+        'no_metrics_data' => 'No metrics data available',
     ],
-    
-    // Attendance Management
+
     'attendance' => [
-        'title' => 'Attendance Management',
-        'subtitle' => 'Track and manage staff attendance, check-ins, and time records',
-        'export' => 'Export',
-        'add_attendance' => 'Add Attendance',
-        
-        // Insights
+        'title' => 'Staff Attendance',
+        'subtitle' => 'Monitor and manage staff attendance records and schedules',
         'total_staff_today' => 'Total Staff Today',
-        'present_count' => 'Present Count',
-        'absent_count' => 'Absent Count',
+        'present_count' => 'Present',
+        'absent_count' => 'Absent',
         'late_arrivals' => 'Late Arrivals',
-        'scheduled' => 'scheduled',
-        'attendance_rate' => 'attendance rate',
-        'unexcused' => 'unexcused',
-        'within_grace_period' => 'within grace period',
-        
-        // Filters
-        'filters' => 'Filters & Search',
-        'clear_filters' => 'Clear Filters',
-        'date_range' => 'Date Range',
-        'today' => 'Today',
-        'this_week' => 'This Week',
-        'this_month' => 'This Month',
-        'custom_range' => 'Custom Range',
-        'start_date' => 'Start Date',
-        'end_date' => 'End Date',
-        'staff_filter' => 'Staff Filter',
-        'all_staff' => 'All Staff',
-        'kitchen_staff' => 'Kitchen Staff',
-        'service_staff' => 'Service Staff',
-        'management' => 'Management',
-        'status_filter' => 'Status Filter',
+        'scheduled' => 'Scheduled',
+        'attendance_rate' => 'Attendance Rate',
+        'unexcused' => 'Unexcused',
+        'within_grace_period' => 'Within Grace Period',
         'all_statuses' => 'All Statuses',
-        'search' => 'Search',
-        'search_placeholder' => 'Search by name or ID...',
-        
-        // Table Headers
-        'attendance_records' => 'Attendance Records',
-        'selected' => 'selected',
-        'mark_present' => 'Mark Present',
-        'mark_absent' => 'Mark Absent',
-        'export_selected' => 'Export Selected',
-        'staff_name' => 'Staff Name',
-        'role_department' => 'Role / Department',
-        'date' => 'Date',
-        'check_in' => 'Check In',
-        'check_out' => 'Check Out',
-        'hours_worked' => 'Hours Worked',
-        'status' => 'Status',
-        'actions' => 'Actions',
-        
-        // Status Values
         'present' => 'Present',
         'absent' => 'Absent',
         'late' => 'Late',
-        'on_leave' => 'On Leave',
-        
-        // Actions
-        'edit' => 'Edit',
-        'leave' => 'Leave',
-        'delete' => 'Delete',
-        'mark_leave' => 'Mark Leave',
-        
-        // Empty State
-        'no_records_found' => 'No attendance records found',
-        'no_records_description' => 'Try adjusting your filters or add the first attendance record.',
-        'add_first_record' => 'Add First Record',
-        
-        // Pagination
-        'showing' => 'Showing',
-        'of' => 'of',
+        'overtime' => 'Overtime',
+        'early_leave' => 'Early Leave',
+        'export' => 'Export Report',
+        'add_attendance' => 'Add Attendance',
+        'attendance_records' => 'Attendance Records',
+        'search_staff' => 'Search staff...',
         'records' => 'records',
-        'previous' => 'Previous',
-        'next' => 'Next',
-        
-        // Modal
-        'select_staff' => 'Select Staff',
-        'choose_staff' => 'Choose Staff Member',
-        'check_in_time' => 'Check-In Time',
-        'check_out_time' => 'Check-Out Time',
+        'staff_member' => 'Staff Member',
+        'clock_in' => 'Clock In',
+        'clock_out' => 'Clock Out',
+        'clock_in_time' => 'Clock In Time',
+        'clock_out_time' => 'Clock Out Time',
+        'hours_worked' => 'Hours Worked',
+        'status' => 'Status',
+        'no_records' => 'No attendance records found',
+        'no_records_description' => 'No attendance records match your current filters.',
+        'currently_clocked_in' => 'Currently Clocked In',
+        'active' => 'active',
+        'no_one_clocked_in' => 'No one is currently clocked in',
+        'recent_activity' => 'Recent Activity',
+        'last_7_days' => 'Last 7 Days',
+        'no_recent_activity' => 'No recent attendance activity',
+        'select_staff' => 'Select Staff Member',
+        'choose_staff' => 'Choose a staff member...',
+        'date' => 'Date',
         'notes' => 'Notes',
         'notes_placeholder' => 'Add any notes about this attendance record...',
+        'save' => 'Save Attendance',
         'cancel' => 'Cancel',
-        'save' => 'Save',
-    ],
-    
-    // Task Management
-    'tasks' => [
-        'title' => 'Task Management',
-        'subtitle' => 'Create, assign, and track staff tasks and responsibilities',
-        
-        // Views
-        'view_modes' => 'View Modes',
-        'dashboard_view' => 'Dashboard',
-        'kanban_view' => 'Kanban Board',
-        'list_view' => 'List View',
-        
-        // Actions
-        'create_task' => 'Create Task',
-        'edit_task' => 'Edit Task',
-        'update_task' => 'Update Task',
-        'delete_task' => 'Delete Task',
-        'view_task' => 'View Task',
-        'close_modal' => 'Close Modal',
-        'cancel' => 'Cancel',
-        'save' => 'Save',
-        
-        // Statistics
-        'total_tasks' => 'Total Tasks',
-        'completed' => 'Completed',
-        'in_progress' => 'In Progress',
-        'overdue' => 'Overdue',
-        'this_week' => 'this week',
-        'no_change' => 'no change',
-        
-        // Quick Actions
-        'quick_actions' => 'Quick Actions',
-        'urgent_task' => 'Urgent Task',
-        'routine_task' => 'Routine Task',
-        'bulk_assign' => 'Bulk Assign',
-        'from_template' => 'From Template',
-        
-        // Recent Tasks
-        'recent_tasks' => 'Recent Tasks',
-        'view_all' => 'View All',
-        
-        // Task Form
-        'task_title' => 'Task Title',
-        'title_placeholder' => 'Enter task title...',
-        'description' => 'Description',
-        'description_placeholder' => 'Describe the task details...',
-        'assignee' => 'Assignee',
-        'select_assignee' => 'Select Assignee',
-        'priority' => 'Priority',
-        'category' => 'Category',
-        'due_date' => 'Due Date',
-        'estimated_hours' => 'Estimated Hours',
-        'status' => 'Status',
-        'task_options' => 'Task Options',
-        'recurring_task' => 'Recurring Task',
-        'send_notifications' => 'Send Notifications',
-        'recurrence_pattern' => 'Recurrence Pattern',
-        'dependencies' => 'Dependencies',
-        'dependencies_help' => 'Select tasks that must be completed before this one',
-        'attachments' => 'Attachments',
-        'drag_files_or_click' => 'Drag files here or click to browse',
-        
-        // Priority Levels
-        'priority_low' => 'Low',
-        'priority_medium' => 'Medium',
-        'priority_high' => 'High',
-        'priority_urgent' => 'Urgent',
-        
-        // Categories
-        'category_kitchen' => 'Kitchen',
-        'category_service' => 'Service',
-        'category_cleaning' => 'Cleaning',
-        'category_maintenance' => 'Maintenance',
-        'category_admin' => 'Administration',
-        
-        // Status Values
-        'status_todo' => 'To Do',
-        'status_in_progress' => 'In Progress',
-        'status_review' => 'Review',
-        'status_completed' => 'Completed',
-        
-        // Recurrence
-        'daily' => 'Daily',
-        'weekly' => 'Weekly',
-        'monthly' => 'Monthly',
-        'custom' => 'Custom',
-        
-        // Filters
-        'filter_assignee' => 'Filter by Assignee',
-        'filter_priority' => 'Filter by Priority',
-        'filter_category' => 'Filter by Category',
-        'all_assignees' => 'All Assignees',
-        'all_priorities' => 'All Priorities',
-        'all_categories' => 'All Categories',
-        'all_statuses' => 'All Statuses',
-        'clear_filters' => 'Clear Filters',
-        
-        // Search & Sort
-        'search_tasks' => 'Search Tasks',
-        'search_placeholder' => 'Search tasks, assignees, descriptions...',
-        'sort_created' => 'Date Created',
-        'sort_due_date' => 'Due Date',
-        'sort_priority' => 'Priority',
-        'sort_title' => 'Title',
-        
-        // Table Headers
-        'select_all' => 'Select All',
-        'progress' => 'Progress',
-        'actions' => 'Actions',
-        
-        // Selection & Bulk Actions
-        'task_selected' => 'task selected',
-        'tasks_selected' => 'tasks selected',
-        'mark_completed' => 'Mark Completed',
-        'mark_high_priority' => 'Mark High Priority',
-        'reassign' => 'Reassign',
-        'delete_selected' => 'Delete Selected',
-        
-        // Empty States
-        'no_tasks_found' => 'No Tasks Found',
-        'no_tasks_description' => 'No tasks match your current filters. Try adjusting your search or create a new task.',
-        'create_first_task' => 'Create First Task',
-        
-        // Messages
-        'task_created' => 'Task created successfully',
-        'task_updated' => 'Task updated successfully',
-        'task_deleted' => 'Task deleted successfully',
-        'tasks_updated' => 'Tasks updated successfully',
-        'error_creating_task' => 'Error creating task',
-        'error_updating_task' => 'Error updating task',
-        'error_deleting_task' => 'Error deleting task',
-        'confirm_delete_task' => 'Are you sure you want to delete this task?',
-        'confirm_delete_tasks' => 'Are you sure you want to delete the selected tasks?',
-        
-        // Validation
-        'title_required' => 'Task title is required',
-        'assignee_required' => 'Assignee is required',
-        'due_date_invalid' => 'Due date must be in the future',
-        'estimated_hours_invalid' => 'Estimated hours must be a positive number',
-        
-        // Notifications
-        'task_assigned' => 'Task assigned to you',
-        'task_due_soon' => 'Task due soon',
-        'task_overdue' => 'Task is overdue',
-        'task_completed_by' => 'Task completed by',
-        
-        // Time & Dates
-        'due_today' => 'Due Today',
-        'due_tomorrow' => 'Due Tomorrow',
-        'due_this_week' => 'Due This Week',
-        'due_next_week' => 'Due Next Week',
-        'overdue_by' => 'Overdue by',
-        'days' => 'days',
-        'hours' => 'hours',
-        'minutes' => 'minutes',
-        
-        // Progress Tracking
-        'not_started' => 'Not Started',
-        'in_progress' => 'In Progress',
-        'almost_done' => 'Almost Done',
-        'completed' => 'Completed',
-        'progress_percent' => '% Complete',
-        
-        // Comments & Updates
-        'add_comment' => 'Add Comment',
-        'comment_placeholder' => 'Add a comment or update...',
-        'task_history' => 'Task History',
-        'activity_log' => 'Activity Log',
-        'no_comments' => 'No comments yet',
-        
-        // Templates
-        'task_templates' => 'Task Templates',
-        'save_as_template' => 'Save as Template',
-        'use_template' => 'Use Template',
-        'template_name' => 'Template Name',
-        'daily_tasks' => 'Daily Tasks',
-        'weekly_tasks' => 'Weekly Tasks',
-        'monthly_tasks' => 'Monthly Tasks',
-        
-        // Reports
-        'task_reports' => 'Task Reports',
-        'completion_rate' => 'Completion Rate',
-        'average_completion_time' => 'Average Completion Time',
-        'overdue_tasks_report' => 'Overdue Tasks Report',
-        'productivity_report' => 'Productivity Report',
-        'export_report' => 'Export Report',
-        
-        // Mobile
-        'swipe_to_complete' => 'Swipe to complete',
-        'tap_to_view' => 'Tap to view details',
-        'pull_to_refresh' => 'Pull to refresh',
-    ],
-    
-    // Payroll Management
-    'payroll' => [
-        'title' => 'Payroll Management',
-        'subtitle' => 'Process payroll, manage employee compensation, and track payment history',
-        
-        // Views
-        'view_modes' => 'View Modes',
-        'dashboard_view' => 'Dashboard',
-        'employees_view' => 'Employees',
-        'history_view' => 'History',
-        
-        // Actions
-        'process_payroll' => 'Process Payroll',
-        'generate_payslips' => 'Generate Payslips',
-        'close_modal' => 'Close Modal',
-        'cancel' => 'Cancel',
-        'save' => 'Save',
-        'save_changes' => 'Save Changes',
-        
-        // Statistics
-        'total_payroll' => 'Total Payroll',
-        'employees_paid' => 'Employees Paid',
-        'pending_approvals' => 'Pending Approvals',
-        'avg_salary' => 'Average Salary',
-        'this_month' => 'this month',
-        'this_week' => 'this week',
-        'no_change' => 'no change',
-        
-        // Quick Actions
-        'quick_actions' => 'Quick Actions',
-        'monthly_payroll' => 'Monthly Payroll',
-        'manage_bonuses' => 'Manage Bonuses',
-        'manage_deductions' => 'Manage Deductions',
-        
-        // Calendar
-        'payroll_calendar' => 'Payroll Calendar',
-        'sun' => 'Sun',
-        'mon' => 'Mon',
-        'tue' => 'Tue',
-        'wed' => 'Wed',
-        'thu' => 'Thu',
-        'fri' => 'Fri',
-        'sat' => 'Sat',
-        
-        // Recent Activity
-        'recent_activity' => 'Recent Activity',
-        'view_all' => 'View All',
-        
-        // Employee Management
-        'search_employees' => 'Search Employees',
-        'search_placeholder' => 'Search by name, position, or department...',
-        'all_departments' => 'All Departments',
-        'all_statuses' => 'All Statuses',
-        'sort_name' => 'Name',
-        'sort_salary' => 'Salary',
-        'sort_department' => 'Department',
-        'sort_last_paid' => 'Last Paid',
-        
-        // Departments
-        'kitchen' => 'Kitchen',
-        'service' => 'Service',
-        'management' => 'Management',
-        'cleaning' => 'Cleaning',
-        
-        // Status Values
-        'active' => 'Active',
-        'pending' => 'Pending',
-        'processed' => 'Processed',
-        'cancelled' => 'Cancelled',
-        
-        // Salary Information
-        'base_salary' => 'Base Salary',
-        'bonuses' => 'Bonuses',
-        'deductions' => 'Deductions',
-        'net_salary' => 'Net Salary',
-        'hourly_rate' => 'Hourly Rate',
-        'overtime_rate' => 'Overtime Rate',
-        'gross_amount' => 'Gross Amount',
-        'net_amount' => 'Net Amount',
-        
-        // Employee Actions
-        'process' => 'Process',
-        'payslip' => 'Payslip',
-        'edit' => 'Edit',
-        'last_paid' => 'Last Paid',
-        'next_payday' => 'Next Payday',
-        
-        // History
-        'search_history' => 'Search History',
-        'search_history_placeholder' => 'Search by employee, type, or period...',
-        'all_periods' => 'All Periods',
-        'all_types' => 'All Types',
-        'last_month' => 'Last Month',
-        'this_quarter' => 'This Quarter',
-        'this_year' => 'This Year',
-        'custom_range' => 'Custom Range',
-        'start_date' => 'Start Date',
-        'end_date' => 'End Date',
-        'export' => 'Export',
-        
-        // Table Headers
-        'employee' => 'Employee',
-        'period' => 'Period',
-        'type' => 'Type',
-        'status' => 'Status',
-        'processed_date' => 'Processed Date',
-        'actions' => 'Actions',
-        'progress' => 'Progress',
-        'select_all' => 'Select All',
-        
-        // Payroll Types
-        'salary' => 'Salary',
-        'bonus' => 'Bonus',
-        'deduction' => 'Deduction',
-        'overtime' => 'Overtime',
-        
-        // Actions
-        'view_record' => 'View Record',
-        'download_payslip' => 'Download Payslip',
-        'cancel_payroll' => 'Cancel Payroll',
-        
-        // Empty States
-        'no_employees_found' => 'No Employees Found',
-        'no_employees_description' => 'No employees match your current filters. Try adjusting your search criteria.',
-        'no_history_found' => 'No History Found',
-        'no_history_description' => 'No payroll history matches your current filters. Try adjusting your search or date range.',
-        
-        // Pagination
-        'showing' => 'Showing',
-        'of' => 'of',
-        'records' => 'records',
-        'previous' => 'Previous',
-        'next' => 'Next',
-        
-        // Selection & Bulk Actions
-        'employee_selected' => 'employee selected',
-        'employees_selected' => 'employees selected',
-        'record_selected' => 'record selected',
-        'records_selected' => 'records selected',
-        'process_selected' => 'Process Selected',
-        'add_bonus' => 'Add Bonus',
-        'add_deduction' => 'Add Deduction',
-        'download_payslips' => 'Download Payslips',
-        'export_records' => 'Export Records',
-        'cancel_selected' => 'Cancel Selected',
-        
-        // Payroll Processing Modal
-        'payroll_period' => 'Payroll Period',
-        'select_period' => 'Select Period',
-        'current_month' => 'Current Month',
-        'previous_month' => 'Previous Month',
-        'custom_period' => 'Custom Period',
-        'payroll_type' => 'Payroll Type',
-        'regular_payroll' => 'Regular Payroll',
-        'bonus_payroll' => 'Bonus Payroll',
-        'overtime_payroll' => 'Overtime Payroll',
-        'adjustment' => 'Adjustment',
-        'period_start' => 'Period Start',
-        'period_end' => 'Period End',
-        'select_employees' => 'Select Employees',
-        'select_all' => 'Select All',
-        'select_none' => 'Select None',
-        'select_by_department' => 'Select by Department',
-        'notes' => 'Notes',
-        'notes_placeholder' => 'Add any notes about this payroll run...',
-        
-        // Payroll Summary
-        'payroll_summary' => 'Payroll Summary',
-        'employees_selected' => 'Employees Selected',
-        'total_gross' => 'Total Gross',
-        'total_deductions' => 'Total Deductions',
-        'total_net' => 'Total Net',
-        
-        // Employee Payroll Edit
-        'edit_employee_payroll' => 'Edit Employee Payroll',
-        'employee_payroll' => 'Employee Payroll',
-        'payment_frequency' => 'Payment Frequency',
-        'monthly' => 'Monthly',
-        'bi_weekly' => 'Bi-Weekly',
-        'weekly' => 'Weekly',
-        'bonus_description' => 'Bonus Description',
-        'deduction_description' => 'Deduction Description',
-        'bank_details' => 'Bank Details',
-        'bank_name' => 'Bank Name',
-        'bank_name_placeholder' => 'Enter bank name...',
-        'account_number' => 'Account Number',
-        'account_number_placeholder' => 'Enter account number...',
-        
-        // Bonus Management
-        'manage_bonuses' => 'Manage Bonuses',
-        'bonus_type' => 'Bonus Type',
-        'performance_bonus' => 'Performance Bonus',
-        'holiday_bonus' => 'Holiday Bonus',
-        'attendance_bonus' => 'Attendance Bonus',
-        'custom_bonus' => 'Custom Bonus',
-        'bonus_amount' => 'Bonus Amount',
-        'bonus_description' => 'Bonus Description',
-        'bonus_description_placeholder' => 'Describe the reason for this bonus...',
-        'apply_bonuses' => 'Apply Bonuses',
-        
-        // Deduction Management
-        'manage_deductions' => 'Manage Deductions',
-        'deduction_type' => 'Deduction Type',
-        'tax_deduction' => 'Tax Deduction',
-        'insurance' => 'Insurance',
-        'loan_repayment' => 'Loan Repayment',
-        'salary_advance' => 'Salary Advance',
-        'custom_deduction' => 'Custom Deduction',
-        'deduction_amount' => 'Deduction Amount',
-        'deduction_description_placeholder' => 'Describe the reason for this deduction...',
-        'apply_deductions' => 'Apply Deductions',
-        
-        // Messages
-        'payroll_processed' => 'Payroll processed successfully',
-        'payslip_generated' => 'Payslip generated successfully',
-        'employee_updated' => 'Employee payroll updated successfully',
-        'bonus_applied' => 'Bonus applied successfully',
-        'deduction_applied' => 'Deduction applied successfully',
-        'error_processing' => 'Error processing payroll',
-        'error_generating' => 'Error generating payslip',
-        'error_updating' => 'Error updating employee',
-        
-        // Validation
-        'select_employees_required' => 'Please select at least one employee',
-        'amount_required' => 'Amount is required',
-        'amount_positive' => 'Amount must be positive',
-        'period_required' => 'Payroll period is required',
-        'description_required' => 'Description is required',
-        
-        // Confirmations
-        'confirm_process_payroll' => 'Are you sure you want to process payroll for selected employees?',
-        'confirm_cancel_payroll' => 'Are you sure you want to cancel this payroll?',
-        'confirm_bulk_cancel' => 'Are you sure you want to cancel the selected payroll records?',
-        
-        // Reports
-        'payroll_reports' => 'Payroll Reports',
-        'monthly_report' => 'Monthly Report',
-        'yearly_report' => 'Yearly Report',
-        'employee_summary' => 'Employee Summary',
-        'tax_report' => 'Tax Report',
-        'export_report' => 'Export Report',
-        
-        // Time Periods
-        'january' => 'January',
-        'february' => 'February',
-        'march' => 'March',
-        'april' => 'April',
-        'may' => 'May',
-        'june' => 'June',
-        'july' => 'July',
-        'august' => 'August',
-        'september' => 'September',
-        'october' => 'October',
-        'november' => 'November',
-        'december' => 'December',
-        
-        // Mobile
-        'swipe_to_process' => 'Swipe to process',
-        'tap_to_view_details' => 'Tap to view details',
-        'pull_to_refresh' => 'Pull to refresh',
+        'check_in_time' => 'Check In Time',
+        'check_out_time' => 'Check Out Time',
     ],
 ];

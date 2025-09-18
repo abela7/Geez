@@ -5,6 +5,39 @@ return [
         'geez_logo_alt' => 'Geez Restaurant Management System Logo',
     ],
     
+    'auth' => [
+        'login' => [
+            'title' => 'Admin Login',
+            'heading' => 'Sign in to Admin Panel',
+            'subtitle' => 'Access your restaurant management dashboard',
+            'username' => 'Username',
+            'username_placeholder' => 'Enter your username',
+            'password' => 'Password',
+            'password_placeholder' => 'Enter your password',
+            'remember_me' => 'Remember me',
+            'sign_in' => 'Sign In',
+            'signing_in' => 'Signing in...',
+            'security_notice' => 'This is a secure area. All access is logged and monitored.',
+        ],
+    ],
+    
+    'staff' => [
+        'types' => [
+            'title' => 'Staff Types',
+            'list' => 'Staff Types List',
+            'trashed' => 'Deleted Staff Types',
+            'add_new' => 'Add New Staff Type',
+            'create' => 'Create Staff Type',
+            'edit' => 'Edit Staff Type',
+            'show' => 'Staff Type Details',
+            'details' => 'Staff Type Details',
+            'assigned_staff' => 'Assigned Staff',
+            'no_types_found' => 'No Staff Types Found',
+            'no_trashed_types' => 'No Deleted Staff Types',
+            'back_to_list' => 'Back to Staff Types',
+        ],
+    ],
+    
     'demo' => [
         'logo_animations' => [
             'title' => 'Logo Animation Demo',

@@ -7,249 +7,225 @@
 @vite(['resources/css/admin/staff-performance.css'])
 @endpush
 
-@push('scripts')
-@vite(['resources/js/admin/staff-performance.js'])
-@endpush
-
 @section('content')
-<div class="admin-container">
+<div class="space-y-6">
     <!-- Page Header -->
-    <div class="page-header">
-        <div class="page-header-content">
-            <div class="page-title-section">
-                <h1 class="page-title">{{ __('staff.performance.title') }}</h1>
-                <p class="page-subtitle">{{ __('staff.performance.subtitle') }}</p>
-            </div>
-            <div class="page-actions">
-                <select class="form-select">
-                    <option value="monthly">{{ __('staff.performance.filter_monthly') }}</option>
-                    <option value="quarterly">{{ __('staff.performance.filter_quarterly') }}</option>
-                    <option value="yearly">{{ __('staff.performance.filter_yearly') }}</option>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl">{{ __('staff.performance.title') }}</h1>
+            <p class="text-sm">{{ __('staff.performance.subtitle') }}</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3">
+            <!-- Filters -->
+            <form method="GET" class="flex gap-2">
+                <select name="period" onchange="this.form.submit()" class="form-select">
+                    <option value="monthly" @selected($period === 'monthly')>{{ __('staff.performance.filter_monthly') }}</option>
+                    <option value="quarterly" @selected($period === 'quarterly')>{{ __('staff.performance.filter_quarterly') }}</option>
+                    <option value="yearly" @selected($period === 'yearly')>{{ __('staff.performance.filter_yearly') }}</option>
                 </select>
-                <button class="btn btn-primary">
-                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    {{ __('staff.performance.export_report') }}
-                </button>
-            </div>
+                <select name="staff_type_id" onchange="this.form.submit()" class="form-select">
+                    <option value="">{{ __('staff.all_types') }}</option>
+                    @foreach($staffTypes as $type)
+                        <option value="{{ $type->id }}" @selected(request('staff_type_id') === $type->id)>{{ $type->display_name }}</option>
+                    @endforeach
+                </select>
+            </form>
+            <!-- Export Button -->
+            <button onclick="alert('{{ __('common.coming_soon') }}')" 
+                    class="btn btn-primary">
+                <i class="fas fa-download"></i>
+                {{ __('staff.performance.export_report') }}
+            </button>
         </div>
     </div>
 
-    <!-- Performance Overview Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <!-- Overall Performance Card -->
-        <div class="card performance-card performance-card-primary">
-            <div class="performance-card-header">
-                <div class="performance-card-icon performance-icon-primary">
-                    <svg class="performance-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                    </svg>
+    <!-- Overview Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Overall Score -->
+        <div class="card bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+            <div class="card-body">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-100 text-sm font-medium">{{ __('staff.performance.overall_score') }}</p>
+                        <p class="text-3xl font-bold">{{ $overviewStats['overall_score'] }}%</p>
+                    </div>
+                    <div class="p-3 bg-white bg-opacity-20 rounded-full">
+                        <i class="fas fa-chart-line text-xl"></i>
+                    </div>
                 </div>
-                <span class="performance-card-label">{{ __('staff.performance.overall_score') }}</span>
-            </div>
-            <div class="performance-card-value">87.5%</div>
-            <div class="performance-card-trend performance-trend-positive">
-                <svg class="performance-trend-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"></path>
-                </svg>
-                <span>{{ __('staff.performance.improvement_this_month') }}</span>
+                <div class="flex items-center mt-4 text-sm">
+                    <i class="fas fa-{{ $overviewStats['improvement_trend'] >= 0 ? 'arrow-up' : 'arrow-down' }} mr-1"></i>
+                    <span>{{ $overviewStats['improvement_trend'] > 0 ? '+' : '' }}{{ $overviewStats['improvement_trend'] }}% {{ $overviewStats['period_label'] }}</span>
+                </div>
             </div>
         </div>
 
-        <!-- Top Performers Card -->
-        <div class="card performance-card performance-card-success">
-            <div class="performance-card-header">
-                <div class="performance-card-icon performance-icon-success">
-                    <svg class="performance-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"></path>
-                    </svg>
+        <!-- Top Performers -->
+        <div class="card bg-gradient-to-r from-green-500 to-green-600 text-white">
+            <div class="card-body">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-green-100 text-sm font-medium">{{ __('staff.performance.top_performers') }}</p>
+                        <p class="text-3xl font-bold">{{ $overviewStats['top_performers'] }}</p>
+                    </div>
+                    <div class="p-3 bg-white bg-opacity-20 rounded-full">
+                        <i class="fas fa-star text-xl"></i>
+                    </div>
                 </div>
-                <span class="performance-card-label">{{ __('staff.performance.top_performers') }}</span>
-            </div>
-            <div class="performance-card-value">8</div>
-            <div class="performance-card-trend performance-trend-neutral">
-                <span>{{ __('staff.performance.above_target') }}</span>
+                <p class="text-green-100 text-sm mt-4">{{ __('staff.performance.above_target') }}</p>
             </div>
         </div>
 
-        <!-- Needs Improvement Card -->
-        <div class="card performance-card performance-card-warning">
-            <div class="performance-card-header">
-                <div class="performance-card-icon performance-icon-warning">
-                    <svg class="performance-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                    </svg>
+        <!-- Needs Improvement -->
+        <div class="card bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+            <div class="card-body">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-orange-100 text-sm font-medium">{{ __('staff.performance.needs_improvement') }}</p>
+                        <p class="text-3xl font-bold">{{ $overviewStats['needs_improvement'] }}</p>
+                    </div>
+                    <div class="p-3 bg-white bg-opacity-20 rounded-full">
+                        <i class="fas fa-exclamation-triangle text-xl"></i>
+                    </div>
                 </div>
-                <span class="performance-card-label">{{ __('staff.performance.needs_improvement') }}</span>
-            </div>
-            <div class="performance-card-value">3</div>
-            <div class="performance-card-trend performance-trend-negative">
-                <span>{{ __('staff.performance.below_target') }}</span>
+                <p class="text-orange-100 text-sm mt-4">{{ __('staff.performance.below_target') }}</p>
             </div>
         </div>
 
-        <!-- Reviews Due Card -->
-        <div class="card performance-card performance-card-info">
-            <div class="performance-card-header">
-                <div class="performance-card-icon performance-icon-info">
-                    <svg class="performance-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-                    </svg>
+        <!-- Reviews Due -->
+        <div class="card bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+            <div class="card-body">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-purple-100 text-sm font-medium">{{ __('staff.performance.reviews_due') }}</p>
+                        <p class="text-3xl font-bold">{{ $overviewStats['reviews_due'] }}</p>
+                    </div>
+                    <div class="p-3 bg-white bg-opacity-20 rounded-full">
+                        <i class="fas fa-calendar-check text-xl"></i>
+                    </div>
                 </div>
-                <span class="performance-card-label">{{ __('staff.performance.reviews_due') }}</span>
-            </div>
-            <div class="performance-card-value">5</div>
-            <div class="performance-card-trend performance-trend-neutral">
-                <span>{{ __('staff.performance.this_week') }}</span>
+                <p class="text-purple-100 text-sm mt-4">{{ __('staff.performance.this_week') }}</p>
             </div>
         </div>
     </div>
 
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <!-- Performance Chart & Top Performers -->
+        <!-- Left Column - Chart and Top Performers -->
         <div class="xl:col-span-2 space-y-6">
             <!-- Performance Trends Chart -->
-            <div class="bg-card rounded-lg shadow-md border border-main">
-                <div class="p-4 border-b border-main">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-semibold text-primary">{{ __('staff.performance.performance_trends') }}</h3>
-                        <div class="flex items-center gap-2">
-                            <button class="performance-chart-toggle active" data-period="3m">{{ __('staff.performance.three_months') }}</button>
-                            <button class="performance-chart-toggle" data-period="6m">{{ __('staff.performance.six_months') }}</button>
-                            <button class="performance-chart-toggle" data-period="1y">{{ __('staff.performance.one_year') }}</button>
-                        </div>
-                    </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{ __('staff.performance.trends_title') }}</h3>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">{{ $overviewStats['period_label'] }}</span>
                 </div>
-                <div class="p-6">
-                    <div class="performance-chart-container">
-                        <canvas id="performanceChart" class="w-full h-80"></canvas>
-                    </div>
+                <div class="card-body">
+                    @if(count($performanceTrends) > 0)
+                        <div class="h-80">
+                            <canvas id="performanceChart" class="w-full h-full"></canvas>
+                        </div>
+                        <script>
+                            window.performanceTrendsData = @json($performanceTrends);
+                        </script>
+                    @else
+                        <div class="flex flex-col items-center justify-center h-80 text-gray-500 dark:text-gray-400">
+                            <i class="fas fa-chart-line text-4xl mb-4"></i>
+                            <p>{{ __('staff.performance.no_trends_data') }}</p>
+                        </div>
+                    @endif
                 </div>
             </div>
 
             <!-- Top Performers List -->
-            <div class="bg-card rounded-lg shadow-md border border-main">
-                <div class="p-4 border-b border-main">
-                    <h3 class="text-lg font-semibold text-primary">{{ __('staff.performance.top_performers_list') }}</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{ __('staff.performance.top_performers_list') }}</h3>
+                    <a href="{{ route('admin.staff.directory.index') }}" class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400">
+                        {{ __('common.view_all') }}
+                    </a>
                 </div>
-                <div class="p-4">
-                    <div class="space-y-4">
-                        <!-- Top Performer Item -->
-                        <div class="flex items-center gap-4 p-4 rounded-lg bg-card-hover border border-main">
-                            <div class="flex-shrink-0">
-                                <div class="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center">
-                                    <span class="text-success font-bold">1</span>
-                                </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h4 class="font-semibold text-primary">Sarah Johnson</h4>
-                                        <p class="text-sm text-secondary">{{ __('staff.performance.kitchen_staff') }}</p>
+                <div class="card-body">
+                    @if(count($topPerformers) > 0)
+                        <div class="space-y-4">
+                            @foreach($topPerformers as $index => $performer)
+                                <div class="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                    <!-- Rank Badge -->
+                                    <div class="flex-shrink-0">
+                                        @if($index === 0)
+                                            <div class="w-10 h-10 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center text-white font-bold">
+                                                1
+                                            </div>
+                                        @elseif($index === 1)
+                                            <div class="w-10 h-10 bg-gradient-to-r from-gray-400 to-gray-500 rounded-full flex items-center justify-center text-white font-bold">
+                                                2
+                                            </div>
+                                        @elseif($index === 2)
+                                            <div class="w-10 h-10 bg-gradient-to-r from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold">
+                                                3
+                                            </div>
+                                        @else
+                                            <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 font-bold">
+                                                {{ $index + 1 }}
+                                            </div>
+                                        @endif
                                     </div>
-                                    <div class="text-right">
-                                        <div class="text-lg font-bold text-success">95.2%</div>
-                                        <div class="text-xs text-muted">{{ __('staff.performance.score') }}</div>
+                                    
+                                    <!-- Staff Info -->
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ $performer['name'] }}</h4>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ $performer['position'] }}</p>
+                                    </div>
+                                    
+                                    <!-- Score -->
+                                    <div class="flex-shrink-0 text-right">
+                                        <div class="text-lg font-bold {{ $performer['score'] >= 90 ? 'text-green-600' : ($performer['score'] >= 80 ? 'text-yellow-600' : 'text-red-600') }}">
+                                            {{ $performer['score'] }}%
+                                        </div>
+                                        <div class="w-20 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                                            <div class="h-2 rounded-full {{ $performer['score'] >= 90 ? 'bg-green-500' : ($performer['score'] >= 80 ? 'bg-yellow-500' : 'bg-red-500') }}" 
+                                                 style="width: {{ $performer['score'] }}%"></div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="mt-2">
-                                    <div class="performance-bar">
-                                        <div class="performance-bar-fill" style="width: 95.2%"></div>
-                                    </div>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
-
-                        <!-- Top Performer Item -->
-                        <div class="flex items-center gap-4 p-4 rounded-lg bg-card-hover border border-main">
-                            <div class="flex-shrink-0">
-                                <div class="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center">
-                                    <span class="text-success font-bold">2</span>
-                                </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h4 class="font-semibold text-primary">Mike Chen</h4>
-                                        <p class="text-sm text-secondary">{{ __('staff.performance.service_staff') }}</p>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-lg font-bold text-success">92.8%</div>
-                                        <div class="text-xs text-muted">{{ __('staff.performance.score') }}</div>
-                                    </div>
-                                </div>
-                                <div class="mt-2">
-                                    <div class="performance-bar">
-                                        <div class="performance-bar-fill" style="width: 92.8%"></div>
-                                    </div>
-                                </div>
-                            </div>
+                    @else
+                        <div class="flex flex-col items-center justify-center py-12 text-gray-500 dark:text-gray-400">
+                            <i class="fas fa-users text-4xl mb-4"></i>
+                            <p>{{ __('staff.performance.no_top_performers') }}</p>
                         </div>
-
-                        <!-- Top Performer Item -->
-                        <div class="flex items-center gap-4 p-4 rounded-lg bg-card-hover border border-main">
-                            <div class="flex-shrink-0">
-                                <div class="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center">
-                                    <span class="text-success font-bold">3</span>
-                                </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h4 class="font-semibold text-primary">Emma Rodriguez</h4>
-                                        <p class="text-sm text-secondary">{{ __('staff.performance.kitchen_staff') }}</p>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-lg font-bold text-success">91.5%</div>
-                                        <div class="text-xs text-muted">{{ __('staff.performance.score') }}</div>
-                                    </div>
-                                </div>
-                                <div class="mt-2">
-                                    <div class="performance-bar">
-                                        <div class="performance-bar-fill" style="width: 91.5%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @endif
                 </div>
             </div>
         </div>
 
-        <!-- Sidebar: Actions & Reviews -->
-        <div class="xl:col-span-1 space-y-6">
+        <!-- Right Column - Actions, Reviews, Metrics -->
+        <div class="space-y-6">
             <!-- Quick Actions -->
-            <div class="bg-card rounded-lg shadow-md border border-main">
-                <div class="p-4 border-b border-main">
-                    <h3 class="text-lg font-semibold text-primary">{{ __('staff.performance.quick_actions') }}</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{ __('staff.performance.quick_actions') }}</h3>
                 </div>
-                <div class="p-4">
+                <div class="card-body">
                     <div class="space-y-3">
-                        <button class="w-full bg-primary-btn text-primary-btn px-4 py-3 rounded-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2 font-medium">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
+                        <button onclick="alert('{{ __('common.coming_soon') }}')" 
+                                class="w-full btn btn-primary justify-start">
+                            <i class="fas fa-plus"></i>
                             {{ __('staff.performance.schedule_review') }}
                         </button>
-                        <button class="w-full bg-secondary-btn text-secondary-btn px-4 py-3 rounded-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2 font-medium">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
+                        <button onclick="alert('{{ __('common.coming_soon') }}')" 
+                                class="w-full btn btn-secondary justify-start">
+                            <i class="fas fa-chart-bar"></i>
                             {{ __('staff.performance.view_analytics') }}
                         </button>
-                        <button class="w-full bg-secondary-btn text-secondary-btn px-4 py-3 rounded-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2 font-medium">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                            </svg>
+                        <button onclick="alert('{{ __('common.coming_soon') }}')" 
+                                class="w-full btn btn-secondary justify-start">
+                            <i class="fas fa-users"></i>
                             {{ __('staff.performance.team_comparison') }}
                         </button>
-                        <button class="w-full bg-secondary-btn text-secondary-btn px-4 py-3 rounded-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2 font-medium">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
+                        <button onclick="alert('{{ __('common.coming_soon') }}')" 
+                                class="w-full btn btn-secondary justify-start">
+                            <i class="fas fa-cog"></i>
                             {{ __('staff.performance.performance_settings') }}
                         </button>
                     </div>
@@ -257,111 +233,82 @@
             </div>
 
             <!-- Upcoming Reviews -->
-            <div class="bg-card rounded-lg shadow-md border border-main">
-                <div class="p-4 border-b border-main">
-                    <h3 class="text-lg font-semibold text-primary">{{ __('staff.performance.upcoming_reviews') }}</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{ __('staff.performance.upcoming_reviews') }}</h3>
                 </div>
-                <div class="p-4">
-                    <div class="space-y-4">
-                        <!-- Review Item -->
-                        <div class="flex items-start gap-3 p-3 rounded-lg bg-card-hover border border-main">
-                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-warning/10 flex items-center justify-center">
-                                <svg class="w-4 h-4 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 012-2h4a2 2 0 012 2v1m-6 0h8m-8 0l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v0"></path>
-                                </svg>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <h4 class="font-medium text-primary text-sm">David Wilson</h4>
-                                <p class="text-xs text-secondary">{{ __('staff.performance.quarterly_review') }}</p>
-                                <p class="text-xs text-warning mt-1">{{ __('staff.performance.due_tomorrow') }}</p>
-                            </div>
+                <div class="card-body">
+                    @if(count($upcomingReviews) > 0)
+                        <div class="space-y-3">
+                            @foreach($upcomingReviews as $review)
+                                <div class="flex items-start space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs
+                                            {{ $review['urgency'] === 'urgent' ? 'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300' : 
+                                               ($review['urgency'] === 'warning' ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-300' : 
+                                                'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300') }}">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ $review['staff_name'] }}</h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $review['review_type'] }}</p>
+                                        <p class="text-xs {{ $review['urgency'] === 'urgent' ? 'text-red-600 dark:text-red-400' : 
+                                                              ($review['urgency'] === 'warning' ? 'text-yellow-600 dark:text-yellow-400' : 
+                                                               'text-blue-600 dark:text-blue-400') }}">
+                                            {{ $review['due_date_formatted'] }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
-
-                        <!-- Review Item -->
-                        <div class="flex items-start gap-3 p-3 rounded-lg bg-card-hover border border-main">
-                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-info/10 flex items-center justify-center">
-                                <svg class="w-4 h-4 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 012-2h4a2 2 0 012 2v1m-6 0h8m-8 0l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v0"></path>
-                                </svg>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <h4 class="font-medium text-primary text-sm">Lisa Park</h4>
-                                <p class="text-xs text-secondary">{{ __('staff.performance.annual_review') }}</p>
-                                <p class="text-xs text-info mt-1">{{ __('staff.performance.due_this_week') }}</p>
-                            </div>
+                    @else
+                        <div class="flex flex-col items-center justify-center py-8 text-gray-500 dark:text-gray-400">
+                            <i class="fas fa-calendar-check text-3xl mb-3"></i>
+                            <p class="text-sm">{{ __('staff.performance.no_upcoming_reviews') }}</p>
                         </div>
-
-                        <!-- Review Item -->
-                        <div class="flex items-start gap-3 p-3 rounded-lg bg-card-hover border border-main">
-                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-info/10 flex items-center justify-center">
-                                <svg class="w-4 h-4 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 012-2h4a2 2 0 012 2v1m-6 0h8m-8 0l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v0"></path>
-                                </svg>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <h4 class="font-medium text-primary text-sm">James Taylor</h4>
-                                <p class="text-xs text-secondary">{{ __('staff.performance.probation_review') }}</p>
-                                <p class="text-xs text-info mt-1">{{ __('staff.performance.due_next_week') }}</p>
-                            </div>
-                        </div>
-                    </div>
+                    @endif
                 </div>
             </div>
 
-            <!-- Performance Metrics -->
-            <div class="bg-card rounded-lg shadow-md border border-main">
-                <div class="p-4 border-b border-main">
-                    <h3 class="text-lg font-semibold text-primary">{{ __('staff.performance.key_metrics') }}</h3>
+            <!-- Key Metrics -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{ __('staff.performance.key_metrics') }}</h3>
                 </div>
-                <div class="p-4">
-                    <div class="space-y-4">
-                        <!-- Metric Item -->
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-secondary">{{ __('staff.performance.punctuality') }}</span>
-                            <div class="flex items-center gap-2">
-                                <div class="metric-bar">
-                                    <div class="metric-bar-fill bg-success" style="width: 92%"></div>
+                <div class="card-body">
+                    @if(count($keyMetrics) > 0)
+                        <div class="space-y-4">
+                            @foreach($keyMetrics as $metric)
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">{{ $metric['name'] }}</span>
+                                        <span class="text-sm font-medium {{ $metric['color'] === 'success' ? 'text-green-600' : 
+                                                                            ($metric['color'] === 'warning' ? 'text-yellow-600' : 'text-red-600') }}">
+                                            {{ $metric['value'] }}{{ $metric['unit'] }}
+                                        </span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                        <div class="h-2 rounded-full {{ $metric['color'] === 'success' ? 'bg-green-500' : 
+                                                                        ($metric['color'] === 'warning' ? 'bg-yellow-500' : 'bg-red-500') }}" 
+                                             style="width: {{ min(100, ($metric['value'] / 100) * 100) }}%"></div>
+                                    </div>
                                 </div>
-                                <span class="text-sm font-medium text-primary">92%</span>
-                            </div>
+                            @endforeach
                         </div>
-
-                        <!-- Metric Item -->
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-secondary">{{ __('staff.performance.productivity') }}</span>
-                            <div class="flex items-center gap-2">
-                                <div class="metric-bar">
-                                    <div class="metric-bar-fill bg-success" style="width: 88%"></div>
-                                </div>
-                                <span class="text-sm font-medium text-primary">88%</span>
-                            </div>
+                    @else
+                        <div class="flex flex-col items-center justify-center py-8 text-gray-500 dark:text-gray-400">
+                            <i class="fas fa-chart-pie text-3xl mb-3"></i>
+                            <p class="text-sm">{{ __('staff.performance.no_metrics_data') }}</p>
                         </div>
-
-                        <!-- Metric Item -->
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-secondary">{{ __('staff.performance.customer_satisfaction') }}</span>
-                            <div class="flex items-center gap-2">
-                                <div class="metric-bar">
-                                    <div class="metric-bar-fill bg-success" style="width: 94%"></div>
-                                </div>
-                                <span class="text-sm font-medium text-primary">94%</span>
-                            </div>
-                        </div>
-
-                        <!-- Metric Item -->
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-secondary">{{ __('staff.performance.teamwork') }}</span>
-                            <div class="flex items-center gap-2">
-                                <div class="metric-bar">
-                                    <div class="metric-bar-fill bg-warning" style="width: 76%"></div>
-                                </div>
-                                <span class="text-sm font-medium text-primary">76%</span>
-                            </div>
-                        </div>
-                    </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@push('scripts')
+@vite(['resources/js/admin/staff-performance.js'])
+@endpush
 @endsection

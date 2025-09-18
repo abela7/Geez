@@ -60,14 +60,14 @@
                 aria-label="{{ __('dashboard.user_menu') }}"
             >
                 <div class="user-avatar">
-                    {{ substr(auth()->user()->name ?? 'A', 0, 1) }}
+                    {{ substr(auth()->user()->first_name ?? 'A', 0, 1) }}
                 </div>
                 <div class="user-info">
                     <span class="user-name">
-                        {{ auth()->user()->name ?? 'Admin' }}
+                        {{ auth()->user()->full_name ?? 'Admin' }}
                     </span>
                     <span class="user-role">
-                        {{ __('dashboard.admin_role') }}
+                        {{ auth()->user()->staffType->display_name ?? __('dashboard.admin_role') }}
                     </span>
                 </div>
                 <svg class="user-menu-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,12 +105,15 @@
                 
                 <div class="dropdown-divider"></div>
                 
-                <a href="#" class="dropdown-item">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                    </svg>
-                    <span>{{ __('dashboard.user_logout') }}</span>
-                </a>
+                <form method="POST" action="{{ route('admin.logout') }}" class="dropdown-item-form">
+                    @csrf
+                    <button type="submit" class="dropdown-item w-full text-left">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                        </svg>
+                        <span>{{ __('dashboard.user_logout') }}</span>
+                    </button>
+                </form>
             </div>
         </div>
     </div>

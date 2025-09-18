@@ -36,7 +36,7 @@
     <!-- Sidebar Header -->
         <div class="sidebar-header">
             <div class="sidebar-brand-wrap">
-                <a href="/admin/dashboard" class="sidebar-brand">
+                <a href="{{ route('admin.dashboard') }}" class="sidebar-brand">
                     <div class="sidebar-brand-logo">
                         @if(config('app.logo_url'))
                             <img src="{{ config('app.logo_url') }}" 
@@ -76,8 +76,8 @@
         <!-- Navigation Links -->
         <nav class="sidebar-nav">
             <!-- Dashboard -->
-            <a href="/admin/dashboard" 
-               class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}">
+            <a href="{{ route('admin.dashboard') }}" 
+               class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                 <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                 </svg>
@@ -105,40 +105,40 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 max-h-96"
                      x-transition:leave-end="opacity-0 max-h-0">
-                    <a href="/admin/inventory" class="submenu-link {{ request()->is('admin/inventory') && !request()->is('admin/inventory/*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.inventory.index') }}" class="submenu-link {{ request()->routeIs('admin.inventory.index') ? 'active' : '' }}">
                         {{ __('inventory.nav_title') }} {{ __('common.overview') }}
                     </a>
-                    <a href="/admin/inventory/stock-levels" class="submenu-link {{ request()->is('admin/inventory/stock-levels*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.inventory.stock-levels.index') }}" class="submenu-link {{ request()->routeIs('admin.inventory.stock-levels.*') ? 'active' : '' }}">
                         {{ __('inventory.stock_levels.title') }}
                     </a>
-                    <a href="/admin/inventory/ingredients" class="submenu-link {{ request()->is('admin/inventory/ingredients*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.inventory.ingredients.index') }}" class="submenu-link {{ request()->routeIs('admin.inventory.ingredients.*') ? 'active' : '' }}">
                         {{ __('inventory.ingredients.title') }}
                     </a>
-                    <a href="/admin/inventory/settings" class="submenu-link {{ request()->is('admin/inventory/settings*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.inventory.settings.index') }}" class="submenu-link {{ request()->routeIs('admin.inventory.settings.*') ? 'active' : '' }}">
                         {{ __('inventory.settings.nav_title') }}
                     </a>
-                    <a href="/admin/inventory/recipes" class="submenu-link {{ request()->is('admin/inventory/recipes*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.inventory.recipes.index') }}" class="submenu-link {{ request()->routeIs('admin.inventory.recipes.*') ? 'active' : '' }}">
                         {{ __('inventory.recipes.title') }}
                     </a>
-                    <a href="/admin/inventory/movements" class="submenu-link {{ request()->is('admin/inventory/movements*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.inventory.movements.index') }}" class="submenu-link {{ request()->routeIs('admin.inventory.movements.*') ? 'active' : '' }}">
                         {{ __('inventory.movements.nav_title') }}
                     </a>
-                    <a href="/admin/inventory/locations" class="submenu-link {{ request()->is('admin/inventory/locations*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.inventory.locations.index') }}" class="submenu-link {{ request()->routeIs('admin.inventory.locations.*') ? 'active' : '' }}">
                         {{ __('inventory.locations.nav_title') }}
                     </a>
-                    <a href="/admin/inventory/purchasing" class="submenu-link {{ request()->is('admin/inventory/purchasing*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.inventory.purchasing.index') }}" class="submenu-link {{ request()->routeIs('admin.inventory.purchasing.*') ? 'active' : '' }}">
                         {{ __('inventory.purchasing.nav_title') }}
                     </a>
-                    <a href="/admin/inventory/suppliers" class="submenu-link {{ request()->is('admin/inventory/suppliers*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.inventory.suppliers.index') }}" class="submenu-link {{ request()->routeIs('admin.inventory.suppliers.*') ? 'active' : '' }}">
                         {{ __('inventory.suppliers.nav_title') }}
                     </a>
-                    <a href="/admin/inventory/alerts" class="submenu-link {{ request()->is('admin/inventory/alerts*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.inventory.alerts.index') }}" class="submenu-link {{ request()->routeIs('admin.inventory.alerts.*') ? 'active' : '' }}">
                         {{ __('inventory.alerts.nav_title') }}
                     </a>
-                    <a href="/admin/inventory/analytics" class="submenu-link {{ request()->is('admin/inventory/analytics*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.inventory.analytics.index') }}" class="submenu-link {{ request()->routeIs('admin.inventory.analytics.*') ? 'active' : '' }}">
                         {{ __('inventory.analytics.nav_title') }}
                     </a>
-                    <a href="/admin/inventory/stocktakes" class="submenu-link {{ request()->is('admin/inventory/stocktakes*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.inventory.stocktakes.index') }}" class="submenu-link {{ request()->routeIs('admin.inventory.stocktakes.*') ? 'active' : '' }}">
                         {{ __('inventory.stocktakes.nav_title') }}
                     </a>
                 </div>
@@ -165,22 +165,22 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 max-h-96"
                      x-transition:leave-end="opacity-0 max-h-0">
-                    <a href="/admin/sales" class="submenu-link {{ request()->is('admin/sales') && !request()->is('admin/sales/*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.sales.index') }}" class="submenu-link {{ request()->routeIs('admin.sales.index') ? 'active' : '' }}">
                         {{ __('finance.sales_reports.title') }}
                     </a>
-                    <a href="/admin/finance/tips" class="submenu-link {{ request()->is('admin/finance/tips*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.finance.tips.index') }}" class="submenu-link {{ request()->routeIs('admin.finance.tips.*') ? 'active' : '' }}">
                         {{ __('finance.tips.title') }}
                     </a>
-                    <a href="/admin/finance/expenses" class="submenu-link {{ request()->is('admin/finance/expenses*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.finance.expenses.index') }}" class="submenu-link {{ request()->routeIs('admin.finance.expenses.*') ? 'active' : '' }}">
                         {{ __('finance.expenses.title') }}
                     </a>
-                    <a href="/admin/finance/budgeting" class="submenu-link {{ request()->is('admin/finance/budgeting*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.finance.budgeting.index') }}" class="submenu-link {{ request()->routeIs('admin.finance.budgeting.*') ? 'active' : '' }}">
                         {{ __('finance.budgeting.title') }}
                     </a>
-                    <a href="/admin/finance/reports" class="submenu-link {{ request()->is('admin/finance/reports*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.finance.reports.index') }}" class="submenu-link {{ request()->routeIs('admin.finance.reports.*') ? 'active' : '' }}">
                         {{ __('finance.financial_reports.title') }}
                     </a>
-                    <a href="/admin/finance/settings" class="submenu-link {{ request()->is('admin/finance/settings*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.finance.settings.index') }}" class="submenu-link {{ request()->routeIs('admin.finance.settings.*') ? 'active' : '' }}">
                         {{ __('finance.settings.nav_title') }}
                     </a>
                 </div>
@@ -210,37 +210,42 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 max-h-96"
                      x-transition:leave-end="opacity-0 max-h-0">
-                    <a href="/admin/staff" class="submenu-link {{ request()->is('admin/staff') && !request()->is('admin/staff/*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.staff.index') }}" class="submenu-link {{ request()->routeIs('admin.staff.index') ? 'active' : '' }}">
                         {{ __('staff.nav_overview') }}
                     </a>
-                    <a href="/admin/staff/directory" class="submenu-link {{ request()->is('admin/staff/directory*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.staff.directory.index') }}" class="submenu-link {{ request()->routeIs('admin.staff.directory.*') ? 'active' : '' }}">
                         {{ __('staff.nav_directory') }}
                     </a>
-                    <a href="/admin/staff/performance" class="submenu-link {{ request()->is('admin/staff/performance*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.staff.performance.index') }}" class="submenu-link {{ request()->routeIs('admin.staff.performance.*') ? 'active' : '' }}">
                         {{ __('staff.nav_performance') }}
                     </a>
-                    <a href="/admin/staff/attendance" class="submenu-link {{ request()->is('admin/staff/attendance*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.staff.attendance.index') }}" class="submenu-link {{ request()->routeIs('admin.staff.attendance.*') ? 'active' : '' }}">
                         {{ __('staff.nav_attendance') }}
                     </a>
-                    <a href="/admin/staff/tasks" class="submenu-link {{ request()->is('admin/staff/tasks*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.staff.tasks.index') }}" class="submenu-link {{ request()->routeIs('admin.staff.tasks.*') ? 'active' : '' }}">
                         {{ __('staff.nav_tasks') }}
                     </a>
-                    <a href="/admin/staff/payroll" class="submenu-link {{ request()->is('admin/staff/payroll*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.staff.payroll.index') }}" class="submenu-link {{ request()->routeIs('admin.staff.payroll.*') ? 'active' : '' }}">
                         {{ __('staff.nav_payroll') }}
                     </a>
                     <div class="submenu-separator"></div>
                     <div class="submenu-section-title">{{ __('shifts.management.section_title') }}</div>
-                    <a href="/admin/shifts/overview" class="submenu-link {{ request()->is('admin/shifts/overview*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.shifts.overview.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.overview.*') ? 'active' : '' }}">
                         {{ __('shifts.overview.title') }}
                     </a>
-                    <a href="/admin/shifts/manage" class="submenu-link {{ request()->is('admin/shifts/manage*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.shifts.manage.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.manage.*') ? 'active' : '' }}">
                         {{ __('shifts.manage.title') }}
                     </a>
-                    <a href="/admin/shifts/assignments" class="submenu-link {{ request()->is('admin/shifts/assignments*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.shifts.assignments.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.assignments.*') ? 'active' : '' }}">
                         {{ __('shifts.assignments.title') }}
                     </a>
-                    <a href="/admin/shifts/templates" class="submenu-link {{ request()->is('admin/shifts/templates*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.shifts.templates.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.templates.*') ? 'active' : '' }}">
                         {{ __('shifts.templates.title') }}
+                    </a>
+                    <div class="submenu-separator"></div>
+                    <div class="submenu-section-title">{{ __('staff.settings.section_title') }}</div>
+                    <a href="{{ route('admin.staff.settings.index') }}" class="submenu-link {{ request()->routeIs('admin.staff.settings.*') ? 'active' : '' }}">
+                        {{ __('staff.settings.nav_title') }}
                     </a>
                 </div>
             </div>
@@ -266,22 +271,22 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 max-h-96"
                      x-transition:leave-end="opacity-0 max-h-0">
-                    <a href="/admin/menu/food-items" class="submenu-link {{ request()->is('admin/menu/food-items*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.menu.food-items.index') }}" class="submenu-link {{ request()->routeIs('admin.menu.food-items.*') ? 'active' : '' }}">
                         {{ __('menu.food_items.title') }}
                     </a>
-                    <a href="/admin/menu/categories" class="submenu-link {{ request()->is('admin/menu/categories*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.menu.categories.index') }}" class="submenu-link {{ request()->routeIs('admin.menu.categories.*') ? 'active' : '' }}">
                         {{ __('menu.categories.title') }}
                     </a>
-                    <a href="/admin/menu/modifiers" class="submenu-link {{ request()->is('admin/menu/modifiers*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.menu.modifiers.index') }}" class="submenu-link {{ request()->routeIs('admin.menu.modifiers.*') ? 'active' : '' }}">
                         {{ __('menu.modifiers.title') }}
                     </a>
-                    <a href="/admin/menu/dish-cost" class="submenu-link {{ request()->is('admin/menu/dish-cost*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.menu.dish-cost.index') }}" class="submenu-link {{ request()->routeIs('admin.menu.dish-cost.*') ? 'active' : '' }}">
                         {{ __('menu.dish_cost.title') }}
                     </a>
-                    <a href="/admin/menu/pricing" class="submenu-link {{ request()->is('admin/menu/pricing*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.menu.pricing.index') }}" class="submenu-link {{ request()->routeIs('admin.menu.pricing.*') ? 'active' : '' }}">
                         {{ __('menu.pricing.title') }}
                     </a>
-                    <a href="/admin/menu/design" class="submenu-link {{ request()->is('admin/menu/design*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.menu.design.index') }}" class="submenu-link {{ request()->routeIs('admin.menu.design.*') ? 'active' : '' }}">
                         {{ __('menu.design.title') }}
                     </a>
                 </div>
@@ -308,19 +313,19 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 max-h-96"
                      x-transition:leave-end="opacity-0 max-h-0">
-                    <a href="/admin/customers/directory" class="submenu-link {{ request()->is('admin/customers/directory*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.customers.directory.index') }}" class="submenu-link {{ request()->routeIs('admin.customers.directory.*') ? 'active' : '' }}">
                         {{ __('customers.directory.title') }}
                     </a>
-                    <a href="/admin/customers/loyalty" class="submenu-link {{ request()->is('admin/customers/loyalty*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.customers.loyalty.index') }}" class="submenu-link {{ request()->routeIs('admin.customers.loyalty.*') ? 'active' : '' }}">
                         {{ __('customers.loyalty.title') }}
                     </a>
-                    <a href="/admin/customers/reservations" class="submenu-link {{ request()->is('admin/customers/reservations*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.customers.reservations.index') }}" class="submenu-link {{ request()->routeIs('admin.customers.reservations.*') ? 'active' : '' }}">
                         {{ __('customers.reservations.title') }}
                     </a>
-                    <a href="/admin/customers/analytics" class="submenu-link {{ request()->is('admin/customers/analytics*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.customers.analytics.index') }}" class="submenu-link {{ request()->routeIs('admin.customers.analytics.*') ? 'active' : '' }}">
                         {{ __('customers.analytics.title') }}
                     </a>
-                    <a href="/admin/customers/feedback" class="submenu-link {{ request()->is('admin/customers/feedback*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.customers.feedback.index') }}" class="submenu-link {{ request()->routeIs('admin.customers.feedback.*') ? 'active' : '' }}">
                         {{ __('customers.feedback.title') }}
                     </a>
                 </div>
@@ -347,16 +352,16 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 max-h-96"
                      x-transition:leave-end="opacity-0 max-h-0">
-                    <a href="/admin/tables/rooms" class="submenu-link {{ request()->is('admin/tables/rooms*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.tables.rooms.index') }}" class="submenu-link {{ request()->routeIs('admin.tables.rooms.*') ? 'active' : '' }}">
                         {{ __('tables.rooms.title') }}
                     </a>
-                    <a href="/admin/tables/categories" class="submenu-link {{ request()->is('admin/tables/categories*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.tables.categories.index') }}" class="submenu-link {{ request()->routeIs('admin.tables.categories.*') ? 'active' : '' }}">
                         {{ __('tables.categories.title') }}
                     </a>
-                    <a href="/admin/tables/types" class="submenu-link {{ request()->is('admin/tables/types*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.tables.types.index') }}" class="submenu-link {{ request()->routeIs('admin.tables.types.*') ? 'active' : '' }}">
                         {{ __('tables.types.title') }}
                     </a>
-                    <a href="/admin/tables/layout" class="submenu-link {{ request()->is('admin/tables/layout*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.tables.layout.index') }}" class="submenu-link {{ request()->routeIs('admin.tables.layout.*') ? 'active' : '' }}">
                         {{ __('tables.layout.title') }}
                     </a>
                 </div>
@@ -385,22 +390,22 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 max-h-96"
                      x-transition:leave-end="opacity-0 max-h-0">
-                    <a href="/admin/bar/inventory" class="submenu-link {{ request()->is('admin/bar/inventory*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.bar.inventory.index') }}" class="submenu-link {{ request()->routeIs('admin.bar.inventory.*') ? 'active' : '' }}">
                         {{ __('bar.inventory.title') }}
                     </a>
-                    <a href="/admin/bar/recipes" class="submenu-link {{ request()->is('admin/bar/recipes*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.bar.recipes.index') }}" class="submenu-link {{ request()->routeIs('admin.bar.recipes.*') ? 'active' : '' }}">
                         {{ __('bar.recipes.title') }}
                     </a>
-                    <a href="/admin/bar/pricing" class="submenu-link {{ request()->is('admin/bar/pricing*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.bar.pricing.index') }}" class="submenu-link {{ request()->routeIs('admin.bar.pricing.*') ? 'active' : '' }}">
                         {{ __('bar.pricing.title') }}
                     </a>
-                    <a href="/admin/bar/analytics" class="submenu-link {{ request()->is('admin/bar/analytics*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.bar.analytics.index') }}" class="submenu-link {{ request()->routeIs('admin.bar.analytics.*') ? 'active' : '' }}">
                         {{ __('bar.analytics.title') }}
                     </a>
-                    <a href="/admin/bar/suppliers" class="submenu-link {{ request()->is('admin/bar/suppliers*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.bar.suppliers.index') }}" class="submenu-link {{ request()->routeIs('admin.bar.suppliers.*') ? 'active' : '' }}">
                         {{ __('bar.suppliers.title') }}
                     </a>
-                    <a href="/admin/bar/settings" class="submenu-link {{ request()->is('admin/bar/settings*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.bar.settings.index') }}" class="submenu-link {{ request()->routeIs('admin.bar.settings.*') ? 'active' : '' }}">
                         {{ __('bar.settings.title') }}
                     </a>
                 </div>
@@ -427,25 +432,25 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 max-h-96"
                      x-transition:leave-end="opacity-0 max-h-0">
-                    <a href="/admin/injera" class="submenu-link {{ request()->is('admin/injera') && !request()->is('admin/injera/*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.injera.index') }}" class="submenu-link {{ request()->routeIs('admin.injera.index') ? 'active' : '' }}">
                         {{ __('injera.overview.title') }}
                     </a>
-                    <a href="/admin/injera/flour-management" class="submenu-link {{ request()->is('admin/injera/flour-management*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.injera.flour-management.index') }}" class="submenu-link {{ request()->routeIs('admin.injera.flour-management.*') ? 'active' : '' }}">
                         {{ __('injera.flour_management.title') }}
                     </a>
-                    <a href="/admin/injera/bucket-configurations" class="submenu-link {{ request()->is('admin/injera/bucket-configurations*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.injera.bucket-configurations.index') }}" class="submenu-link {{ request()->routeIs('admin.injera.bucket-configurations.*') ? 'active' : '' }}">
                         {{ __('injera.bucket_configurations.title') }}
                     </a>
-                    <a href="/admin/injera/production-batches" class="submenu-link {{ request()->is('admin/injera/production-batches*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.injera.production-batches.index') }}" class="submenu-link {{ request()->routeIs('admin.injera.production-batches.*') ? 'active' : '' }}">
                         {{ __('injera.production_batches.title') }}
                     </a>
-                    <a href="/admin/injera/injera-stock-levels" class="submenu-link {{ request()->is('admin/injera/injera-stock-levels*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.injera.injera-stock-levels.index') }}" class="submenu-link {{ request()->routeIs('admin.injera.injera-stock-levels.*') ? 'active' : '' }}">
                         {{ __('injera.injera_stock_levels.title') }}
                     </a>
-                    <a href="/admin/injera/cost-analysis" class="submenu-link {{ request()->is('admin/injera/cost-analysis*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.injera.cost-analysis.index') }}" class="submenu-link {{ request()->routeIs('admin.injera.cost-analysis.*') ? 'active' : '' }}">
                         {{ __('injera.cost_analysis.title') }}
                     </a>
-                    <a href="/admin/injera/orders" class="submenu-link {{ request()->is('admin/injera/orders*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.injera.orders.index') }}" class="submenu-link {{ request()->routeIs('admin.injera.orders.*') ? 'active' : '' }}">
                         {{ __('injera.orders.title') }}
                     </a>
                 </div>
@@ -472,28 +477,28 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 max-h-96"
                      x-transition:leave-end="opacity-0 max-h-0">
-                    <a href="/admin/reports/sales" class="submenu-link {{ request()->is('admin/reports/sales*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.sales.index') }}" class="submenu-link {{ request()->routeIs('admin.reports.sales.*') ? 'active' : '' }}">
                         {{ __('reports.sales.title') }}
                     </a>
-                    <a href="/admin/reports/customers" class="submenu-link {{ request()->is('admin/reports/customers*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.customers.index') }}" class="submenu-link {{ request()->routeIs('admin.reports.customers.*') ? 'active' : '' }}">
                         {{ __('reports.customers.title') }}
                     </a>
-                    <a href="/admin/reports/menu" class="submenu-link {{ request()->is('admin/reports/menu*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.menu.index') }}" class="submenu-link {{ request()->routeIs('admin.reports.menu.*') ? 'active' : '' }}">
                         {{ __('reports.menu.title') }}
                     </a>
-                    <a href="/admin/reports/inventory" class="submenu-link {{ request()->is('admin/reports/inventory*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.inventory.index') }}" class="submenu-link {{ request()->routeIs('admin.reports.inventory.*') ? 'active' : '' }}">
                         {{ __('reports.inventory.title') }}
                     </a>
-                    <a href="/admin/reports/staff" class="submenu-link {{ request()->is('admin/reports/staff*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.staff.index') }}" class="submenu-link {{ request()->routeIs('admin.reports.staff.*') ? 'active' : '' }}">
                         {{ __('reports.staff.title') }}
                     </a>
-                    <a href="/admin/reports/financial" class="submenu-link {{ request()->is('admin/reports/financial*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.financial.index') }}" class="submenu-link {{ request()->routeIs('admin.reports.financial.*') ? 'active' : '' }}">
                         {{ __('reports.financial.title') }}
                     </a>
-                    <a href="/admin/reports/operational" class="submenu-link {{ request()->is('admin/reports/operational*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.operational.index') }}" class="submenu-link {{ request()->routeIs('admin.reports.operational.*') ? 'active' : '' }}">
                         {{ __('reports.operational.title') }}
                     </a>
-                    <a href="/admin/reports/executive" class="submenu-link {{ request()->is('admin/reports/executive*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.reports.executive.index') }}" class="submenu-link {{ request()->routeIs('admin.reports.executive.*') ? 'active' : '' }}">
                         {{ __('reports.executive.title') }}
                     </a>
                 </div>
@@ -575,8 +580,8 @@
             </div>
 
             <!-- Settings -->
-            <a href="/admin/settings" 
-               class="nav-link {{ request()->is('admin/settings*') ? 'active' : '' }}">
+            <a href="{{ route('admin.settings.index') }}" 
+               class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
                 <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
