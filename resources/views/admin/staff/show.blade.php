@@ -42,8 +42,8 @@
                         <img src="{{ $staff->profile->photo_url }}" alt="{{ $staff->full_name }}" class="staff-avatar-image" />
                     @else
                         <i class="fas fa-user staff-avatar-icon"></i>
-                    @endif
-                </div>
+    @endif
+        </div>
                 
                 <!-- Basic Info -->
                 <div class="staff-header-details">
@@ -68,11 +68,11 @@
                     <!-- Status Badge -->
                     <span class="employee-status {{ $staff->status }}">
                         <i class="fas fa-circle"></i>
-                        {{ __('staff.status_values.' . $staff->status) }}
-                    </span>
+                            {{ __('staff.status_values.' . $staff->status) }}
+                        </span>
                 </div>
             </div>
-            
+
             <!-- Quick Actions -->
             <div class="staff-header-actions">
                 <a href="{{ route('admin.staff.edit', $staff) }}" class="btn-secondary">
@@ -81,9 +81,9 @@
                 <button type="button" class="btn-primary" onclick="alert('{{ __('common.coming_soon') }}')">
                     <i class="fas fa-tasks"></i>{{ __('staff.assign_task') }}
                 </button>
+                </div>
             </div>
         </div>
-    </div>
 
     <!-- Statistics Cards -->
     <div class="staff-stats-grid">
@@ -93,12 +93,12 @@
                 <div class="stat-card-info">
                     <p class="stat-card-label">{{ __('staff.total_hours') }} ({{ __('common.this_month') }})</p>
                     <p class="stat-card-value">{{ number_format($stats['total_hours_this_month'], 1) }}h</p>
-                </div>
+                    </div>
                 <div class="stat-card-icon">
                     <i class="fas fa-clock"></i>
+                    </div>
                 </div>
             </div>
-        </div>
 
         <!-- Attendance Rate -->
         <div class="stat-card staff-stat-attendance">
@@ -106,12 +106,12 @@
                 <div class="stat-card-info">
                     <p class="stat-card-label">{{ __('staff.attendance_rate') }}</p>
                     <p class="stat-card-value">{{ $stats['attendance_rate'] }}%</p>
-                </div>
+                    </div>
                 <div class="stat-card-icon">
                     <i class="fas fa-user-check"></i>
+                    </div>
                 </div>
             </div>
-        </div>
 
         <!-- Task Completion -->
         <div class="stat-card staff-stat-tasks">
@@ -119,12 +119,12 @@
                 <div class="stat-card-info">
                     <p class="stat-card-label">{{ __('staff.task_completion_rate') }}</p>
                     <p class="stat-card-value">{{ $stats['task_completion_rate'] }}%</p>
-                </div>
+                    </div>
                 <div class="stat-card-icon">
                     <i class="fas fa-tasks"></i>
+                    </div>
                 </div>
             </div>
-        </div>
 
         <!-- Performance Rating -->
         <div class="stat-card staff-stat-performance">
@@ -134,17 +134,17 @@
                     <p class="stat-card-value">
                         @if ($stats['average_performance_rating'])
                             {{ number_format($stats['average_performance_rating'], 1) }}/5
-                        @else
+                            @else
                             —
-                        @endif
+                            @endif
                     </p>
-                </div>
+                    </div>
                 <div class="stat-card-icon">
                     <i class="fas fa-star"></i>
+                    </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
     <!-- Main Content Tabs -->
     <div x-data="{ activeTab: 'overview' }" class="staff-profile-tabs">
@@ -170,34 +170,34 @@
                     <i class="fas fa-clock"></i>{{ __('staff.shifts') }}
                 </button>
             </nav>
-        </div>
+                        </div>
 
         <!-- Tab Content -->
         <div class="staff-tab-content">
             <!-- Overview Tab -->
             <div x-show="activeTab === 'overview'" x-transition>
                 @include('admin.staff.partials.profile-overview')
-            </div>
+                        </div>
 
             <!-- Attendance Tab -->
             <div x-show="activeTab === 'attendance'" x-transition>
                 @include('admin.staff.partials.profile-attendance')
-            </div>
+                    </div>
 
             <!-- Tasks Tab -->
             <div x-show="activeTab === 'tasks'" x-transition>
                 @include('admin.staff.partials.profile-tasks')
-            </div>
+                </div>
 
             <!-- Payroll Tab -->
             <div x-show="activeTab === 'payroll'" x-transition>
                 @include('admin.staff.partials.profile-payroll')
-            </div>
+                    </div>
 
             <!-- Performance Tab -->
             <div x-show="activeTab === 'performance'" x-transition>
                 @include('admin.staff.partials.profile-performance')
-            </div>
+                </div>
 
             <!-- Shifts Tab -->
             <div x-show="activeTab === 'shifts'" x-transition>

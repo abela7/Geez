@@ -24,6 +24,17 @@ class StaffTask extends Model
         'priority',
         'is_active',
         'created_by',
+        'category',
+        'estimated_hours',
+        'is_template',
+        'template_name',
+        'recurrence_pattern',
+        'recurrence_interval',
+        'recurrence_end_date',
+        'requires_approval',
+        'approval_workflow',
+        'tags',
+        'updated_by',
     ];
 
     /**
@@ -31,6 +42,12 @@ class StaffTask extends Model
      */
     protected $casts = [
         'is_active' => 'boolean',
+        'estimated_hours' => 'decimal:2',
+        'is_template' => 'boolean',
+        'recurrence_end_date' => 'date',
+        'requires_approval' => 'boolean',
+        'approval_workflow' => 'array',
+        'tags' => 'array',
     ];
 
     /**
@@ -42,11 +59,35 @@ class StaffTask extends Model
     }
 
     /**
+     * Get the staff member who last updated this task.
+     */
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(Staff::class, 'updated_by');
+    }
+
+    /**
      * Get all assignments for this task.
      */
     public function assignments(): HasMany
     {
         return $this->hasMany(StaffTaskAssignment::class);
+    }
+
+    /**
+     * Get all dependencies for this task (tasks this task depends on).
+     */
+    public function dependencies(): HasMany
+    {
+        return $this->hasMany(StaffTaskDependency::class, 'task_id');
+    }
+
+    /**
+     * Get all tasks that depend on this task.
+     */
+    public function dependentTasks(): HasMany
+    {
+        return $this->hasMany(StaffTaskDependency::class, 'depends_on_task_id');
     }
 
     /**
@@ -133,5 +174,144 @@ class StaffTask extends Model
     public function scopeRecurring($query)
     {
         return $query->whereIn('task_type', ['daily', 'weekly', 'monthly']);
+    }
+
+    /**
+     * Scope for tasks by category.
+     */
+    public function scopeByCategory($query, string $category)
+    {
+        return $query->where('category', $category);
+    }
+
+    /**
+     * Scope for template tasks.
+     */
+    public function scopeTemplates($query)
+    {
+        return $query->where('is_template', true);
+    }
+
+    /**
+     * Scope for non-template tasks.
+     */
+    public function scopeNonTemplates($query)
+    {
+        return $query->where('is_template', false);
+    }
+
+    /**
+     * Scope for tasks requiring approval.
+     */
+    public function scopeRequiringApproval($query)
+    {
+        return $query->where('requires_approval', true);
+    }
+
+    /**
+     * Check if task has recurrence.
+     */
+    public function hasRecurrence(): bool
+    {
+        return $this->recurrence_pattern !== 'none';
+    }
+
+    /**
+     * Check if task is a template.
+     */
+    public function isTemplate(): bool
+    {
+        return $this->is_template;
+    }
+
+    /**
+     * Check if task requires approval.
+     */
+    public function requiresApproval(): bool
+    {
+        return $this->requires_approval;
+    }
+
+    /**
+     * Check if all dependencies are satisfied.
+     */
+    public function areDependenciesSatisfied(): bool
+    {
+        return $this->dependencies()->get()->every(function ($dependency) {
+            return $dependency->isSatisfied();
+        });
+    }
+
+    /**
+     * Get unsatisfied dependencies.
+     */
+    public function getUnsatisfiedDependencies()
+    {
+        return $this->dependencies()->get()->filter(function ($dependency) {
+            return !$dependency->isSatisfied();
+        });
+    }
+
+    /**
+     * Check if task can be started (no blocking dependencies).
+     */
+    public function canBeStarted(): bool
+    {
+        return $this->areDependenciesSatisfied();
+    }
+
+    /**
+     * Get the earliest date this task can start.
+     */
+    public function getEarliestStartDate(): ?\Carbon\Carbon
+    {
+        $dependencies = $this->dependencies()->get();
+        
+        if ($dependencies->isEmpty()) {
+            return now(); // No dependencies, can start now
+        }
+
+        $earliestDates = $dependencies->map(function ($dependency) {
+            return $dependency->getEarliestStartDate();
+        })->filter(); // Remove null values
+
+        return $earliestDates->isEmpty() ? null : $earliestDates->max();
+    }
+
+    /**
+     * Add a dependency to this task.
+     */
+    public function addDependency(string $dependsOnTaskId, string $dependencyType = 'finish_to_start', int $lagDays = 0): ?StaffTaskDependency
+    {
+        // Create temporary dependency to validate
+        $tempDependency = new StaffTaskDependency([
+            'task_id' => $this->id,
+            'depends_on_task_id' => $dependsOnTaskId,
+            'dependency_type' => $dependencyType,
+            'lag_days' => $lagDays,
+        ]);
+
+        // Validate no cycles
+        if (!$tempDependency->validateNoCycles()) {
+            return null; // Would create a cycle
+        }
+
+        // Create the actual dependency
+        return $this->dependencies()->create([
+            'depends_on_task_id' => $dependsOnTaskId,
+            'dependency_type' => $dependencyType,
+            'lag_days' => $lagDays,
+            'created_by' => auth()->id(),
+        ]);
+    }
+
+    /**
+     * Remove a dependency.
+     */
+    public function removeDependency(string $dependsOnTaskId): bool
+    {
+        return $this->dependencies()
+            ->where('depends_on_task_id', $dependsOnTaskId)
+            ->delete() > 0;
     }
 }

@@ -232,4 +232,93 @@ class Staff extends Authenticatable
               ->orWhere('email', 'like', "%{$search}%");
         });
     }
+
+    /**
+     * Get all time entries logged by this staff member.
+     */
+    public function timeEntries(): HasMany
+    {
+        return $this->hasMany(StaffTaskTimeEntry::class, 'staff_id');
+    }
+
+    /**
+     * Get active time entries for this staff member.
+     */
+    public function activeTimeEntries(): HasMany
+    {
+        return $this->timeEntries()->whereNull('end_time');
+    }
+
+    /**
+     * Get all notifications for this staff member.
+     */
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(StaffTaskNotification::class, 'staff_id');
+    }
+
+    /**
+     * Get unread notifications for this staff member.
+     */
+    public function unreadNotifications(): HasMany
+    {
+        return $this->notifications()->where('is_read', false);
+    }
+
+    /**
+     * Get urgent notifications for this staff member.
+     */
+    public function urgentNotifications(): HasMany
+    {
+        return $this->notifications()->whereIn('notification_type', [
+            StaffTaskNotification::TYPE_OVERDUE,
+            StaffTaskNotification::TYPE_DUE_SOON,
+        ]);
+    }
+
+    /**
+     * Get total time logged today.
+     */
+    public function getTotalTimeToday(): float
+    {
+        return $this->timeEntries()
+            ->whereDate('start_time', today())
+            ->whereNotNull('end_time')
+            ->sum('duration_minutes') / 60; // Convert to hours
+    }
+
+    /**
+     * Get total time logged this week.
+     */
+    public function getTotalTimeThisWeek(): float
+    {
+        return $this->timeEntries()
+            ->whereBetween('start_time', [now()->startOfWeek(), now()->endOfWeek()])
+            ->whereNotNull('end_time')
+            ->sum('duration_minutes') / 60; // Convert to hours
+    }
+
+    /**
+     * Check if staff member has any active time entries.
+     */
+    public function hasActiveTimeEntry(): bool
+    {
+        return $this->activeTimeEntries()->exists();
+    }
+
+    /**
+     * Get unread notification count.
+     */
+    public function getUnreadNotificationCount(): int
+    {
+        return $this->unreadNotifications()->count();
+    }
+
+    /**
+     * Mark all notifications as read.
+     */
+    public function markAllNotificationsAsRead(): int
+    {
+        return StaffTaskNotification::markAllAsRead($this->id);
+    }
 }

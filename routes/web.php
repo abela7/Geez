@@ -62,7 +62,13 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         Route::get('/directory', [\App\Http\Controllers\Admin\StaffDirectoryController::class, 'index'])->name('directory.index');
         Route::get('/performance', [\App\Http\Controllers\Admin\StaffPerformanceController::class, 'index'])->name('performance.index');
         Route::get('/attendance', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'index'])->name('attendance.index');
-        Route::get('/tasks', [\App\Http\Controllers\Admin\StaffTasksController::class, 'index'])->name('tasks.index');
+            Route::get('/tasks', [\App\Http\Controllers\Admin\StaffTasksController::class, 'index'])->name('tasks.index');
+            Route::post('/tasks', [\App\Http\Controllers\Admin\StaffTasksController::class, 'store'])->name('tasks.store');
+            Route::get('/tasks/{task}', [\App\Http\Controllers\Admin\StaffTasksController::class, 'show'])->name('tasks.show');
+            Route::put('/tasks/{task}', [\App\Http\Controllers\Admin\StaffTasksController::class, 'update'])->name('tasks.update');
+            Route::delete('/tasks/{task}', [\App\Http\Controllers\Admin\StaffTasksController::class, 'destroy'])->name('tasks.destroy');
+            Route::post('/tasks/{task}/assign', [\App\Http\Controllers\Admin\StaffTasksController::class, 'assign'])->name('tasks.assign');
+            Route::put('/task-assignments/{assignment}/status', [\App\Http\Controllers\Admin\StaffTasksController::class, 'updateAssignmentStatus'])->name('task-assignments.update-status');
         Route::get('/payroll', [\App\Http\Controllers\Admin\StaffPayrollController::class, 'index'])->name('payroll.index');
         
         // Staff Profile - must be before resource routes

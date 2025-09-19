@@ -432,4 +432,175 @@ return [
         'check_in_time' => 'Check In Time',
         'check_out_time' => 'Check Out Time',
     ],
+
+    'tasks' => [
+        'title' => 'Task Management',
+        'subtitle' => 'Manage and track staff tasks and assignments',
+        'create_task' => 'Create Task',
+        'view_modes' => 'View Modes',
+        'dashboard' => 'Dashboard',
+        'kanban' => 'Kanban',
+        'list' => 'List',
+        'calendar' => 'Calendar',
+        
+        // Dashboard Stats
+        'total_tasks' => 'Total Tasks',
+        'total_assignments' => 'Total Assignments',
+        'completed_assignments' => 'Completed',
+        'overdue_assignments' => 'Overdue',
+        'in_progress_assignments' => 'In Progress',
+        'completion_rate' => 'Completion Rate',
+        
+        // Task Form
+        'task_title' => 'Task Title',
+        'task_description' => 'Task Description',
+        'task_type' => 'Task Type',
+        'priority' => 'Priority',
+        'category' => 'Category',
+        'estimated_hours' => 'Estimated Hours',
+        'is_template' => 'Save as Template',
+        'template_name' => 'Template Name',
+        'requires_approval' => 'Requires Approval',
+        'tags' => 'Tags',
+        'is_active' => 'Active',
+        
+        // Task Types
+        'daily' => 'Daily',
+        'weekly' => 'Weekly',
+        'monthly' => 'Monthly',
+        'project' => 'Project',
+        'maintenance' => 'Maintenance',
+        
+        // Priorities
+        'low' => 'Low',
+        'medium' => 'Medium',
+        'high' => 'High',
+        'urgent' => 'Urgent',
+        
+        // Categories
+        'kitchen' => 'Kitchen',
+        'service' => 'Service',
+        'cleaning' => 'Cleaning',
+        'administration' => 'Administration',
+        'maintenance_cat' => 'Maintenance',
+        'inventory' => 'Inventory',
+        
+        // Assignment Form
+        'assign_task' => 'Assign Task',
+        'select_staff' => 'Select Staff Members',
+        'due_date' => 'Due Date',
+        'priority_override' => 'Priority Override',
+        'assignment_notes' => 'Assignment Notes',
+        
+        // Status
+        'assigned' => 'Assigned',
+        'in_progress' => 'In Progress',
+        'completed' => 'Completed',
+        'cancelled' => 'Cancelled',
+        
+        // Actions
+        'edit' => 'Edit',
+        'delete' => 'Delete',
+        'assign' => 'Assign',
+        'view_details' => 'View Details',
+        'update_status' => 'Update Status',
+        'start_timer' => 'Start Timer',
+        'stop_timer' => 'Stop Timer',
+        'add_comment' => 'Add Comment',
+        'attach_file' => 'Attach File',
+        
+        // Filters
+        'filter_by_status' => 'Filter by Status',
+        'filter_by_priority' => 'Filter by Priority',
+        'filter_by_category' => 'Filter by Category',
+        'filter_by_assignee' => 'Filter by Assignee',
+        'filter_by_due_date' => 'Filter by Due Date',
+        'all_statuses' => 'All Statuses',
+        'all_priorities' => 'All Priorities',
+        'all_categories' => 'All Categories',
+        'all_assignees' => 'All Assignees',
+        
+        // Messages
+        'task_created_successfully' => 'Task created successfully',
+        'task_creation_failed' => 'Failed to create task',
+        'task_updated_successfully' => 'Task updated successfully',
+        'task_update_failed' => 'Failed to update task',
+        'task_deleted_successfully' => 'Task deleted successfully',
+        'task_deletion_failed' => 'Failed to delete task',
+        'task_assigned_successfully' => 'Task assigned successfully',
+        'task_assignment_failed' => 'Failed to assign task',
+        'assignment_status_updated' => 'Assignment status updated successfully',
+        'assignment_update_failed' => 'Failed to update assignment',
+        'task_not_found' => 'Task not found',
+        'no_tasks_found' => 'No tasks found',
+        'no_assignments_found' => 'No assignments found',
+        
+        // Notifications
+        'new_task_assignment' => 'New Task Assignment',
+        'you_have_been_assigned_task' => 'You have been assigned to task: :task',
+        'status_changed_from_to' => 'Status changed from :old_status to :new_status',
+        
+        // Time Tracking
+        'time_tracking' => 'Time Tracking',
+        'total_time' => 'Total Time',
+        'billable_time' => 'Billable Time',
+        'time_entries' => 'Time Entries',
+        'start_time' => 'Start Time',
+        'end_time' => 'End Time',
+        'duration' => 'Duration',
+        'description' => 'Description',
+        'billable' => 'Billable',
+        
+        // Comments
+        'comments' => 'Comments',
+        'add_comment' => 'Add Comment',
+        'comment_added' => 'Comment added successfully',
+        'no_comments' => 'No comments yet',
+        
+        // Attachments
+        'attachments' => 'Attachments',
+        'upload_file' => 'Upload File',
+        'file_uploaded' => 'File uploaded successfully',
+        'no_attachments' => 'No attachments',
+        
+        // Progress
+        'progress' => 'Progress',
+        'progress_percentage' => 'Progress Percentage',
+        'update_progress' => 'Update Progress',
+        
+        // Dependencies
+        'dependencies' => 'Dependencies',
+        'dependent_tasks' => 'Dependent Tasks',
+        'add_dependency' => 'Add Dependency',
+        'remove_dependency' => 'Remove Dependency',
+        
+        // Quick Actions
+        'quick_actions' => 'Quick Actions',
+        'mark_complete' => 'Mark Complete',
+        'mark_in_progress' => 'Mark In Progress',
+        'reassign' => 'Reassign',
+        'duplicate' => 'Duplicate',
+        'archive' => 'Archive',
+        
+        // Empty States
+        'no_tasks_title' => 'No Tasks Yet',
+        'no_tasks_description' => 'Create your first task to get started with task management.',
+        'no_assignments_title' => 'No Assignments',
+        'no_assignments_description' => 'No task assignments match your current filters.',
+        
+        // Placeholders
+        'search_tasks' => 'Search tasks...',
+        'task_title_placeholder' => 'Enter task title',
+        'task_description_placeholder' => 'Describe what needs to be done',
+        'assignment_notes_placeholder' => 'Add any specific instructions or notes',
+        'comment_placeholder' => 'Add a comment...',
+        
+        // Validation
+        'title_required' => 'Task title is required',
+        'task_type_required' => 'Task type is required',
+        'priority_required' => 'Priority is required',
+        'category_required' => 'Category is required',
+        'staff_required' => 'At least one staff member must be selected',
+        'due_date_future' => 'Due date must be in the future',
+    ],
 ];

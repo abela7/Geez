@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Traits\HasUlid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StaffTaskAssignment extends Model
@@ -28,6 +29,11 @@ class StaffTaskAssignment extends Model
         'assigned_by',
         'completed_by',
         'updated_by',
+        'progress_percentage',
+        'estimated_hours',
+        'actual_hours',
+        'priority_override',
+        'reminder_sent_at',
     ];
 
     /**
@@ -38,6 +44,9 @@ class StaffTaskAssignment extends Model
         'due_date' => 'date',
         'started_at' => 'datetime',
         'completed_at' => 'datetime',
+        'estimated_hours' => 'decimal:2',
+        'actual_hours' => 'decimal:2',
+        'reminder_sent_at' => 'datetime',
     ];
 
     /**
@@ -70,6 +79,128 @@ class StaffTaskAssignment extends Model
     public function completedBy(): BelongsTo
     {
         return $this->belongsTo(Staff::class, 'completed_by');
+    }
+
+    /**
+     * Get the staff member who last updated this assignment.
+     */
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(Staff::class, 'updated_by');
+    }
+
+    /**
+     * Get all comments for this task assignment.
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(StaffTaskComment::class, 'task_assignment_id');
+    }
+
+    /**
+     * Get public comments (visible to assignee).
+     */
+    public function publicComments(): HasMany
+    {
+        return $this->comments()->where('is_internal', false);
+    }
+
+    /**
+     * Get internal comments (not visible to assignee).
+     */
+    public function internalComments(): HasMany
+    {
+        return $this->comments()->where('is_internal', true);
+    }
+
+    /**
+     * Get all attachments for this task assignment.
+     */
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(StaffTaskAttachment::class, 'task_assignment_id');
+    }
+
+    /**
+     * Get image attachments only.
+     */
+    public function imageAttachments(): HasMany
+    {
+        return $this->attachments()->where('mime_type', 'like', 'image/%');
+    }
+
+    /**
+     * Get document attachments only.
+     */
+    public function documentAttachments(): HasMany
+    {
+        return $this->attachments()->whereIn('mime_type', [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'text/plain',
+        ]);
+    }
+
+    /**
+     * Get all time entries for this task assignment.
+     */
+    public function timeEntries(): HasMany
+    {
+        return $this->hasMany(StaffTaskTimeEntry::class, 'task_assignment_id');
+    }
+
+    /**
+     * Get active time entries (currently running).
+     */
+    public function activeTimeEntries(): HasMany
+    {
+        return $this->timeEntries()->whereNull('end_time');
+    }
+
+    /**
+     * Get completed time entries.
+     */
+    public function completedTimeEntries(): HasMany
+    {
+        return $this->timeEntries()->whereNotNull('end_time');
+    }
+
+    /**
+     * Get billable time entries only.
+     */
+    public function billableTimeEntries(): HasMany
+    {
+        return $this->timeEntries()->where('is_billable', true);
+    }
+
+    /**
+     * Get all notifications for this task assignment.
+     */
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(StaffTaskNotification::class, 'task_assignment_id');
+    }
+
+    /**
+     * Get unread notifications for this assignment.
+     */
+    public function unreadNotifications(): HasMany
+    {
+        return $this->notifications()->where('is_read', false);
+    }
+
+    /**
+     * Get urgent notifications for this assignment.
+     */
+    public function urgentNotifications(): HasMany
+    {
+        return $this->notifications()->whereIn('notification_type', [
+            StaffTaskNotification::TYPE_OVERDUE,
+            StaffTaskNotification::TYPE_DUE_SOON,
+        ]);
     }
 
     /**
@@ -172,6 +303,215 @@ class StaffTaskAssignment extends Model
     public function scopeCompleted($query)
     {
         return $query->where('status', 'completed');
+    }
+
+    /**
+     * Get effective priority (override or task priority).
+     */
+    public function getEffectivePriority(): string
+    {
+        return $this->priority_override ?? $this->task->priority ?? 'medium';
+    }
+
+    /**
+     * Update progress percentage.
+     */
+    public function updateProgress(int $percentage): void
+    {
+        $this->update([
+            'progress_percentage' => max(0, min(100, $percentage)),
+            'updated_by' => auth()->id(),
+        ]);
+    }
+
+    /**
+     * Check if reminder should be sent.
+     */
+    public function shouldSendReminder(): bool
+    {
+        if (!$this->due_date || $this->isCompleted()) {
+            return false;
+        }
+
+        // Send reminder if due in 24 hours and no reminder sent yet
+        $reminderThreshold = $this->due_date->subDay();
+        
+        return now()->gte($reminderThreshold) && 
+               (!$this->reminder_sent_at || $this->reminder_sent_at->lt($reminderThreshold));
+    }
+
+    /**
+     * Mark reminder as sent.
+     */
+    public function markReminderSent(): void
+    {
+        $this->update(['reminder_sent_at' => now()]);
+    }
+
+    /**
+     * Scope for assignments needing reminders.
+     */
+    public function scopeNeedingReminders($query)
+    {
+        return $query->whereNotIn('status', ['completed', 'cancelled'])
+                    ->whereNotNull('due_date')
+                    ->where('due_date', '<=', now()->addDay())
+                    ->where(function ($q) {
+                        $q->whereNull('reminder_sent_at')
+                          ->orWhere('reminder_sent_at', '<', now()->subDays(1));
+                    });
+    }
+
+    /**
+     * Get total time spent on this assignment.
+     */
+    public function getTotalTimeSpent(): float
+    {
+        return $this->timeEntries()
+            ->whereNotNull('end_time')
+            ->sum('duration_minutes') / 60; // Convert to hours
+    }
+
+    /**
+     * Get total billable time for this assignment.
+     */
+    public function getTotalBillableTime(): float
+    {
+        return $this->timeEntries()
+            ->whereNotNull('end_time')
+            ->where('is_billable', true)
+            ->sum('duration_minutes') / 60; // Convert to hours
+    }
+
+    /**
+     * Check if there's an active time entry.
+     */
+    public function hasActiveTimeEntry(): bool
+    {
+        return $this->activeTimeEntries()->exists();
+    }
+
+    /**
+     * Start time tracking for this assignment.
+     */
+    public function startTimeTracking(?string $description = null, bool $isBillable = true): StaffTaskTimeEntry
+    {
+        // Stop any existing active time entries first
+        $this->stopActiveTimeTracking();
+        
+        return StaffTaskTimeEntry::startTracking(
+            $this->id,
+            $this->staff_id,
+            $description,
+            $isBillable
+        );
+    }
+
+    /**
+     * Stop active time tracking for this assignment.
+     */
+    public function stopActiveTimeTracking(?string $description = null): void
+    {
+        $activeEntries = $this->activeTimeEntries()->get();
+        
+        foreach ($activeEntries as $entry) {
+            $entry->stop($description);
+        }
+    }
+
+    /**
+     * Send notification to assignee.
+     */
+    public function sendNotification(
+        string $type,
+        string $title,
+        string $message,
+        ?string $createdBy = null
+    ): StaffTaskNotification {
+        $notification = StaffTaskNotification::create([
+            'task_assignment_id' => $this->id,
+            'staff_id' => $this->staff_id,
+            'notification_type' => $type,
+            'title' => $title,
+            'message' => $message,
+            'created_by' => $createdBy ?? auth()->id(),
+        ]);
+        
+        $notification->send();
+        
+        return $notification;
+    }
+
+    /**
+     * Send reminder notification.
+     */
+    public function sendReminderNotification(): ?StaffTaskNotification
+    {
+        if (!$this->shouldSendReminder()) {
+            return null;
+        }
+        
+        $notification = StaffTaskNotification::createReminderNotification(
+            $this->id,
+            $this->staff_id,
+            $this->task->title,
+            $this->due_date->format('M j, Y')
+        );
+        
+        $notification->send();
+        $this->markReminderSent();
+        
+        return $notification;
+    }
+
+    /**
+     * Send overdue notification.
+     */
+    public function sendOverdueNotification(): ?StaffTaskNotification
+    {
+        if (!$this->isOverdue()) {
+            return null;
+        }
+        
+        $notification = StaffTaskNotification::createOverdueNotification(
+            $this->id,
+            $this->staff_id,
+            $this->task->title
+        );
+        
+        $notification->send();
+        
+        return $notification;
+    }
+
+    /**
+     * Send completion notification to relevant staff.
+     */
+    public function sendCompletionNotification(): void
+    {
+        // Notify the assignee
+        if ($this->completed_by !== $this->staff_id) {
+            $completedByStaff = Staff::find($this->completed_by);
+            
+            StaffTaskNotification::createCompletionNotification(
+                $this->id,
+                $this->staff_id,
+                $this->task->title,
+                $completedByStaff->full_name ?? 'Unknown'
+            )->send();
+        }
+        
+        // Notify the assigner if different from assignee and completer
+        if ($this->assigned_by !== $this->staff_id && $this->assigned_by !== $this->completed_by) {
+            $completedByStaff = Staff::find($this->completed_by);
+            
+            StaffTaskNotification::createCompletionNotification(
+                $this->id,
+                $this->assigned_by,
+                $this->task->title,
+                $completedByStaff->full_name ?? 'Unknown'
+            )->send();
+        }
     }
 
     /**

@@ -12,7 +12,7 @@
 @endpush
 
 @section('content')
-<div class="tasks-container" x-data="taskManager()" x-init="init()">
+<div class="tasks-page" x-data="taskManager()" x-init="init()">
     <!-- Page Header -->
     <div class="tasks-header">
         <div class="tasks-header-content">
@@ -30,41 +30,32 @@
                     {{ __('staff.tasks.create_task') }}
                 </button>
                 
-                <div class="tasks-view-toggle" role="tablist" aria-label="{{ __('staff.tasks.view_modes') }}">
+                <div class="tasks-view-toggle">
                     <button @click="setView('dashboard')" 
                             :class="{ 'active': currentView === 'dashboard' }"
-                            class="view-toggle-btn"
-                            role="tab"
-                            :aria-selected="currentView === 'dashboard'"
-                            aria-controls="dashboard-view">
+                            class="view-toggle-btn">
                         <svg class="view-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
                         </svg>
-                        {{ __('staff.tasks.dashboard_view') }}
+                        {{ __('staff.tasks.dashboard') }}
                     </button>
                     
                     <button @click="setView('kanban')" 
                             :class="{ 'active': currentView === 'kanban' }"
-                            class="view-toggle-btn"
-                            role="tab"
-                            :aria-selected="currentView === 'kanban'"
-                            aria-controls="kanban-view">
+                            class="view-toggle-btn">
                         <svg class="view-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 0V17m0-10a2 2 0 012-2h2a2 2 0 012 2v10a2 2 0 01-2 2h-2a2 2 0 01-2-2"/>
                         </svg>
-                        {{ __('staff.tasks.kanban_view') }}
+                        {{ __('staff.tasks.kanban') }}
                     </button>
                     
                     <button @click="setView('list')" 
                             :class="{ 'active': currentView === 'list' }"
-                            class="view-toggle-btn"
-                            role="tab"
-                            :aria-selected="currentView === 'list'"
-                            aria-controls="list-view">
+                            class="view-toggle-btn">
                         <svg class="view-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
                         </svg>
-                        {{ __('staff.tasks.list_view') }}
+                        {{ __('staff.tasks.list') }}
                     </button>
                 </div>
             </div>
@@ -72,170 +63,275 @@
     </div>
 
     <!-- Dashboard View -->
-    <div x-show="currentView === 'dashboard'" 
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0 transform translate-y-4"
-         x-transition:enter-end="opacity-100 transform translate-y-0"
-         id="dashboard-view"
-         role="tabpanel">
-        
-        <!-- Task Statistics -->
+    <div x-show="currentView === 'dashboard'" class="tasks-dashboard">
+        <!-- Stats Cards -->
         <div class="tasks-stats-grid">
-            <div class="stat-card stat-card--primary">
-                <div class="stat-card-header">
-                    <div class="stat-card-icon">
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-primary">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                         </svg>
-                    </div>
-                    <span class="stat-card-label">{{ __('staff.tasks.total_tasks') }}</span>
                 </div>
-                <div class="stat-card-value" x-text="taskStats.total">0</div>
-                <div class="stat-card-trend stat-card-trend--positive">
-                    <svg class="trend-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                    </svg>
-                    <span>+5 {{ __('staff.tasks.this_week') }}</span>
+                <div class="stat-content">
+                    <div class="stat-value">{{ $dashboardData['total_tasks'] }}</div>
+                    <div class="stat-label">{{ __('staff.tasks.total_tasks') }}</div>
                 </div>
             </div>
 
-            <div class="stat-card stat-card--success">
-                <div class="stat-card-header">
-                    <div class="stat-card-icon">
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-info">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                         </svg>
-                    </div>
-                    <span class="stat-card-label">{{ __('staff.tasks.completed') }}</span>
                 </div>
-                <div class="stat-card-value" x-text="taskStats.completed">0</div>
-                <div class="stat-card-trend stat-card-trend--positive">
-                    <svg class="trend-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                    </svg>
-                    <span>+12 {{ __('staff.tasks.this_week') }}</span>
+                <div class="stat-content">
+                    <div class="stat-value">{{ $dashboardData['total_assignments'] }}</div>
+                    <div class="stat-label">{{ __('staff.tasks.total_assignments') }}</div>
                 </div>
             </div>
 
-            <div class="stat-card stat-card--warning">
-                <div class="stat-card-header">
-                    <div class="stat-card-icon">
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-success">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                    </div>
-                    <span class="stat-card-label">{{ __('staff.tasks.in_progress') }}</span>
                 </div>
-                <div class="stat-card-value" x-text="taskStats.inProgress">0</div>
-                <div class="stat-card-trend stat-card-trend--neutral">
-                    <svg class="trend-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
-                    </svg>
-                    <span>{{ __('staff.tasks.no_change') }}</span>
+                <div class="stat-content">
+                    <div class="stat-value">{{ $dashboardData['completed_assignments'] }}</div>
+                    <div class="stat-label">{{ __('staff.tasks.completed_assignments') }}</div>
                 </div>
             </div>
 
-            <div class="stat-card stat-card--danger">
-                <div class="stat-card-header">
-                    <div class="stat-card-icon">
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-warning">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                    </div>
-                    <span class="stat-card-label">{{ __('staff.tasks.overdue') }}</span>
                 </div>
-                <div class="stat-card-value" x-text="taskStats.overdue">0</div>
-                <div class="stat-card-trend stat-card-trend--negative">
-                    <svg class="trend-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/>
-                    </svg>
-                    <span>-2 {{ __('staff.tasks.this_week') }}</span>
+                <div class="stat-content">
+                    <div class="stat-value">{{ $dashboardData['overdue_assignments'] }}</div>
+                    <div class="stat-label">{{ __('staff.tasks.overdue_assignments') }}</div>
                 </div>
             </div>
         </div>
 
-        <!-- Quick Actions & Recent Tasks -->
-        <div class="dashboard-content-grid">
-            <!-- Quick Actions -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">{{ __('staff.tasks.quick_actions') }}</h3>
+        <!-- Filters -->
+        <div class="tasks-filters">
+            <form method="GET" class="tasks-filters-form">
+                <div class="filter-group">
+                    <input type="text" 
+                           name="search" 
+                           value="{{ $filters['search'] ?? '' }}"
+                           placeholder="{{ __('staff.tasks.search_tasks') }}"
+                           class="search-input">
                 </div>
-                <div class="card-body">
-                    <div class="quick-actions-grid">
-                        <button @click="openTaskModal('high')" class="quick-action-btn quick-action-btn--urgent">
-                            <div class="quick-action-icon">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/>
-                                </svg>
-                            </div>
-                            <span>{{ __('staff.tasks.urgent_task') }}</span>
-                        </button>
 
-                        <button @click="openTaskModal('routine')" class="quick-action-btn quick-action-btn--routine">
-                            <div class="quick-action-icon">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <span>{{ __('staff.tasks.routine_task') }}</span>
-                        </button>
+                <div class="filter-group">
+                    <select name="status" class="filter-select">
+                        <option value="">{{ __('staff.tasks.all_statuses') }}</option>
+                        <option value="assigned" @selected(($filters['status'] ?? '') === 'assigned')>{{ __('staff.tasks.assigned') }}</option>
+                        <option value="in_progress" @selected(($filters['status'] ?? '') === 'in_progress')>{{ __('staff.tasks.in_progress') }}</option>
+                        <option value="completed" @selected(($filters['status'] ?? '') === 'completed')>{{ __('staff.tasks.completed') }}</option>
+                        <option value="cancelled" @selected(($filters['status'] ?? '') === 'cancelled')>{{ __('staff.tasks.cancelled') }}</option>
+                    </select>
+                </div>
 
-                        <button @click="openBulkAssign()" class="quick-action-btn quick-action-btn--bulk">
-                            <div class="quick-action-icon">
+                <div class="filter-group">
+                    <select name="priority" class="filter-select">
+                        <option value="">{{ __('staff.tasks.all_priorities') }}</option>
+                        <option value="low" @selected(($filters['priority'] ?? '') === 'low')>{{ __('staff.tasks.low') }}</option>
+                        <option value="medium" @selected(($filters['priority'] ?? '') === 'medium')>{{ __('staff.tasks.medium') }}</option>
+                        <option value="high" @selected(($filters['priority'] ?? '') === 'high')>{{ __('staff.tasks.high') }}</option>
+                        <option value="urgent" @selected(($filters['priority'] ?? '') === 'urgent')>{{ __('staff.tasks.urgent') }}</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <select name="category" class="filter-select">
+                        <option value="">{{ __('staff.tasks.all_categories') }}</option>
+                        <option value="kitchen" @selected(($filters['category'] ?? '') === 'kitchen')>{{ __('staff.tasks.kitchen') }}</option>
+                        <option value="service" @selected(($filters['category'] ?? '') === 'service')>{{ __('staff.tasks.service') }}</option>
+                        <option value="cleaning" @selected(($filters['category'] ?? '') === 'cleaning')>{{ __('staff.tasks.cleaning') }}</option>
+                        <option value="administration" @selected(($filters['category'] ?? '') === 'administration')>{{ __('staff.tasks.administration') }}</option>
+                        <option value="maintenance" @selected(($filters['category'] ?? '') === 'maintenance')>{{ __('staff.tasks.maintenance_cat') }}</option>
+                        <option value="inventory" @selected(($filters['category'] ?? '') === 'inventory')>{{ __('staff.tasks.inventory') }}</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <select name="assignee" class="filter-select">
+                        <option value="">{{ __('staff.tasks.all_assignees') }}</option>
+                        @foreach($staffMembers as $staff)
+                            <option value="{{ $staff->id }}" @selected(($filters['assignee'] ?? '') === $staff->id)>
+                                {{ $staff->full_name }} ({{ $staff->staffType->display_name ?? 'No Type' }})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-secondary">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z"/>
+                                </svg>
+                    {{ __('common.filter') }}
+                </button>
+            </form>
+                            </div>
+
+        <!-- Tasks Grid -->
+        <div class="tasks-content">
+            @if($tasks->count() > 0)
+                <div class="tasks-grid">
+                    @foreach($tasks as $task)
+                        <div class="task-card" x-data="{ expanded: false }">
+                            <div class="task-card-header">
+                                <div class="task-priority task-priority-{{ $task->priority }}">
+                                    {{ __('staff.tasks.' . $task->priority) }}
+                                </div>
+                                <div class="task-actions">
+                                    <button @click="editTask({{ $task->id }})" class="task-action-btn" title="{{ __('staff.tasks.edit') }}">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                        </button>
+                                    <button @click="assignTask({{ $task->id }})" class="task-action-btn" title="{{ __('staff.tasks.assign') }}">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                                 </svg>
+                                    </button>
+                                </div>
                             </div>
-                            <span>{{ __('staff.tasks.bulk_assign') }}</span>
-                        </button>
+                            
+                            <div class="task-card-body">
+                                <h3 class="task-title">{{ $task->title }}</h3>
+                                <p class="task-description">{{ Str::limit($task->description, 100) }}</p>
+                                
+                                <div class="task-meta">
+                                    <span class="task-type">{{ __('staff.tasks.' . $task->task_type) }}</span>
+                                    <span class="task-category">{{ __('staff.tasks.' . $task->category) }}</span>
+                                    @if($task->estimated_hours)
+                                        <span class="task-hours">{{ $task->estimated_hours }}h</span>
+                                    @endif
+                                </div>
 
-                        <button @click="openTemplates()" class="quick-action-btn quick-action-btn--template">
-                            <div class="quick-action-icon">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                </svg>
+                                @if($task->assignments->count() > 0)
+                                    <div class="task-assignments">
+                                        <div class="task-assignments-header">
+                                            <span class="assignments-count">{{ $task->assignments->count() }} {{ Str::plural('assignment', $task->assignments->count()) }}</span>
+                                        </div>
+                                        <div class="task-assignees">
+                                            @foreach($task->assignments->take(3) as $assignment)
+                                                <div class="assignee-avatar" title="{{ $assignment->staff->full_name }}">
+                                                    {{ substr($assignment->staff->first_name, 0, 1) }}{{ substr($assignment->staff->last_name, 0, 1) }}
+                                                </div>
+                                            @endforeach
+                                            @if($task->assignments->count() > 3)
+                                                <div class="assignee-more">+{{ $task->assignments->count() - 3 }}</div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
-                            <span>{{ __('staff.tasks.from_template') }}</span>
-                        </button>
                     </div>
+                    @endforeach
+                </div>
+
+                <!-- Pagination -->
+                <div class="tasks-pagination">
+                    {{ $tasks->links() }}
+            </div>
+            @else
+                <!-- Empty State -->
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
+                    <h3 class="empty-state-title">{{ __('staff.tasks.no_tasks_title') }}</h3>
+                    <p class="empty-state-description">{{ __('staff.tasks.no_tasks_description') }}</p>
+                    <button @click="openTaskModal()" class="btn btn-primary">
+                        {{ __('staff.tasks.create_task') }}
+                    </button>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- Kanban View -->
+    <div x-show="currentView === 'kanban'" class="tasks-kanban">
+        <div class="kanban-board">
+            <div class="kanban-column">
+                <div class="kanban-column-header">
+                    <h3 class="kanban-column-title">{{ __('staff.tasks.assigned') }}</h3>
+                    <span class="kanban-column-count">{{ $assignments->where('status', 'assigned')->count() }}</span>
+                </div>
+                <div class="kanban-column-body">
+                    @foreach($assignments->where('status', 'assigned') as $assignment)
+                        @include('admin.staff.partials.kanban-card', ['assignment' => $assignment])
+                    @endforeach
                 </div>
             </div>
 
-            <!-- Recent Tasks -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">{{ __('staff.tasks.recent_tasks') }}</h3>
-                    <button @click="setView('list')" class="card-action">
-                        {{ __('staff.tasks.view_all') }}
-                        <svg class="card-action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="recent-tasks-list">
-                        <template x-for="task in recentTasks" :key="task.id">
-                            <div class="recent-task-item" @click="viewTask(task)">
-                                <div class="recent-task-priority" :class="`priority-${task.priority}`"></div>
-                                <div class="recent-task-content">
-                                    <h4 class="recent-task-title" x-text="task.title"></h4>
-                                    <p class="recent-task-assignee" x-text="task.assignee"></p>
+            <div class="kanban-column">
+                <div class="kanban-column-header">
+                    <h3 class="kanban-column-title">{{ __('staff.tasks.in_progress') }}</h3>
+                    <span class="kanban-column-count">{{ $assignments->where('status', 'in_progress')->count() }}</span>
                                 </div>
-                                <div class="recent-task-meta">
-                                    <span class="recent-task-status" :class="`status-${task.status}`" x-text="task.status"></span>
-                                    <span class="recent-task-date" x-text="task.due_date"></span>
+                <div class="kanban-column-body">
+                    @foreach($assignments->where('status', 'in_progress') as $assignment)
+                        @include('admin.staff.partials.kanban-card', ['assignment' => $assignment])
+                    @endforeach
                                 </div>
                             </div>
-                        </template>
+
+            <div class="kanban-column">
+                <div class="kanban-column-header">
+                    <h3 class="kanban-column-title">{{ __('staff.tasks.completed') }}</h3>
+                    <span class="kanban-column-count">{{ $assignments->where('status', 'completed')->count() }}</span>
                     </div>
+                <div class="kanban-column-body">
+                    @foreach($assignments->where('status', 'completed') as $assignment)
+                        @include('admin.staff.partials.kanban-card', ['assignment' => $assignment])
+                    @endforeach
                 </div>
             </div>
         </div>
     </div>
 
-    @include('admin.staff.partials.tasks-kanban')
+    <!-- List View -->
+    <div x-show="currentView === 'list'" class="tasks-list">
     @include('admin.staff.partials.tasks-list')
-    @include('admin.staff.partials.tasks-modal')
+    </div>
+
+    <!-- Task Modal -->
+    <div x-show="showTaskModal" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="modal-overlay" 
+         @click="closeTaskModal()">
+        <div class="modal-content" @click.stop>
+            @include('admin.staff.partials.task-modal')
+        </div>
+    </div>
+
+    <!-- Assignment Modal -->
+    <div x-show="showAssignModal" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="modal-overlay" 
+         @click="closeAssignModal()">
+        <div class="modal-content" @click.stop>
+            @include('admin.staff.partials.assign-modal')
+        </div>
+    </div>
 </div>
 @endsection
