@@ -1,0 +1,1820 @@
+/* ==========================================================================
+   STAFF PAYROLL MANAGEMENT - SECTION-SPECIFIC STYLES
+   Using design tokens from layout.css
+   ========================================================================== */
+
+/* ==========================================================================
+   1. DESIGN TOKENS & VARIABLES
+   ========================================================================== */
+
+:root {
+  /* Payroll Specific Colors */
+  --payroll-primary: var(--color-primary);
+  --payroll-success: var(--color-success);
+  --payroll-warning: var(--color-warning);
+  --payroll-danger: var(--color-danger);
+  --payroll-info: var(--color-info);
+  
+  /* Status Colors */
+  --status-active: var(--color-success);
+  --status-pending: var(--color-warning);
+  --status-processed: var(--color-info);
+  --status-cancelled: var(--color-danger);
+  
+  /* Amount Colors */
+  --amount-positive: var(--color-success);
+  --amount-negative: var(--color-danger);
+  --amount-neutral: var(--color-text-primary);
+  
+  /* Payroll Specific Spacing */
+  --payroll-card-padding: var(--space-lg);
+  --payroll-gap: var(--space-md);
+  --calendar-cell-size: 40px;
+}
+
+/* ==========================================================================
+   2. LAYOUT & CONTAINER
+   ========================================================================== */
+
+.payroll-container {
+  padding: var(--space-lg);
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Page Header */
+.payroll-header {
+  margin-bottom: var(--space-xl);
+}
+
+.payroll-header-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.payroll-title-section {
+  flex: 1;
+  min-width: 280px;
+}
+
+.page-title {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-xs);
+  line-height: var(--line-height-tight);
+}
+
+.page-subtitle {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+.payroll-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   3. VIEW TOGGLE BUTTONS
+   ========================================================================== */
+
+.payroll-view-toggle {
+  display: flex;
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xs);
+  border: 1px solid var(--color-border);
+}
+
+.view-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  white-space: nowrap;
+}
+
+.view-toggle-btn:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+.view-toggle-btn.active {
+  background-color: var(--color-primary);
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.view-icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+}
+
+/* ==========================================================================
+   4. DASHBOARD VIEW - STATISTICS CARDS
+   ========================================================================== */
+
+.payroll-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.stat-card {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--payroll-card-padding);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--stat-accent-color, var(--color-primary));
+}
+
+.stat-card--primary {
+  --stat-accent-color: var(--payroll-primary);
+}
+
+.stat-card--success {
+  --stat-accent-color: var(--payroll-success);
+}
+
+.stat-card--warning {
+  --stat-accent-color: var(--payroll-warning);
+}
+
+.stat-card--info {
+  --stat-accent-color: var(--payroll-info);
+}
+
+.stat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.stat-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--stat-accent-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+}
+
+.stat-card-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.stat-card-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-align: right;
+}
+
+.stat-card-value {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-sm);
+  line-height: 1;
+}
+
+.stat-card-trend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.stat-card-trend--positive {
+  color: var(--color-success);
+}
+
+.stat-card-trend--negative {
+  color: var(--color-danger);
+}
+
+.stat-card-trend--neutral {
+  color: var(--color-text-secondary);
+}
+
+.trend-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* ==========================================================================
+   5. DASHBOARD CONTENT GRID
+   ========================================================================== */
+
+.dashboard-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-xl);
+}
+
+/* Quick Actions */
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-md);
+}
+
+.quick-action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-align: center;
+  min-height: 100px;
+}
+
+.quick-action-btn:hover {
+  background: var(--color-bg-tertiary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.quick-action-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.quick-action-btn--primary .quick-action-icon {
+  background: var(--payroll-primary);
+}
+
+.quick-action-btn--success .quick-action-icon {
+  background: var(--payroll-success);
+}
+
+.quick-action-btn--warning .quick-action-icon {
+  background: var(--payroll-warning);
+}
+
+.quick-action-btn--danger .quick-action-icon {
+  background: var(--payroll-danger);
+}
+
+.quick-action-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ==========================================================================
+   6. PAYROLL CALENDAR
+   ========================================================================== */
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.card-action-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+}
+
+.card-action-btn:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.card-action-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.current-month {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  min-width: 120px;
+  text-align: center;
+}
+
+.payroll-calendar {
+  width: 100%;
+}
+
+.calendar-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  margin-bottom: var(--space-sm);
+}
+
+.calendar-day-header {
+  padding: var(--space-sm);
+  text-align: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.calendar-day {
+  background: var(--color-bg-primary);
+  min-height: var(--calendar-cell-size);
+  padding: var(--space-xs);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-day:hover {
+  background: var(--color-bg-secondary);
+}
+
+.calendar-day.is-today {
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.calendar-day.is-payday {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.calendar-day.has-payroll {
+  background: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+.calendar-day.other-month {
+  opacity: 0.3;
+}
+
+.day-number {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.payroll-indicator {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  margin-top: var(--space-xs);
+}
+
+/* ==========================================================================
+   7. ACTIVITY TIMELINE
+   ========================================================================== */
+
+.activity-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+}
+
+.activity-item:hover {
+  background: var(--color-bg-tertiary);
+  box-shadow: var(--shadow-sm);
+}
+
+.activity-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: white;
+}
+
+.activity-icon--processed {
+  background: var(--color-success);
+}
+
+.activity-icon--pending {
+  background: var(--color-warning);
+}
+
+.activity-icon--bonus {
+  background: var(--color-info);
+}
+
+.activity-icon--deduction {
+  background: var(--color-danger);
+}
+
+.activity-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.activity-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.activity-description {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.activity-time {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}
+
+.activity-amount {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--amount-positive);
+  flex-shrink: 0;
+}
+
+.activity-amount.negative {
+  color: var(--amount-negative);
+}
+
+/* ==========================================================================
+   8. EMPLOYEE PAYROLL VIEW
+   ========================================================================== */
+
+.employee-filters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  padding: var(--space-lg);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.employee-search {
+  flex: 1;
+  min-width: 280px;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: var(--space-md);
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md) var(--space-sm) 44px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-base);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-bg);
+}
+
+.search-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.employee-filter-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.filter-select {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-bg);
+}
+
+.sort-toggle-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+}
+
+.sort-toggle-btn:hover {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
+.sort-toggle-btn.desc {
+  transform: rotate(180deg);
+}
+
+.sort-toggle-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Employee Payroll Cards */
+.employee-payroll-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.employee-payroll-card {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--payroll-card-padding);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.employee-payroll-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  border-color: var(--color-primary);
+}
+
+.employee-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.employee-avatar {
+  flex-shrink: 0;
+}
+
+.avatar-image {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+.employee-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.employee-name {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.employee-position {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.employee-department {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.employee-status {
+  flex-shrink: 0;
+}
+
+.status-badge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  text-transform: capitalize;
+}
+
+.status-badge.status-active {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.status-badge.status-pending {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.status-badge.status-processed {
+  background: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+.salary-info {
+  margin-bottom: var(--space-lg);
+}
+
+.salary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.salary-item:last-child {
+  border-bottom: none;
+}
+
+.salary-item.total {
+  border-top: 2px solid var(--color-border);
+  padding-top: var(--space-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.salary-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.salary-value {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.salary-value.positive {
+  color: var(--amount-positive);
+}
+
+.salary-value.negative {
+  color: var(--amount-negative);
+}
+
+.payroll-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+  flex: 1;
+  justify-content: center;
+}
+
+.action-btn--primary:hover {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.action-btn--secondary:hover {
+  background: var(--color-info);
+  color: white;
+  border-color: var(--color-info);
+}
+
+.action-btn--tertiary:hover {
+  background: var(--color-warning);
+  color: white;
+  border-color: var(--color-warning);
+}
+
+.action-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.employee-card-footer {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-xs);
+}
+
+.last-paid-label,
+.next-payday-label {
+  color: var(--color-text-secondary);
+  margin-right: var(--space-xs);
+}
+
+.last-paid-date,
+.next-payday-date {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ==========================================================================
+   9. HISTORY VIEW
+   ========================================================================== */
+
+.history-filters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  padding: var(--space-lg);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.history-search {
+  flex: 1;
+  min-width: 280px;
+}
+
+.history-filter-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.custom-date-range {
+  margin-bottom: var(--space-lg);
+  padding: var(--space-lg);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.date-range-inputs {
+  display: flex;
+  gap: var(--space-lg);
+  align-items: end;
+}
+
+.date-input-group {
+  flex: 1;
+}
+
+.date-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.date-input {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-base);
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-bg);
+}
+
+/* History Table */
+.history-table-container {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--space-xl);
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-header {
+  background: var(--color-bg-secondary);
+  padding: var(--space-md) var(--space-lg);
+  text-align: left;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table-header--checkbox {
+  width: 50px;
+  text-align: center;
+}
+
+.table-header--actions {
+  width: 120px;
+  text-align: center;
+}
+
+.table-row {
+  transition: all var(--transition-base);
+}
+
+.table-row:hover {
+  background: var(--color-bg-secondary);
+}
+
+.table-row.selected {
+  background: var(--color-primary-bg);
+}
+
+.table-cell {
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.table-cell--checkbox {
+  text-align: center;
+}
+
+.table-cell--actions {
+  text-align: center;
+}
+
+.table-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.employee-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.employee-avatar-small {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+.employee-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.employee-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.employee-id {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.period-text,
+.date-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+.type-badge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  text-transform: capitalize;
+}
+
+.type-badge.type-salary {
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+}
+
+.type-badge.type-bonus {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.type-badge.type-deduction {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.type-badge.type-overtime {
+  background: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+.amount-text {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--amount-neutral);
+}
+
+.amount-text.negative {
+  color: var(--amount-negative);
+}
+
+.amount-text.primary {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+}
+
+.table-action {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+}
+
+.table-action:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.table-action--danger:hover {
+  background: var(--color-danger);
+  color: white;
+}
+
+.table-action svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ==========================================================================
+   10. PAGINATION
+   ========================================================================== */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-xl);
+  padding: var(--space-lg);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.pagination-info {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.pagination-btn {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-size: var(--font-size-sm);
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.pagination-btn.active {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   11. MODAL STYLES
+   ========================================================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: var(--space-lg);
+}
+
+.modal-container {
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2xl);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-container--large {
+  max-width: 800px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-xl);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.modal-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.modal-close {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+}
+
+.modal-close:hover {
+  background: var(--color-danger);
+  color: white;
+}
+
+.modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-xl);
+}
+
+/* Form Styles */
+.payroll-form-grid,
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.form-group--full {
+  grid-column: 1 / -1;
+}
+
+.form-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.required {
+  color: var(--color-danger);
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-base);
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-bg);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+}
+
+/* Custom Period */
+.custom-period {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  background: var(--color-bg-secondary);
+}
+
+.date-range-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+/* Employee Selection */
+.employee-selection {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+}
+
+.selection-controls {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+}
+
+.selection-btn {
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-xs);
+  transition: all var(--transition-base);
+}
+
+.selection-btn:hover {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.employee-list {
+  padding: var(--space-md);
+}
+
+.employee-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+}
+
+.employee-checkbox:hover {
+  background: var(--color-bg-secondary);
+}
+
+.employee-avatar-tiny {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+.employee-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex: 1;
+}
+
+.employee-salary {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-left: auto;
+}
+
+/* Payroll Summary */
+.payroll-summary {
+  margin-top: var(--space-xl);
+  padding: var(--space-lg);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.summary-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-md);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-lg);
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.summary-item--total {
+  border-top: 2px solid var(--color-primary);
+  padding-top: var(--space-md);
+}
+
+.summary-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.summary-value {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.summary-item--total .summary-value {
+  color: var(--color-primary);
+}
+
+/* Adjustments (Bonuses/Deductions) */
+.adjustments-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.adjustment-item {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.adjustment-description {
+  flex: 2;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.adjustment-amount {
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.adjustment-remove {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--color-danger);
+  color: white;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+}
+
+.adjustment-remove:hover {
+  background: var(--color-danger);
+  opacity: 0.8;
+}
+
+.adjustment-remove svg {
+  width: 16px;
+  height: 16px;
+}
+
+.adjustment-add {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  border: 2px dashed var(--color-border);
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-size: var(--font-size-sm);
+  justify-content: center;
+}
+
+.adjustment-add:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-bg);
+}
+
+.adjustment-add svg {
+  width: 16px;
+  height: 16px;
+}
+
+.form-section-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   12. BULK ACTIONS
+   ========================================================================== */
+
+.bulk-actions {
+  position: fixed;
+  bottom: var(--space-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+}
+
+.bulk-actions-content {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  min-width: 600px;
+}
+
+.bulk-actions-count {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.bulk-actions-buttons {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.bulk-action-btn {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  white-space: nowrap;
+}
+
+.bulk-action-btn--primary:hover {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.bulk-action-btn--secondary:hover {
+  background: var(--color-info);
+  color: white;
+  border-color: var(--color-info);
+}
+
+.bulk-action-btn--success:hover {
+  background: var(--color-success);
+  color: white;
+  border-color: var(--color-success);
+}
+
+.bulk-action-btn--warning:hover {
+  background: var(--color-warning);
+  color: white;
+  border-color: var(--color-warning);
+}
+
+.bulk-action-btn--danger:hover {
+  background: var(--color-danger);
+  color: white;
+  border-color: var(--color-danger);
+}
+
+/* ==========================================================================
+   13. EMPTY STATES
+   ========================================================================== */
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-3xl);
+  color: var(--color-text-secondary);
+}
+
+.empty-state-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto var(--space-lg);
+  color: var(--color-text-tertiary);
+}
+
+.empty-state-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.empty-state-description {
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-xl);
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ==========================================================================
+   14. RESPONSIVE DESIGN
+   ========================================================================== */
+
+/* Tablet (768px - 1279px) */
+@container (max-width: 1279px) {
+  .payroll-header-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .payroll-view-toggle {
+    align-self: flex-start;
+  }
+  
+  .dashboard-content-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .employee-payroll-grid {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  }
+  
+  .bulk-actions-content {
+    min-width: 500px;
+    flex-direction: column;
+    gap: var(--space-md);
+    text-align: center;
+  }
+  
+  .payroll-form-grid,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile (≤767px) */
+@container (max-width: 767px) {
+  .payroll-container {
+    padding: var(--space-md);
+  }
+  
+  .page-title {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .payroll-stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+  
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .employee-filters,
+  .history-filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-md);
+  }
+  
+  .employee-filter-controls,
+  .history-filter-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .employee-payroll-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .payroll-actions {
+    flex-direction: column;
+  }
+  
+  .history-table-container {
+    overflow-x: auto;
+  }
+  
+  .history-table {
+    min-width: 800px;
+  }
+  
+  .modal-container {
+    margin: var(--space-md);
+    max-width: calc(100vw - 2 * var(--space-md));
+  }
+  
+  .bulk-actions-content {
+    min-width: auto;
+    width: calc(100vw - 2 * var(--space-lg));
+    max-width: 400px;
+  }
+  
+  .bulk-actions-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .bulk-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .calendar-grid {
+    gap: 0;
+  }
+  
+  .calendar-day {
+    min-height: 32px;
+    font-size: var(--font-size-xs);
+  }
+  
+  .date-range-inputs,
+  .date-range-grid {
+    flex-direction: column;
+  }
+  
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .pagination {
+    flex-direction: column;
+    gap: var(--space-md);
+    text-align: center;
+  }
+}
+
+/* ==========================================================================
+   15. DARK THEME OVERRIDES
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  .employee-payroll-card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+  
+  .employee-payroll-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+  
+  .modal-overlay {
+    background: rgba(0, 0, 0, 0.7);
+  }
+  
+  .bulk-actions-content {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* ==========================================================================
+   16. PRINT STYLES
+   ========================================================================== */
+
+@media print {
+  .payroll-header-actions,
+  .employee-filters,
+  .history-filters,
+  .bulk-actions,
+  .modal-overlay,
+  .table-actions,
+  .payroll-actions {
+    display: none !important;
+  }
+  
+  .payroll-container {
+    padding: 0;
+  }
+  
+  .employee-payroll-grid {
+    display: block;
+  }
+  
+  .employee-payroll-card {
+    break-inside: avoid;
+    margin-bottom: var(--space-lg);
+  }
+}

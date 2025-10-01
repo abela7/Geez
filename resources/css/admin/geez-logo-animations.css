@@ -1,0 +1,323 @@
+/**
+ * Geez Logo Animation Styles
+ * 
+ * CSS styles to support GSAP animations for the Geez logo
+ */
+
+/* ==========================================================================
+   Base Logo Styles
+   ========================================================================== */
+
+.geez-logo-container {
+    display: inline-block;
+    position: relative;
+    max-width: 100%;
+    height: auto;
+}
+
+#geez-logo {
+    width: 100%;
+    height: auto;
+    max-width: 500px;
+    display: block;
+    cursor: pointer;
+    transition: filter 0.3s ease;
+}
+
+/* Ensure SVG is responsive */
+#geez-logo svg {
+    width: 100%;
+    height: auto;
+}
+
+/* ==========================================================================
+   Animation Support Classes
+   ========================================================================== */
+
+/* Container for logo with proper transform origin */
+#logo-container {
+    transform-origin: center center;
+    will-change: transform, opacity;
+}
+
+/* Path element optimized for animations */
+#logo-path {
+    will-change: opacity, fill, filter, clip-path;
+    stroke: #e3c56b;
+    stroke-width: 0;
+    vector-effect: non-scaling-stroke;
+}
+
+/* ==========================================================================
+   Animation States
+   ========================================================================== */
+
+/* Hidden state for initial load */
+.logo-hidden {
+    opacity: 0;
+    transform: scale(0) rotate(-180deg);
+}
+
+/* Visible state */
+.logo-visible {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+/* Loading state */
+.logo-loading {
+    opacity: 0.5;
+    animation: logoLoadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes logoLoadingPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+}
+
+/* ==========================================================================
+   Interactive States
+   ========================================================================== */
+
+/* Hover effects (fallback for non-GSAP environments) */
+.geez-logo-container:hover #geez-logo {
+    filter: drop-shadow(0 0 15px rgba(227, 197, 107, 0.6));
+}
+
+.geez-logo-container:hover #logo-container {
+    transform: scale(1.05);
+}
+
+/* Active/Click state */
+.geez-logo-container:active #logo-container {
+    transform: scale(0.95);
+}
+
+/* ==========================================================================
+   Animation Variants
+   ========================================================================== */
+
+/* Glow effect class */
+.logo-glow {
+    filter: drop-shadow(0 0 20px #e3c56b) drop-shadow(0 0 40px rgba(227, 197, 107, 0.4));
+}
+
+/* Pulse effect class */
+.logo-pulse {
+    animation: logoPulse 2s ease-in-out infinite;
+}
+
+@keyframes logoPulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 5px rgba(227, 197, 107, 0.3));
+    }
+    50% {
+        filter: drop-shadow(0 0 20px rgba(227, 197, 107, 0.8));
+    }
+}
+
+/* Bounce effect class */
+.logo-bounce {
+    animation: logoBounce 2s ease-in-out;
+}
+
+@keyframes logoBounce {
+    0% {
+        transform: translateY(-100px) scale(0.8);
+        opacity: 0;
+    }
+    60% {
+        transform: translateY(10px) scale(1.1);
+        opacity: 1;
+    }
+    80% {
+        transform: translateY(-5px) scale(0.95);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Shake effect for error states */
+.logo-shake {
+    animation: logoShake 0.5s ease-in-out;
+}
+
+@keyframes logoShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* ==========================================================================
+   Particle Effects
+   ========================================================================== */
+
+.logo-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #e3c56b;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0 0 6px rgba(227, 197, 107, 0.8);
+}
+
+/* Particle variants */
+.logo-particle.small {
+    width: 2px;
+    height: 2px;
+}
+
+.logo-particle.large {
+    width: 6px;
+    height: 6px;
+}
+
+.logo-particle.star {
+    border-radius: 0;
+    transform: rotate(45deg);
+    background: linear-gradient(45deg, #e3c56b, #f4d03f);
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    #geez-logo {
+        max-width: 300px;
+    }
+    
+    /* Reduce animation intensity on mobile */
+    .geez-logo-container:hover #logo-container {
+        transform: scale(1.02);
+    }
+    
+    /* Disable complex animations on mobile for performance */
+    @media (prefers-reduced-motion: reduce) {
+        .logo-pulse,
+        .logo-bounce,
+        .logo-shake {
+            animation: none;
+        }
+        
+        .geez-logo-container:hover #geez-logo {
+            filter: none;
+        }
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+    #geez-logo {
+        max-width: 400px;
+    }
+}
+
+/* Desktop styles */
+@media (min-width: 1025px) {
+    #geez-logo {
+        max-width: 500px;
+    }
+}
+
+/* ==========================================================================
+   Dark Theme Support
+   ========================================================================== */
+
+/* Dark theme adjustments */
+.dark .geez-logo-container {
+    filter: brightness(1.1);
+}
+
+.dark #logo-path {
+    fill: #f4d03f; /* Slightly brighter gold for dark backgrounds */
+}
+
+.dark .logo-glow {
+    filter: drop-shadow(0 0 25px #f4d03f) drop-shadow(0 0 50px rgba(244, 208, 63, 0.3));
+}
+
+.dark .logo-particle {
+    background: #f4d03f;
+    box-shadow: 0 0 8px rgba(244, 208, 63, 0.9);
+}
+
+/* ==========================================================================
+   Performance Optimizations
+   ========================================================================== */
+
+/* GPU acceleration for smooth animations */
+#geez-logo,
+#logo-container,
+#logo-path {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* Optimize for animations */
+.animating {
+    will-change: transform, opacity, filter;
+}
+
+.animation-complete {
+    will-change: auto;
+}
+
+/* ==========================================================================
+   Accessibility
+   ========================================================================== */
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    #geez-logo,
+    #logo-container,
+    #logo-path {
+        animation: none !important;
+        transition: none !important;
+    }
+    
+    .geez-logo-container:hover #logo-container {
+        transform: none;
+    }
+}
+
+/* Focus styles for keyboard navigation */
+.geez-logo-container:focus-visible {
+    outline: 2px solid #e3c56b;
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    #logo-path {
+        stroke: currentColor;
+        stroke-width: 1px;
+    }
+    
+    .logo-glow {
+        filter: none;
+        border: 2px solid currentColor;
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+    #geez-logo {
+        filter: none !important;
+        animation: none !important;
+    }
+    
+    .logo-particle {
+        display: none;
+    }
+}

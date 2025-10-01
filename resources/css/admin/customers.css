@@ -1,0 +1,40 @@
+/* ========================================
+   CUSTOMERS SECTION STYLES
+   ======================================== */
+
+/* Customer-specific styling */
+.customers-container {
+    /* Customer layout styles will go here */
+}
+
+.customers-list {
+    /* Customer list/table styling */
+}
+
+.customer-card {
+    /* Individual customer card styling */
+}
+
+.customer-profile {
+    /* Customer profile view */
+}
+
+/* Customer status indicators */
+.customer-status-active {
+    /* Active customer styling */
+}
+
+.customer-status-inactive {
+    /* Inactive customer styling */
+}
+
+.customer-status-vip {
+    /* VIP customer styling */
+}
+
+/* Customer responsive breakpoints */
+@media (max-width: 768px) {
+    .customers-list {
+        /* Mobile customer list adjustments */
+    }
+}

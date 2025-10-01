@@ -1,0 +1,347 @@
+/* ==========================================================================
+   ADMIN HEADER - Modern & Clean Top Navigation
+   ========================================================================== */
+
+/* Header Container */
+.admin-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  background: var(--surface-panel);
+  border-bottom: 1px solid var(--surface-panel-border);
+  box-shadow: var(--surface-panel-shadow);
+  transition: all var(--transition-base);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.admin-header.scrolled {
+  background: var(--surface-panel-hover);
+}
+
+/* Header Content */
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  min-height: 4rem;
+  max-width: none;
+}
+
+@media (min-width: 768px) {
+  .header-content {
+    padding: 1rem 2rem;
+  }
+}
+
+/* Left Section */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.page-title-header {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+  .page-title-header {
+    font-size: 1.75rem;
+  }
+}
+
+/* Shared control surface -------------------------------------------------- */
+.header-control,
+:where(.mobile-menu-toggle),
+:where(.notification-btn),
+:where(.theme-toggle),
+:where(.user-menu-trigger) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.9rem;
+  background: var(--surface-control);
+  border: 1px solid var(--surface-control-border);
+  border-radius: var(--radius-xl);
+  color: var(--color-text-secondary);
+  box-shadow: var(--surface-control-shadow);
+  transition: transform var(--transition-base),
+              background var(--transition-base),
+              border-color var(--transition-base),
+              box-shadow var(--transition-base),
+              color var(--transition-base);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+
+.header-control:hover,
+:where(.mobile-menu-toggle:hover),
+:where(.notification-btn:hover),
+:where(.theme-toggle:hover),
+:where(.user-menu-trigger:hover) {
+  background: var(--surface-control-hover);
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 20px 40px -24px rgba(var(--color-primary-rgb), 0.5);
+}
+
+.header-control:active,
+:where(.mobile-menu-toggle:active),
+:where(.notification-btn:active),
+:where(.theme-toggle:active),
+:where(.user-menu-trigger:active) {
+  background: var(--surface-control-active);
+  transform: translateY(0);
+}
+
+.header-control svg,
+:where(.mobile-menu-toggle svg),
+:where(.notification-btn svg),
+:where(.theme-toggle svg) {
+  width: 1.2rem;
+  height: 1.2rem;
+  opacity: 0.88;
+  transition: inherit;
+}
+
+/* Icon sized controls */
+.header-control--icon,
+:where(.mobile-menu-toggle),
+:where(.notification-btn),
+:where(.theme-toggle) {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border-radius: var(--radius-full);
+}
+
+/* Notification button ---------------------------------------------------- */
+.notification-btn {
+  position: relative;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -0.2rem;
+  right: -0.2rem;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--badge-critical-bg);
+  color: var(--badge-critical-text);
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  box-shadow: var(--badge-critical-shadow);
+}
+
+/* Mobile toggle ---------------------------------------------------------- */
+
+/* Search ----------------------------------------------------------------- */
+.header-search {
+  display: none;
+  position: relative;
+  max-width: 20rem;
+  flex: 1;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: rgba(var(--color-accent-rgb), 0.7);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.55rem 1rem 0.55rem 2.75rem;
+  background: var(--surface-control);
+  border: 1px solid var(--surface-control-border);
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  box-shadow: inset 0 2px 4px rgba(var(--color-primary-rgb), 0.06);
+  transition: all var(--transition-base);
+}
+
+.search-input::placeholder {
+  color: rgba(var(--color-text-muted-rgb), 0.75);
+}
+
+.search-input:focus {
+  outline: none;
+  background: var(--surface-control-hover);
+  border-color: rgba(var(--color-accent-rgb), 0.55);
+  box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb), 0.18);
+}
+
+/* Right Section ---------------------------------------------------------- */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* User menu -------------------------------------------------------------- */
+.user-menu {
+  position: relative;
+}
+
+.user-menu-trigger {
+  padding: 0.5rem 1rem;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.95) 0%, rgba(var(--color-accent-rgb), 0.88) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--user-avatar-text);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  box-shadow: inset 0 1px 4px var(--user-avatar-shadow);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.1;
+}
+
+.user-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.user-role {
+  font-size: 0.75rem;
+  color: rgba(var(--color-text-muted-rgb), 0.85);
+}
+
+.user-menu-chevron {
+  width: 1rem;
+  height: 1rem;
+  color: rgba(var(--color-text-muted-rgb), 0.8);
+  transition: transform var(--transition-fast);
+}
+
+.user-menu-trigger[aria-expanded="true"] .user-menu-chevron {
+  transform: rotate(180deg);
+}
+
+.user-dropdown {
+  position: absolute;
+  right: 0;
+  margin-top: 0.75rem;
+  min-width: 15rem;
+  background: var(--surface-panel);
+  border: 1px solid var(--surface-panel-border);
+  box-shadow: var(--surface-panel-shadow);
+  border-radius: var(--radius-lg);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.user-dropdown[style*="display: none"] {
+  display: none !important;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-md);
+  color: rgba(var(--color-text-secondary-rgb), 0.92);
+  text-decoration: none;
+  transition: all var(--transition-base);
+}
+
+.dropdown-item:hover {
+  background: var(--dropdown-item-hover);
+  color: var(--dropdown-item-hover-text);
+  transform: translateX(2px);
+}
+
+.dropdown-item svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: rgba(var(--color-text-muted-rgb), 0.85);
+  transition: all var(--transition-base);
+}
+
+.dropdown-item:hover svg {
+  color: var(--dropdown-item-hover-text);
+  transform: scale(1.05);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: var(--divider-subtle);
+  margin: 0.35rem 0;
+}
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  .header-content {
+    padding: 0.8rem 1rem;
+  }
+
+  .header-right {
+    gap: 0.5rem;
+  }
+
+  .user-menu-trigger {
+    padding: 0.4rem 0.65rem;
+  }
+}
+
+/* Focus styles for accessibility */
+:where(.mobile-menu-toggle:focus,
+       .notification-btn:focus,
+       .theme-toggle:focus,
+       .user-menu-trigger:focus) {
+  outline: 2px solid rgba(var(--color-accent-rgb), 0.6);
+  outline-offset: 2px;
+}
+
+@media (min-width: 1024px) {
+  .mobile-menu-toggle {
+    display: none;
+  }
+}
+
+

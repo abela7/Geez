@@ -1,0 +1,33 @@
+/* ========================================
+   DASHBOARD SECTION STYLES
+   ======================================== */
+
+/* Dashboard-specific styling */
+.dashboard-container {
+    /* Dashboard layout styles will go here */
+}
+
+.dashboard-stats-grid {
+    /* Stats card grid styling */
+}
+
+.dashboard-stat-card {
+    /* Individual stat card styling */
+}
+
+.dashboard-content-area {
+    /* Main content area styling */
+}
+
+/* Dashboard responsive breakpoints */
+@media (max-width: 768px) {
+    .dashboard-stats-grid {
+        /* Mobile dashboard adjustments */
+    }
+}
+
+@media (min-width: 1920px) {
+    .dashboard-container {
+        /* TV/Large screen dashboard adjustments */
+    }
+}

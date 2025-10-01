@@ -1,0 +1,47 @@
+/* ========================================
+   INVENTORY SECTION STYLES
+   ======================================== */
+
+/* Inventory-specific styling */
+.inventory-container {
+    /* Inventory layout styles will go here */
+}
+
+.inventory-table {
+    /* Inventory table styling */
+}
+
+.inventory-filters {
+    /* Inventory filter controls */
+}
+
+.inventory-actions {
+    /* Inventory action buttons */
+}
+
+/* Stock level indicators */
+.stock-level-low {
+    /* Low stock styling */
+}
+
+.stock-level-medium {
+    /* Medium stock styling */
+}
+
+.stock-level-high {
+    /* High stock styling */
+}
+
+/* Inventory responsive breakpoints */
+@media (max-width: 768px) {
+    .inventory-table {
+        /* Mobile inventory adjustments */
+    }
+}
+
+
+
+
+
+
+

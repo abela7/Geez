@@ -1,0 +1,731 @@
+/* ======================================================================
+   Admin Theme Tokens
+   Centralised background & typography palette for all modules
+   ====================================================================== */
+
+:root,
+:root[data-theme="light"] {
+  /* Modern Light Theme - Clean & Professional */
+  /* Core background surfaces */
+  --color-bg-primary: #FAFBFC; /* Soft neutral gray */
+  --color-bg-secondary: #FFFFFF;
+  --color-bg-tertiary: #F5F7FA;
+
+  /* Brand & accent colours - Professional Gold & Purple */
+  --color-primary: #CDAF56; /* Golden primary */
+  --color-secondary: #DAA520; /* Darker gold */
+  --color-accent: #F59E0B; /* Professional amber */
+
+  /* Typography - High contrast for readability */
+  --color-text-primary: #111827; /* Near black */
+  --color-text-secondary: #4B5563; /* Medium gray */
+  --color-text-muted: #9CA3AF; /* Light gray */
+
+  /* Borders & outlines */
+  --color-border: rgba(77, 64, 82, 0.15);
+  --color-border-strong: rgba(77, 64, 82, 0.25);
+
+  /* Utility (legacy) tokens */
+  --color-bg-light: #FFFFFF;
+  --color-text-light: #000000;
+  --color-bg-light-rgb: 255 255 255;
+  --color-text-light-rgb: 0 0 0;
+
+  /* Status palette */
+  --color-success: #059669;
+  --color-success-bg: #D1FAE5;
+  --color-warning: #D97706;
+  --color-warning-bg: #FED7AA;
+  --color-error: #DC2626;
+  --color-error-bg: #FEE2E2;
+  --color-info: #2563EB;
+  --color-info-bg: #DBEAFE;
+
+  /* RGB equivalents (Tailwind + utilities) */
+  --color-bg-primary-rgb: 250 251 252;
+  --color-bg-secondary-rgb: 255 255 255;
+  --color-bg-tertiary-rgb: 245 247 250;
+  --color-primary-rgb: 205 175 86;
+  --color-secondary-rgb: 218 165 32;
+  --color-accent-rgb: 245 158 11;
+  --color-text-primary-rgb: 17 24 39;
+  --color-text-secondary-rgb: 75 85 99;
+  --color-text-muted-rgb: 156 163 175;
+
+  /* Surface helpers - Modern card design */
+  --color-surface-card: #FFFFFF;
+  --color-surface-card-hover: #F9FAFB;
+  --color-surface-card-rgb: 255 255 255;
+  --color-surface-card-hover-rgb: 249 250 251;
+  --color-surface-card-border: rgba(229, 231, 235, 0.8);
+  --color-surface-card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+
+  /* Icon & border helpers - Subtle and modern */
+  --color-border-base: #E5E7EB;
+  --color-border-base-rgb: 229 231 235;
+  --color-icon-default: #6B7280;
+  --color-icon-default-rgb: 107 114 128;
+  --color-icon-accent: #F59E0B;
+  --color-icon-accent-rgb: 245 158 11;
+  --color-white-rgb: 255 255 255;
+  --color-black-rgb: 0 0 0;
+
+  /* Elevated panels (header/footer) - Glass morphism */
+  --surface-panel: #FFFFFF;
+  --surface-panel-hover: rgba(255, 255, 255, 0.95);
+  --surface-panel-border: rgba(var(--color-border-base-rgb), 0.5);
+  --surface-panel-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  
+  /* Dropdown menu items */
+  --dropdown-item-hover: rgba(205, 175, 86, 0.12);
+  --dropdown-item-hover-text: var(--color-text-primary);
+  
+  /* User avatar */
+  --user-avatar-text: #FFFFFF;
+  --user-avatar-shadow: rgba(255, 255, 255, 0.25);
+  
+  /* Modal and overlay backgrounds */
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+  --modal-overlay-heavy: rgba(0, 0, 0, 0.7);
+  --modal-overlay-dark: rgba(0, 0, 0, 0.8);
+  
+  /* Task Modal Theme Variables */
+  --task-modal-bg: var(--color-bg-secondary);
+  --task-modal-header-bg: var(--color-bg-tertiary);
+  --task-modal-border: var(--color-border);
+  --task-modal-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --task-modal-overlay: rgba(0, 0, 0, 0.5);
+  --task-modal-text-primary: var(--color-text-primary);
+  --task-modal-text-secondary: var(--color-text-secondary);
+  --task-modal-text-muted: var(--color-text-muted);
+  --task-modal-hover-bg: rgba(var(--color-primary-rgb), 0.05);
+  --task-modal-assignee-bg: var(--color-bg-tertiary);
+  --task-modal-assignee-border: var(--color-border);
+  --task-modal-button-secondary-bg: var(--color-bg-tertiary);
+  --task-modal-button-secondary-border: var(--color-border-strong);
+  --task-modal-button-secondary-hover: rgba(var(--color-primary-rgb), 0.1);
+  --task-modal-title-main-color: var(--color-text-primary);
+  --task-modal-button-primary-bg: var(--color-primary);
+  --task-modal-button-primary-hover: var(--color-secondary);
+  
+  /* Status indicators with transparency */
+  --status-info-soft: rgba(99, 102, 241, 0.2);
+  --status-warning-soft: rgba(245, 158, 11, 0.2);
+  --status-error-soft: rgba(239, 68, 68, 0.2);
+  --status-success-soft: rgba(16, 185, 129, 0.2);
+  --status-info-border: rgba(99, 102, 241, 0.3);
+  --status-info-subtle: rgba(99, 102, 241, 0.1);
+  
+  /* Focus ring */
+  --focus-ring: rgba(48, 25, 52, 0.1);
+
+  /* Z-Index System - Centralized layering hierarchy */
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-sticky: 1000;
+  --z-fixed: 1010;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+  --z-maximum: 2147483647;
+  
+  /* Finance & Category Colors */
+  --finance-primary: #3b82f6;
+  --finance-secondary: #1e40af;
+  --finance-success: #10b981;
+  --finance-warning: #f59e0b;
+  --finance-danger: #ef4444;
+  --finance-info: #06b6d4;
+  
+  /* Revenue & Financial Metrics */
+  --color-revenue: #10b981;
+  --color-revenue-bg: rgba(16, 185, 129, 0.1);
+  --color-expenses: #ef4444;
+  --color-expenses-bg: rgba(239, 68, 68, 0.1);
+  --color-profit: #3b82f6;
+  --color-profit-bg: rgba(59, 130, 246, 0.1);
+  --color-margin: #8b5cf6;
+  --color-margin-bg: rgba(139, 92, 246, 0.1);
+  
+  /* Category Colors */
+  --category-food: #f59e0b;
+  --category-food-bg: rgba(245, 158, 11, 0.1);
+  --category-utilities: #3b82f6;
+  --category-utilities-bg: rgba(59, 130, 246, 0.1);
+  --category-rent: #8b5cf6;
+  --category-rent-bg: rgba(139, 92, 246, 0.1);
+  --category-marketing: #ec4899;
+  --category-marketing-bg: rgba(236, 72, 153, 0.1);
+  --category-equipment: #06b6d4;
+  --category-equipment-bg: rgba(6, 182, 212, 0.1);
+  --category-maintenance: #84cc16;
+  --category-maintenance-bg: rgba(132, 204, 22, 0.1);
+  --category-other: #6b7280;
+  --category-other-bg: rgba(107, 114, 128, 0.1);
+  
+  /* Budget Status Colors */
+  --budget-on-track: #10b981;
+  --budget-on-track-bg: rgba(16, 185, 129, 0.1);
+  --budget-warning: #f59e0b;
+  --budget-warning-bg: rgba(245, 158, 11, 0.1);
+  --budget-over-budget: #ef4444;
+  --budget-over-budget-bg: rgba(239, 68, 68, 0.1);
+  --budget-under-budget: #3b82f6;
+  --budget-under-budget-bg: rgba(59, 130, 246, 0.1);
+  
+  /* Financial Report Types */
+  --report-income-statement: #10b981;
+  --report-balance-sheet: #3b82f6;
+  --report-cash-flow: #06b6d4;
+  --report-profit-loss: #f59e0b;
+  --report-expense-analysis: #ef4444;
+  --report-tax-reports: #8b5cf6;
+  
+  /* Status Colors */
+  --status-completed: #10b981;
+  --status-completed-bg: rgba(16, 185, 129, 0.1);
+  --status-processing: #f59e0b;
+  --status-processing-bg: rgba(245, 158, 11, 0.1);
+  --status-failed: #ef4444;
+  --status-failed-bg: rgba(239, 68, 68, 0.1);
+  --status-scheduled: #6b7280;
+  --status-scheduled-bg: rgba(107, 114, 128, 0.1);
+  
+  /* Progress & Loading */
+  --progress-bg: #f3f4f6;
+  --progress-fill: #10b981;
+  --loading-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+
+  /* Interactive controls */
+  --surface-control: rgba(var(--color-surface-card-rgb), 0.78);
+  --surface-control-hover: rgba(var(--color-surface-card-rgb), 0.92);
+  --surface-control-active: rgba(var(--color-surface-card-rgb), 0.98);
+  --surface-control-border: rgba(var(--color-border-base-rgb), 0.55);
+  --surface-control-shadow: 0 16px 32px -24px rgba(var(--color-primary-rgb), 0.45);
+
+  /* Sidebar / navigation - Enhanced with beautiful colors */
+  --surface-sidebar: #FFFFFF;
+  --surface-sidebar-border: rgba(var(--color-border-base-rgb), 0.5);
+  --surface-sidebar-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.05);
+  --surface-sidebar-hover: #F8F9FA;
+  --surface-sidebar-active: #CDAF56;
+  --surface-sidebar-active-border: #CDAF56;
+  --surface-sidebar-active-shadow: 0 4px 12px 0 rgba(205, 175, 86, 0.25);
+  --surface-sidebar-active-gradient: linear-gradient(135deg, #CDAF56 0%, #DAA520 100%);
+  --surface-sidebar-text: #000000; /* Pure black for light theme */
+  --surface-sidebar-muted: #6B7280;
+  --surface-sidebar-active-text: #FFFFFF;
+  --surface-sidebar-icon: #4B5563; /* Subtle gray for icons */
+  --surface-sidebar-icon-hover: #CDAF56; /* Golden hover */
+  --surface-sidebar-icon-active: #FFFFFF;
+  
+  /* Sidebar overlays and effects */
+  --sidebar-mobile-overlay: rgba(0, 0, 0, 0.5);
+  --sidebar-submenu-active-bg: rgba(205, 175, 86, 0.1);
+  --sidebar-logo-gradient: rgba(255, 255, 255, 0.2);
+  --sidebar-icon-drop-shadow: rgba(0, 0, 0, 0.15);
+  --sidebar-icon-hover-opacity: rgba(var(--color-primary-rgb), 0.9);
+  
+  /* Timeline/Wire effect between sections */
+  --sidebar-timeline-color: rgba(205, 175, 86, 0.3);
+  --sidebar-timeline-active: #CDAF56;
+  --sidebar-section-divider: rgba(107, 114, 128, 0.2);
+
+  /* Buttons - Modern with subtle effects */
+  --button-primary-bg: var(--color-primary);
+  --button-primary-hover-bg: var(--color-secondary);
+  --button-primary-text: #FFFFFF;
+  --button-primary-border: transparent;
+  --button-primary-shadow: 0 4px 6px -1px rgba(var(--color-primary-rgb), 0.2), 0 2px 4px -1px rgba(var(--color-primary-rgb), 0.12);
+  --button-primary-hover-shadow: 0 10px 15px -3px rgba(var(--color-primary-rgb), 0.3), 0 4px 6px -2px rgba(var(--color-primary-rgb), 0.15);
+  --button-secondary-bg: #F3F4F6;
+  --button-secondary-hover-bg: #E5E7EB;
+  --button-secondary-text: var(--color-text-primary);
+  --button-secondary-border: transparent;
+  --button-secondary-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+  /* Badges - Clean and modern */
+  --badge-critical-bg: #EF4444;
+  --badge-critical-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+  --badge-critical-text: #FFFFFF;
+  --badge-success-bg: #10B981;
+  --badge-warning-bg: #F59E0B;
+  --badge-info-bg: #3B82F6;
+
+  /* Dividers */
+  --divider-subtle: rgba(var(--color-border-base-rgb), 0.5);
+  
+  /* Transitions - Smooth animations */
+  --transition-colors: colors 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-shadow: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-transform: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-all: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Modern effects */
+  --blur-glass: blur(10px);
+  --blur-heavy: blur(20px);
+  
+  /* Navigation specific tokens */
+  --nav-item-height: 44px;
+  --nav-item-padding: 0.75rem 1rem;
+  --nav-item-radius: 8px;
+  --nav-item-transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --nav-active-indicator-width: 3px;
+  --nav-icon-size: 20px;
+  --nav-submenu-indent: 2.5rem;
+  
+  /* Hover effects */
+  --hover-scale: scale(1.02);
+  --hover-brightness: brightness(1.05);
+  --active-scale: scale(0.98);
+
+  /* Task Management Specific Colors */
+  --task-priority-low: var(--color-success);
+  --task-priority-low-bg: var(--color-success-bg);
+  --task-priority-medium: var(--color-info);
+  --task-priority-medium-bg: var(--color-info-bg);
+  --task-priority-high: var(--color-warning);
+  --task-priority-high-bg: var(--color-warning-bg);
+  --task-priority-urgent: var(--color-error);
+  --task-priority-urgent-bg: var(--color-error-bg);
+
+  /* Task Status Colors */
+  --task-status-pending: #6B7280;
+  --task-status-pending-bg: rgba(107, 114, 128, 0.1);
+  --task-status-in-progress: var(--color-warning);
+  --task-status-in-progress-bg: var(--color-warning-bg);
+  --task-status-completed: var(--color-success);
+  --task-status-completed-bg: var(--color-success-bg);
+  --task-status-overdue: var(--color-error);
+  --task-status-overdue-bg: var(--color-error-bg);
+  --task-status-cancelled: #6B7280;
+  --task-status-cancelled-bg: rgba(107, 114, 128, 0.1);
+
+  /* Form Elements */
+  --form-input-bg: var(--color-bg-secondary);
+  --form-input-border: var(--color-border-base);
+  --form-input-border-focus: var(--color-primary);
+  --form-input-text: var(--color-text-primary);
+  --form-input-placeholder: var(--color-text-muted);
+  --form-input-shadow-focus: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+
+  /* Table Elements */
+  --table-header-bg: var(--color-bg-tertiary);
+  --table-header-text: var(--color-text-secondary);
+  --table-row-border: var(--color-border-base);
+  --table-row-hover: var(--color-surface-card-hover);
+
+  /* Alert Messages */
+  --alert-success-bg: var(--color-success-bg);
+  --alert-success-text: var(--color-success);
+  --alert-success-border: var(--color-success);
+  --alert-error-bg: var(--color-error-bg);
+  --alert-error-text: var(--color-error);
+  --alert-error-border: var(--color-error);
+
+  /* Button System - Comprehensive */
+  --btn-padding: 0.75rem 1.5rem;
+  --btn-padding-sm: 0.5rem 1rem;
+  --btn-padding-lg: 1rem 2rem;
+  --btn-border-radius: 0.5rem;
+  --btn-font-weight: 500;
+  --btn-transition: var(--transition-all);
+  
+  /* Action Buttons */
+  --btn-action-size: 2rem;
+  --btn-action-padding: 0.5rem;
+  --btn-action-border-radius: 0.375rem;
+  
+  /* Page Layout */
+  --page-padding: 1.5rem;
+  --page-max-width: 1200px;
+  --section-spacing: 2rem;
+  --card-spacing: 1.5rem;
+  --grid-gap: 1.5rem;
+}
+
+[data-theme="dark"],
+.dark {
+  --neutral-950: #0B0F19;
+  --neutral-900: #111827;
+  --neutral-800: #1E2535;
+  --neutral-700: #2A3244;
+  --neutral-600: #3A4356;
+  --neutral-500: #6B7280;
+  --neutral-400: #9CA3AF;
+  --neutral-300: #4B5563;
+  --neutral-200: #374151;
+  --neutral-100: #1F2937;
+  --neutral-50: #111827;
+
+  --neutral-950-rgb: 11 15 25;
+  --neutral-900-rgb: 17 24 39;
+  --neutral-800-rgb: 30 37 53;
+  --neutral-700-rgb: 42 50 68;
+  --neutral-600-rgb: 58 67 86;
+  --neutral-500-rgb: 107 114 128;
+  --neutral-400-rgb: 156 163 175;
+  --neutral-300-rgb: 75 85 99;
+  --neutral-200-rgb: 55 65 81;
+  --neutral-100-rgb: 31 41 55;
+  --neutral-50-rgb: 17 24 39;
+
+  --status-success-soft-bg: rgba(var(--color-success-rgb), 0.24);
+  --status-success-soft-text: rgba(var(--color-success-rgb), 0.88);
+  --status-warning-soft-bg: rgba(var(--color-warning-rgb), 0.28);
+  --status-warning-soft-text: rgba(var(--color-warning-rgb), 0.9);
+  --status-error-soft-bg: rgba(var(--color-error-rgb), 0.26);
+  --status-error-soft-text: rgba(var(--color-error-rgb), 0.9);
+  --status-info-soft-bg: rgba(var(--color-info-rgb), 0.28);
+  --status-info-soft-text: rgba(var(--color-info-rgb), 0.9);
+  --neutral-950: #0B0F19;
+  --neutral-900: #111827;
+  --neutral-800: #1E2535;
+  --neutral-700: #2A3244;
+  --neutral-600: #3A4356;
+  --neutral-500: #6B7280;
+  --neutral-400: #9CA3AF;
+  --neutral-300: #4B5563;
+  --neutral-200: #374151;
+  --neutral-100: #1F2937;
+  --neutral-50: #111827;
+
+  --neutral-950-rgb: 11 15 25;
+  --neutral-900-rgb: 17 24 39;
+  --neutral-800-rgb: 30 37 53;
+  --neutral-700-rgb: 42 50 68;
+  --neutral-600-rgb: 58 67 86;
+  --neutral-500-rgb: 107 114 128;
+  --neutral-400-rgb: 156 163 175;
+  --neutral-300-rgb: 75 85 99;
+  --neutral-200-rgb: 55 65 81;
+  --neutral-100-rgb: 31 41 55;
+  --neutral-50-rgb: 17 24 39;
+
+  --status-success-soft-bg: rgba(var(--color-success-rgb), 0.24);
+  --status-success-soft-text: rgba(var(--color-success-rgb), 0.88);
+  --status-warning-soft-bg: rgba(var(--color-warning-rgb), 0.28);
+  --status-warning-soft-text: rgba(var(--color-warning-rgb), 0.9);
+  --status-error-soft-bg: rgba(var(--color-error-rgb), 0.26);
+  --status-error-soft-text: rgba(var(--color-error-rgb), 0.9);
+  --status-info-soft-bg: rgba(var(--color-info-rgb), 0.28);
+  --status-info-soft-text: rgba(var(--color-info-rgb), 0.9);
+  /* Modern Dark Theme - Sophisticated & Clean */
+  /* Core background surfaces */
+  --color-bg-primary: #0F172A; /* Rich slate */
+  --color-bg-secondary: #1E293B; /* Elevated slate */
+  --color-bg-tertiary: #334155; /* Light slate */
+
+  /* Brand & accent colours - Vibrant on dark */
+  --color-primary: #CDAF56; /* Golden primary */
+  --color-secondary: #DAA520; /* Darker gold */
+  --color-accent: #FBBF24; /* Bright amber */
+
+  /* Typography - Optimized for dark backgrounds */
+  --color-text-primary: #F1F5F9; /* Off white */
+  --color-text-secondary: #CBD5E1; /* Light gray */
+  --color-text-muted: #94A3B8; /* Medium gray */
+
+  --color-border: rgba(218, 165, 32, 0.15);
+  --color-border-strong: rgba(218, 165, 32, 0.25);
+
+  --color-bg-light: #1A1A1A;
+  --color-text-light: #F1ECE2;
+  --color-bg-light-rgb: 26 26 32;
+  --color-text-light-rgb: 241 236 226;
+
+  --color-success: #34D399;
+  --color-success-bg: rgba(52, 211, 153, 0.12);
+  --color-warning: #F59E0B;
+  --color-warning-bg: rgba(245, 158, 11, 0.14);
+  --color-error: #F87171;
+  --color-error-bg: rgba(248, 113, 113, 0.12);
+  --color-info: #60A5FA;
+  --color-info-bg: rgba(96, 165, 250, 0.12);
+
+  --color-bg-primary-rgb: 15 23 42;
+  --color-bg-secondary-rgb: 30 41 59;
+  --color-bg-tertiary-rgb: 51 65 85;
+  --color-primary-rgb: 205 175 86;
+  --color-secondary-rgb: 218 165 32;
+  --color-accent-rgb: 251 191 36;
+  --color-text-primary-rgb: 241 245 249;
+  --color-text-secondary-rgb: 203 213 225;
+  --color-text-muted-rgb: 148 163 184;
+
+  --color-surface-card: #1E293B;
+  --color-surface-card-hover: #334155;
+  --color-surface-card-rgb: 30 41 59;
+  --color-surface-card-hover-rgb: 51 65 85;
+  --color-surface-card-border: rgba(51, 65, 85, 0.6);
+  --color-surface-card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.15);
+
+  --color-border-base: #334155;
+  --color-border-base-rgb: 51 65 85;
+  --color-icon-default: #94A3B8;
+  --color-icon-default-rgb: 148 163 184;
+  --color-icon-accent: #FBBF24;
+  --color-icon-accent-rgb: 251 191 36;
+  --color-white-rgb: 255 255 255;
+  --color-black-rgb: 0 0 0;
+
+  --surface-panel: #1E293B;
+  --surface-panel-hover: rgba(30, 41, 59, 0.95);
+  --surface-panel-border: rgba(var(--color-border-base-rgb), 0.5);
+  --surface-panel-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  
+  /* Dropdown menu items */
+  --dropdown-item-hover: rgba(205, 175, 86, 0.15);
+  --dropdown-item-hover-text: var(--color-text-primary);
+  
+  /* User avatar */
+  --user-avatar-text: #FFFFFF;
+  --user-avatar-shadow: rgba(0, 0, 0, 0.3);
+  
+  /* Modal and overlay backgrounds */
+  --modal-overlay: rgba(0, 0, 0, 0.6);
+  --modal-overlay-heavy: rgba(0, 0, 0, 0.8);
+  --modal-overlay-dark: rgba(0, 0, 0, 0.9);
+  
+  /* Task Modal Theme Variables - Dark Theme */
+  --task-modal-bg: var(--color-bg-secondary);
+  --task-modal-header-bg: var(--color-bg-primary);
+  --task-modal-border: var(--color-border);
+  --task-modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 10px 25px -3px rgba(0, 0, 0, 0.3);
+  --task-modal-overlay: rgba(0, 0, 0, 0.75);
+  --task-modal-text-primary: var(--color-text-primary);
+  --task-modal-text-secondary: var(--color-text-secondary);
+  --task-modal-text-muted: var(--color-text-muted);
+  --task-modal-hover-bg: rgba(var(--color-primary-rgb), 0.1);
+  --task-modal-assignee-bg: var(--color-bg-primary);
+  --task-modal-assignee-border: var(--color-border);
+  --task-modal-button-secondary-bg: var(--color-bg-tertiary);
+  --task-modal-button-secondary-border: var(--color-border-strong);
+  --task-modal-button-secondary-hover: rgba(var(--color-primary-rgb), 0.15);
+  --task-modal-title-main-color: var(--color-text-primary);
+  --task-modal-button-primary-bg: var(--color-primary);
+  --task-modal-button-primary-hover: var(--color-secondary);
+  
+  /* Status indicators with transparency */
+  --status-info-soft: rgba(99, 102, 241, 0.25);
+  --status-warning-soft: rgba(245, 158, 11, 0.25);
+  --status-error-soft: rgba(239, 68, 68, 0.25);
+  --status-success-soft: rgba(16, 185, 129, 0.25);
+  --status-info-border: rgba(99, 102, 241, 0.4);
+  --status-info-subtle: rgba(99, 102, 241, 0.15);
+  
+  /* Focus ring */
+  --focus-ring: rgba(167, 139, 250, 0.2);
+
+  /* Z-Index System - Centralized layering hierarchy */
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-sticky: 1000;
+  --z-fixed: 1010;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+  --z-maximum: 2147483647;
+  
+  /* Finance & Category Colors - Enhanced for dark theme */
+  --finance-primary: #60a5fa;
+  --finance-secondary: #3b82f6;
+  --finance-success: #34d399;
+  --finance-warning: #fbbf24;
+  --finance-danger: #f87171;
+  --finance-info: #22d3ee;
+  
+  /* Revenue & Financial Metrics - Dark theme */
+  --color-revenue: #34d399;
+  --color-revenue-bg: rgba(52, 211, 153, 0.15);
+  --color-expenses: #f87171;
+  --color-expenses-bg: rgba(248, 113, 113, 0.15);
+  --color-profit: #60a5fa;
+  --color-profit-bg: rgba(96, 165, 250, 0.15);
+  --color-margin: #a78bfa;
+  --color-margin-bg: rgba(167, 139, 250, 0.15);
+  
+  /* Category Colors - Dark theme */
+  --category-food: #fbbf24;
+  --category-food-bg: rgba(251, 191, 36, 0.15);
+  --category-utilities: #60a5fa;
+  --category-utilities-bg: rgba(96, 165, 250, 0.15);
+  --category-rent: #a78bfa;
+  --category-rent-bg: rgba(167, 139, 250, 0.15);
+  --category-marketing: #f472b6;
+  --category-marketing-bg: rgba(244, 114, 182, 0.15);
+  --category-equipment: #22d3ee;
+  --category-equipment-bg: rgba(34, 211, 238, 0.15);
+  --category-maintenance: #a3e635;
+  --category-maintenance-bg: rgba(163, 230, 53, 0.15);
+  --category-other: #9ca3af;
+  --category-other-bg: rgba(156, 163, 175, 0.15);
+  
+  /* Budget Status Colors - Dark theme */
+  --budget-on-track: #34d399;
+  --budget-on-track-bg: rgba(52, 211, 153, 0.15);
+  --budget-warning: #fbbf24;
+  --budget-warning-bg: rgba(251, 191, 36, 0.15);
+  --budget-over-budget: #f87171;
+  --budget-over-budget-bg: rgba(248, 113, 113, 0.15);
+  --budget-under-budget: #60a5fa;
+  --budget-under-budget-bg: rgba(96, 165, 250, 0.15);
+  
+  /* Financial Report Types - Dark theme */
+  --report-income-statement: #34d399;
+  --report-balance-sheet: #60a5fa;
+  --report-cash-flow: #22d3ee;
+  --report-profit-loss: #fbbf24;
+  --report-expense-analysis: #f87171;
+  --report-tax-reports: #a78bfa;
+  
+  /* Status Colors - Dark theme */
+  --status-completed: #34d399;
+  --status-completed-bg: rgba(52, 211, 153, 0.15);
+  --status-processing: #fbbf24;
+  --status-processing-bg: rgba(251, 191, 36, 0.15);
+  --status-failed: #f87171;
+  --status-failed-bg: rgba(248, 113, 113, 0.15);
+  --status-scheduled: #9ca3af;
+  --status-scheduled-bg: rgba(156, 163, 175, 0.15);
+  
+  /* Progress & Loading - Dark theme */
+  --progress-bg: #374151;
+  --progress-fill: #34d399;
+  --loading-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+
+  --surface-control: rgba(var(--color-surface-card-rgb), 0.78);
+  --surface-control-hover: rgba(var(--color-surface-card-hover-rgb), 0.85);
+  --surface-control-active: rgba(var(--color-surface-card-hover-rgb), 0.92);
+  --surface-control-border: rgba(var(--color-border-base-rgb), 0.45);
+  --surface-control-shadow: 0 20px 38px -24px rgba(0, 0, 0, 0.65);
+
+  --surface-sidebar: rgba(30, 41, 59, 0.95);
+  --surface-sidebar-border: rgba(var(--color-border-base-rgb), 0.5);
+  --surface-sidebar-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);
+  --surface-sidebar-hover: rgba(51, 65, 85, 0.6);
+  --surface-sidebar-active: #CDAF56;
+  --surface-sidebar-active-border: #CDAF56;
+  --surface-sidebar-active-shadow: 0 4px 12px 0 rgba(205, 175, 86, 0.4);
+  --surface-sidebar-active-gradient: linear-gradient(135deg, #CDAF56 0%, #DAA520 100%);
+  --surface-sidebar-text: #FFFFFF; /* Pure white for dark theme */
+  --surface-sidebar-muted: #94A3B8;
+  --surface-sidebar-active-text: #0F172A; /* Dark text on golden background */
+  --surface-sidebar-icon: #94A3B8; /* Light gray for icons */
+  --surface-sidebar-icon-hover: #CDAF56; /* Golden hover */
+  --surface-sidebar-icon-active: #0F172A;
+  
+  /* Sidebar overlays and effects */
+  --sidebar-mobile-overlay: rgba(0, 0, 0, 0.7);
+  --sidebar-submenu-active-bg: rgba(205, 175, 86, 0.15);
+  --sidebar-logo-gradient: rgba(30, 41, 59, 0.3);
+  --sidebar-icon-drop-shadow: rgba(0, 0, 0, 0.3);
+  --sidebar-icon-hover-opacity: rgba(var(--color-primary-rgb), 0.8);
+  
+  /* Timeline/Wire effect between sections */
+  --sidebar-timeline-color: rgba(205, 175, 86, 0.4);
+  --sidebar-timeline-active: #CDAF56;
+  --sidebar-section-divider: rgba(148, 163, 184, 0.3);
+
+  --button-primary-bg: var(--color-primary);
+  --button-primary-hover-bg: var(--color-secondary);
+  --button-primary-text: #0F172A;
+  --button-primary-border: transparent;
+  --button-primary-shadow: 0 4px 6px -1px rgba(var(--color-primary-rgb), 0.3), 0 2px 4px -1px rgba(var(--color-primary-rgb), 0.2);
+  --button-primary-hover-shadow: 0 10px 15px -3px rgba(var(--color-primary-rgb), 0.4), 0 4px 6px -2px rgba(var(--color-primary-rgb), 0.25);
+  --button-secondary-bg: rgba(51, 65, 85, 0.5);
+  --button-secondary-hover-bg: rgba(51, 65, 85, 0.8);
+  --button-secondary-text: var(--color-text-primary);
+  --button-secondary-border: transparent;
+  --button-secondary-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+
+  --badge-critical-bg: #EF4444;
+  --badge-critical-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+  --badge-critical-text: #FFFFFF;
+  --badge-success-bg: #10B981;
+  --badge-warning-bg: #F59E0B;
+  --badge-info-bg: #3B82F6;
+
+  --divider-subtle: rgba(var(--color-border-base-rgb), 0.3);
+  
+  /* Transitions - Smooth animations */
+  --transition-colors: colors 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-shadow: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-transform: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-all: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Modern effects */
+  --blur-glass: blur(10px);
+  --blur-heavy: blur(20px);
+
+  /* Task Management Specific Colors - Dark Theme */
+  --task-priority-low: var(--color-success);
+  --task-priority-low-bg: rgba(52, 211, 153, 0.15);
+  --task-priority-medium: var(--color-info);
+  --task-priority-medium-bg: rgba(96, 165, 250, 0.15);
+  --task-priority-high: var(--color-warning);
+  --task-priority-high-bg: rgba(251, 191, 36, 0.15);
+  --task-priority-urgent: var(--color-error);
+  --task-priority-urgent-bg: rgba(248, 113, 113, 0.15);
+
+  /* Task Status Colors - Dark Theme */
+  --task-status-pending: #9CA3AF;
+  --task-status-pending-bg: rgba(156, 163, 175, 0.15);
+  --task-status-in-progress: var(--color-warning);
+  --task-status-in-progress-bg: rgba(251, 191, 36, 0.15);
+  --task-status-completed: var(--color-success);
+  --task-status-completed-bg: rgba(52, 211, 153, 0.15);
+  --task-status-overdue: var(--color-error);
+  --task-status-overdue-bg: rgba(248, 113, 113, 0.15);
+  --task-status-cancelled: #9CA3AF;
+  --task-status-cancelled-bg: rgba(156, 163, 175, 0.15);
+
+  /* Form Elements - Dark Theme */
+  --form-input-bg: var(--color-surface-card);
+  --form-input-border: var(--color-border-base);
+  --form-input-border-focus: var(--color-primary);
+  --form-input-text: var(--color-text-primary);
+  --form-input-placeholder: var(--color-text-muted);
+  --form-input-shadow-focus: 0 0 0 3px rgba(var(--color-primary-rgb), 0.2);
+
+  /* Table Elements - Dark Theme */
+  --table-header-bg: var(--color-bg-tertiary);
+  --table-header-text: var(--color-text-secondary);
+  --table-row-border: var(--color-border-base);
+  --table-row-hover: var(--color-surface-card-hover);
+
+  /* Alert Messages - Dark Theme */
+  --alert-success-bg: rgba(52, 211, 153, 0.15);
+  --alert-success-text: var(--color-success);
+  --alert-success-border: var(--color-success);
+  --alert-error-bg: rgba(248, 113, 113, 0.15);
+  --alert-error-text: var(--color-error);
+  --alert-error-border: var(--color-error);
+
+  /* Button System - Dark Theme (same as light) */
+  --btn-padding: 0.75rem 1.5rem;
+  --btn-padding-sm: 0.5rem 1rem;
+  --btn-padding-lg: 1rem 2rem;
+  --btn-border-radius: 0.5rem;
+  --btn-font-weight: 500;
+  --btn-transition: var(--transition-all);
+  
+  /* Action Buttons - Dark Theme */
+  --btn-action-size: 2rem;
+  --btn-action-padding: 0.5rem;
+  --btn-action-border-radius: 0.375rem;
+  
+  /* Page Layout - Dark Theme */
+  --page-padding: 1.5rem;
+  --page-max-width: 1200px;
+  --section-spacing: 2rem;
+  --card-spacing: 1.5rem;
+  --grid-gap: 1.5rem;
+}
+
+
+

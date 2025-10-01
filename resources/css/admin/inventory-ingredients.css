@@ -1,0 +1,463 @@
+/* ===================================
+   Clean Ingredients Table - Simple & Mobile-Friendly
+   =================================== */
+
+/* Container */
+.ingredients-container {
+    padding: 20px;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
+/* Page Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.header-content {
+    flex: 1;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--neutral-900);
+    margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+    font-size: 16px;
+    color: var(--neutral-600);
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Summary Cards */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.summary-card {
+    background: var(--color-surface-card);
+    border: 1px solid var(--neutral-200);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+}
+
+.summary-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.summary-card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--neutral-600);
+    margin: 0;
+}
+
+.summary-card-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--neutral-500);
+}
+
+.summary-card-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--neutral-900);
+    margin: 0;
+}
+
+/* Filters Section */
+.filters-section {
+    background: var(--color-surface-card);
+    border: 1px solid var(--neutral-200);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.filters-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.filters-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--neutral-900);
+    margin: 0;
+}
+
+.filters-toggle {
+    background: none;
+    border: none;
+    color: var(--color-info);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filters-toggle:hover {
+    background-color: rgba(var(--color-info-rgb), 0.12);
+}
+
+.filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--neutral-900);
+}
+
+.filter-input,
+.filter-select {
+    padding: 8px 12px;
+    border: 1px solid var(--neutral-300);
+    border-radius: 6px;
+    font-size: 14px;
+    background: var(--color-surface-card);
+    color: var(--neutral-900);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+    outline: none;
+    border-color: var(--color-info);
+    box-shadow: 0 0 0 3px rgba(var(--color-info-rgb), 0.1);
+}
+
+.filters-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    justify-content: flex-end;
+    grid-column: 1 / -1;
+}
+
+/* Table Card - CLEAN & SIMPLE */
+.table-card {
+    background: var(--color-surface-card);
+    border: 1px solid var(--neutral-200);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.table-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: var(--neutral-50);
+    border-bottom: 1px solid var(--neutral-200);
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* Table Container - NO COMPLEX STYLING */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Clean Table Styles */
+.ingredients-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    background: var(--color-surface-card);
+}
+
+.ingredients-table th,
+.ingredients-table td {
+    padding: 16px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--neutral-100);
+    vertical-align: middle;
+}
+
+.ingredients-table th {
+    background: var(--neutral-50);
+    font-weight: 600;
+    color: var(--neutral-800);
+    font-size: 14px;
+    border-bottom: 2px solid var(--neutral-200);
+}
+
+.ingredients-table tbody tr {
+    background: var(--color-surface-card);
+}
+
+.ingredients-table tbody tr:hover {
+    background: var(--neutral-50);
+}
+
+/* Column Widths - Simple */
+.ingredients-table th:nth-child(1),
+.ingredients-table td:nth-child(1) { width: 30%; }
+
+.ingredients-table th:nth-child(2),
+.ingredients-table td:nth-child(2) { width: 20%; }
+
+.ingredients-table th:nth-child(3),
+.ingredients-table td:nth-child(3) { width: 15%; }
+
+.ingredients-table th:nth-child(4),
+.ingredients-table td:nth-child(4) { width: 20%; }
+
+.ingredients-table th:nth-child(5),
+.ingredients-table td:nth-child(5) { width: 15%; }
+
+/* Ingredient Name Cell */
+.ingredient-name-cell {
+    font-weight: 500;
+    color: var(--neutral-900);
+}
+
+.ingredient-name {
+    font-weight: 500;
+    color: var(--neutral-900);
+    margin-bottom: 4px;
+}
+
+.ingredient-code {
+    font-size: 12px;
+    color: var(--neutral-600);
+}
+
+/* Category Badges - Simple */
+.category-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.category-proteins { background: var(--status-success-soft-bg); color: var(--status-success-soft-text); }
+.category-vegetables { background: var(--status-success-soft-bg); color: var(--status-success-soft-text); }
+.category-fruits { background: var(--status-warning-soft-bg); color: var(--status-warning-soft-text); }
+.category-grains { background: rgba(var(--color-info-rgb), 0.18); color: rgba(var(--color-info-rgb), 0.9); }
+.category-dairy { background: rgba(var(--color-info-rgb), 0.18); color: rgba(var(--color-info-rgb), 0.85); }
+.category-spices { background: var(--status-error-soft-bg); color: var(--status-error-soft-text); }
+.category-oils { background: rgba(var(--color-warning-rgb), 0.2); color: rgba(var(--color-warning-rgb), 0.75); }
+.category-beverages { background: rgba(var(--color-info-rgb), 0.16); color: rgba(var(--color-info-rgb), 0.7); }
+.category-condiments { background: var(--status-success-soft-bg); color: var(--status-success-soft-text); }
+.category-sweeteners { background: rgba(var(--color-accent-rgb), 0.18); color: rgba(var(--color-accent-rgb), 0.75); }
+.category-nuts { background: rgba(var(--color-accent-rgb), 0.18); color: rgba(var(--color-accent-rgb), 0.85); }
+.category-other { background: var(--neutral-100); color: var(--neutral-800); }
+
+/* Cost Cell */
+.cost-cell {
+    font-weight: 600;
+    color: var(--neutral-900);
+}
+
+/* Status Badges - Simple */
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.status-active {
+    background: var(--status-success-soft-bg);
+    color: var(--status-success-soft-text);
+}
+
+.status-inactive {
+    background: var(--status-warning-soft-bg);
+    color: var(--status-warning-soft-text);
+}
+
+.status-discontinued {
+    background: var(--status-error-soft-bg);
+    color: var(--status-error-soft-text);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.empty-state-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.empty-state-icon {
+    width: 64px;
+    height: 64px;
+    color: var(--neutral-500);
+}
+
+.empty-state h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--neutral-900);
+    margin: 0;
+}
+
+.empty-state p {
+    color: var(--neutral-600);
+    margin: 0;
+}
+
+/* Pagination */
+.pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: var(--neutral-50);
+    border-top: 1px solid var(--neutral-200);
+}
+
+.pagination-info {
+    font-size: 14px;
+    color: var(--neutral-600);
+}
+
+.pagination-controls {
+    display: flex;
+    gap: 8px;
+}
+
+/* Mobile Responsive - CLEAN */
+@media (max-width: 768px) {
+    .ingredients-container {
+        padding: 16px;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+    
+    .summary-cards {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .filters-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .table-card .card-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .ingredients-table {
+        font-size: 14px;
+    }
+    
+    .ingredients-table th,
+    .ingredients-table td {
+        padding: 12px 8px;
+    }
+    
+    /* Hide Unit column on mobile */
+    .ingredients-table th:nth-child(3),
+    .ingredients-table td:nth-child(3) {
+        display: none;
+    }
+    
+    .pagination-wrapper {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .ingredients-table th,
+    .ingredients-table td {
+        padding: 10px 6px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .ingredients-container {
+        padding: 0;
+    }
+    
+    .header-actions,
+    .filters-section,
+    .pagination-wrapper {
+        display: none;
+    }
+    
+    .table-card {
+        box-shadow: none;
+        border: 1px solid var(--neutral-950);
+    }
+    
+    .ingredients-table th,
+    .ingredients-table td {
+        border: 1px solid var(--neutral-950);
+        padding: 8px;
+    }
+    
+    .status-badge,
+    .category-badge {
+        border: 1px solid var(--neutral-950);
+        background: none !important;
+        color: var(--neutral-950) !important;
+    }
+}
+
+
+
+
+
+

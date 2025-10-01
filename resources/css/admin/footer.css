@@ -1,0 +1,53 @@
+/* ==========================================================================
+   ADMIN FOOTER - Shared styling
+   ========================================================================== */
+
+.admin-footer {
+  background: var(--surface-panel);
+  border-top: 1px solid var(--surface-panel-border);
+  box-shadow: var(--surface-panel-shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: rgba(var(--color-text-secondary-rgb), 0.85);
+}
+
+.admin-footer__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .admin-footer__inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .admin-footer__text {
+    text-align: left;
+  }
+}
+
+.admin-footer__text {
+  font-size: 0.85rem;
+  color: rgba(var(--color-text-muted-rgb), 0.85);
+  text-align: center;
+}
+
+.admin-footer__links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-footer__link {
+  font-size: 0.85rem;
+  color: rgba(var(--color-text-secondary-rgb), 0.85);
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+.admin-footer__link:hover {
+  color: var(--color-text-primary);
+}

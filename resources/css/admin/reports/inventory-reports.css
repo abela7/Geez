@@ -1,0 +1,149 @@
+/* ========================================
+   INVENTORY REPORTS STYLES
+   Restaurant-OS Design System
+   ======================================== */
+
+:root {
+    --color-inventory-primary: #f59e0b;
+    --color-inventory-secondary: #d97706;
+    --color-inventory-accent: #fef3c7;
+}
+
+[data-theme="dark"] {
+    --color-inventory-accent: #451a03;
+}
+
+.reports-container {
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header {
+    padding: 1.5rem 2rem;
+    background: var(--color-bg-primary);
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.coming-soon-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: var(--color-bg-secondary);
+}
+
+.coming-soon-card {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: 3rem;
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+}
+
+.coming-soon-icon {
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto 1.5rem;
+    color: var(--color-inventory-primary);
+}
+
+.coming-soon-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.coming-soon-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 1rem;
+}
+
+.coming-soon-description {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.coming-soon-features {
+    text-align: left;
+    margin-bottom: 2rem;
+}
+
+.features-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.features-list li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    color: var(--color-text-primary);
+}
+
+.features-list li:last-child {
+    border-bottom: none;
+}
+
+.features-list li::before {
+    content: '✓';
+    color: var(--color-inventory-primary);
+    font-weight: bold;
+    margin-right: 0.75rem;
+    font-size: 1.125rem;
+}
+
+.coming-soon-timeline {
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.timeline-text {
+    color: var(--color-text-secondary);
+    font-style: italic;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .coming-soon-container {
+        padding: 1rem;
+    }
+    
+    .coming-soon-card {
+        padding: 2rem;
+    }
+    
+    .coming-soon-title {
+        font-size: 1.5rem;
+    }
+    
+    .coming-soon-description {
+        font-size: 1rem;
+    }
+}
+
+[data-theme="dark"] {
+    .coming-soon-card {
+        background: #1f2937;
+    }
+}

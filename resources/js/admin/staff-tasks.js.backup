@@ -1,0 +1,580 @@
+/**
+ * Staff Task Management JavaScript
+ * Handles all task management functionality with Alpine.js
+ */
+
+// CSRF Token Setup
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+// Task Manager Alpine.js Component
+function taskManager() {
+    return {
+        // State Management
+        currentView: 'dashboard',
+        showTaskModal: false,
+        showAssignModal: false,
+        editingTask: null,
+        assigningTask: null,
+        loading: false,
+        
+        // Form Data
+        taskForm: {
+            id: null,
+            title: '',
+            description: '',
+            task_type: 'one_time',
+            priority: 'medium',
+            category: 'kitchen',
+            estimated_hours: '',
+            is_template: false,
+            template_name: '',
+            requires_approval: false,
+            tags: [],
+            tagsInput: '',
+            is_active: true
+        },
+
+        assignmentForm: {
+            staff_ids: [],
+            due_date: '',
+            priority_override: '',
+            notes: ''
+        },
+
+        // Filters
+        filters: {
+            status: '',
+            priority: '',
+            category: ''
+        },
+
+        searchQuery: '',
+
+        // Staff data (will be populated from backend)
+        staffMembers: [],
+
+        // Initialize component
+        init() {
+            console.log('Task Manager initialized');
+            this.loadStaffMembers();
+            this.setupEventListeners();
+        },
+
+        // Load staff members for assignment
+        async loadStaffMembers() {
+            try {
+                // This would typically come from the controller, but for now we'll use what's available
+                console.log('Staff members loaded from backend');
+            } catch (error) {
+                console.error('Error loading staff members:', error);
+            }
+        },
+
+        // Setup event listeners
+        setupEventListeners() {
+            // Listen for form submissions
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    this.closeTaskModal();
+                    this.closeAssignModal();
+                }
+            });
+        },
+        
+        // View Management
+        setView(view) {
+            this.currentView = view;
+            console.log('View changed to:', view);
+        },
+        
+        // Task Modal Management
+        openTaskModal(task = null) {
+            this.editingTask = task;
+            if (task) {
+                this.populateTaskForm(task);
+            } else {
+            this.resetTaskForm();
+            }
+            this.showTaskModal = true;
+            console.log('Task modal opened', task ? 'for editing' : 'for creation');
+        },
+        
+        closeTaskModal() {
+            this.showTaskModal = false;
+            this.editingTask = null;
+            this.resetTaskForm();
+            console.log('Task modal closed');
+        },
+
+        // Assignment Modal Management
+        openAssignModal(task) {
+            this.assigningTask = task;
+            this.resetAssignmentForm();
+            this.showAssignModal = true;
+            console.log('Assignment modal opened for task:', task);
+        },
+
+        closeAssignModal() {
+            this.showAssignModal = false;
+            this.assigningTask = null;
+            this.resetAssignmentForm();
+            console.log('Assignment modal closed');
+        },
+
+        // Form Management
+        resetTaskForm() {
+            this.taskForm = {
+                id: null,
+                title: '',
+                description: '',
+                task_type: 'one_time',
+                priority: 'medium',
+                category: 'kitchen',
+                estimated_hours: '',
+                is_template: false,
+                template_name: '',
+                requires_approval: false,
+                tags: [],
+                tagsInput: '',
+                is_active: true
+            };
+        },
+
+        populateTaskForm(task) {
+            this.taskForm = {
+                id: task.id,
+                title: task.title || '',
+                description: task.description || '',
+                task_type: task.task_type || 'one_time',
+                priority: task.priority || 'medium',
+                category: task.category || 'kitchen',
+                estimated_hours: task.estimated_hours || '',
+                is_template: task.is_template || false,
+                template_name: task.template_name || '',
+                requires_approval: task.requires_approval || false,
+                tags: task.tags || [],
+                tagsInput: (task.tags || []).join(', '),
+                is_active: task.is_active !== undefined ? task.is_active : true
+            };
+        },
+
+        resetAssignmentForm() {
+            this.assignmentForm = {
+                staff_ids: [],
+                due_date: '',
+                priority_override: '',
+                notes: ''
+            };
+        },
+        
+        // Task CRUD Operations
+        async saveTask() {
+            if (!this.taskForm.title.trim()) {
+                this.showNotification('Task title is required', 'error');
+                return;
+            }
+
+            this.loading = true;
+
+            try {
+                // Process tags
+                if (this.taskForm.tagsInput) {
+                    this.taskForm.tags = this.taskForm.tagsInput
+                        .split(',')
+                        .map(tag => tag.trim())
+                        .filter(tag => tag.length > 0);
+                }
+
+                const url = this.editingTask
+                    ? `/admin/staff/tasks/${this.taskForm.id}`
+                    : '/admin/staff/tasks';
+
+                const method = this.editingTask ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(this.taskForm)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    this.showNotification(data.message, 'success');
+                    this.closeTaskModal();
+                    // Reload page to show updated data
+                    window.location.reload();
+                } else {
+                    this.showNotification(data.message || 'An error occurred', 'error');
+                }
+            } catch (error) {
+                console.error('Error saving task:', error);
+                this.showNotification('Failed to save task', 'error');
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async editTask(taskId) {
+            try {
+                const response = await fetch(`/admin/staff/tasks/${taskId}`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    this.openTaskModal(data.task);
+                } else {
+                    this.showNotification('Failed to load task details', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading task:', error);
+                this.showNotification('Failed to load task details', 'error');
+            }
+        },
+
+        async deleteTask(taskId) {
+            if (!confirm('Are you sure you want to delete this task?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/admin/staff/tasks/${taskId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    this.showNotification(data.message, 'success');
+                    window.location.reload();
+                } else {
+                    this.showNotification(data.message || 'Failed to delete task', 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting task:', error);
+                this.showNotification('Failed to delete task', 'error');
+            }
+        },
+
+        // Assignment Operations
+        async assignTask(taskId) {
+            try {
+                const response = await fetch(`/admin/staff/tasks/${taskId}`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    this.openAssignModal(data.task);
+                } else {
+                    this.showNotification('Failed to load task details', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading task for assignment:', error);
+                this.showNotification('Failed to load task details', 'error');
+            }
+        },
+
+        async saveAssignment() {
+            if (this.assignmentForm.staff_ids.length === 0) {
+                this.showNotification('Please select at least one staff member', 'error');
+                return;
+            }
+
+            this.loading = true;
+
+            try {
+                const response = await fetch(`/admin/staff/tasks/${this.assigningTask.id}/assign`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(this.assignmentForm)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    this.showNotification(data.message, 'success');
+                    this.closeAssignModal();
+                    window.location.reload();
+                } else {
+                    this.showNotification(data.message || 'Failed to assign task', 'error');
+                }
+            } catch (error) {
+                console.error('Error assigning task:', error);
+                this.showNotification('Failed to assign task', 'error');
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async updateAssignmentStatus(assignmentId, status) {
+            try {
+                const response = await fetch(`/admin/staff/task-assignments/${assignmentId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ status })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    this.showNotification(data.message, 'success');
+                    window.location.reload();
+                } else {
+                    this.showNotification(data.message || 'Failed to update status', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating assignment status:', error);
+                this.showNotification('Failed to update status', 'error');
+            }
+        },
+
+        // Staff Management Helpers
+        getStaffName(staffId) {
+            const staff = this.staffMembers.find(s => s.id === staffId);
+            return staff ? staff.full_name : 'Unknown Staff';
+        },
+
+        removeStaff(staffId) {
+            const index = this.assignmentForm.staff_ids.indexOf(staffId);
+            if (index > -1) {
+                this.assignmentForm.staff_ids.splice(index, 1);
+            }
+        },
+
+        // View Task Details
+        async viewTask(taskId) {
+            try {
+                const response = await fetch(`/admin/staff/tasks/${taskId}`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // For now, just open edit modal - could be expanded to a view-only modal
+                    this.openTaskModal(data.task);
+                } else {
+                    this.showNotification('Failed to load task details', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading task:', error);
+                this.showNotification('Failed to load task details', 'error');
+            }
+        },
+
+        // Filtering and Search
+        applyFilters() {
+            // This would typically trigger a new request to the server
+            // For now, we'll just reload the page with query parameters
+            const params = new URLSearchParams();
+
+            if (this.searchQuery) params.set('search', this.searchQuery);
+            if (this.filters.status) params.set('status', this.filters.status);
+            if (this.filters.priority) params.set('priority', this.filters.priority);
+            if (this.filters.category) params.set('category', this.filters.category);
+
+            const queryString = params.toString();
+            const url = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
+
+            window.location.href = url;
+        },
+
+        // Notification System
+        showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span class="notification-message">${message}</span>
+                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+
+            // Add to page
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+
+            console.log(`Notification (${type}):`, message);
+        },
+        
+        // Utility Methods
+        formatDate(date) {
+            if (!date) return '';
+            return new Date(date).toLocaleDateString();
+        },
+        
+        formatDateTime(date) {
+            if (!date) return '';
+            return new Date(date).toLocaleString();
+        },
+        
+        getPriorityColor(priority) {
+            const colors = {
+                low: 'success',
+                medium: 'info',
+                high: 'warning',
+                urgent: 'error'
+            };
+            return colors[priority] || 'info';
+        },
+        
+        getStatusColor(status) {
+            const colors = {
+                assigned: 'info',
+                in_progress: 'warning',
+                completed: 'success',
+                cancelled: 'secondary'
+            };
+            return colors[status] || 'info';
+        }
+    };
+}
+
+// Make taskManager available immediately for x-data
+window.taskManager = taskManager;
+
+// Register the Alpine component using multiple strategies
+const registerTaskManager = () => {
+    if (window.Alpine && typeof window.Alpine.data === 'function') {
+        window.Alpine.data('taskManager', taskManager);
+        console.log('Task Manager component registered with Alpine.js');
+        return true;
+    }
+    return false;
+};
+
+// Try immediate registration
+registerTaskManager();
+
+// Register on alpine:init event
+document.addEventListener('alpine:init', registerTaskManager);
+
+// Register on DOMContentLoaded as backup
+document.addEventListener('DOMContentLoaded', registerTaskManager);
+
+// Register on livewire:init as backup for Livewire compatibility
+document.addEventListener('livewire:init', registerTaskManager);
+
+// Add notification styles if not already present
+document.addEventListener('DOMContentLoaded', function() {
+    if (!document.querySelector('#notification-styles')) {
+        const styles = document.createElement('style');
+        styles.id = 'notification-styles';
+        styles.textContent = `
+            .notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                max-width: 400px;
+                padding: 16px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                animation: slideIn 0.3s ease-out;
+            }
+
+            .notification-success {
+                background-color: var(--color-success-light);
+                border: 1px solid var(--color-success);
+                color: var(--color-success-dark);
+            }
+
+            .notification-error {
+                background-color: var(--color-error-light);
+                border: 1px solid var(--color-error);
+                color: var(--color-error-dark);
+            }
+
+            .notification-info {
+                background-color: var(--color-info-light);
+                border: 1px solid var(--color-info);
+                color: var(--color-info-dark);
+            }
+
+            .notification-content {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+            }
+
+            .notification-message {
+                flex: 1;
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .notification-close {
+                width: 20px;
+                height: 20px;
+                border: none;
+                background: none;
+                cursor: pointer;
+                color: currentColor;
+                opacity: 0.7;
+                transition: opacity 0.2s;
+            }
+
+            .notification-close:hover {
+                opacity: 1;
+            }
+
+            .notification-close svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+});

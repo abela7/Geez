@@ -1,0 +1,429 @@
+/* ===================================
+   Inventory Settings - Clean & Modern
+   =================================== */
+
+/* Container */
+.settings-container {
+    padding: 20px;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
+/* Page Header */
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--neutral-900);
+    margin: 0 0 8px 0;
+}
+
+.page-subtitle {
+    font-size: 16px;
+    color: var(--neutral-600);
+    margin: 0;
+}
+
+/* Settings Tabs */
+.settings-tabs {
+    background: var(--color-surface-card);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+/* Tab Navigation */
+.tab-nav {
+    display: flex;
+    background: var(--neutral-50);
+    border-bottom: 1px solid var(--neutral-200);
+}
+
+.tab-button {
+    flex: 1;
+    padding: 16px 20px;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--neutral-600);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-button:hover {
+    background: var(--neutral-100);
+    color: var(--neutral-800);
+}
+
+.tab-button.active {
+    background: var(--color-surface-card);
+    color: var(--color-info);
+    border-bottom-color: var(--color-info);
+}
+
+.tab-icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Tab Content */
+.tab-content {
+    padding: 0;
+}
+
+/* Section Card */
+.section-card {
+    padding: 24px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--neutral-900);
+    margin: 0;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.btn-primary {
+    background: var(--color-info);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--color-info);
+}
+
+.btn-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* Table Container */
+.table-container {
+    background: var(--color-surface-card);
+    border: 1px solid var(--neutral-200);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Settings Table */
+.settings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.settings-table th,
+.settings-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--neutral-100);
+    vertical-align: middle;
+}
+
+.settings-table th {
+    background: var(--neutral-50);
+    font-weight: 600;
+    color: var(--neutral-800);
+    font-size: 14px;
+    border-bottom: 2px solid var(--neutral-200);
+}
+
+.settings-table tbody tr:hover {
+    background: var(--neutral-50);
+}
+
+.settings-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Table Content */
+.item-name {
+    font-weight: 500;
+    color: var(--neutral-900);
+    font-size: 14px;
+}
+
+.item-description {
+    color: var(--neutral-600);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* Color Preview */
+.color-preview {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 2px solid var(--neutral-200);
+}
+
+/* Unit Symbol */
+.unit-symbol {
+    background: var(--neutral-100);
+    color: var(--neutral-800);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'Courier New', monospace;
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.status-badge.active {
+    background: var(--status-success-soft-bg);
+    color: var(--status-success-soft-text);
+}
+
+.status-badge.inactive {
+    background: var(--status-warning-soft-bg);
+    color: var(--status-warning-soft-text);
+}
+
+/* Type Badges */
+.type-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.type-badge.weight {
+    background: var(--status-warning-soft-bg);
+    color: var(--status-warning-soft-text);
+}
+
+.type-badge.volume {
+    background: rgba(var(--color-info-rgb), 0.18);
+    color: rgba(var(--color-info-rgb), 0.85);
+}
+
+.type-badge.count {
+    background: var(--status-success-soft-bg);
+    color: var(--status-success-soft-text);
+}
+
+.type-badge.custom {
+    background: rgba(var(--color-accent-rgb), 0.18);
+    color: rgba(var(--color-accent-rgb), 0.85);
+}
+
+/* Measurement Badges */
+.measurement-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.measurement-badge.weight {
+    background: var(--status-warning-soft-bg);
+    color: var(--status-warning-soft-text);
+}
+
+.measurement-badge.volume {
+    background: rgba(var(--color-info-rgb), 0.18);
+    color: rgba(var(--color-info-rgb), 0.85);
+}
+
+.measurement-badge.count {
+    background: var(--status-success-soft-bg);
+    color: var(--status-success-soft-text);
+}
+
+/* Actions */
+.actions-cell {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.action-btn {
+    padding: 8px;
+    border: none;
+    background: none;
+    color: var(--neutral-600);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn:hover {
+    background: var(--neutral-100);
+}
+
+.action-btn.edit {
+    color: var(--color-warning);
+}
+
+.action-btn.edit:hover {
+    background: var(--status-warning-soft-bg);
+    color: var(--status-warning-soft-text);
+}
+
+.action-btn.delete {
+    color: var(--color-error);
+}
+
+.action-btn.delete:hover {
+    background: var(--status-error-soft-bg);
+    color: var(--status-error-soft-text);
+}
+
+.action-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .settings-container {
+        padding: 16px;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .tab-nav {
+        flex-direction: column;
+    }
+    
+    .tab-button {
+        justify-content: flex-start;
+        border-bottom: none;
+        border-right: 3px solid transparent;
+    }
+    
+    .tab-button.active {
+        border-right-color: var(--color-info);
+        border-bottom-color: transparent;
+    }
+    
+    .section-card {
+        padding: 16px;
+    }
+    
+    .settings-table {
+        font-size: 14px;
+    }
+    
+    .settings-table th,
+    .settings-table td {
+        padding: 12px 8px;
+    }
+    
+    /* Hide less important columns on mobile */
+    .settings-table th:nth-child(3),
+    .settings-table td:nth-child(3),
+    .settings-table th:nth-child(4),
+    .settings-table td:nth-child(4) {
+        display: none;
+    }
+    
+    .actions-cell {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-table th,
+    .settings-table td {
+        padding: 10px 6px;
+    }
+    
+    .tab-button {
+        font-size: 13px;
+        padding: 12px 16px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .settings-container {
+        padding: 0;
+    }
+    
+    .tab-nav,
+    .section-header .btn,
+    .actions-cell {
+        display: none;
+    }
+    
+    .settings-tabs {
+        box-shadow: none;
+        border: 1px solid var(--neutral-950);
+    }
+    
+    .settings-table th,
+    .settings-table td {
+        border: 1px solid var(--neutral-950);
+        padding: 8px;
+    }
+    
+    .status-badge,
+    .type-badge,
+    .measurement-badge {
+        border: 1px solid var(--neutral-950);
+        background: none !important;
+        color: var(--neutral-950) !important;
+    }
+}
+
+
+
+
+
+
+
