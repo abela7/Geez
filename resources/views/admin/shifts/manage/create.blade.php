@@ -8,6 +8,26 @@
 
 @push('scripts')
 @vite(['resources/js/admin/shifts/create.js'])
+<script>
+    // Force £ symbol on cost values after page loads
+    document.addEventListener('alpine:initialized', () => {
+        setTimeout(() => {
+            document.querySelectorAll('.cost-value').forEach(el => {
+                const observer = new MutationObserver(() => {
+                    if (el.textContent && el.textContent.includes('$')) {
+                        el.textContent = el.textContent.replace(/\$/g, '£');
+                    }
+                });
+                observer.observe(el, { childList: true, characterData: true, subtree: true });
+                
+                // Initial replacement
+                if (el.textContent && el.textContent.includes('$')) {
+                    el.textContent = el.textContent.replace(/\$/g, '£');
+                }
+            });
+        }, 100);
+    });
+</script>
 @endpush
 
 @section('content')
@@ -68,21 +88,32 @@
                         </svg>
                     </div>
                     <div class="section-content">
-                        <h2 class="section-title">Basic Information</h2>
-                        <p class="section-description">Enter the fundamental details for your new shift template</p>
+                        <h2 class="section-title">Shift Template Details</h2>
+                        <p class="section-description">Create a reusable template - assign it to staff later via weekly rota</p>
                     </div>
                 </div>
                 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="name" class="form-label required">Shift Name</label>
+                        <label for="name" class="form-label required">Shift Template Name</label>
                         <input type="text" id="name" name="name" x-model="form.name" 
                                class="form-input @error('name') form-input-error @enderror" 
-                               placeholder="e.g., Morning Kitchen Shift" required>
+                               placeholder="e.g., Main Chef - Evening Shift" required>
                         @error('name')
                             <div class="form-error">{{ $message }}</div>
                         @enderror
-                        <div class="form-help">Choose a descriptive name that clearly identifies this shift</div>
+                        <div class="form-help">A clear name for this reusable shift template</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="position_name" class="form-label">Position/Role</label>
+                        <input type="text" id="position_name" name="position_name" x-model="form.position_name" 
+                               class="form-input @error('position_name') form-input-error @enderror" 
+                               placeholder="e.g., Head Chef, Waiter, Bartender">
+                        @error('position_name')
+                            <div class="form-error">{{ $message }}</div>
+                        @enderror
+                        <div class="form-help">The job position or role for this shift (optional)</div>
                     </div>
 
                     <div class="form-group">
@@ -190,24 +221,7 @@
                         <div class="form-help">Total break time during the shift (in minutes)</div>
                     </div>
 
-                    <div class="form-group form-group-full">
-                        <label class="form-label required">Days of Week</label>
-                        <div class="days-grid">
-                            @foreach($daysOfWeek as $value => $label)
-                            <label class="day-checkbox">
-                                <input type="checkbox" name="days_of_week[]" value="{{ $value }}" 
-                                       x-model="form.days_of_week"
-                                       {{ in_array($value, old('days_of_week', [])) ? 'checked' : '' }}>
-                                <span class="day-label">{{ substr($label, 0, 3) }}</span>
-                                <span class="day-full">{{ $label }}</span>
-                            </label>
-                            @endforeach
-                        </div>
-                        @error('days_of_week')
-                            <div class="form-error">{{ $message }}</div>
-                        @enderror
-                        <div class="form-help">Select which days this shift will be active</div>
-                    </div>
+                    <!-- Days removed - this is now a template that can be assigned to any day via assignments -->
                 </div>
             </div>
 
@@ -240,7 +254,7 @@
                     <div class="form-group">
                         <label for="hourly_rate" class="form-label">Hourly Rate</label>
                         <div class="input-group">
-                            <span class="input-prefix">$</span>
+                            <span class="input-prefix">£</span>
                             <input type="number" id="hourly_rate" name="hourly_rate" x-model="form.hourly_rate" 
                                    class="form-input @error('hourly_rate') form-input-error @enderror" 
                                    min="0" step="0.25" value="{{ old('hourly_rate') }}" @input="calculateCosts()">
@@ -254,7 +268,7 @@
                     <div class="form-group">
                         <label for="overtime_rate" class="form-label">Overtime Rate</label>
                         <div class="input-group">
-                            <span class="input-prefix">$</span>
+                            <span class="input-prefix">£</span>
                             <input type="number" id="overtime_rate" name="overtime_rate" x-model="form.overtime_rate" 
                                    class="form-input @error('overtime_rate') form-input-error @enderror" 
                                    min="0" step="0.25" value="{{ old('overtime_rate') }}">
@@ -285,7 +299,8 @@
                 <div class="section-header">
                     <div class="section-icon">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                            <text x="12" y="16" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="currentColor">£</text>
                         </svg>
                     </div>
                     <div class="section-content">
@@ -303,7 +318,7 @@
                         </div>
                         <div class="cost-content">
                             <div class="cost-label">Daily Cost</div>
-                            <div class="cost-value" x-text="formatCurrency(calculateDailyCost())">$0.00</div>
+                            <div class="cost-value" x-text="formatCurrency(calculateDailyCost())">£0.00</div>
                         </div>
                     </div>
                     <div class="cost-card cost-card-success">
@@ -314,7 +329,7 @@
                         </div>
                         <div class="cost-content">
                             <div class="cost-label">Weekly Cost</div>
-                            <div class="cost-value" x-text="formatCurrency(calculateWeeklyCost())">$0.00</div>
+                            <div class="cost-value" x-text="formatCurrency(calculateWeeklyCost())">£0.00</div>
                         </div>
                     </div>
                     <div class="cost-card cost-card-info">
@@ -325,7 +340,7 @@
                         </div>
                         <div class="cost-content">
                             <div class="cost-label">Monthly Cost</div>
-                            <div class="cost-value" x-text="formatCurrency(calculateMonthlyCost())">$0.00</div>
+                            <div class="cost-value" x-text="formatCurrency(calculateMonthlyCost())">£0.00</div>
                         </div>
                     </div>
                 </div>

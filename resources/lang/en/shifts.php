@@ -43,7 +43,7 @@ return [
     'manage' => [
         'title' => 'Manage Shifts',
         'subtitle' => 'Create, edit, and manage shift schedules',
-        'description' => 'Create, edit, and manage individual shifts',
+        'description' => 'Create, edit, and manage shift schedules across all departments',
         'create_shift' => 'Create Shift',
         'edit_shift' => 'Edit Shift',
         'update_shift' => 'Update Shift',
@@ -89,7 +89,7 @@ return [
         'status_help' => 'Draft shifts are not visible in scheduling',
 
         // Cost calculations
-        'daily_cost' => 'Daily Cost',
+        'daily_cost' => 'Daily-Cost',
         'weekly_cost' => 'Weekly Cost',
         'monthly_cost' => 'Monthly Cost (Est.)',
 
@@ -98,6 +98,7 @@ return [
         'duplicate' => 'Duplicate',
         'activate' => 'Activate',
         'deactivate' => 'Deactivate',
+        'delete' => 'Delete',
         'bulk_actions' => 'Bulk Actions',
         'select_all' => 'Select All',
         'selected' => 'selected',
@@ -351,6 +352,7 @@ return [
     // Shift Types
     'types' => [
         'regular' => 'Regular',
+        'part-time' => 'Part-Time',
         'weekend' => 'Weekend',
         'overtime' => 'Overtime',
         'training' => 'Training',
@@ -390,8 +392,11 @@ return [
     // Departments
     'departments' => [
         'kitchen' => 'Kitchen',
+        'kitchen_staff' => 'Kitchen Staff',
+        'kitchen-staff' => 'Kitchen Staff',
         'front_of_house' => 'Front of House',
         'bar' => 'Bar',
+        'waiter' => 'Waiter',
         'management' => 'Management',
         'cleaning' => 'Cleaning',
         'security' => 'Security',

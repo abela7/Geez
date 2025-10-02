@@ -8,13 +8,13 @@ export function shiftCreateComponent() {
         // Form data
         form: {
             name: '',
+            position_name: '',
             department: '',
             type: '',
             description: '',
             start_time: '',
             end_time: '',
             break_duration: 30,
-            days_of_week: [],
             required_staff: 1,
             hourly_rate: '',
             overtime_rate: '',
@@ -72,7 +72,7 @@ export function shiftCreateComponent() {
                 return value !== '' && value !== null && value !== undefined;
             });
 
-            const hasDaysSelected = this.form.days_of_week.length > 0;
+            const hasDaysSelected = true; // Templates don't need days
             const hasValidTimes = this.form.start_time && this.form.end_time && this.form.duration_hours > 0;
             const hasValidStaff = this.form.required_staff > 0;
 
@@ -86,7 +86,7 @@ export function shiftCreateComponent() {
 
         isSection2Valid() {
             return this.form.start_time && this.form.end_time && 
-                   this.form.days_of_week.length > 0 && this.form.duration_hours > 0;
+                   this.form.duration_hours > 0;
         },
 
         isSection3Valid() {
@@ -186,7 +186,7 @@ export function shiftCreateComponent() {
 
         calculateWeeklyCost() {
             const dailyCost = this.calculateDailyCost();
-            return dailyCost * this.form.days_of_week.length;
+            return dailyCost * 7; // Estimate for 7-day week
         },
 
         calculateMonthlyCost() {
@@ -219,7 +219,7 @@ export function shiftCreateComponent() {
                     start_time: '',
                     end_time: '',
                     break_duration: 30,
-                    days_of_week: [],
+                    position_name: '',
                     required_staff: 1,
                     hourly_rate: '',
                     overtime_rate: '',
@@ -437,12 +437,8 @@ export function shiftCreateComponent() {
         },
 
         toggleDay(day) {
-            const index = this.form.days_of_week.indexOf(day);
-            if (index > -1) {
-                this.form.days_of_week.splice(index, 1);
-            } else {
-                this.form.days_of_week.push(day);
-            }
+            // Days of week selector removed - templates don't need specific days
+            console.log('Day toggle removed - use assignments page to set specific days');
         }
     };
 }

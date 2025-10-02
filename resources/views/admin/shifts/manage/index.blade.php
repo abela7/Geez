@@ -1,338 +1,448 @@
 @extends('layouts.admin')
 
-@section('title', __('shifts.manage.title'))
+@section('title', 'Shift Management')
 
 @section('content')
-<div class="shifts-manage-page" x-data="shiftsManageData()">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="page-header-content">
-            <div class="page-header-left">
-                <h1 class="page-title">{{ __('shifts.manage.title') }}</h1>
-                <p class="page-description">{{ __('shifts.manage.description') }}</p>
+<div class="shifts-manage-page" x-data="{ showBulkActions: false, selectAll: false, selectedShifts: [], searchQuery: '', filterDepartment: 'all', filterStatus: 'all', filterType: 'all', sortField: 'name', sortDirection: 'asc' }">
+    <!-- Modern Page Header -->
+    <div class="page-header-modern">
+        <div class="header-content">
+            <div class="header-text">
+                <h1 class="header-title">
+                    <svg class="title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Shift Management
+                </h1>
+                <p class="header-description">Create, manage, and organize work shifts for your team</p>
             </div>
-            <div class="page-header-right">
-                <div class="header-actions">
-                    <button class="btn btn-secondary" @click="showBulkActions = !showBulkActions">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
-                        </svg>
-                        {{ __('shifts.manage.bulk_actions') }}
-                    </button>
-                    <a href="{{ route('admin.shifts.manage.create') }}" class="btn btn-primary">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                        </svg>
-                        {{ __('shifts.manage.create_shift') }}
-                    </a>
+            <div class="header-actions">
+                <button class="btn btn-outline" @click="showBulkActions = !showBulkActions" x-show="selectedShifts.length > 0">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <span x-text="'Bulk Actions (' + selectedShifts.length + ')'"></span>
+                </button>
+                <a href="{{ route('admin.shifts.manage.create') }}" class="btn btn-primary">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Create New Shift
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modern Stats Grid -->
+    <div class="stats-grid-modern">
+        <div class="stat-card stat-primary">
+            <div class="stat-icon-wrapper">
+                <div class="stat-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Total Shifts</div>
+                <div class="stat-value">{{ number_format($totalShifts) }}</div>
+                <div class="stat-trend">
+                    <span class="trend-text">All configured shifts</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-success">
+            <div class="stat-icon-wrapper">
+                <div class="stat-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Active Shifts</div>
+                <div class="stat-value">{{ number_format($activeShifts) }}</div>
+                <div class="stat-trend">
+                    <span class="trend-text">Currently operational</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-info">
+            <div class="stat-icon-wrapper">
+                <div class="stat-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Staff Required</div>
+                <div class="stat-value">{{ number_format($totalRequiredStaff) }}</div>
+                <div class="stat-trend">
+                    <span class="trend-text">Across all shifts</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-{{ $staffingPercentage >= 90 ? 'success' : ($staffingPercentage >= 70 ? 'warning' : 'danger') }}">
+            <div class="stat-icon-wrapper">
+                <div class="stat-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-content">
+                <div class="stat-label">Staffing Level</div>
+                <div class="stat-value">{{ $staffingPercentage }}%</div>
+                <div class="stat-trend">
+                    <span class="trend-text">{{ $staffingPercentage >= 90 ? 'Excellent coverage' : ($staffingPercentage >= 70 ? 'Good coverage' : 'Needs attention') }}</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Enhanced Summary Cards -->
-    <div class="summary-section">
-        <div class="summary-grid">
-            <div class="summary-card summary-card-primary">
-                <div class="summary-icon">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <div class="summary-content">
-                    <div class="summary-value">{{ number_format($totalShifts) }}</div>
-                    <div class="summary-label">{{ __('shifts.manage.total_shifts') }}</div>
-                </div>
-            </div>
-
-            <div class="summary-card summary-card-success">
-                <div class="summary-icon">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <div class="summary-content">
-                    <div class="summary-value">{{ number_format($activeShifts) }}</div>
-                    <div class="summary-label">{{ __('shifts.manage.active_shifts') }}</div>
-                </div>
-            </div>
-
-            <div class="summary-card summary-card-info">
-                <div class="summary-icon">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
-                    </svg>
-                </div>
-                <div class="summary-content">
-                    <div class="summary-value">{{ number_format($totalRequiredStaff) }}</div>
-                    <div class="summary-label">{{ __('shifts.manage.required_staff') }}</div>
-                </div>
-            </div>
-
-            <div class="summary-card summary-card-{{ $staffingPercentage >= 90 ? 'success' : ($staffingPercentage >= 70 ? 'warning' : 'danger') }}">
-                <div class="summary-icon">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <div class="summary-content">
-                    <div class="summary-value">{{ $staffingPercentage }}%</div>
-                    <div class="summary-label">{{ __('shifts.manage.staffing_level') }}</div>
-                </div>
-            </div>
+    <!-- Department Overview -->
+    @if(count($departments) > 0)
+    <div class="department-overview">
+        <div class="section-header-modern">
+            <h2 class="section-title">
+                <svg class="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+                Department Breakdown
+            </h2>
         </div>
-    </div>
-
-    <!-- Enhanced Department Breakdown -->
-    <div class="department-breakdown-section">
-        <div class="section-header">
-            <h2 class="section-title">{{ __('shifts.manage.department_breakdown') }}</h2>
-        </div>
-        <div class="department-grid">
+        <div class="department-grid-modern">
             @foreach($departments as $department)
-            <div class="department-card">
-                <div class="department-header">
-                    <h3 class="department-name">{{ __('shifts.departments.' . strtolower(str_replace(' ', '_', $department['name']))) }}</h3>
-                    <span class="department-shifts-count">{{ number_format($department['shifts']) }} {{ __('shifts.common.shifts') }}</span>
+            <div class="department-card-modern">
+                <div class="department-header-modern">
+                    <div class="department-info">
+                        <h3 class="department-title">{{ $department['name'] }}</h3>
+                        <span class="department-badge">{{ number_format($department['shifts']) }} shift{{ $department['shifts'] != 1 ? 's' : '' }}</span>
+                    </div>
                 </div>
-                <div class="department-stats">
-                    <div class="stat-item">
-                        <span class="stat-label">{{ __('shifts.manage.required') }}</span>
-                        <span class="stat-value">{{ number_format($department['required_staff']) }}</span>
+                <div class="department-metrics">
+                    <div class="metric-item">
+                        <div class="metric-label">Required Staff</div>
+                        <div class="metric-value">{{ number_format($department['required_staff']) }}</div>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-label">{{ __('shifts.manage.assigned') }}</span>
-                        <span class="stat-value">{{ number_format($department['assigned_staff']) }}</span>
+                    <div class="metric-divider"></div>
+                    <div class="metric-item">
+                        <div class="metric-label">Assigned Staff</div>
+                        <div class="metric-value">{{ number_format($department['assigned_staff']) }}</div>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-label">{{ __('shifts.manage.coverage') }}</span>
+                    <div class="metric-divider"></div>
+                    <div class="metric-item">
                         @php
                             $coverage = $department['required_staff'] > 0 ? round(($department['assigned_staff'] / $department['required_staff']) * 100) : 0;
-                            $coverageClass = $coverage >= 90 ? 'text-success' : ($coverage >= 70 ? 'text-warning' : 'text-danger');
+                            $coverageClass = $coverage >= 90 ? 'success' : ($coverage >= 70 ? 'warning' : 'danger');
                         @endphp
-                        <span class="stat-value {{ $coverageClass }}">
-                            {{ $coverage }}%
-                        </span>
+                        <div class="metric-label">Coverage</div>
+                        <div class="metric-value coverage-{{ $coverageClass }}">{{ $coverage }}%</div>
+                    </div>
+                </div>
+                <div class="department-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-{{ $coverageClass }}" style="width: {{ min($coverage, 100) }}%"></div>
                     </div>
                 </div>
             </div>
             @endforeach
         </div>
     </div>
+    @endif
 
-    <!-- Enhanced Filters and Search -->
-    <div class="filters-section">
-        <div class="filters-header">
-            <h2 class="section-title">{{ __('shifts.manage.all_shifts') }}</h2>
-            <div class="filters-actions">
-                <button class="btn btn-ghost btn-sm" @click="resetFilters()">
-                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+    <!-- Modern Filters Section -->
+    <div class="filters-section-modern">
+        <div class="filters-header-modern">
+            <div class="filters-title-group">
+                <h2 class="filters-title">
+                    <svg class="title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                     </svg>
-                    {{ __('shifts.common.reset_filters') }}
-                </button>
+                    Filter & Search Shifts
+                </h2>
+                <p class="filters-subtitle">Find and organize your shifts</p>
             </div>
+            <button class="btn btn-ghost-sm" @click="searchQuery = ''; filterDepartment = 'all'; filterStatus = 'all'; filterType = 'all';">
+                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+                Reset All
+            </button>
         </div>
-        <div class="filters-grid">
-            <div class="filter-group">
-                <label class="filter-label">{{ __('shifts.common.search') }}</label>
-                <div class="filter-input-wrapper">
-                    <input type="text" x-model="searchQuery" @input="applyFilters()" class="filter-input" placeholder="{{ __('shifts.manage.search_placeholder') }}">
-                    <svg class="filter-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        
+        <div class="filters-grid-modern">
+            <!-- Search Input -->
+            <div class="filter-modern">
+                <label class="filter-label-modern">
+                    <svg class="label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
-                </div>
+                    Search Shifts
+                </label>
+                <input 
+                    type="text" 
+                    x-model="searchQuery" 
+                    class="filter-input-modern" 
+                    placeholder="Search by name, description...">
             </div>
-            <div class="filter-group">
-                <label class="filter-label">{{ __('shifts.common.department') }}</label>
-                <select x-model="filterDepartment" @change="applyFilters()" class="filter-select">
-                    <option value="all">{{ __('shifts.departments.all_departments') }}</option>
-                    <option value="Kitchen">{{ __('shifts.departments.kitchen') }}</option>
-                    <option value="Front of House">{{ __('shifts.departments.front_of_house') }}</option>
-                    <option value="Bar">{{ __('shifts.departments.bar') }}</option>
-                    <option value="Management">{{ __('shifts.departments.management') }}</option>
-                    <option value="Maintenance">{{ __('shifts.departments.maintenance') }}</option>
+
+            <!-- Department Filter -->
+            <div class="filter-modern">
+                <label class="filter-label-modern">
+                    <svg class="label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    Department
+                </label>
+                <select x-model="filterDepartment" class="filter-select-modern">
+                    <option value="all">All Departments</option>
+                    @foreach(\App\Models\Department::active()->ordered()->get() as $dept)
+                    <option value="{{ $dept->name }}">{{ $dept->name }}</option>
+                    @endforeach
                 </select>
             </div>
-            <div class="filter-group">
-                <label class="filter-label">{{ __('shifts.common.status') }}</label>
-                <select x-model="filterStatus" @change="applyFilters()" class="filter-select">
-                    <option value="all">{{ __('shifts.common.all_statuses') }}</option>
-                    <option value="active">{{ __('shifts.statuses.active') }}</option>
-                    <option value="draft">{{ __('shifts.statuses.draft') }}</option>
-                    <option value="inactive">{{ __('shifts.statuses.inactive') }}</option>
+
+            <!-- Status Filter -->
+            <div class="filter-modern">
+                <label class="filter-label-modern">
+                    <svg class="label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Status
+                </label>
+                <select x-model="filterStatus" class="filter-select-modern">
+                    <option value="all">All Statuses</option>
+                    <option value="active">Active</option>
+                    <option value="draft">Draft</option>
+                    <option value="inactive">Inactive</option>
                 </select>
             </div>
-            <div class="filter-group">
-                <label class="filter-label">{{ __('shifts.common.type') }}</label>
-                <select x-model="filterType" @change="applyFilters()" class="filter-select">
-                    <option value="all">{{ __('shifts.common.all_types') }}</option>
-                    <option value="regular">{{ __('shifts.types.regular') }}</option>
-                    <option value="weekend">{{ __('shifts.types.weekend') }}</option>
-                    <option value="overtime">{{ __('shifts.types.overtime') }}</option>
-                    <option value="training">{{ __('shifts.types.training') }}</option>
+
+            <!-- Type Filter -->
+            <div class="filter-modern">
+                <label class="filter-label-modern">
+                    <svg class="label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                    </svg>
+                    Shift Type
+                </label>
+                <select x-model="filterType" class="filter-select-modern">
+                    <option value="all">All Types</option>
+                    @foreach(\App\Models\ShiftType::active()->ordered()->get() as $type)
+                    <option value="{{ $type->slug }}">{{ $type->name }}</option>
+                    @endforeach
                 </select>
             </div>
         </div>
     </div>
 
     <!-- Bulk Actions Bar -->
-    <div x-show="showBulkActions" x-transition class="bulk-actions-bar">
-        <div class="bulk-actions-content">
+    <div x-show="showBulkActions" x-transition class="bulk-actions-bar-modern">
+        <div class="bulk-actions-wrapper">
             <div class="bulk-actions-left">
-                <label class="bulk-select-all">
-                    <input type="checkbox" x-model="selectAll" @change="toggleSelectAll()">
-                    <span>{{ __('shifts.manage.select_all') }}</span>
-                </label>
-                <span class="selected-count" x-text="`${selectedShifts.length} ${selectedShifts.length === 1 ? '{{ __('shifts.common.shift') }}' : '{{ __('shifts.common.shifts') }}'} {{ __('shifts.manage.selected') }}`"></span>
+                <div class="bulk-checkbox">
+                    <input type="checkbox" x-model="selectAll" @change="toggleSelectAll()" id="selectAllBulk">
+                    <label for="selectAllBulk">Select All</label>
+                </div>
+                <div class="selection-count">
+                    <span class="count-badge" x-text="selectedShifts.length"></span>
+                    <span class="count-text" x-text="selectedShifts.length === 1 ? 'shift selected' : 'shifts selected'"></span>
+                </div>
             </div>
             <div class="bulk-actions-right">
-                <button class="btn btn-sm btn-secondary" @click="bulkActivate()" :disabled="selectedShifts.length === 0">
-                    {{ __('shifts.manage.activate') }}
+                <button class="btn-bulk btn-bulk-activate" @click="bulkActivate()" :disabled="selectedShifts.length === 0">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Activate
                 </button>
-                <button class="btn btn-sm btn-secondary" @click="bulkDeactivate()" :disabled="selectedShifts.length === 0">
-                    {{ __('shifts.manage.deactivate') }}
+                <button class="btn-bulk btn-bulk-deactivate" @click="bulkDeactivate()" :disabled="selectedShifts.length === 0">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                    </svg>
+                    Deactivate
                 </button>
-                <button class="btn btn-sm btn-danger" @click="bulkDelete()" :disabled="selectedShifts.length === 0">
-                    {{ __('shifts.manage.delete') }}
+                <button class="btn-bulk btn-bulk-delete" @click="bulkDelete()" :disabled="selectedShifts.length === 0">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    Delete
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Shifts Table -->
-    <div class="shifts-table-section">
-        <div class="table-container">
-            <table class="shifts-table">
+    <!-- Modern Shifts Table -->
+    <div class="shifts-table-modern">
+        <div class="table-header-modern">
+            <h3 class="table-title">All Shifts</h3>
+            <div class="table-info">
+                <span class="showing-count">Showing {{ count($shifts) }} shift{{ count($shifts) != 1 ? 's' : '' }}</span>
+            </div>
+        </div>
+        
+        <div class="table-wrapper">
+            <table class="table-modern">
                 <thead>
                     <tr>
-                        <th class="checkbox-column">
+                        <th class="th-checkbox">
                             <input type="checkbox" x-model="selectAll" @change="toggleSelectAll()">
                         </th>
-                        <th class="sortable" @click="sortBy('name')">
-                            {{ __('shifts.manage.shift_name') }}
-                            <svg class="sort-icon" :class="{ 'active': sortField === 'name' }" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z"/>
-                            </svg>
-                        </th>
-                        <th class="sortable" @click="sortBy('department')">{{ __('shifts.common.department') }}</th>
-                        <th class="sortable" @click="sortBy('start_time')">{{ __('shifts.manage.time') }}</th>
-                        <th class="sortable" @click="sortBy('required_staff')">{{ __('shifts.manage.staffing') }}</th>
-                        <th class="sortable" @click="sortBy('type')">{{ __('shifts.common.type') }}</th>
-                        <th class="sortable" @click="sortBy('status')">{{ __('shifts.common.status') }}</th>
-                        <th class="actions-column">{{ __('shifts.common.actions') }}</th>
+                        <th class="th-shift">Shift Details</th>
+                        <th class="th-department">Department</th>
+                        <th class="th-time">Time & Duration</th>
+                        <th class="th-staffing">Staffing</th>
+                        <th class="th-type">Type</th>
+                        <th class="th-status">Status</th>
+                        <th class="th-actions">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($shifts as $shift)
-                    <tr class="shift-row" data-shift-id="{{ $shift['id'] }}">
-                        <td class="checkbox-column">
+                    @forelse($shifts as $shift)
+                    <tr class="table-row">
+                        <td class="td-checkbox">
                             <input type="checkbox" x-model="selectedShifts" value="{{ $shift['id'] }}">
                         </td>
-                        <td class="shift-name-cell">
-                            <div class="shift-name-content">
+                        <td class="td-shift">
+                            <div class="shift-info">
                                 <div class="shift-name">{{ $shift['name'] }}</div>
-                                <div class="shift-description">{{ Str::limit($shift['description'], 50) }}</div>
+                                @if($shift['description'])
+                                <div class="shift-desc">{{ Str::limit($shift['description'], 60) }}</div>
+                                @endif
                             </div>
                         </td>
-                        <td class="department-cell">
-                            <span class="department-badge department-{{ strtolower(str_replace(' ', '-', $shift['department'])) }}">
-                                {{ __('shifts.departments.' . strtolower(str_replace(' ', '_', $shift['department']))) }}
+                        <td class="td-department">
+                            <span class="badge badge-department">
+                                {{ $shift['department'] }}
                             </span>
                         </td>
-                        <td class="time-cell">
-                            <div class="time-info">
-                                <div class="shift-time">{{ $shift['start_time'] }} - {{ $shift['end_time'] }}</div>
-                                <div class="shift-duration">{{ $shift['duration_hours'] }}h</div>
+                        <td class="td-time">
+                            <div class="time-display">
+                                <div class="time-range">{{ $shift['start_time'] }} - {{ $shift['end_time'] }}</div>
+                                <div class="time-duration">{{ $shift['duration_hours'] }} hours</div>
                             </div>
                         </td>
-                        <td class="staffing-cell">
-                            <div class="staffing-info">
-                                <div class="staffing-numbers">
+                        <td class="td-staffing">
+                            <div class="staffing-display">
+                                <div class="staffing-ratio">
                                     <span class="assigned">{{ $shift['assigned_staff'] }}</span>
-                                    <span class="separator">/</span>
+                                    <span class="divider">/</span>
                                     <span class="required">{{ $shift['required_staff'] }}</span>
                                 </div>
-                                <div class="staffing-bar">
-                                    <div class="staffing-fill" style="width: {{ $shift['required_staff'] > 0 ? ($shift['assigned_staff'] / $shift['required_staff']) * 100 : 0 }}%"></div>
+                                <div class="staffing-progress">
+                                    @php
+                                        $percentage = $shift['required_staff'] > 0 ? ($shift['assigned_staff'] / $shift['required_staff']) * 100 : 0;
+                                        $statusClass = $percentage >= 90 ? 'success' : ($percentage >= 70 ? 'warning' : 'danger');
+                                    @endphp
+                                    <div class="progress-bar-mini">
+                                        <div class="progress-fill-{{ $statusClass }}" style="width: {{ min($percentage, 100) }}%"></div>
+                                    </div>
                                 </div>
                             </div>
                         </td>
-                        <td class="type-cell">
-                            <span class="type-badge type-{{ $shift['type'] }}">
-                                {{ __('shifts.types.' . $shift['type']) }}
+                        <td class="td-type">
+                            <span class="badge badge-type badge-type-{{ $shift['type'] }}">
+                                {{ ucfirst($shift['type']) }}
                             </span>
                         </td>
-                        <td class="status-cell">
-                            <span class="status-badge status-{{ $shift['status'] }}">
-                                {{ __('shifts.statuses.' . $shift['status']) }}
+                        <td class="td-status">
+                            <span class="badge badge-status badge-status-{{ $shift['status'] }}">
+                                {{ ucfirst($shift['status']) }}
                             </span>
                         </td>
-                        <td class="actions-cell">
-                            <div class="actions-dropdown" x-data="{ open: false }">
-                                <button class="actions-trigger" @click="open = !open">
-                                    <svg fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
+                        <td class="td-actions">
+                            <div class="action-buttons">
+                                <a href="{{ route('admin.shifts.manage.edit', $shift['id']) }}" class="btn-action btn-action-edit" title="Edit Shift">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                     </svg>
-                                </button>
-                                <div x-show="open" @click.away="open = false" x-transition class="actions-menu">
-                                    <a href="{{ route('admin.shifts.manage.edit', $shift['id']) }}" class="action-item">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                        </svg>
-                                        {{ __('shifts.common.edit') }}
-                                    </a>
-                                    <button class="action-item" @click="duplicateShift({{ $shift['id'] }})">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                        </svg>
-                                        {{ __('shifts.manage.duplicate') }}
-                                    </button>
-                                    <button class="action-item" @click="toggleShiftStatus({{ $shift['id'] }}, '{{ $shift['status'] }}')">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
-                                        </svg>
-                                        {{ $shift['status'] === 'active' ? __('shifts.manage.deactivate') : __('shifts.manage.activate') }}
-                                    </button>
-                                    <div class="action-separator"></div>
-                                    <button class="action-item action-danger" @click="deleteShift({{ $shift['id'] }})">
+                                </a>
+                                <form method="POST" action="{{ route('admin.shifts.manage.destroy', $shift['id']) }}" class="inline-form" onsubmit="return confirm('Are you sure you want to delete this shift? This action cannot be undone.')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-action btn-action-delete" title="Delete Shift">
                                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                         </svg>
-                                        {{ __('shifts.common.delete') }}
                                     </button>
-                                </div>
+                                </form>
                             </div>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="8" class="empty-state">
+                            <div class="empty-content">
+                                <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <h3>No shifts found</h3>
+                                <p>Get started by creating your first shift schedule</p>
+                                <a href="{{ route('admin.shifts.manage.create') }}" class="btn btn-primary mt-4">
+                                    Create First Shift
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- Pagination -->
-    <div class="pagination-section">
+    <!-- Modern Pagination -->
+    @if(count($shifts) > 0)
+    <div class="pagination-modern">
         <div class="pagination-info">
-            {{ __('shifts.manage.showing_results', ['start' => 1, 'end' => count($shifts), 'total' => count($shifts)]) }}
+            <span class="info-text">Showing <strong>{{ count($shifts) }}</strong> shift{{ count($shifts) != 1 ? 's' : '' }}</span>
         </div>
-        <div class="pagination-controls">
-            <button class="btn btn-ghost btn-sm" disabled>
-                {{ __('shifts.common.previous') }}
+        <div class="pagination-nav">
+            <button class="btn-pagination" disabled>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                Previous
             </button>
-            <span class="pagination-current">1</span>
-            <button class="btn btn-ghost btn-sm" disabled>
-                {{ __('shifts.common.next') }}
+            <div class="page-number active">1</div>
+            <button class="btn-pagination" disabled>
+                Next
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
             </button>
         </div>
     </div>
+    @endif
 </div>
 
 @push('styles')
-@vite(['resources/css/admin/shifts/manage.css'])
+@vite(['resources/css/admin/shifts/manage-modern.css'])
 @endpush
 
-@push('scripts')
-@vite(['resources/js/admin/shifts/manage.js'])
-@endpush
+<script>
+// Placeholder for future Alpine.js functions
+function toggleSelectAll() {
+    // Logic handled by Alpine.js
+}
+
+function bulkActivate() {
+    console.log('Bulk activate shifts');
+}
+
+function bulkDeactivate() {
+    console.log('Bulk deactivate shifts');
+}
+
+function bulkDelete() {
+    if (confirm('Are you sure you want to delete the selected shifts? This action cannot be undone.')) {
+        console.log('Bulk delete shifts');
+    }
+}
+</script>
+
 @endsection

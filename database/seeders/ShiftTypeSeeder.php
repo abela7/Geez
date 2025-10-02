@@ -86,7 +86,9 @@ class ShiftTypeSeeder extends Seeder
         ];
 
         foreach ($shiftTypes as $shiftType) {
-            ShiftType::create($shiftType);
+            ShiftType::updateOrCreate([
+                'name' => $shiftType['name']
+            ], $shiftType);
         }
     }
 }

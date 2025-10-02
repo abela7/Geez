@@ -19,6 +19,7 @@ class StaffShift extends Model
      */
     protected $fillable = [
         'name',
+        'position_name',
         'department',
         'shift_type',
         'start_time',
@@ -29,6 +30,7 @@ class StaffShift extends Model
         'required_roles',
         'hourly_rate_multiplier',
         'is_active',
+        'is_template',
         'is_holiday_shift',
         'color_code',
         'description',
@@ -41,14 +43,13 @@ class StaffShift extends Model
      * The attributes that should be cast.
      */
     protected $casts = [
-        'start_time' => 'datetime:H:i',
-        'end_time' => 'datetime:H:i',
         'break_minutes' => 'integer',
         'min_staff_required' => 'integer',
         'max_staff_allowed' => 'integer',
         'required_roles' => 'array',
         'hourly_rate_multiplier' => 'decimal:2',
         'is_active' => 'boolean',
+        'is_template' => 'boolean',
         'is_holiday_shift' => 'boolean',
         'days_of_week' => 'array',
     ];
@@ -102,12 +103,40 @@ class StaffShift extends Model
     }
 
     /**
+     * Scope to get only shift templates.
+     */
+    public function scopeTemplates($query)
+    {
+        return $query->where('is_template', true);
+    }
+
+    /**
+     * Scope to get templates by department.
+     */
+    public function scopeByDepartment($query, string $department)
+    {
+        return $query->where('department', $department);
+    }
+
+    /**
+     * Scope to get templates by shift type.
+     */
+    public function scopeByType($query, string $type)
+    {
+        return $query->where('shift_type', $type);
+    }
+
+    /**
      * Calculate shift duration in hours.
      */
     public function getDurationInHours(): float
     {
-        $start = \Carbon\Carbon::createFromFormat('H:i', $this->start_time);
-        $end = \Carbon\Carbon::createFromFormat('H:i', $this->end_time);
+        // Parse time strings - handle both H:i:s and H:i formats
+        $startTime = is_string($this->start_time) ? $this->start_time : $this->start_time->format('H:i:s');
+        $endTime = is_string($this->end_time) ? $this->end_time : $this->end_time->format('H:i:s');
+        
+        $start = \Carbon\Carbon::parse($startTime);
+        $end = \Carbon\Carbon::parse($endTime);
 
         // Handle overnight shifts
         if ($end->lessThan($start)) {
@@ -144,21 +173,7 @@ class StaffShift extends Model
         return $query->whereJsonContains('days_of_week', $dayOfWeek);
     }
 
-    /**
-     * Scope for shifts by department.
-     */
-    public function scopeByDepartment($query, string $department)
-    {
-        return $query->where('department', $department);
-    }
-
-    /**
-     * Scope for shifts by type.
-     */
-    public function scopeByType($query, string $type)
-    {
-        return $query->where('shift_type', $type);
-    }
+    // scopeByDepartment and scopeByType already defined above (line 116 and 124)
 
     /**
      * Check if this shift requires a specific role.

@@ -406,9 +406,9 @@ function shiftCreateData() {
         },
         
         formatCurrency(amount) {
-            return new Intl.NumberFormat('en-US', {
+            return new Intl.NumberFormat('en-GB', {
                 style: 'currency',
-                currency: 'USD'
+                currency: 'GBP'
             }).format(amount || 0);
         },
         
@@ -481,7 +481,7 @@ function shiftCreateData() {
     };
 }
 
-// Shift Edit Data
+// Shift Edit Data - Based on Create Data Structure
 function shiftEditData(shiftData) {
     return {
         form: {
@@ -493,7 +493,7 @@ function shiftEditData(shiftData) {
             end_time: shiftData.end_time || '',
             duration_hours: 0,
             break_duration: shiftData.break_duration || 30,
-            days_of_week: shiftData.days_of_week || [],
+            days_of_week: Array.isArray(shiftData.days_of_week) ? shiftData.days_of_week : [],
             required_staff: shiftData.required_staff || 1,
             hourly_rate: shiftData.hourly_rate || 15.00,
             overtime_rate: shiftData.overtime_rate || 22.50,
@@ -501,6 +501,8 @@ function shiftEditData(shiftData) {
         },
         
         init() {
+            console.log('Initializing edit form with data:', shiftData);
+            console.log('Form data:', this.form);
             this.calculateDuration();
         },
         
@@ -509,6 +511,7 @@ function shiftEditData(shiftData) {
                 const start = new Date(`2000-01-01 ${this.form.start_time}`);
                 let end = new Date(`2000-01-01 ${this.form.end_time}`);
                 
+                // Handle overnight shifts
                 if (end <= start) {
                     end.setDate(end.getDate() + 1);
                 }
@@ -540,72 +543,120 @@ function shiftEditData(shiftData) {
         },
         
         calculateMonthlyCost() {
-            return this.calculateWeeklyCost() * 4.33;
+            return this.calculateWeeklyCost() * 4.33; // Average weeks per month
+        },
+        
+        calculateCosts() {
+            // Trigger reactivity for cost calculations
+            this.$nextTick();
         },
         
         formatCurrency(amount) {
-            return new Intl.NumberFormat('en-US', {
+            return new Intl.NumberFormat('en-GB', {
                 style: 'currency',
-                currency: 'USD'
+                currency: 'GBP'
             }).format(amount || 0);
         },
         
+        isFormValid() {
+            return this.form.name && 
+                   this.form.department && 
+                   this.form.type && 
+                   this.form.start_time && 
+                   this.form.end_time && 
+                   this.form.required_staff > 0 && 
+                   this.form.days_of_week.length > 0;
+        },
+        
         duplicateShift() {
-            window.location.href = '/admin/shifts/manage/create?duplicate=true&source=' + shiftData.id;
+            window.location.href = `/admin/shifts/manage/create?duplicate=true&source=${shiftData.id}`;
         },
         
         deleteShift() {
             if (confirm('Are you sure you want to delete this shift? This action cannot be undone.')) {
-                // In a real app, this would make an API call
-                window.location.href = '/admin/shifts/manage';
+                // Create a form to submit DELETE request
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/shifts/manage/${shiftData.id}`;
+                form.style.display = 'none';
+                
+                // Add CSRF token
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                if (csrfToken) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = csrfToken;
+                    form.appendChild(csrfInput);
+                }
+                
+                // Add method override for DELETE
+                const methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'DELETE';
+                form.appendChild(methodInput);
+                
+                // Append form to body and submit
+                document.body.appendChild(form);
+                form.submit();
             }
         },
         
         saveDraft() {
             this.form.status = 'draft';
-            this.showNotification('Shift saved as draft!', 'info');
+            this.showNotification('Saving as draft...', 'info');
+            
+            // Submit the form
+            const formElement = document.querySelector('.shift-form');
+            if (formElement) {
+                formElement.submit();
+            }
+        },
+        
+        resetForm() {
+            // Reset to original data
+            this.form = {
+                name: shiftData.name || '',
+                department: shiftData.department || '',
+                type: shiftData.type || '',
+                description: shiftData.description || '',
+                start_time: shiftData.start_time || '',
+                end_time: shiftData.end_time || '',
+                duration_hours: 0,
+                break_duration: shiftData.break_duration || 30,
+                days_of_week: Array.isArray(shiftData.days_of_week) ? [...shiftData.days_of_week] : [],
+                required_staff: shiftData.required_staff || 1,
+                hourly_rate: shiftData.hourly_rate || 15.00,
+                overtime_rate: shiftData.overtime_rate || 22.50,
+                status: shiftData.status || 'draft'
+            };
+            this.calculateDuration();
+            this.showNotification('Form reset to original values', 'info');
         },
         
         showNotification(message, type = 'info') {
+            // Create notification element
             const notification = document.createElement('div');
             notification.className = `notification notification-${type}`;
-            notification.textContent = message;
             
-            Object.assign(notification.style, {
-                position: 'fixed',
-                top: '20px',
-                right: '20px',
-                padding: '12px 24px',
-                borderRadius: '8px',
-                color: 'white',
-                fontWeight: '500',
-                zIndex: '9999',
-                transform: 'translateX(100%)',
-                transition: 'transform 0.3s ease',
-                maxWidth: '400px'
-            });
+            const content = document.createElement('div');
+            content.className = 'notification-content';
+            content.innerHTML = `
+                <span>${message}</span>
+                <button class="notification-close" onclick="this.parentElement.parentElement.remove()">&times;</button>
+            `;
             
-            const colors = {
-                success: '#10B981',
-                error: '#EF4444',
-                warning: '#F59E0B',
-                info: '#3B82F6'
-            };
-            notification.style.backgroundColor = colors[type] || colors.info;
+            notification.appendChild(content);
             
+            // Add to page
             document.body.appendChild(notification);
             
+            // Auto-remove after 3 seconds
             setTimeout(() => {
-                notification.style.transform = 'translateX(0)';
-            }, 100);
-            
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
+                if (notification.parentNode) {
+                    notification.remove();
+                }
             }, 3000);
         }
     };

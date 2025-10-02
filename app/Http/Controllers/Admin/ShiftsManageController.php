@@ -5,44 +5,66 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\StaffShift;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ShiftsManageController extends Controller
 {
+    /**
+     * Display a listing of shifts.
+     */
     public function index(): View
     {
-        // Build shifts list from session (demo-only - persistent storage)
-        $allShifts = session('all_shifts', []);
+        // Fetch all shifts from database with their relationships
+        $dbShifts = StaffShift::with(['creator', 'assignments'])
+            ->orderBy('is_active', 'desc')
+            ->orderBy('name', 'asc')
+            ->get();
 
-        $shifts = [];
-        foreach ($allShifts as $index => $created) {
-            $durationHours = isset($created['duration_minutes'])
-                ? abs(round(($created['duration_minutes'] / 60), 2))
-                : 0;
+        // Format shifts for the view
+        $shifts = $dbShifts->map(function ($shift) {
+            $assignedCount = $shift->assignments()
+                ->where('status', '!=', 'cancelled')
+                ->distinct('staff_id')
+                ->count('staff_id');
 
-            $shifts[] = [
-                'id' => $index + 1,
-                'name' => $created['name'] ?? 'New Shift',
-                'department' => $created['department'] ?? 'Unknown',
-                'start_time' => $created['start_time'] ?? '',
-                'end_time' => $created['end_time'] ?? '',
-                'duration_hours' => $durationHours,
-                'required_staff' => (int) ($created['required_staff'] ?? 1),
-                'assigned_staff' => 0,
-                'status' => $created['status'] ?? 'draft',
-                'type' => $created['type'] ?? 'regular',
-                'description' => $created['description'] ?? '',
-                'break_duration' => (int) ($created['break_duration'] ?? 0),
-                'hourly_rate' => (float) ($created['hourly_rate'] ?? 0),
-                'overtime_rate' => (float) ($created['overtime_rate'] ?? 0),
-                'days_of_week' => $created['days_of_week'] ?? [],
+            // Format times to show only hours and minutes (HH:MM)
+            $startTime = is_string($shift->start_time) 
+                ? \Carbon\Carbon::parse($shift->start_time)->format('H:i')
+                : $shift->start_time;
+            
+            $endTime = is_string($shift->end_time)
+                ? \Carbon\Carbon::parse($shift->end_time)->format('H:i')
+                : $shift->end_time;
+
+            // Get duration and ensure it's always positive
+            $duration = $shift->getDurationInHours();
+            $duration = abs($duration); // Ensure positive value
+
+            return [
+                'id' => $shift->id,
+                'name' => $shift->name,
+                'department' => $shift->department ?? 'Unknown',
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'duration_hours' => $duration,
+                'required_staff' => $shift->min_staff_required,
+                'assigned_staff' => $assignedCount,
+                'status' => $shift->is_active ? 'active' : 'inactive',
+                'type' => $shift->shift_type ?? 'regular',
+                'description' => $shift->description ?? '',
+                'break_duration' => $shift->break_minutes ?? 0,
+                'hourly_rate' => $shift->hourly_rate_multiplier ?? 1.00,
+                'overtime_rate' => ($shift->hourly_rate_multiplier ?? 1.00) * 1.5,
+                'days_of_week' => $shift->days_of_week ?? [],
             ];
-        }
+        })->toArray();
 
+        // Calculate statistics
         $totalShifts = count($shifts);
-        $activeShifts = count(array_filter($shifts, fn ($s) => ($s['status'] ?? 'draft') === 'active'));
+        $activeShifts = count(array_filter($shifts, fn ($s) => $s['status'] === 'active'));
         $totalRequiredStaff = array_sum(array_map(fn ($s) => (int) $s['required_staff'], $shifts));
         $totalAssignedStaff = array_sum(array_map(fn ($s) => (int) $s['assigned_staff'], $shifts));
         $staffingPercentage = $totalRequiredStaff > 0
@@ -105,14 +127,13 @@ class ShiftsManageController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'position_name' => 'nullable|string|max:255',
             'department' => 'required|string',
             'type' => 'required|string',
             'description' => 'nullable|string|max:1000',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i',
             'break_duration' => 'nullable|integer|min:0|max:480',
-            'days_of_week' => 'required|array|min:1',
-            'days_of_week.*' => 'string|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
             'required_staff' => 'required|integer|min:1|max:50',
             'hourly_rate' => 'nullable|numeric|min:0',
             'overtime_rate' => 'nullable|numeric|min:0',
@@ -134,24 +155,30 @@ class ShiftsManageController extends Controller
                 ->withInput();
         }
 
-        // Calculate duration
-        $startTime = \Carbon\Carbon::createFromFormat('H:i', $validated['start_time']);
-        $endTime = \Carbon\Carbon::createFromFormat('H:i', $validated['end_time']);
+        // Get the authenticated staff member (assuming auth:sanctum or similar)
+        $createdBy = auth()->user()->id ?? null;
 
-        if ($endTime->lessThan($startTime)) {
-            $endTime->addDay(); // Handle overnight shifts
-        }
+        // Create shift template in database
+        $shift = StaffShift::create([
+            'name' => $validated['name'],
+            'position_name' => $validated['position_name'] ?? null,
+            'department' => $validated['department'],
+            'shift_type' => $validated['type'],
+            'description' => $validated['description'] ?? null,
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
+            'break_minutes' => $validated['break_duration'] ?? 0,
+            'days_of_week' => null, // Templates don't have specific days
+            'min_staff_required' => $validated['required_staff'],
+            'max_staff_allowed' => $validated['required_staff'] * 2, // Default to 2x min
+            'hourly_rate_multiplier' => $validated['hourly_rate'] ?? 1.00,
+            'is_active' => $validated['status'] === 'active',
+            'is_template' => true, // Mark as template
+            'color_code' => $this->getColorForDepartment($validated['department']),
+            'created_by' => $createdBy,
+        ]);
 
-        $durationMinutes = $endTime->diffInMinutes($startTime);
-        $validated['duration_minutes'] = $durationMinutes;
-
-        // For demo purposes, store in persistent session (not flash)
-        // In a real application, you would save to database
-        $allShifts = session('all_shifts', []);
-        $allShifts[] = $validated;
-        session(['all_shifts' => $allShifts]);
-
-        $successMessage = 'Shift "'.$validated['name'].'" created successfully!';
+        $successMessage = 'Shift template "'.$shift->name.'" created successfully! You can now assign it to staff via the weekly rota.';
 
         // Return JSON response for AJAX requests
         if ($request->expectsJson()) {
@@ -184,33 +211,33 @@ class ShiftsManageController extends Controller
             'sunday' => 'Sunday',
         ];
 
-        // Get shift data from session (for demo)
-        $allShifts = session('all_shifts', []);
+        // Fetch shift from database
+        $dbShift = StaffShift::findOrFail($id);
 
-        // Find the shift by ID
-        $shiftIndex = (int) $id - 1; // Convert to array index
-        if (! isset($allShifts[$shiftIndex])) {
-            // If shift not found, create dummy data
-            $shift = [
-                'id' => $id,
-                'name' => 'Sample Shift',
-                'department' => 'Kitchen',
-                'type' => 'regular',
-                'start_time' => '09:00',
-                'end_time' => '17:00',
-                'break_duration' => 30,
-                'required_staff' => 2,
-                'hourly_rate' => 15.00,
-                'overtime_rate' => 22.50,
-                'status' => 'draft',
-                'description' => 'Sample shift description',
-                'days_of_week' => ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
-            ];
-        } else {
-            // Use actual shift data from session
-            $shift = $allShifts[$shiftIndex];
-            $shift['id'] = $id; // Ensure ID is set
-        }
+        // Format shift data for the view (times without seconds)
+        $startTime = is_string($dbShift->start_time)
+            ? \Carbon\Carbon::parse($dbShift->start_time)->format('H:i')
+            : $dbShift->start_time;
+        
+        $endTime = is_string($dbShift->end_time)
+            ? \Carbon\Carbon::parse($dbShift->end_time)->format('H:i')
+            : $dbShift->end_time;
+
+        $shift = [
+            'id' => $dbShift->id,
+            'name' => $dbShift->name,
+            'department' => $dbShift->department,
+            'type' => $dbShift->shift_type,
+            'start_time' => $startTime,
+            'end_time' => $endTime,
+            'break_duration' => $dbShift->break_minutes ?? 0,
+            'required_staff' => $dbShift->min_staff_required,
+            'hourly_rate' => $dbShift->hourly_rate_multiplier ?? 1.00,
+            'overtime_rate' => ($dbShift->hourly_rate_multiplier ?? 1.00) * 1.5,
+            'status' => $dbShift->is_active ? 'active' : 'inactive',
+            'description' => $dbShift->description ?? '',
+            'days_of_week' => $dbShift->days_of_week ?? [],
+        ];
 
         return view('admin.shifts.manage.edit', compact('shift', 'departments', 'shiftTypes', 'daysOfWeek'));
     }
@@ -220,10 +247,47 @@ class ShiftsManageController extends Controller
      */
     public function update(Request $request, string $id): RedirectResponse
     {
-        // For now, just redirect back with success message
-        // TODO: Implement actual shift update logic
+        $shift = StaffShift::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'department' => 'required|string',
+            'type' => 'required|string',
+            'description' => 'nullable|string|max:1000',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i',
+            'break_duration' => 'nullable|integer|min:0|max:480',
+            'days_of_week' => 'required|array|min:1',
+            'days_of_week.*' => 'string|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
+            'required_staff' => 'required|integer|min:1|max:50',
+            'hourly_rate' => 'nullable|numeric|min:0',
+            'overtime_rate' => 'nullable|numeric|min:0',
+            'status' => 'required|string|in:draft,active,inactive',
+        ]);
+
+        // Get the authenticated staff member
+        $updatedBy = auth()->user()->id ?? null;
+
+        // Update shift in database
+        $shift->update([
+            'name' => $validated['name'],
+            'department' => $validated['department'],
+            'shift_type' => $validated['type'],
+            'description' => $validated['description'] ?? null,
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
+            'break_minutes' => $validated['break_duration'] ?? 0,
+            'days_of_week' => $validated['days_of_week'],
+            'min_staff_required' => $validated['required_staff'],
+            'max_staff_allowed' => $validated['required_staff'] * 2, // Default to 2x min
+            'hourly_rate_multiplier' => $validated['hourly_rate'] ?? 1.00,
+            'is_active' => $validated['status'] === 'active',
+            'color_code' => $this->getColorForDepartment($validated['department']),
+            'updated_by' => $updatedBy,
+        ]);
+
         return redirect()->route('admin.shifts.manage.index')
-            ->with('success', 'Shift updated successfully!');
+            ->with('success', "Shift '{$shift->name}' updated successfully!");
     }
 
     /**
@@ -232,26 +296,35 @@ class ShiftsManageController extends Controller
     public function destroy(string $id): RedirectResponse
     {
         try {
-            // Find the shift by ID
-            $shift = \App\Models\StaffShift::findOrFail($id);
-            
-            // Check if shift has any active assignments
-            $activeAssignments = $shift->activeAssignments()->count();
-            
-            if ($activeAssignments > 0) {
-                return redirect()->route('admin.shifts.manage.index')
-                    ->with('error', 'Cannot delete shift with active assignments. Please cancel or reassign staff first.');
-            }
-            
-            // Delete the shift (soft delete)
+            $shift = StaffShift::findOrFail($id);
+            $shiftName = $shift->name;
+
+            // Soft delete the shift
             $shift->delete();
-            
+
             return redirect()->route('admin.shifts.manage.index')
-                ->with('success', 'Shift deleted successfully!');
-                
+                ->with('success', "Shift '{$shiftName}' deleted successfully!");
         } catch (\Exception $e) {
             return redirect()->route('admin.shifts.manage.index')
                 ->with('error', 'Failed to delete shift. Please try again.');
         }
+    }
+
+    /**
+     * Get a default color code for a department.
+     */
+    private function getColorForDepartment(string $department): string
+    {
+        $colors = [
+            'Kitchen' => '#10B981', // Green
+            'Front of House' => '#3B82F6', // Blue
+            'Bar' => '#8B5CF6', // Purple
+            'Management' => '#F59E0B', // Amber
+            'Maintenance' => '#6B7280', // Gray
+            'Cleaning' => '#EC4899', // Pink
+            'Security' => '#EF4444', // Red
+        ];
+
+        return $colors[$department] ?? '#3B82F6'; // Default to blue
     }
 }
