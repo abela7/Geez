@@ -317,13 +317,13 @@
                                             </svg>
                                         </button>
                                         
-                                        <button onclick="showComingSoon()" 
-                                                class="btn-action btn-action-secondary" 
-                                                title="Coming Soon">
+                                        <a href="{{ route('admin.staff.tasks.edit', $assignment->task->id) }}" 
+                                           class="btn-action btn-action-secondary" 
+                                           title="{{ __('staff.tasks.edit_task') }}">
                                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                             </svg>
-                                        </button>
+                                        </a>
                                         
                                         @if($assignment->status !== 'completed')
                                             <form method="POST" action="{{ route('admin.staff.task-assignments.update-status', $assignment->id) }}" class="inline-form">
@@ -574,8 +574,10 @@
 }
 
 .assignee-avatar {
-    width: 2rem;
-    height: 2rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
     border-radius: 50%;
     background: var(--color-primary);
     color: var(--button-primary-text);
@@ -583,7 +585,8 @@
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    font-size: 0.75rem;
+    font-size: 0.875rem;
+    flex-shrink: 0;
 }
 
 .assignee-name {
@@ -655,8 +658,9 @@
 .due-date {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.5rem;
     color: var(--color-text-secondary);
+    white-space: nowrap;
 }
 
 .due-date.overdue {
@@ -667,6 +671,11 @@
 .due-date-icon {
     width: 1rem;
     height: 1rem;
+    flex-shrink: 0;
+}
+
+.due-date-text {
+    white-space: nowrap;
 }
 
 .progress-bar {
@@ -953,12 +962,14 @@
     z-index: var(--z-modal-backdrop);
     opacity: 0;
     visibility: hidden;
+    display: none;
     transition: all 0.3s ease;
 }
 
 .task-modal-overlay.active {
     opacity: 1;
     visibility: visible;
+    display: block;
 }
 
 .task-modal {
@@ -1129,14 +1140,17 @@
 .task-assignee-avatar {
     width: 2.5rem;
     height: 2.5rem;
-    background: #6366f1;
-    color: white;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+    background: var(--color-primary);
+    color: var(--button-primary-text);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
     font-size: 0.875rem;
+    flex-shrink: 0;
 }
 
 .task-assignee-info {
@@ -1311,13 +1325,13 @@
 
 /* Table Column Sizing */
 .data-table th:nth-child(1) { width: 40px; }      /* Checkbox */
-.data-table th:nth-child(2) { width: 35%; }       /* Task Title */
+.data-table th:nth-child(2) { width: 30%; }       /* Task Title */
 .data-table th:nth-child(3) { width: 15%; }       /* Assignee */
 .data-table th:nth-child(4) { width: 10%; }       /* Priority */
-.data-table th:nth-child(5) { width: 12%; }       /* Status - More space */
-.data-table th:nth-child(6) { width: 12%; }       /* Due Date */
-.data-table th:nth-child(7) { width: 8%; }        /* Progress */
-.data-table th:nth-child(8) { width: 8%; }        /* Actions */
+.data-table th:nth-child(5) { width: 11%; }       /* Status */
+.data-table th:nth-child(6) { width: 14%; }       /* Due Date - More space to prevent wrapping */
+.data-table th:nth-child(7) { width: 10%; }       /* Progress */
+.data-table th:nth-child(8) { width: 10%; }       /* Actions */
 
 .status-cell {
     min-width: 90px;
@@ -1327,6 +1341,10 @@
 .priority-cell {
     min-width: 80px;
     text-align: center;
+}
+
+.due-date-cell {
+    min-width: 140px;
 }
 
 .checkbox-cell {

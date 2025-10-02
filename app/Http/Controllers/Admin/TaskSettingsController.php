@@ -85,6 +85,14 @@ class TaskSettingsController extends Controller
     }
 
     /**
+     * Show the edit form for a task type.
+     */
+    public function editTaskType(TaskType $taskType): View
+    {
+        return view('admin.staff.task-settings-edit-type', compact('taskType'));
+    }
+
+    /**
      * Update a task type.
      */
     public function updateTaskType(Request $request, TaskType $taskType): RedirectResponse
@@ -101,7 +109,7 @@ class TaskSettingsController extends Controller
 
         $taskType->update($validated);
 
-        return redirect()->back()->with('success', __('staff.tasks.settings.task_type_updated'));
+        return redirect()->route('admin.staff.tasks.settings.index')->with('success', __('staff.tasks.settings.task_type_updated'));
     }
 
     /**
@@ -142,6 +150,14 @@ class TaskSettingsController extends Controller
     }
 
     /**
+     * Show the edit form for a task priority.
+     */
+    public function editTaskPriority(TaskPriority $taskPriority): View
+    {
+        return view('admin.staff.task-settings-edit-priority', compact('taskPriority'));
+    }
+
+    /**
      * Update a task priority.
      */
     public function updateTaskPriority(Request $request, TaskPriority $taskPriority): RedirectResponse
@@ -159,7 +175,7 @@ class TaskSettingsController extends Controller
 
         $taskPriority->update($validated);
 
-        return redirect()->back()->with('success', __('staff.tasks.settings.task_priority_updated'));
+        return redirect()->route('admin.staff.tasks.settings.index')->with('success', __('staff.tasks.settings.task_priority_updated'));
     }
 
     /**
@@ -200,6 +216,20 @@ class TaskSettingsController extends Controller
     }
 
     /**
+     * Show the edit form for a task category.
+     */
+    public function editTaskCategory(TaskCategory $taskCategory): View
+    {
+        $parentCategories = TaskCategory::where('is_active', true)
+            ->whereNull('parent_id')
+            ->where('id', '!=', $taskCategory->id)
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.staff.task-settings-edit-category', compact('taskCategory', 'parentCategories'));
+    }
+
+    /**
      * Update a task category.
      */
     public function updateTaskCategory(Request $request, TaskCategory $taskCategory): RedirectResponse
@@ -222,7 +252,7 @@ class TaskSettingsController extends Controller
 
         $taskCategory->update($validated);
 
-        return redirect()->back()->with('success', __('staff.tasks.settings.task_category_updated'));
+        return redirect()->route('admin.staff.tasks.settings.index')->with('success', __('staff.tasks.settings.task_category_updated'));
     }
 
     /**
@@ -260,6 +290,14 @@ class TaskSettingsController extends Controller
     }
 
     /**
+     * Show the edit form for a task tag.
+     */
+    public function editTaskTag(TaskTag $taskTag): View
+    {
+        return view('admin.staff.task-settings-edit-tag', compact('taskTag'));
+    }
+
+    /**
      * Update a task tag.
      */
     public function updateTaskTag(Request $request, TaskTag $taskTag): RedirectResponse
@@ -275,7 +313,7 @@ class TaskSettingsController extends Controller
 
         $taskTag->update($validated);
 
-        return redirect()->back()->with('success', __('staff.tasks.settings.task_tag_updated'));
+        return redirect()->route('admin.staff.tasks.settings.index')->with('success', __('staff.tasks.settings.task_tag_updated'));
     }
 
     /**

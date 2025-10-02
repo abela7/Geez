@@ -18,7 +18,8 @@
     <!-- Mobile Menu Backdrop -->
     <div class="sidebar-backdrop" 
          x-show="sidebarOpen"
-         @click="sidebarOpen = false"
+         x-cloak
+         @click.self="sidebarOpen = false"
          x-transition:enter="transition-opacity ease-out duration-300"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
@@ -30,6 +31,7 @@
     <!-- Sidebar -->
     <aside class="admin-sidebar" 
            :class="{ 'mobile-open': sidebarOpen, 'collapsed': sidebarCollapsed }"
+           x-cloak
         role="navigation"
            aria-label="{{ __('dashboard.nav_main') }}">
         
@@ -74,7 +76,7 @@
         </div>
         
         <!-- Navigation Links -->
-        <nav class="sidebar-nav">
+        <nav class="sidebar-nav" @click="if($event.target.closest('a') && window.innerWidth < 1024) { sidebarOpen = false }">
             <!-- Dashboard -->
             <a href="{{ route('admin.dashboard') }}" 
                class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
@@ -225,6 +227,9 @@
                     <a href="{{ route('admin.staff.tasks.index') }}" class="submenu-link {{ request()->routeIs('admin.staff.tasks.index') || request()->routeIs('admin.staff.tasks.show') || request()->routeIs('admin.staff.tasks.create') || request()->routeIs('admin.staff.tasks.edit') ? 'active' : '' }}">
                         {{ __('staff.nav_tasks') }}
                     </a>
+                    <a href="{{ route('admin.staff.tasks.today') }}" class="submenu-link {{ request()->routeIs('admin.staff.tasks.today') ? 'active' : '' }}">
+                        {{ __("Today's Tasks") }}
+                    </a>
                     <a href="{{ route('admin.staff.tasks.settings.index') }}" class="submenu-link {{ request()->routeIs('admin.staff.tasks.settings.*') ? 'active' : '' }}">
                         {{ __('staff.nav_task_settings') }}
                     </a>
@@ -239,11 +244,14 @@
                     <a href="{{ route('admin.shifts.manage.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.manage.*') ? 'active' : '' }}">
                         {{ __('shifts.manage.title') }}
                     </a>
-                    <a href="{{ route('admin.shifts.assignments.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.assignments.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.shifts.shifts.assignments.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.shifts.assignments.*') ? 'active' : '' }}">
                         {{ __('shifts.assignments.title') }}
                     </a>
-                    <a href="{{ route('admin.shifts.templates.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.templates.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.shifts.shifts.templates.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.shifts.templates.*') ? 'active' : '' }}">
                         {{ __('shifts.templates.title') }}
+                    </a>
+                    <a href="{{ route('admin.shifts.schedule.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.schedule.*') ? 'active' : '' }}">
+                        {{ __('admin.staff.shifts.schedule_title') }}
                     </a>
                     <div class="submenu-separator"></div>
                     <div class="submenu-section-title">{{ __('staff.settings.section_title') }}</div>

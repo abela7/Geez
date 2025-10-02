@@ -22,6 +22,8 @@
   /* hide scrollbar but keep scrollable */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
+  /* Create new stacking context */
+  isolation: isolate;
   /* Icon design tokens (scoped) */
   --nav-icon-size: 20px;
   --nav-icon-container-size: 24px; /* Container for perfect centering */
@@ -84,26 +86,45 @@
     transform: translateX(-100%);
     box-shadow: var(--surface-sidebar-shadow);
     z-index: 1050;
+    pointer-events: auto; /* Ensure sidebar captures all clicks */
   }
   
   .admin-sidebar.mobile-open {
     transform: translateX(0);
+    pointer-events: auto; /* Critical: Sidebar must capture clicks when open */
   }
 }
 
 /* Mobile Backdrop */
 .sidebar-backdrop {
-  display: none;
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 280px; /* Start after sidebar width */
+  right: 0;
+  bottom: 0;
   background-color: var(--sidebar-mobile-overlay);
   z-index: 1040;
+  pointer-events: auto; /* Allow backdrop to catch clicks */
 }
 
+/* On mobile, ensure backdrop doesn't interfere with sidebar clicks */
 @media (max-width: 1023px) {
   .sidebar-backdrop {
-    display: block;
+    /* Backdrop should be below sidebar in stacking order */
+    z-index: 1040;
   }
+}
+
+/* Hide backdrop on desktop - Alpine.js x-show handles mobile visibility */
+@media (min-width: 1024px) {
+  .sidebar-backdrop {
+    display: none !important;
+  }
+}
+
+/* Alpine.js cloak - hide elements until Alpine.js loads */
+[x-cloak] {
+  display: none !important;
 }
 
 /* Sidebar Header */

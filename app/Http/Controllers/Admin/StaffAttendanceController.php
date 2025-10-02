@@ -12,10 +12,12 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Carbon\Carbon;
 
 class StaffAttendanceController extends Controller
 {
+    use AuthorizesRequests;
     public function index(Request $request): View
     {
         // Get filter parameters
@@ -61,19 +63,31 @@ class StaffAttendanceController extends Controller
     
     /**
      * Get today's attendance statistics.
+     * 
+     * TODO: FIX ATTENDANCE LOGIC - Currently assumes all staff are scheduled
+     * This is incorrect! We need a staff_schedules table to properly calculate:
+     * - Total scheduled staff (not all active staff)
+     * - Absent staff (only those who were scheduled but didn't show)
+     * - Attendance rate (present/scheduled, not present/total)
+     * 
+     * Current logic: totalStaff = all active staff (WRONG)
+     * Correct logic: totalStaff = staff scheduled for this date (NEEDS staff_schedules table)
      */
     private function getTodayStats(string $date): array
     {
         try {
+            // TODO: Replace with scheduled staff count when staff_schedules table exists
             $totalStaff = Staff::where('status', 'active')->count();
             
             $attendanceToday = StaffAttendance::whereDate('clock_in', $date)->get();
             
             $presentCount = $attendanceToday->where('status', 'present')->count();
+            // TODO: This is wrong - counts all non-attending staff as absent, even if not scheduled
             $absentCount = $totalStaff - $attendanceToday->count();
             $lateCount = $attendanceToday->where('status', 'late')->count();
             $overtimeCount = $attendanceToday->where('status', 'overtime')->count();
             
+            // TODO: Attendance rate should be present/scheduled, not present/total
             $attendanceRate = $totalStaff > 0 ? round(($presentCount / $totalStaff) * 100, 1) : 0;
             
             return [
@@ -176,6 +190,97 @@ class StaffAttendanceController extends Controller
                 ->get();
         } catch (\Exception $e) {
             return collect();
+        }
+    }
+
+    /**
+     * Store a new attendance record (admin creating attendance for staff).
+     */
+    public function store(Request $request)
+    {
+        $this->authorize('create', StaffAttendance::class);
+
+        $validated = $request->validate([
+            'staff_id' => 'required|exists:staff,id',
+            'clock_in' => 'required|date',
+            'clock_out' => 'nullable|date|after:clock_in',
+            'status' => 'required|in:present,absent,late,early_leave,overtime',
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        try {
+            // Check for existing attendance on the same day
+            $existingAttendance = StaffAttendance::where('staff_id', $validated['staff_id'])
+                ->whereDate('clock_in', Carbon::parse($validated['clock_in'])->format('Y-m-d'))
+                ->first();
+
+            if ($existingAttendance) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', __('admin.staff.attendance.already_clocked_in'));
+            }
+
+            $attendance = StaffAttendance::create([
+                ...$validated,
+                'created_by' => auth()->id(),
+            ]);
+
+            return redirect()->route('admin.staff.attendance.index')
+                ->with('success', __('admin.staff.attendance.created_successfully'));
+        } catch (\Exception $e) {
+            \Log::error('Failed to create attendance: ' . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', __('admin.staff.attendance.create_failed'));
+        }
+    }
+
+    /**
+     * Update an attendance record (admin override).
+     */
+    public function update(Request $request, StaffAttendance $staffAttendance)
+    {
+        $this->authorize('update', $staffAttendance);
+
+        $validated = $request->validate([
+            'clock_in' => 'required|date',
+            'clock_out' => 'nullable|date|after:clock_in',
+            'status' => 'required|in:present,absent,late,early_leave,overtime',
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        try {
+            $staffAttendance->update([
+                ...$validated,
+                'updated_by' => auth()->id(),
+            ]);
+
+            return redirect()->route('admin.staff.attendance.index')
+                ->with('success', __('admin.staff.attendance.updated_successfully'));
+        } catch (\Exception $e) {
+            \Log::error('Failed to update attendance: ' . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', __('admin.staff.attendance.update_failed'));
+        }
+    }
+
+    /**
+     * Delete an attendance record.
+     */
+    public function destroy(StaffAttendance $staffAttendance)
+    {
+        $this->authorize('delete', $staffAttendance);
+
+        try {
+            $staffAttendance->delete();
+
+            return redirect()->route('admin.staff.attendance.index')
+                ->with('success', __('admin.staff.attendance.deleted_successfully'));
+        } catch (\Exception $e) {
+            \Log::error('Failed to delete attendance: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', __('admin.staff.attendance.delete_failed'));
         }
     }
 }

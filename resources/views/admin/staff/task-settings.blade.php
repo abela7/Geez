@@ -146,12 +146,12 @@
                             </div>
                         </div>
                         <div class="item-actions">
-                            <button class="btn-action btn-action-secondary" onclick="editTaskType('{{ $type->id }}')" title="{{ __('common.edit') }}">
+                            <button class="btn-action btn-action-secondary" onclick="editTaskType('{{ $type->slug }}')" title="{{ __('common.edit') }}">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
                             </button>
-                            <button class="btn-action btn-action-danger" onclick="deleteTaskType('{{ $type->id }}')" title="{{ __('common.delete') }}">
+                            <button class="btn-action btn-action-danger" onclick="deleteTaskType('{{ $type->slug }}')" title="{{ __('common.delete') }}">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
@@ -199,12 +199,12 @@
                             </div>
                         </div>
                         <div class="item-actions">
-                            <button class="btn-action btn-action-secondary" onclick="editTaskPriority('{{ $priority->id }}')" title="{{ __('common.edit') }}">
+                            <button class="btn-action btn-action-secondary" onclick="editTaskPriority('{{ $priority->slug }}')" title="{{ __('common.edit') }}">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
                             </button>
-                            <button class="btn-action btn-action-danger" onclick="deleteTaskPriority('{{ $priority->id }}')" title="{{ __('common.delete') }}">
+                            <button class="btn-action btn-action-danger" onclick="deleteTaskPriority('{{ $priority->slug }}')" title="{{ __('common.delete') }}">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
@@ -254,12 +254,12 @@
                             </div>
                         </div>
                         <div class="item-actions">
-                            <button class="btn-action btn-action-secondary" onclick="editTaskCategory('{{ $category->id }}')" title="{{ __('common.edit') }}">
+                            <button class="btn-action btn-action-secondary" onclick="editTaskCategory('{{ $category->slug }}')" title="{{ __('common.edit') }}">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
                             </button>
-                            <button class="btn-action btn-action-danger" onclick="deleteTaskCategory('{{ $category->id }}')" title="{{ __('common.delete') }}">
+                            <button class="btn-action btn-action-danger" onclick="deleteTaskCategory('{{ $category->slug }}')" title="{{ __('common.delete') }}">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
@@ -307,12 +307,12 @@
                             </div>
                         </div>
                         <div class="item-actions">
-                            <button class="btn-action btn-action-secondary" onclick="editTaskTag('{{ $tag->id }}')" title="{{ __('common.edit') }}">
+                            <button class="btn-action btn-action-secondary" onclick="editTaskTag('{{ $tag->slug }}')" title="{{ __('common.edit') }}">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
                             </button>
-                            <button class="btn-action btn-action-danger" onclick="deleteTaskTag('{{ $tag->id }}')" title="{{ __('common.delete') }}">
+                            <button class="btn-action btn-action-danger" onclick="deleteTaskTag('{{ $tag->slug }}')" title="{{ __('common.delete') }}">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
@@ -1105,9 +1105,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Task Type Management
 function editTaskType(typeId) {
-    // Implementation for editing task type
-    console.log('Edit task type:', typeId);
-    // TODO: Load task type data and populate edit modal
+    // Redirect to edit page
+    window.location.href = `/admin/staff/tasks/settings/types/${typeId}/edit`;
 }
 
 function deleteTaskType(typeId) {
@@ -1168,8 +1167,8 @@ function deleteTaskType(typeId) {
 
 // Task Priority Management
 function editTaskPriority(priorityId) {
-    console.log('Edit task priority:', priorityId);
-    // TODO: Load priority data and populate edit modal
+    // Redirect to edit page
+    window.location.href = `/admin/staff/tasks/settings/priorities/${priorityId}/edit`;
 }
 
 function deleteTaskPriority(priorityId) {
@@ -1228,8 +1227,8 @@ function deleteTaskPriority(priorityId) {
 
 // Task Category Management
 function editTaskCategory(categoryId) {
-    console.log('Edit task category:', categoryId);
-    // TODO: Load category data and populate edit modal
+    // Redirect to edit page
+    window.location.href = `/admin/staff/tasks/settings/categories/${categoryId}/edit`;
 }
 
 function deleteTaskCategory(categoryId) {
@@ -1288,8 +1287,8 @@ function deleteTaskCategory(categoryId) {
 
 // Task Tag Management
 function editTaskTag(tagId) {
-    console.log('Edit task tag:', tagId);
-    // TODO: Load tag data and populate edit modal
+    // Redirect to edit page
+    window.location.href = `/admin/staff/tasks/settings/tags/${tagId}/edit`;
 }
 
 function deleteTaskTag(tagId) {

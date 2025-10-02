@@ -432,6 +432,20 @@ return [
         'cancel' => 'Cancel',
         'check_in_time' => 'Check In Time',
         'check_out_time' => 'Check Out Time',
+        
+        // CRUD Messages
+        'created_successfully' => 'Attendance record created successfully',
+        'create_failed' => 'Failed to create attendance record',
+        'updated_successfully' => 'Attendance record updated successfully',
+        'update_failed' => 'Failed to update attendance record',
+        'deleted_successfully' => 'Attendance record deleted successfully',
+        'delete_failed' => 'Failed to delete attendance record',
+        'already_clocked_in' => 'This staff member has already clocked in today',
+        
+        // Edit Modal
+        'edit_attendance' => 'Edit Attendance Record',
+        'update_attendance' => 'Update Attendance',
+        'confirm_delete' => 'Are you sure you want to delete this attendance record?',
     ],
 
     'tasks' => [
@@ -627,6 +641,7 @@ return [
         // Additional form labels and messages
         'create_task_subtitle' => 'Create a new task and assign it to staff members',
         'edit_task' => 'Edit Task',
+        'edit_task_subtitle' => 'Update task details and assignments',
         'update_task' => 'Update Task',
         'task_information' => 'Task Information',
         'task_details' => 'Task Details',
@@ -759,6 +774,87 @@ return [
             'tag_name_placeholder' => 'e.g., daily, weekly, equipment',
             'tag_description_placeholder' => 'Describe when to use this tag...',
             'icon_placeholder' => 'e.g., fas fa-broom, fas fa-tools',
+        ],
+    ],
+
+    'shifts' => [
+        'schedule_title' => 'Staff Schedule',
+        'schedule_description' => 'Manage staff shift assignments and scheduling',
+        'assign_staff' => 'Assign Staff',
+        'generate_from_patterns' => 'Generate from Patterns',
+        'week_view' => 'Week View',
+        'calendar_view' => 'Calendar View',
+        'week_of' => 'Week of :date',
+        'coverage_percentage' => 'Coverage',
+        'staff_assigned' => 'Staff Assigned',
+        'understaffed_shifts' => 'Understaffed',
+        'total_needed' => 'Total Needed',
+        'no_assignments' => 'No assignments',
+        'pending_requests' => 'Pending Requests',
+        'time_off_requests' => 'Time-off Requests',
+        'shift_swaps' => 'Shift Swaps',
+        'wants_to_swap' => 'wants to swap shift',
+        'date' => 'Date',
+        'shift' => 'Shift',
+        'select_shift' => 'Select a shift',
+        'staff_member' => 'Staff Member',
+        'select_staff' => 'Select staff member',
+        'role' => 'Role',
+        'role_placeholder' => 'e.g., Waiter, Chef, Bartender',
+        'notes' => 'Notes',
+        'notes_placeholder' => 'Additional notes or instructions',
+        'confirm_generate_patterns' => 'Generate assignments from recurring patterns for this week?',
+        
+        // Shift template management
+        'templates' => [
+            'title' => 'Shift Templates',
+            'create' => 'Create Shift Template',
+            'edit' => 'Edit Shift Template',
+            'name' => 'Shift Name',
+            'department' => 'Department',
+            'shift_type' => 'Shift Type',
+            'start_time' => 'Start Time',
+            'end_time' => 'End Time',
+            'break_minutes' => 'Break Minutes',
+            'min_staff_required' => 'Minimum Staff Required',
+            'max_staff_allowed' => 'Maximum Staff Allowed',
+            'required_roles' => 'Required Roles',
+            'hourly_rate_multiplier' => 'Rate Multiplier',
+            'color_code' => 'Color Code',
+            'description' => 'Description',
+            'is_active' => 'Active',
+        ],
+        
+        // Assignment statuses
+        'status' => [
+            'scheduled' => 'Scheduled',
+            'checked_in' => 'Checked In',
+            'active' => 'Working',
+            'on_break' => 'On Break',
+            'checked_out' => 'Checked Out',
+            'completed' => 'Completed',
+            'absent' => 'Absent',
+            'late' => 'Late',
+            'left_early' => 'Left Early',
+            'missed' => 'No Show',
+        ],
+        
+        // Departments
+        'departments' => [
+            'kitchen' => 'Kitchen',
+            'service' => 'Service',
+            'bar' => 'Bar',
+            'management' => 'Management',
+            'cleaning' => 'Cleaning',
+        ],
+        
+        // Shift types
+        'shift_types' => [
+            'opening' => 'Opening',
+            'mid' => 'Mid',
+            'closing' => 'Closing',
+            'split' => 'Split',
+            'regular' => 'Regular',
         ],
     ],
 ];

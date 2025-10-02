@@ -3,7 +3,7 @@
 @section('title', __('shifts.manage.title'))
 
 @section('content')
-<div class="shifts-manage-page" x-data="shiftsManageData()">
+<div class="shifts-manage-page" x-data="window.shiftsManageData ? window.shiftsManageData() : {}">
     <!-- Page Header -->
     <div class="page-header">
         <div class="page-header-content">
@@ -30,7 +30,7 @@
         </div>
     </div>
 
-    <!-- Summary Cards -->
+    <!-- Enhanced Summary Cards -->
     <div class="summary-section">
         <div class="summary-grid">
             <div class="summary-card summary-card-primary">
@@ -40,7 +40,7 @@
                     </svg>
                 </div>
                 <div class="summary-content">
-                    <div class="summary-value">{{ $totalShifts }}</div>
+                    <div class="summary-value">{{ number_format($totalShifts) }}</div>
                     <div class="summary-label">{{ __('shifts.manage.total_shifts') }}</div>
                 </div>
             </div>
@@ -52,7 +52,7 @@
                     </svg>
                 </div>
                 <div class="summary-content">
-                    <div class="summary-value">{{ $activeShifts }}</div>
+                    <div class="summary-value">{{ number_format($activeShifts) }}</div>
                     <div class="summary-label">{{ __('shifts.manage.active_shifts') }}</div>
                 </div>
             </div>
@@ -64,7 +64,7 @@
                     </svg>
                 </div>
                 <div class="summary-content">
-                    <div class="summary-value">{{ $totalRequiredStaff }}</div>
+                    <div class="summary-value">{{ number_format($totalRequiredStaff) }}</div>
                     <div class="summary-label">{{ __('shifts.manage.required_staff') }}</div>
                 </div>
             </div>
@@ -83,7 +83,7 @@
         </div>
     </div>
 
-    <!-- Department Breakdown -->
+    <!-- Enhanced Department Breakdown -->
     <div class="department-breakdown-section">
         <div class="section-header">
             <h2 class="section-title">{{ __('shifts.manage.department_breakdown') }}</h2>
@@ -93,21 +93,25 @@
             <div class="department-card">
                 <div class="department-header">
                     <h3 class="department-name">{{ __('shifts.departments.' . strtolower(str_replace(' ', '_', $department['name']))) }}</h3>
-                    <span class="department-shifts-count">{{ $department['shifts'] }} {{ __('shifts.common.shifts') }}</span>
+                    <span class="department-shifts-count">{{ number_format($department['shifts']) }} {{ __('shifts.common.shifts') }}</span>
                 </div>
                 <div class="department-stats">
                     <div class="stat-item">
                         <span class="stat-label">{{ __('shifts.manage.required') }}</span>
-                        <span class="stat-value">{{ $department['required_staff'] }}</span>
+                        <span class="stat-value">{{ number_format($department['required_staff']) }}</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">{{ __('shifts.manage.assigned') }}</span>
-                        <span class="stat-value">{{ $department['assigned_staff'] }}</span>
+                        <span class="stat-value">{{ number_format($department['assigned_staff']) }}</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">{{ __('shifts.manage.coverage') }}</span>
-                        <span class="stat-value {{ $department['required_staff'] > 0 && ($department['assigned_staff'] / $department['required_staff']) >= 0.9 ? 'text-success' : (($department['assigned_staff'] / $department['required_staff']) >= 0.7 ? 'text-warning' : 'text-danger') }}">
-                            {{ $department['required_staff'] > 0 ? round(($department['assigned_staff'] / $department['required_staff']) * 100) : 0 }}%
+                        @php
+                            $coverage = $department['required_staff'] > 0 ? round(($department['assigned_staff'] / $department['required_staff']) * 100) : 0;
+                            $coverageClass = $coverage >= 90 ? 'text-success' : ($coverage >= 70 ? 'text-warning' : 'text-danger');
+                        @endphp
+                        <span class="stat-value {{ $coverageClass }}">
+                            {{ $coverage }}%
                         </span>
                     </div>
                 </div>
@@ -116,12 +120,15 @@
         </div>
     </div>
 
-    <!-- Filters and Search -->
+    <!-- Enhanced Filters and Search -->
     <div class="filters-section">
         <div class="filters-header">
             <h2 class="section-title">{{ __('shifts.manage.all_shifts') }}</h2>
             <div class="filters-actions">
-                <button class="btn btn-ghost" @click="resetFilters()">
+                <button class="btn btn-ghost btn-sm" @click="resetFilters()">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
                     {{ __('shifts.common.reset_filters') }}
                 </button>
             </div>
@@ -129,7 +136,12 @@
         <div class="filters-grid">
             <div class="filter-group">
                 <label class="filter-label">{{ __('shifts.common.search') }}</label>
-                <input type="text" x-model="searchQuery" @input="applyFilters()" class="filter-input" placeholder="{{ __('shifts.manage.search_placeholder') }}">
+                <div class="filter-input-wrapper">
+                    <input type="text" x-model="searchQuery" @input="applyFilters()" class="filter-input" placeholder="{{ __('shifts.manage.search_placeholder') }}">
+                    <svg class="filter-input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
             </div>
             <div class="filter-group">
                 <label class="filter-label">{{ __('shifts.common.department') }}</label>

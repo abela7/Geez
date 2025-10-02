@@ -14,6 +14,11 @@ class StaffAttendance extends Model
     use HasUlid, SoftDeletes;
 
     /**
+     * The table associated with the model.
+     */
+    protected $table = 'staff_attendance';
+
+    /**
      * The attributes that are mass assignable.
      */
     protected $fillable = [
@@ -45,6 +50,22 @@ class StaffAttendance extends Model
     }
 
     /**
+     * Get the user who created this attendance record.
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(Staff::class, 'created_by');
+    }
+
+    /**
+     * Get the user who last updated this attendance record.
+     */
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(Staff::class, 'updated_by');
+    }
+
+    /**
      * Calculate hours worked based on clock in/out times.
      */
     public function calculateHoursWorked(): ?float
@@ -53,7 +74,7 @@ class StaffAttendance extends Model
             return null;
         }
 
-        $diffInMinutes = $this->clock_out->diffInMinutes($this->clock_in);
+        $diffInMinutes = $this->clock_in->diffInMinutes($this->clock_out);
         return round($diffInMinutes / 60, 2);
     }
 

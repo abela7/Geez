@@ -61,24 +61,33 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         // Other Staff Modules (your actual pages) - define BEFORE resource to avoid being captured by {staff}
         Route::get('/directory', [\App\Http\Controllers\Admin\StaffDirectoryController::class, 'index'])->name('directory.index');
         Route::get('/performance', [\App\Http\Controllers\Admin\StaffPerformanceController::class, 'index'])->name('performance.index');
+        // Staff Attendance
         Route::get('/attendance', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'index'])->name('attendance.index');
+        Route::post('/attendance', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'store'])->name('attendance.store');
+        Route::put('/attendance/{staffAttendance}', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'update'])->name('attendance.update');
+        Route::delete('/attendance/{staffAttendance}', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'destroy'])->name('attendance.destroy');
         
         // Staff Tasks (Simple Implementation)
         Route::get('/tasks', [\App\Http\Controllers\Admin\StaffTasksController::class, 'index'])->name('tasks.index');
+        Route::get('/tasks/today', [\App\Http\Controllers\Admin\StaffTasksController::class, 'today'])->name('tasks.today');
         Route::get('/tasks/create', [\App\Http\Controllers\Admin\StaffTasksController::class, 'create'])->name('tasks.create');
         
         // Task Settings Management (MUST be before parameterized routes)
         Route::get('/tasks/settings', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'index'])->name('tasks.settings.index');
         Route::post('/tasks/settings/types', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'storeTaskType'])->name('tasks.settings.types.store');
+        Route::get('/tasks/settings/types/{taskType}/edit', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'editTaskType'])->name('tasks.settings.types.edit');
         Route::put('/tasks/settings/types/{taskType}', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'updateTaskType'])->name('tasks.settings.types.update');
         Route::delete('/tasks/settings/types/{taskType}', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'destroyTaskType'])->name('tasks.settings.types.destroy');
         Route::post('/tasks/settings/priorities', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'storeTaskPriority'])->name('tasks.settings.priorities.store');
+        Route::get('/tasks/settings/priorities/{taskPriority}/edit', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'editTaskPriority'])->name('tasks.settings.priorities.edit');
         Route::put('/tasks/settings/priorities/{taskPriority}', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'updateTaskPriority'])->name('tasks.settings.priorities.update');
         Route::delete('/tasks/settings/priorities/{taskPriority}', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'destroyTaskPriority'])->name('tasks.settings.priorities.destroy');
         Route::post('/tasks/settings/categories', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'storeTaskCategory'])->name('tasks.settings.categories.store');
+        Route::get('/tasks/settings/categories/{taskCategory}/edit', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'editTaskCategory'])->name('tasks.settings.categories.edit');
         Route::put('/tasks/settings/categories/{taskCategory}', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'updateTaskCategory'])->name('tasks.settings.categories.update');
         Route::delete('/tasks/settings/categories/{taskCategory}', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'destroyTaskCategory'])->name('tasks.settings.categories.destroy');
         Route::post('/tasks/settings/tags', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'storeTaskTag'])->name('tasks.settings.tags.store');
+        Route::get('/tasks/settings/tags/{taskTag}/edit', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'editTaskTag'])->name('tasks.settings.tags.edit');
         Route::put('/tasks/settings/tags/{taskTag}', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'updateTaskTag'])->name('tasks.settings.tags.update');
         Route::delete('/tasks/settings/tags/{taskTag}', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'destroyTaskTag'])->name('tasks.settings.tags.destroy');
         Route::post('/tasks/settings/reorder', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'reorder'])->name('tasks.settings.reorder');
@@ -86,6 +95,8 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         // Parameterized task routes (MUST be after specific routes)
         Route::post('/tasks', [\App\Http\Controllers\Admin\StaffTasksController::class, 'store'])->name('tasks.store');
         Route::get('/tasks/{task}', [\App\Http\Controllers\Admin\StaffTasksController::class, 'show'])->name('tasks.show');
+        Route::get('/tasks/{task}/edit', [\App\Http\Controllers\Admin\StaffTasksController::class, 'edit'])->name('tasks.edit');
+        Route::put('/tasks/{task}', [\App\Http\Controllers\Admin\StaffTasksController::class, 'update'])->name('tasks.update');
         Route::get('/tasks/{task}/modal', [\App\Http\Controllers\Admin\StaffTasksController::class, 'modal'])->name('tasks.modal');
         Route::post('/tasks/bulk-action', [\App\Http\Controllers\Admin\StaffTasksController::class, 'bulkAction'])->name('tasks.bulk-action');
         Route::delete('/tasks/{task}', [\App\Http\Controllers\Admin\StaffTasksController::class, 'destroy'])->name('tasks.destroy');
@@ -113,12 +124,34 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         Route::patch('{staff}/toggle-status', [\App\Http\Controllers\Admin\StaffController::class, 'toggleStatus'])->name('toggle-status');
     });
 
-    // Shifts Management Routes (UI-only pages backed by lightweight controllers)
+    // Shift Scheduling System Routes
     Route::prefix('shifts')->name('shifts.')->group(function () {
+        // Main scheduling interface
+        Route::get('/schedule', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'index'])->name('schedule.index');
+        Route::get('/calendar', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'calendar'])->name('schedule.calendar');
+        
+        // Assignment management
+        Route::post('/assign', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'assign'])->name('assign');
+        Route::delete('/assignments/{assignment}', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'unassign'])->name('unassign');
+        Route::post('/generate-from-patterns', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'generateFromPatterns'])->name('generate-patterns');
+        
+        // Analytics and reporting
+        Route::get('/coverage-analysis', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'coverageAnalysis'])->name('coverage-analysis');
+        
+        // Shift templates management
+        Route::resource('templates', \App\Http\Controllers\Admin\StaffShiftController::class, ['as' => 'shifts']);
+        
+        // Assignment management
+        Route::resource('assignments', \App\Http\Controllers\Admin\StaffShiftAssignmentController::class, ['as' => 'shifts']);
+        
+        // Legacy UI routes (keep for backward compatibility)
         Route::get('/overview', [\App\Http\Controllers\Admin\ShiftsOverviewController::class, 'index'])->name('overview.index');
         Route::get('/manage', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'index'])->name('manage.index');
-        Route::get('/assignments', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'index'])->name('assignments.index');
-        Route::get('/templates', [\App\Http\Controllers\Admin\ShiftsTemplatesController::class, 'index'])->name('templates.index');
+        Route::get('/manage/create', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'create'])->name('manage.create');
+        Route::post('/manage', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'store'])->name('manage.store');
+        Route::get('/manage/{id}/edit', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'edit'])->name('manage.edit');
+        Route::put('/manage/{id}', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'update'])->name('manage.update');
+        Route::delete('/manage/{id}', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'destroy'])->name('manage.destroy');
     });
 
     // Menu Management Routes (your actual pages)

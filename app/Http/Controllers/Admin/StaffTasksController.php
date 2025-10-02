@@ -16,6 +16,53 @@ use Illuminate\View\View;
 class StaffTasksController extends Controller
 {
     /**
+     * Display today's tasks page.
+     */
+    public function today(Request $request): View
+    {
+        // Get filter for completed tasks
+        $showCompleted = $request->get('show_completed', 'all'); // all, completed, pending
+
+        // Get today's tasks
+        $query = StaffTaskAssignment::with(['task', 'staff.staffType'])
+            ->whereHas('task', function ($q) {
+                $q->whereDate('scheduled_date', today())
+                    ->where('is_active', true);
+            })
+            ->orderBy('created_at', 'desc');
+
+        // Apply completion filter
+        if ($showCompleted === 'completed') {
+            $query->where('status', 'completed');
+        } elseif ($showCompleted === 'pending') {
+            $query->whereIn('status', ['pending', 'in_progress']);
+        }
+
+        $todayAssignments = $query->get();
+
+        // Calculate stats
+        $stats = [
+            'total' => StaffTaskAssignment::whereHas('task', function ($q) {
+                $q->whereDate('scheduled_date', today())->where('is_active', true);
+            })->count(),
+            'completed' => StaffTaskAssignment::where('status', 'completed')
+                ->whereHas('task', function ($q) {
+                    $q->whereDate('scheduled_date', today())->where('is_active', true);
+                })->count(),
+            'in_progress' => StaffTaskAssignment::where('status', 'in_progress')
+                ->whereHas('task', function ($q) {
+                    $q->whereDate('scheduled_date', today())->where('is_active', true);
+                })->count(),
+            'pending' => StaffTaskAssignment::where('status', 'pending')
+                ->whereHas('task', function ($q) {
+                    $q->whereDate('scheduled_date', today())->where('is_active', true);
+                })->count(),
+        ];
+
+        return view('admin.staff.tasks-today', compact('todayAssignments', 'stats', 'showCompleted'));
+    }
+
+    /**
      * Display the main tasks dashboard.
      */
     public function index(Request $request): View
@@ -209,6 +256,11 @@ class StaffTasksController extends Controller
                 'tags' => 'nullable|string', // Handle as string and convert to array
             ]);
 
+            // Set default values for boolean fields that might not be present
+            $validated['is_template'] = $validated['is_template'] ?? false;
+            $validated['requires_approval'] = $validated['requires_approval'] ?? false;
+            $validated['auto_assign'] = $validated['auto_assign'] ?? false;
+
             // Convert tags string to array
             if (!empty($validated['tags'])) {
                 $validated['tags'] = array_map('trim', explode(',', $validated['tags']));
@@ -346,6 +398,12 @@ class StaffTasksController extends Controller
                 'is_active' => 'boolean',
             ]);
 
+            // Set default values for boolean fields that might not be present
+            $validated['is_template'] = $validated['is_template'] ?? false;
+            $validated['requires_approval'] = $validated['requires_approval'] ?? false;
+            $validated['auto_assign'] = $validated['auto_assign'] ?? false;
+            $validated['is_active'] = $validated['is_active'] ?? true;
+
             // Convert tags string to array
             if (!empty($validated['tags'])) {
                 $validated['tags'] = array_map('trim', explode(',', $validated['tags']));
@@ -363,18 +421,40 @@ class StaffTasksController extends Controller
             ]);
 
             // Update staff assignments if auto_assign is enabled
-            if ($validated['auto_assign']) {
-                if (!empty($assignedStaff)) {
-                    // Remove existing assignments and recreate using the same helper
-                    // used by the create flow so all required columns are filled.
-                    $task->assignments()->delete();
-
-                    // This will set assigned_date, due_date, scheduled_date/time, etc.
-                    $this->createTaskAssignments($task, $assignedStaff, $validated);
+            if ($validated['auto_assign'] && !empty($assignedStaff)) {
+                // Get existing assignments directly from database
+                $existingAssignments = \DB::table('staff_task_assignments')
+                    ->where('staff_task_id', $task->id)
+                    ->pluck('staff_id')
+                    ->map(fn($id) => (string) $id)
+                    ->toArray();
+                
+                // Convert assigned staff to strings for comparison
+                $assignedStaffStrings = array_map('strval', $assignedStaff);
+                
+                // Find staff to add (in new list but not in existing)
+                $staffToAdd = array_values(array_diff($assignedStaffStrings, $existingAssignments));
+                
+                // Find staff to remove (in existing but not in new list)
+                $staffToRemove = array_values(array_diff($existingAssignments, $assignedStaffStrings));
+                
+                // Remove unassigned staff
+                if (!empty($staffToRemove)) {
+                    \DB::table('staff_task_assignments')
+                        ->where('staff_task_id', $task->id)
+                        ->whereIn('staff_id', $staffToRemove)
+                        ->delete();
                 }
-                // If auto_assign is enabled but no staff selected, keep existing assignments
+                
+                // Add new staff assignments
+                if (!empty($staffToAdd)) {
+                    $this->createTaskAssignments($task, $staffToAdd, $validated);
+                }
+            } elseif (!$validated['auto_assign']) {
+                // If auto_assign is disabled, remove all assignments
+                $task->assignments()->delete();
             }
-            // If auto_assign is disabled, keep existing assignments (don't delete them)
+            // If auto_assign is enabled but no staff selected, keep existing assignments
 
             return redirect()->route('admin.staff.tasks.index')
                 ->with('success', __('staff.tasks.task_updated_successfully'));

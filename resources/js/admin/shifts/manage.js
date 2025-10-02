@@ -589,3 +589,58 @@ function shiftEditData(shiftData) {
         }
     };
 }
+
+// Make functions globally available immediately
+window.shiftsManageData = shiftsManageData;
+window.shiftCreateData = shiftCreateData;
+window.shiftEditData = shiftEditData;
+
+// Ensure Alpine.js can find our functions by deferring its initialization
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait a bit for all scripts to load
+    setTimeout(() => {
+        if (window.Alpine) {
+            // Find and reinitialize the main container
+            const container = document.querySelector('.shifts-manage-page');
+            if (container && window.shiftsManageData) {
+                // Clear existing Alpine data
+                if (container._x_dataStack) {
+                    container._x_dataStack = [];
+                }
+                
+                // Set the correct data
+                const data = window.shiftsManageData();
+                container._x_dataStack = [data];
+                
+                // Reinitialize Alpine for this element
+                if (window.Alpine.initTree) {
+                    window.Alpine.initTree(container);
+                }
+            }
+        }
+    }, 200);
+});
+
+// Also try to fix it when the window loads
+window.addEventListener('load', function() {
+    setTimeout(() => {
+        if (window.Alpine) {
+            const container = document.querySelector('.shifts-manage-page');
+            if (container && window.shiftsManageData) {
+                // Clear existing Alpine data
+                if (container._x_dataStack) {
+                    container._x_dataStack = [];
+                }
+                
+                // Set the correct data
+                const data = window.shiftsManageData();
+                container._x_dataStack = [data];
+                
+                // Reinitialize Alpine for this element
+                if (window.Alpine.initTree) {
+                    window.Alpine.initTree(container);
+                }
+            }
+        }
+    }, 100);
+});

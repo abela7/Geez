@@ -71,6 +71,8 @@ export default defineConfig({
                 'resources/js/admin/shifts/assignments.js',
                 'resources/css/admin/shifts/templates.css',
                 'resources/js/admin/shifts/templates.js',
+                'resources/css/admin/shifts/create.css',
+                'resources/js/admin/shifts/create.js',
                 // Tables section
                 'resources/css/admin/tables/table-types.css',
                 'resources/js/admin/tables/table-types.js',
@@ -162,7 +164,9 @@ export default defineConfig({
                 'resources/js/admin/injera/management.js',
                 // Staff additional
                 'resources/css/admin/staff-payroll.css',
-                'resources/js/admin/staff-payroll.js'
+                'resources/js/admin/staff-payroll.js',
+                'resources/css/admin/staff/tasks.css',
+                'resources/js/admin/staff-tasks.js'
             ],
             refresh: true,
         }),
