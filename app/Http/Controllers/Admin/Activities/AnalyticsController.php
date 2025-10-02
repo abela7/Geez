@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Activities;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\JsonResponse;
 
 class AnalyticsController extends Controller
 {
@@ -62,14 +62,14 @@ class AnalyticsController extends Controller
             'type' => 'required|in:overview,staff,activities,departments',
             'format' => 'required|in:csv,excel,pdf',
             'date_from' => 'nullable|date',
-            'date_to' => 'nullable|date|after_or_equal:date_from'
+            'date_to' => 'nullable|date|after_or_equal:date_from',
         ]);
 
         // In a real implementation, this would generate and return the export file
         return response()->json([
             'success' => true,
             'message' => __('activities.analytics.export_completed_successfully'),
-            'download_url' => '/admin/activities/analytics/download/' . rand(1000, 9999)
+            'download_url' => '/admin/activities/analytics/download/'.rand(1000, 9999),
         ]);
     }
 
@@ -86,7 +86,7 @@ class AnalyticsController extends Controller
             'most_productive_department' => 'Kitchen',
             'least_productive_department' => 'Management',
             'peak_productivity_hour' => '14:00',
-            'average_activity_duration' => 67 // minutes
+            'average_activity_duration' => 67, // minutes
         ];
     }
 
@@ -104,7 +104,7 @@ class AnalyticsController extends Controller
                 'efficiency_score' => 94,
                 'on_time_completion' => 87,
                 'trend' => 'up',
-                'last_activity' => '2024-01-16 18:30:00'
+                'last_activity' => '2024-01-16 18:30:00',
             ],
             [
                 'id' => 2,
@@ -117,7 +117,7 @@ class AnalyticsController extends Controller
                 'efficiency_score' => 91,
                 'on_time_completion' => 82,
                 'trend' => 'up',
-                'last_activity' => '2024-01-16 17:45:00'
+                'last_activity' => '2024-01-16 17:45:00',
             ],
             [
                 'id' => 3,
@@ -130,7 +130,7 @@ class AnalyticsController extends Controller
                 'efficiency_score' => 88,
                 'on_time_completion' => 79,
                 'trend' => 'stable',
-                'last_activity' => '2024-01-16 16:20:00'
+                'last_activity' => '2024-01-16 16:20:00',
             ],
             [
                 'id' => 4,
@@ -143,7 +143,7 @@ class AnalyticsController extends Controller
                 'efficiency_score' => 96,
                 'on_time_completion' => 93,
                 'trend' => 'up',
-                'last_activity' => '2024-01-16 19:15:00'
+                'last_activity' => '2024-01-16 19:15:00',
             ],
             [
                 'id' => 5,
@@ -156,7 +156,7 @@ class AnalyticsController extends Controller
                 'efficiency_score' => 85,
                 'on_time_completion' => 76,
                 'trend' => 'down',
-                'last_activity' => '2024-01-16 20:00:00'
+                'last_activity' => '2024-01-16 20:00:00',
             ],
             [
                 'id' => 6,
@@ -169,8 +169,8 @@ class AnalyticsController extends Controller
                 'efficiency_score' => 78,
                 'on_time_completion' => 70,
                 'trend' => 'stable',
-                'last_activity' => '2024-01-16 15:30:00'
-            ]
+                'last_activity' => '2024-01-16 15:30:00',
+            ],
         ];
     }
 
@@ -185,7 +185,7 @@ class AnalyticsController extends Controller
                 'avg_duration' => 12,
                 'estimated_duration' => 15,
                 'efficiency' => 125,
-                'completion_rate' => 98
+                'completion_rate' => 98,
             ],
             [
                 'name' => 'Making Beyaynet',
@@ -195,7 +195,7 @@ class AnalyticsController extends Controller
                 'avg_duration' => 115,
                 'estimated_duration' => 120,
                 'efficiency' => 104,
-                'completion_rate' => 96
+                'completion_rate' => 96,
             ],
             [
                 'name' => 'Table Service Setup',
@@ -205,7 +205,7 @@ class AnalyticsController extends Controller
                 'avg_duration' => 42,
                 'estimated_duration' => 45,
                 'efficiency' => 107,
-                'completion_rate' => 94
+                'completion_rate' => 94,
             ],
             [
                 'name' => 'Washing Coffee Filter',
@@ -215,7 +215,7 @@ class AnalyticsController extends Controller
                 'avg_duration' => 85,
                 'estimated_duration' => 90,
                 'efficiency' => 106,
-                'completion_rate' => 100
+                'completion_rate' => 100,
             ],
             [
                 'name' => 'Roasting Coffee Beans',
@@ -225,7 +225,7 @@ class AnalyticsController extends Controller
                 'avg_duration' => 175,
                 'estimated_duration' => 180,
                 'efficiency' => 103,
-                'completion_rate' => 92
+                'completion_rate' => 92,
             ],
             [
                 'name' => 'Inventory Count',
@@ -235,8 +235,8 @@ class AnalyticsController extends Controller
                 'avg_duration' => 58,
                 'estimated_duration' => 60,
                 'efficiency' => 103,
-                'completion_rate' => 91
-            ]
+                'completion_rate' => 91,
+            ],
         ];
     }
 
@@ -251,7 +251,7 @@ class AnalyticsController extends Controller
                 'avg_efficiency' => 91,
                 'completion_rate' => 89,
                 'most_common_activity' => 'Making Beyaynet',
-                'peak_hours' => '11:00-14:00'
+                'peak_hours' => '11:00-14:00',
             ],
             [
                 'name' => 'Front of House',
@@ -261,7 +261,7 @@ class AnalyticsController extends Controller
                 'avg_efficiency' => 94,
                 'completion_rate' => 95,
                 'most_common_activity' => 'Customer Order Taking',
-                'peak_hours' => '18:00-21:00'
+                'peak_hours' => '18:00-21:00',
             ],
             [
                 'name' => 'Bar',
@@ -271,7 +271,7 @@ class AnalyticsController extends Controller
                 'avg_efficiency' => 87,
                 'completion_rate' => 83,
                 'most_common_activity' => 'Beverage Preparation',
-                'peak_hours' => '19:00-22:00'
+                'peak_hours' => '19:00-22:00',
             ],
             [
                 'name' => 'Management',
@@ -281,8 +281,8 @@ class AnalyticsController extends Controller
                 'avg_efficiency' => 76,
                 'completion_rate' => 75,
                 'most_common_activity' => 'Staff Supervision',
-                'peak_hours' => '09:00-12:00'
-            ]
+                'peak_hours' => '09:00-12:00',
+            ],
         ];
     }
 
@@ -304,7 +304,7 @@ class AnalyticsController extends Controller
                 '19:00' => 189,
                 '20:00' => 156,
                 '21:00' => 123,
-                '22:00' => 89
+                '22:00' => 89,
             ],
             'daily_trends' => [
                 'Monday' => ['activities' => 234, 'efficiency' => 87],
@@ -313,13 +313,13 @@ class AnalyticsController extends Controller
                 'Thursday' => ['activities' => 298, 'efficiency' => 93],
                 'Friday' => ['activities' => 312, 'efficiency' => 95],
                 'Saturday' => ['activities' => 345, 'efficiency' => 88],
-                'Sunday' => ['activities' => 298, 'efficiency' => 86]
+                'Sunday' => ['activities' => 298, 'efficiency' => 86],
             ],
             'monthly_comparison' => [
                 'current_month' => ['activities' => 1247, 'efficiency' => 89],
                 'previous_month' => ['activities' => 1156, 'efficiency' => 86],
-                'growth' => ['activities' => 7.9, 'efficiency' => 3.5]
-            ]
+                'growth' => ['activities' => 7.9, 'efficiency' => 3.5],
+            ],
         ];
     }
 
@@ -342,8 +342,8 @@ class AnalyticsController extends Controller
                 ['date' => '2024-01-13', 'activities' => 73, 'efficiency' => 95],
                 ['date' => '2024-01-14', 'activities' => 69, 'efficiency' => 88],
                 ['date' => '2024-01-15', 'activities' => 76, 'efficiency' => 93],
-                ['date' => '2024-01-16', 'activities' => 72, 'efficiency' => 91]
-            ]
+                ['date' => '2024-01-16', 'activities' => 72, 'efficiency' => 91],
+            ],
         ];
     }
 
@@ -354,7 +354,7 @@ class AnalyticsController extends Controller
             ['hour' => '19:00', 'activities' => 189, 'efficiency' => 91],
             ['hour' => '13:00', 'activities' => 178, 'efficiency' => 93],
             ['hour' => '15:00', 'activities' => 167, 'efficiency' => 89],
-            ['hour' => '18:00', 'activities' => 167, 'efficiency' => 92]
+            ['hour' => '18:00', 'activities' => 167, 'efficiency' => 92],
         ];
     }
 
@@ -367,7 +367,7 @@ class AnalyticsController extends Controller
             'department' => 'Kitchen',
             'hire_date' => '2023-03-15',
             'email' => 'alemayehu@restaurant.com',
-            'phone' => '+251-911-123456'
+            'phone' => '+251-911-123456',
         ];
     }
 
@@ -381,7 +381,7 @@ class AnalyticsController extends Controller
             'best_activity' => 'Making Beyaynet',
             'improvement_area' => 'Inventory Count',
             'weekly_hours' => 39,
-            'monthly_activities' => 356
+            'monthly_activities' => 356,
         ];
     }
 
@@ -393,22 +393,22 @@ class AnalyticsController extends Controller
                 'logs' => 23,
                 'total_time' => 2645,
                 'avg_time' => 115,
-                'efficiency' => 96
+                'efficiency' => 96,
             ],
             [
                 'name' => 'Roasting Coffee Beans',
                 'logs' => 8,
                 'total_time' => 1400,
                 'avg_time' => 175,
-                'efficiency' => 103
+                'efficiency' => 103,
             ],
             [
                 'name' => 'Inventory Count',
                 'logs' => 12,
                 'total_time' => 696,
                 'avg_time' => 58,
-                'efficiency' => 83
-            ]
+                'efficiency' => 83,
+            ],
         ];
     }
 
@@ -422,8 +422,8 @@ class AnalyticsController extends Controller
                 ['date' => '2024-01-13', 'activities' => 9, 'efficiency' => 96],
                 ['date' => '2024-01-14', 'activities' => 5, 'efficiency' => 89],
                 ['date' => '2024-01-15', 'activities' => 8, 'efficiency' => 95],
-                ['date' => '2024-01-16', 'activities' => 7, 'efficiency' => 93]
-            ]
+                ['date' => '2024-01-16', 'activities' => 7, 'efficiency' => 93],
+            ],
         ];
     }
 }

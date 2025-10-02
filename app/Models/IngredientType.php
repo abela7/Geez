@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class IngredientType extends Model
@@ -32,7 +32,7 @@ class IngredientType extends Model
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($type) {
             if (empty($type->slug)) {
                 $type->slug = Str::slug($type->name);
@@ -73,7 +73,7 @@ class IngredientType extends Model
         if (empty($this->compatible_units)) {
             return collect();
         }
-        
+
         return IngredientUnit::whereIn('id', $this->compatible_units)
             ->active()
             ->ordered()

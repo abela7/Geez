@@ -65,7 +65,7 @@ class StaffPerformanceReview extends Model
     {
         return $this->belongsTo(Staff::class, 'reviewer_id');
     }
-    
+
     /**
      * Get the acknowledgements for this review.
      */

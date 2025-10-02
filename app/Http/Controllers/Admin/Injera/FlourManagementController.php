@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Injera;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class FlourManagementController extends Controller
 {
@@ -22,11 +20,11 @@ class FlourManagementController extends Controller
     {
         // Get flour inventory data (we'll create the model later)
         $flours = $this->getFlourInventory($request);
-        
+
         // Get filter options
         $flourTypes = ['Teff', 'Wheat', 'Barley', 'Sorghum', 'Mixed'];
         $suppliers = $this->getSuppliers();
-        
+
         // Get summary statistics
         $statistics = $this->getFlourStatistics();
 
@@ -57,7 +55,7 @@ class FlourManagementController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -85,7 +83,7 @@ class FlourManagementController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => __('injera.flour_management.flour_added_success')
+                'message' => __('injera.flour_management.flour_added_success'),
             ]);
 
         } catch (\Exception $e) {
@@ -93,7 +91,7 @@ class FlourManagementController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to add flour: ' . $e->getMessage()
+                'message' => 'Failed to add flour: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -114,7 +112,7 @@ class FlourManagementController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -122,13 +120,13 @@ class FlourManagementController extends Controller
             // TODO: Implement actual stock update logic
             return response()->json([
                 'success' => true,
-                'message' => __('injera.flour_management.stock_updated_success')
+                'message' => __('injera.flour_management.stock_updated_success'),
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update stock: ' . $e->getMessage()
+                'message' => 'Failed to update stock: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -142,13 +140,13 @@ class FlourManagementController extends Controller
             // TODO: Implement actual deletion logic
             return response()->json([
                 'success' => true,
-                'message' => __('injera.flour_management.flour_deleted_success')
+                'message' => __('injera.flour_management.flour_deleted_success'),
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete flour: ' . $e->getMessage()
+                'message' => 'Failed to delete flour: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -172,7 +170,7 @@ class FlourManagementController extends Controller
                 'low_stock_threshold' => 50.0,
                 'last_purchase' => '2025-01-10',
                 'notes' => 'High quality, dark teff',
-                'status' => 'in_stock'
+                'status' => 'in_stock',
             ],
             [
                 'id' => 2,
@@ -186,7 +184,7 @@ class FlourManagementController extends Controller
                 'low_stock_threshold' => 75.0,
                 'last_purchase' => '2025-01-08',
                 'notes' => 'All-purpose wheat flour',
-                'status' => 'in_stock'
+                'status' => 'in_stock',
             ],
             [
                 'id' => 3,
@@ -200,8 +198,8 @@ class FlourManagementController extends Controller
                 'low_stock_threshold' => 40.0,
                 'last_purchase' => '2025-01-05',
                 'notes' => 'Certified organic',
-                'status' => 'low_stock'
-            ]
+                'status' => 'low_stock',
+            ],
         ];
     }
 
@@ -215,7 +213,7 @@ class FlourManagementController extends Controller
             'Local Mill Supply',
             'Organic Grains Ltd',
             'Premium Flour Distributors',
-            'Traditional Grains Co.'
+            'Traditional Grains Co.',
         ];
     }
 

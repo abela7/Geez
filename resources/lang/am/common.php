@@ -41,7 +41,7 @@ return [
     'disable' => 'Disable',
     'activate' => 'Activate',
     'deactivate' => 'Deactivate',
-    
+
     // Common Status
     'active' => 'Active',
     'inactive' => 'Inactive',
@@ -58,7 +58,7 @@ return [
     'error' => 'Error',
     'warning' => 'Warning',
     'info' => 'Information',
-    
+
     // Common Labels
     'name' => 'Name',
     'title' => 'Title',
@@ -102,7 +102,7 @@ return [
     'file' => 'File',
     'document' => 'Document',
     'attachment' => 'Attachment',
-    
+
     // Common Messages
     'loading' => 'Loading...',
     'saving' => 'Saving...',
@@ -116,7 +116,7 @@ return [
     'overview' => 'Overview',
     'feature_placeholder' => 'This feature will be implemented here',
     'data_placeholder' => 'Data will be available soon',
-    
+
     // Common Validation
     'required' => 'This field is required',
     'invalid' => 'Invalid value',
@@ -128,20 +128,20 @@ return [
     'invalid_time' => 'Invalid time',
     'invalid_number' => 'Invalid number',
     'invalid_url' => 'Invalid URL',
-    
+
     // Common Confirmations
     'are_you_sure' => 'Are you sure?',
     'confirm_delete' => 'Are you sure you want to delete this item?',
     'confirm_action' => 'Are you sure you want to perform this action?',
     'cannot_be_undone' => 'This action cannot be undone.',
-    
+
     // Common Success Messages
     'saved_successfully' => 'Saved successfully',
     'created_successfully' => 'Created successfully',
     'updated_successfully' => 'Updated successfully',
     'deleted_successfully' => 'Deleted successfully',
     'action_completed' => 'Action completed successfully',
-    
+
     // Common Error Messages
     'save_failed' => 'Failed to save',
     'create_failed' => 'Failed to create',
@@ -150,13 +150,13 @@ return [
     'action_failed' => 'Action failed',
     'something_went_wrong' => 'Something went wrong',
     'try_again' => 'Please try again',
-    
+
     // Theme & UI
     'theme' => 'ገጽታ',
     'light_mode' => 'ብሩህ ገጽታ',
     'dark_mode' => 'ጨለማ ገጽታ',
     'language' => 'ቋንቋ',
-    
+
     // Pagination
     'showing' => 'Showing',
     'of' => 'of',
@@ -169,7 +169,7 @@ return [
     'apply' => 'Apply',
     'stars' => 'stars',
     'days' => 'days',
-    
+
     // Time & Dates
     'today' => 'Today',
     'yesterday' => 'Yesterday',
@@ -180,7 +180,7 @@ return [
     'last_month' => 'Last Month',
     'this_year' => 'This Year',
     'last_year' => 'Last Year',
-    
+
     // Days of the week
     'monday' => 'Monday',
     'tuesday' => 'Tuesday',
@@ -189,7 +189,7 @@ return [
     'friday' => 'Friday',
     'saturday' => 'Saturday',
     'sunday' => 'Sunday',
-    
+
     // Additional Common Terms
     'servings' => 'servings',
     'not_calculated' => 'Not calculated',

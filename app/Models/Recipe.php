@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Recipe extends Model
 {
@@ -117,6 +117,7 @@ class Recipe extends Model
     public function calculateCostPerServing(): float
     {
         $totalCost = $this->calculateTotalCost();
+
         return $this->serving_size > 0 ? $totalCost / $this->serving_size : 0.0;
     }
 
@@ -125,7 +126,7 @@ class Recipe extends Model
      */
     public function getFormattedTotalTimeAttribute(): string
     {
-        if (!$this->total_time) {
+        if (! $this->total_time) {
             return 'N/A';
         }
 

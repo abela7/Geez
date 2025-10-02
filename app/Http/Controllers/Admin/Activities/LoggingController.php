@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Activities;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\JsonResponse;
 
 class LoggingController extends Controller
 {
@@ -23,7 +23,7 @@ class LoggingController extends Controller
 
         return view('admin.activities.logging.index', compact(
             'availableActivities',
-            'currentActivities', 
+            'currentActivities',
             'todaysStats',
             'recentActivities'
         ));
@@ -36,12 +36,12 @@ class LoggingController extends Controller
     {
         $request->validate([
             'activity_id' => 'required|integer',
-            'notes' => 'nullable|string|max:500'
+            'notes' => 'nullable|string|max:500',
         ]);
 
         // In a real implementation, this would create a new activity log entry
         $activity = $this->getActivityById($request->activity_id);
-        
+
         return response()->json([
             'success' => true,
             'message' => __('activities.logging.activity_started'),
@@ -51,8 +51,8 @@ class LoggingController extends Controller
                 'activity_name' => $activity['name'],
                 'started_at' => now()->toISOString(),
                 'notes' => $request->notes,
-                'status' => 'in_progress'
-            ]
+                'status' => 'in_progress',
+            ],
         ]);
     }
 
@@ -63,7 +63,7 @@ class LoggingController extends Controller
     {
         $request->validate([
             'activity_log_id' => 'required|integer',
-            'notes' => 'nullable|string|max:500'
+            'notes' => 'nullable|string|max:500',
         ]);
 
         // In a real implementation, this would update the activity log entry
@@ -75,8 +75,8 @@ class LoggingController extends Controller
                 'stopped_at' => now()->toISOString(),
                 'duration' => rand(15, 180), // minutes
                 'notes' => $request->notes,
-                'status' => 'completed'
-            ]
+                'status' => 'completed',
+            ],
         ]);
     }
 
@@ -86,7 +86,7 @@ class LoggingController extends Controller
     public function pauseActivity(Request $request): JsonResponse
     {
         $request->validate([
-            'activity_log_id' => 'required|integer'
+            'activity_log_id' => 'required|integer',
         ]);
 
         return response()->json([
@@ -95,8 +95,8 @@ class LoggingController extends Controller
             'activity_log' => [
                 'id' => $request->activity_log_id,
                 'status' => 'paused',
-                'paused_at' => now()->toISOString()
-            ]
+                'paused_at' => now()->toISOString(),
+            ],
         ]);
     }
 
@@ -106,7 +106,7 @@ class LoggingController extends Controller
     public function resumeActivity(Request $request): JsonResponse
     {
         $request->validate([
-            'activity_log_id' => 'required|integer'
+            'activity_log_id' => 'required|integer',
         ]);
 
         return response()->json([
@@ -115,8 +115,8 @@ class LoggingController extends Controller
             'activity_log' => [
                 'id' => $request->activity_log_id,
                 'status' => 'in_progress',
-                'resumed_at' => now()->toISOString()
-            ]
+                'resumed_at' => now()->toISOString(),
+            ],
         ]);
     }
 
@@ -126,10 +126,10 @@ class LoggingController extends Controller
     public function getCurrentActivities(): JsonResponse
     {
         $currentActivities = $this->getMockCurrentActivities();
-        
+
         return response()->json([
             'success' => true,
-            'current_activities' => $currentActivities
+            'current_activities' => $currentActivities,
         ]);
     }
 
@@ -140,10 +140,10 @@ class LoggingController extends Controller
     {
         $date = $request->get('date', now()->format('Y-m-d'));
         $recentActivities = $this->getRecentActivities($date);
-        
+
         return response()->json([
             'success' => true,
-            'activities' => $recentActivities
+            'activities' => $recentActivities,
         ]);
     }
 
@@ -159,7 +159,7 @@ class LoggingController extends Controller
                 'estimated_duration' => 120,
                 'difficulty_level' => 'medium',
                 'requires_equipment' => true,
-                'equipment_list' => 'Large pot, wooden spoon, cutting board, knives'
+                'equipment_list' => 'Large pot, wooden spoon, cutting board, knives',
             ],
             [
                 'id' => 2,
@@ -170,7 +170,7 @@ class LoggingController extends Controller
                 'estimated_duration' => 90,
                 'difficulty_level' => 'easy',
                 'requires_equipment' => true,
-                'equipment_list' => 'Cleaning solution, brushes, clean water'
+                'equipment_list' => 'Cleaning solution, brushes, clean water',
             ],
             [
                 'id' => 3,
@@ -181,7 +181,7 @@ class LoggingController extends Controller
                 'estimated_duration' => 180,
                 'difficulty_level' => 'hard',
                 'requires_equipment' => true,
-                'equipment_list' => 'Roasting pan, wooden spoon, timer, storage containers'
+                'equipment_list' => 'Roasting pan, wooden spoon, timer, storage containers',
             ],
             [
                 'id' => 4,
@@ -192,7 +192,7 @@ class LoggingController extends Controller
                 'estimated_duration' => 45,
                 'difficulty_level' => 'easy',
                 'requires_equipment' => false,
-                'equipment_list' => null
+                'equipment_list' => null,
             ],
             [
                 'id' => 5,
@@ -203,7 +203,7 @@ class LoggingController extends Controller
                 'estimated_duration' => 15,
                 'difficulty_level' => 'easy',
                 'requires_equipment' => false,
-                'equipment_list' => null
+                'equipment_list' => null,
             ],
             [
                 'id' => 6,
@@ -214,8 +214,8 @@ class LoggingController extends Controller
                 'estimated_duration' => 60,
                 'difficulty_level' => 'medium',
                 'requires_equipment' => false,
-                'equipment_list' => null
-            ]
+                'equipment_list' => null,
+            ],
         ];
     }
 
@@ -231,7 +231,7 @@ class LoggingController extends Controller
                 'estimated_duration' => 120,
                 'status' => 'in_progress',
                 'notes' => 'Started preparation of vegetables',
-                'progress_percentage' => 37
+                'progress_percentage' => 37,
             ],
             [
                 'id' => 1002,
@@ -242,8 +242,8 @@ class LoggingController extends Controller
                 'estimated_duration' => 45,
                 'status' => 'paused',
                 'notes' => 'Paused to help with customer inquiry',
-                'progress_percentage' => 44
-            ]
+                'progress_percentage' => 44,
+            ],
         ];
     }
 
@@ -255,11 +255,11 @@ class LoggingController extends Controller
             'activities_in_progress' => 2,
             'efficiency_score' => 87, // percentage
             'on_time_completion' => 75, // percentage
-            'break_time' => 45 // minutes
+            'break_time' => 45, // minutes
         ];
     }
 
-    private function getRecentActivities(string $date = null): array
+    private function getRecentActivities(?string $date = null): array
     {
         return [
             [
@@ -271,7 +271,7 @@ class LoggingController extends Controller
                 'estimated_duration' => 15,
                 'status' => 'completed',
                 'efficiency' => 125, // percentage (completed faster than estimated)
-                'notes' => 'Large table order, well organized'
+                'notes' => 'Large table order, well organized',
             ],
             [
                 'id' => 2002,
@@ -282,7 +282,7 @@ class LoggingController extends Controller
                 'estimated_duration' => 45,
                 'status' => 'completed',
                 'efficiency' => 112, // percentage
-                'notes' => 'Set up for evening service'
+                'notes' => 'Set up for evening service',
             ],
             [
                 'id' => 2003,
@@ -293,7 +293,7 @@ class LoggingController extends Controller
                 'estimated_duration' => 90,
                 'status' => 'completed',
                 'efficiency' => 100, // percentage
-                'notes' => 'Deep cleaning of all equipment'
+                'notes' => 'Deep cleaning of all equipment',
             ],
             [
                 'id' => 2004,
@@ -304,7 +304,7 @@ class LoggingController extends Controller
                 'estimated_duration' => 60,
                 'status' => 'completed',
                 'efficiency' => 80, // percentage (took longer than estimated)
-                'notes' => 'Found discrepancies that needed investigation'
+                'notes' => 'Found discrepancies that needed investigation',
             ],
             [
                 'id' => 2005,
@@ -315,14 +315,15 @@ class LoggingController extends Controller
                 'estimated_duration' => 180,
                 'status' => 'completed',
                 'efficiency' => 92, // percentage
-                'notes' => 'Large batch for evening service'
-            ]
+                'notes' => 'Large batch for evening service',
+            ],
         ];
     }
 
     private function getActivityById(int $id): array
     {
         $activities = $this->getAvailableActivities();
+
         return collect($activities)->firstWhere('id', $id) ?? [];
     }
 }

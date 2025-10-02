@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Inventory;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\JsonResponse;
 
 class LocationsController extends Controller
 {
@@ -148,8 +148,12 @@ class LocationsController extends Controller
         // Create a simple paginator-like object
         $locations = (object) [
             'data' => $filteredLocations->values(),
-            'hasPages' => function() { return false; },
-            'links' => function() { return ''; },
+            'hasPages' => function () {
+                return false;
+            },
+            'links' => function () {
+                return '';
+            },
         ];
 
         // Static filter options

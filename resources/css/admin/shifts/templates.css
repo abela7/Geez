@@ -1,6 +1,7 @@
 /* Shift Templates Page Styles */
 .shifts-templates-page {
     padding: 2rem;
+    padding-top: calc(4rem + 2rem); /* Account for sticky header height */
     max-width: 1600px;
     margin: 0 auto;
     /* Remove conflicting z-index */

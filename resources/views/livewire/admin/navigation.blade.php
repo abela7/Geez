@@ -590,15 +590,41 @@
                 </div>
             </div>
 
-            <!-- Settings -->
-            <a href="{{ route('admin.settings.index') }}" 
-               class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
-                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                <span class="nav-text">{{ __('dashboard.nav_settings') }}</span>
-            </a>
+            <!-- Settings (With Submenu) -->
+            <div class="nav-group" :class="{ 'active': activeSubmenu === 'settings' }">
+                <button @click="toggleSubmenu('settings')" 
+                        class="nav-link nav-link--parent {{ request()->is('admin/settings*') ? 'active' : '' }}">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span class="nav-text">{{ __('dashboard.nav_settings') }}</span>
+                    <svg class="nav-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                
+                <div class="nav-submenu" 
+                     x-show="activeSubmenu === 'settings'" 
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 max-h-0"
+                     x-transition:enter-end="opacity-100 max-h-96"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 max-h-96"
+                     x-transition:leave-end="opacity-0 max-h-0">
+                    <a href="{{ route('admin.settings.index') }}" class="submenu-link {{ request()->routeIs('admin.settings.index') ? 'active' : '' }}">
+                        {{ __('settings.general.title') }}
+                    </a>
+                    <div class="submenu-separator"></div>
+                    <div class="submenu-section-title">{{ __('settings.shift_management.section_title') }}</div>
+                    <a href="{{ route('admin.settings.departments.index') }}" class="submenu-link {{ request()->routeIs('admin.settings.departments.*') ? 'active' : '' }}">
+                        {{ __('admin.departments.title') }}
+                    </a>
+                    <a href="{{ route('admin.settings.shift-types.index') }}" class="submenu-link {{ request()->routeIs('admin.settings.shift-types.*') ? 'active' : '' }}">
+                        {{ __('admin.shift_types.title') }}
+                    </a>
+                </div>
+            </div>
     </nav>
 
     <!-- Sidebar Footer -->

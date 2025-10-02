@@ -119,7 +119,7 @@ class StaffShiftException extends Model
      */
     public function getReplacementDurationInHours(): float
     {
-        if (!$this->replacement_start_time || !$this->replacement_end_time) {
+        if (! $this->replacement_start_time || ! $this->replacement_end_time) {
             return 0;
         }
 

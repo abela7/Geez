@@ -80,8 +80,8 @@ class StaffTaskDependency extends Model
     public function isSatisfied(): bool
     {
         $dependsOnTask = $this->dependsOnTask;
-        
-        if (!$dependsOnTask) {
+
+        if (! $dependsOnTask) {
             return true; // If dependency task doesn't exist, consider satisfied
         }
 
@@ -91,7 +91,7 @@ class StaffTaskDependency extends Model
             ->orderBy('assigned_date', 'desc')
             ->first();
 
-        if (!$latestAssignment) {
+        if (! $latestAssignment) {
             return false; // No assignment means not satisfied
         }
 
@@ -110,8 +110,8 @@ class StaffTaskDependency extends Model
     public function getEarliestStartDate(): ?\Carbon\Carbon
     {
         $dependsOnTask = $this->dependsOnTask;
-        
-        if (!$dependsOnTask || $this->isSatisfied()) {
+
+        if (! $dependsOnTask || $this->isSatisfied()) {
             return now()->addDays($this->lag_days);
         }
 
@@ -120,7 +120,7 @@ class StaffTaskDependency extends Model
             ->orderBy('assigned_date', 'desc')
             ->first();
 
-        if (!$latestAssignment || !$latestAssignment->due_date) {
+        if (! $latestAssignment || ! $latestAssignment->due_date) {
             return null; // Can't determine start date
         }
 
@@ -196,7 +196,7 @@ class StaffTaskDependency extends Model
      */
     public function validateNoCycles(): bool
     {
-        return !$this->wouldCreateCycle($this->task_id, $this->depends_on_task_id, []);
+        return ! $this->wouldCreateCycle($this->task_id, $this->depends_on_task_id, []);
     }
 
     /**
@@ -216,7 +216,7 @@ class StaffTaskDependency extends Model
 
         // Check if the depends_on_task has any dependencies that could create a cycle
         $dependencies = static::where('task_id', $dependsOnTaskId)->get();
-        
+
         foreach ($dependencies as $dependency) {
             if ($this->wouldCreateCycle($taskId, $dependency->depends_on_task_id, $visited)) {
                 return true;

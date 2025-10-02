@@ -7,13 +7,11 @@ namespace App\Http\Controllers\Admin\Inventory;
 use App\Http\Controllers\Controller;
 use App\Models\Ingredient;
 use App\Models\Supplier;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class IngredientsController extends Controller
 {
@@ -26,7 +24,7 @@ class IngredientsController extends Controller
             ->select([
                 'id', 'name', 'code', 'category', 'unit', 'cost_per_unit',
                 'supplier_id', 'allergen_info', 'status', 'shelf_life_days',
-                'storage_requirements', 'last_updated', 'created_at'
+                'storage_requirements', 'last_updated', 'created_at',
             ]);
 
         // Apply filters
@@ -61,7 +59,7 @@ class IngredientsController extends Controller
         // Apply sorting
         $sortBy = $request->get('sort_by', 'name');
         $sortOrder = $request->get('sort_order', 'asc');
-        
+
         $allowedSorts = ['name', 'category', 'cost_per_unit', 'created_at', 'last_updated'];
         if (in_array($sortBy, $allowedSorts)) {
             $query->orderBy($sortBy, $sortOrder);
@@ -128,7 +126,7 @@ class IngredientsController extends Controller
                 'needs_refrigeration' => $ingredient->needsRefrigeration(),
                 'last_updated' => $ingredient->last_updated?->format('Y-m-d H:i:s'),
                 'created_at' => $ingredient->created_at->format('Y-m-d H:i:s'),
-            ]
+            ],
         ]);
     }
 
@@ -147,7 +145,7 @@ class IngredientsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid data provided',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -176,7 +174,7 @@ class IngredientsController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => __('inventory.ingredients.bulk_update_success')
+                'message' => __('inventory.ingredients.bulk_update_success'),
             ]);
 
         } catch (\Exception $e) {
@@ -184,7 +182,7 @@ class IngredientsController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Bulk action failed: ' . $e->getMessage()
+                'message' => 'Bulk action failed: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -197,7 +195,7 @@ class IngredientsController extends Controller
         return response()->json([
             'success' => true,
             'message' => __('inventory.ingredients.export_success'),
-            'download_url' => '#'
+            'download_url' => '#',
         ]);
     }
 

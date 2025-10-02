@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -17,7 +17,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
         Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
     });
-    
+
     // Authenticated routes
     Route::middleware('auth')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -29,31 +29,61 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::get('/dashboard', function () {
         return view('admin.dashboard.index');
     })->name('dashboard');
-    
+
     // Inventory Management Routes (your actual pages)
     Route::prefix('inventory')->name('inventory.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('index');
         Route::get('/stock-levels', [\App\Http\Controllers\Admin\InventoryStockLevelsController::class, 'index'])->name('stock-levels.index');
         Route::get('/ingredients', [\App\Http\Controllers\Admin\InventoryIngredientsController::class, 'index'])->name('ingredients.index');
-        Route::get('/settings', function () { return view('admin.inventory.settings.index'); })->name('settings.index');
-        Route::get('/recipes', function () { return view('admin.inventory.recipes.index'); })->name('recipes.index');
-        Route::get('/movements', function () { return view('admin.inventory.movements.index'); })->name('movements.index');
-        Route::get('/locations', function () { return view('admin.inventory.locations.index'); })->name('locations.index');
-        Route::get('/purchasing', function () { return view('admin.inventory.purchasing.index'); })->name('purchasing.index');
-        Route::get('/suppliers', function () { return view('admin.inventory.suppliers.index'); })->name('suppliers.index');
-        Route::get('/alerts', function () { return view('admin.inventory.alerts.index'); })->name('alerts.index');
-        Route::get('/analytics', function () { return view('admin.inventory.analytics.index'); })->name('analytics.index');
-        Route::get('/stocktakes', function () { return view('admin.inventory.stocktakes.index'); })->name('stocktakes.index');
+        Route::get('/settings', function () {
+            return view('admin.inventory.settings.index');
+        })->name('settings.index');
+        Route::get('/recipes', function () {
+            return view('admin.inventory.recipes.index');
+        })->name('recipes.index');
+        Route::get('/movements', function () {
+            return view('admin.inventory.movements.index');
+        })->name('movements.index');
+        Route::get('/locations', function () {
+            return view('admin.inventory.locations.index');
+        })->name('locations.index');
+        Route::get('/purchasing', function () {
+            return view('admin.inventory.purchasing.index');
+        })->name('purchasing.index');
+        Route::get('/suppliers', function () {
+            return view('admin.inventory.suppliers.index');
+        })->name('suppliers.index');
+        Route::get('/alerts', function () {
+            return view('admin.inventory.alerts.index');
+        })->name('alerts.index');
+        Route::get('/analytics', function () {
+            return view('admin.inventory.analytics.index');
+        })->name('analytics.index');
+        Route::get('/stocktakes', function () {
+            return view('admin.inventory.stocktakes.index');
+        })->name('stocktakes.index');
     });
 
     // Sales & Finance Routes (your actual pages)
-    Route::get('/sales', function () { return view('admin.sales.index'); })->name('sales.index');
+    Route::get('/sales', function () {
+        return view('admin.sales.index');
+    })->name('sales.index');
     Route::prefix('finance')->name('finance.')->group(function () {
-        Route::get('/tips', function () { return view('admin.finance.tips.index'); })->name('tips.index');
-        Route::get('/expenses', function () { return view('admin.finance.expenses'); })->name('expenses.index');
-        Route::get('/budgeting', function () { return view('admin.finance.budgeting'); })->name('budgeting.index');
-        Route::get('/reports', function () { return view('admin.finance.reports'); })->name('reports.index');
-        Route::get('/settings', function () { return view('admin.finance.settings'); })->name('settings.index');
+        Route::get('/tips', function () {
+            return view('admin.finance.tips.index');
+        })->name('tips.index');
+        Route::get('/expenses', function () {
+            return view('admin.finance.expenses');
+        })->name('expenses.index');
+        Route::get('/budgeting', function () {
+            return view('admin.finance.budgeting');
+        })->name('budgeting.index');
+        Route::get('/reports', function () {
+            return view('admin.finance.reports');
+        })->name('reports.index');
+        Route::get('/settings', function () {
+            return view('admin.finance.settings');
+        })->name('settings.index');
     });
 
     // Staff Management Routes
@@ -66,12 +96,12 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         Route::post('/attendance', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'store'])->name('attendance.store');
         Route::put('/attendance/{staffAttendance}', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'update'])->name('attendance.update');
         Route::delete('/attendance/{staffAttendance}', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'destroy'])->name('attendance.destroy');
-        
+
         // Staff Tasks (Simple Implementation)
         Route::get('/tasks', [\App\Http\Controllers\Admin\StaffTasksController::class, 'index'])->name('tasks.index');
         Route::get('/tasks/today', [\App\Http\Controllers\Admin\StaffTasksController::class, 'today'])->name('tasks.today');
         Route::get('/tasks/create', [\App\Http\Controllers\Admin\StaffTasksController::class, 'create'])->name('tasks.create');
-        
+
         // Task Settings Management (MUST be before parameterized routes)
         Route::get('/tasks/settings', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'index'])->name('tasks.settings.index');
         Route::post('/tasks/settings/types', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'storeTaskType'])->name('tasks.settings.types.store');
@@ -91,7 +121,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         Route::put('/tasks/settings/tags/{taskTag}', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'updateTaskTag'])->name('tasks.settings.tags.update');
         Route::delete('/tasks/settings/tags/{taskTag}', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'destroyTaskTag'])->name('tasks.settings.tags.destroy');
         Route::post('/tasks/settings/reorder', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'reorder'])->name('tasks.settings.reorder');
-        
+
         // Parameterized task routes (MUST be after specific routes)
         Route::post('/tasks', [\App\Http\Controllers\Admin\StaffTasksController::class, 'store'])->name('tasks.store');
         Route::get('/tasks/{task}', [\App\Http\Controllers\Admin\StaffTasksController::class, 'show'])->name('tasks.show');
@@ -101,14 +131,14 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         Route::post('/tasks/bulk-action', [\App\Http\Controllers\Admin\StaffTasksController::class, 'bulkAction'])->name('tasks.bulk-action');
         Route::delete('/tasks/{task}', [\App\Http\Controllers\Admin\StaffTasksController::class, 'destroy'])->name('tasks.destroy');
         Route::put('/task-assignments/{assignment}/status', [\App\Http\Controllers\Admin\StaffTasksController::class, 'updateAssignmentStatus'])->name('task-assignments.update-status');
-        
+
         Route::get('/payroll', [\App\Http\Controllers\Admin\StaffPayrollController::class, 'index'])->name('payroll.index');
-        
+
         // Staff Profile - must be before resource routes
         Route::get('/profile/{staff}', [\App\Http\Controllers\Admin\StaffController::class, 'show'])->name('profile');
         // Staff Settings
         Route::get('settings', [\App\Http\Controllers\Admin\StaffSettingsController::class, 'index'])->name('settings.index');
-        
+
         // Staff Types CRUD (MUST be before base resource to prevent {staff} catching "types")
         Route::resource('types', \App\Http\Controllers\Admin\StaffTypesController::class, ['parameters' => ['types' => 'staffType']]);
         Route::get('types/trashed/list', [\App\Http\Controllers\Admin\StaffTypesController::class, 'trashed'])->name('types.trashed');
@@ -129,21 +159,21 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         // Main scheduling interface
         Route::get('/schedule', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'index'])->name('schedule.index');
         Route::get('/calendar', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'calendar'])->name('schedule.calendar');
-        
+
         // Assignment management
         Route::post('/assign', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'assign'])->name('assign');
         Route::delete('/assignments/{assignment}', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'unassign'])->name('unassign');
         Route::post('/generate-from-patterns', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'generateFromPatterns'])->name('generate-patterns');
-        
+
         // Analytics and reporting
         Route::get('/coverage-analysis', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'coverageAnalysis'])->name('coverage-analysis');
-        
+
         // Shift templates management
         Route::resource('templates', \App\Http\Controllers\Admin\StaffShiftController::class, ['as' => 'shifts']);
-        
+
         // Assignment management
         Route::resource('assignments', \App\Http\Controllers\Admin\StaffShiftAssignmentController::class, ['as' => 'shifts']);
-        
+
         // Legacy UI routes (keep for backward compatibility)
         Route::get('/overview', [\App\Http\Controllers\Admin\ShiftsOverviewController::class, 'index'])->name('overview.index');
         Route::get('/manage', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'index'])->name('manage.index');
@@ -156,62 +186,134 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
 
     // Menu Management Routes (your actual pages)
     Route::prefix('menu')->name('menu.')->group(function () {
-        Route::get('/food-items', function () { return view('admin.menu.food-items'); })->name('food-items.index');
-        Route::get('/categories', function () { return view('admin.menu.categories'); })->name('categories.index');
-        Route::get('/modifiers', function () { return view('admin.menu.modifiers'); })->name('modifiers.index');
-        Route::get('/dish-cost', function () { return view('admin.menu.dish-cost'); })->name('dish-cost.index');
-        Route::get('/pricing', function () { return view('admin.menu.pricing'); })->name('pricing.index');
-        Route::get('/design', function () { return view('admin.menu.design'); })->name('design.index');
+        Route::get('/food-items', function () {
+            return view('admin.menu.food-items');
+        })->name('food-items.index');
+        Route::get('/categories', function () {
+            return view('admin.menu.categories');
+        })->name('categories.index');
+        Route::get('/modifiers', function () {
+            return view('admin.menu.modifiers');
+        })->name('modifiers.index');
+        Route::get('/dish-cost', function () {
+            return view('admin.menu.dish-cost');
+        })->name('dish-cost.index');
+        Route::get('/pricing', function () {
+            return view('admin.menu.pricing');
+        })->name('pricing.index');
+        Route::get('/design', function () {
+            return view('admin.menu.design');
+        })->name('design.index');
     });
 
     // Customer Management Routes (your actual pages)
     Route::prefix('customers')->name('customers.')->group(function () {
-        Route::get('/directory', function () { return view('admin.customers.directory'); })->name('directory.index');
-        Route::get('/loyalty', function () { return view('admin.customers.loyalty'); })->name('loyalty.index');
-        Route::get('/reservations', function () { return view('admin.customers.reservations'); })->name('reservations.index');
-        Route::get('/analytics', function () { return view('admin.customers.analytics'); })->name('analytics.index');
-        Route::get('/feedback', function () { return view('admin.customers.feedback'); })->name('feedback.index');
+        Route::get('/directory', function () {
+            return view('admin.customers.directory');
+        })->name('directory.index');
+        Route::get('/loyalty', function () {
+            return view('admin.customers.loyalty');
+        })->name('loyalty.index');
+        Route::get('/reservations', function () {
+            return view('admin.customers.reservations');
+        })->name('reservations.index');
+        Route::get('/analytics', function () {
+            return view('admin.customers.analytics');
+        })->name('analytics.index');
+        Route::get('/feedback', function () {
+            return view('admin.customers.feedback');
+        })->name('feedback.index');
     });
 
     // Table & Room Management Routes
     Route::prefix('tables')->name('tables.')->group(function () {
-        Route::get('/rooms', function () { return view('admin.tables.rooms'); })->name('rooms.index');
-        Route::get('/categories', function () { return view('admin.tables.categories'); })->name('categories.index');
-        Route::get('/types', function () { return view('admin.tables.types'); })->name('types.index');
-        Route::get('/layout', function () { return view('admin.tables.layout'); })->name('layout.index');
+        Route::get('/rooms', function () {
+            return view('admin.tables.rooms');
+        })->name('rooms.index');
+        Route::get('/categories', function () {
+            return view('admin.tables.categories');
+        })->name('categories.index');
+        Route::get('/types', function () {
+            return view('admin.tables.types');
+        })->name('types.index');
+        Route::get('/layout', function () {
+            return view('admin.tables.layout');
+        })->name('layout.index');
     });
 
     // Bar Management Routes
     Route::prefix('bar')->name('bar.')->group(function () {
-        Route::get('/inventory', function () { return view('admin.bar.inventory.index'); })->name('inventory.index');
-        Route::get('/recipes', function () { return view('admin.bar.recipes.index'); })->name('recipes.index');
-        Route::get('/pricing', function () { return view('admin.bar.pricing.index'); })->name('pricing.index');
-        Route::get('/analytics', function () { return view('admin.bar.analytics.index'); })->name('analytics.index');
-        Route::get('/suppliers', function () { return view('admin.bar.suppliers.index'); })->name('suppliers.index');
-        Route::get('/settings', function () { return view('admin.bar.settings.index'); })->name('settings.index');
+        Route::get('/inventory', function () {
+            return view('admin.bar.inventory.index');
+        })->name('inventory.index');
+        Route::get('/recipes', function () {
+            return view('admin.bar.recipes.index');
+        })->name('recipes.index');
+        Route::get('/pricing', function () {
+            return view('admin.bar.pricing.index');
+        })->name('pricing.index');
+        Route::get('/analytics', function () {
+            return view('admin.bar.analytics.index');
+        })->name('analytics.index');
+        Route::get('/suppliers', function () {
+            return view('admin.bar.suppliers.index');
+        })->name('suppliers.index');
+        Route::get('/settings', function () {
+            return view('admin.bar.settings.index');
+        })->name('settings.index');
     });
 
     // Injera Management Routes
     Route::prefix('injera')->name('injera.')->group(function () {
-        Route::get('/', function () { return view('admin.injera.index'); })->name('index');
-        Route::get('/flour-management', function () { return view('admin.injera.flour-management.index'); })->name('flour-management.index');
-        Route::get('/bucket-configurations', function () { return view('admin.injera.bucket-configurations.index'); })->name('bucket-configurations.index');
-        Route::get('/production-batches', function () { return view('admin.injera.production-batches.index'); })->name('production-batches.index');
-        Route::get('/injera-stock-levels', function () { return view('admin.injera.injera-stock-levels.index'); })->name('injera-stock-levels.index');
-        Route::get('/cost-analysis', function () { return view('admin.injera.cost-analysis.index'); })->name('cost-analysis.index');
-        Route::get('/orders', function () { return view('admin.injera.orders.index'); })->name('orders.index');
+        Route::get('/', function () {
+            return view('admin.injera.index');
+        })->name('index');
+        Route::get('/flour-management', function () {
+            return view('admin.injera.flour-management.index');
+        })->name('flour-management.index');
+        Route::get('/bucket-configurations', function () {
+            return view('admin.injera.bucket-configurations.index');
+        })->name('bucket-configurations.index');
+        Route::get('/production-batches', function () {
+            return view('admin.injera.production-batches.index');
+        })->name('production-batches.index');
+        Route::get('/injera-stock-levels', function () {
+            return view('admin.injera.injera-stock-levels.index');
+        })->name('injera-stock-levels.index');
+        Route::get('/cost-analysis', function () {
+            return view('admin.injera.cost-analysis.index');
+        })->name('cost-analysis.index');
+        Route::get('/orders', function () {
+            return view('admin.injera.orders.index');
+        })->name('orders.index');
     });
 
     // Reports Routes
     Route::prefix('reports')->name('reports.')->group(function () {
-        Route::get('/sales', function () { return view('admin.reports.sales'); })->name('sales.index');
-        Route::get('/customers', function () { return view('admin.reports.customers'); })->name('customers.index');
-        Route::get('/menu', function () { return view('admin.reports.menu'); })->name('menu.index');
-        Route::get('/inventory', function () { return view('admin.reports.inventory'); })->name('inventory.index');
-        Route::get('/staff', function () { return view('admin.reports.staff'); })->name('staff.index');
-        Route::get('/financial', function () { return view('admin.reports.financial'); })->name('financial.index');
-        Route::get('/operational', function () { return view('admin.reports.operational'); })->name('operational.index');
-        Route::get('/executive', function () { return view('admin.reports.executive'); })->name('executive.index');
+        Route::get('/sales', function () {
+            return view('admin.reports.sales');
+        })->name('sales.index');
+        Route::get('/customers', function () {
+            return view('admin.reports.customers');
+        })->name('customers.index');
+        Route::get('/menu', function () {
+            return view('admin.reports.menu');
+        })->name('menu.index');
+        Route::get('/inventory', function () {
+            return view('admin.reports.inventory');
+        })->name('inventory.index');
+        Route::get('/staff', function () {
+            return view('admin.reports.staff');
+        })->name('staff.index');
+        Route::get('/financial', function () {
+            return view('admin.reports.financial');
+        })->name('financial.index');
+        Route::get('/operational', function () {
+            return view('admin.reports.operational');
+        })->name('operational.index');
+        Route::get('/executive', function () {
+            return view('admin.reports.executive');
+        })->name('executive.index');
     });
 
     // To-Do Management Routes
@@ -237,7 +339,19 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     });
 
     // Settings
-    Route::get('/settings', function () { return view('admin.settings.index'); })->name('settings.index');
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/', function () {
+            return view('admin.settings.index');
+        })->name('index');
+
+        // Department Management
+        Route::resource('departments', \App\Http\Controllers\Admin\DepartmentController::class);
+        Route::patch('departments/{department}/toggle-status', [\App\Http\Controllers\Admin\DepartmentController::class, 'toggleStatus'])->name('departments.toggle-status');
+
+        // Shift Type Management
+        Route::resource('shift-types', \App\Http\Controllers\Admin\ShiftTypeController::class);
+        Route::patch('shift-types/{shiftType}/toggle-status', [\App\Http\Controllers\Admin\ShiftTypeController::class, 'toggleStatus'])->name('shift-types.toggle-status');
+    });
 });
 
 // Language switching route (placeholder)

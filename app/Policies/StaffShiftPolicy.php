@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Staff;
 use App\Models\StaffShift;
-use Illuminate\Auth\Access\Response;
 
 class StaffShiftPolicy
 {
@@ -51,7 +50,7 @@ class StaffShiftPolicy
     {
         // Only managers and above can delete shift templates
         // But not if there are active assignments
-        if (!$this->isManagerOrAbove($staff)) {
+        if (! $this->isManagerOrAbove($staff)) {
             return false;
         }
 
@@ -61,7 +60,7 @@ class StaffShiftPolicy
             ->whereIn('status', ['scheduled', 'checked_in', 'active'])
             ->exists();
 
-        return !$hasActiveAssignments;
+        return ! $hasActiveAssignments;
     }
 
     /**
@@ -116,9 +115,9 @@ class StaffShiftPolicy
     {
         return in_array($staff->staff_type->name, [
             'System Admin',
-            'Administrator', 
+            'Administrator',
             'Management',
-            'Chief'
+            'Chief',
         ]);
     }
 

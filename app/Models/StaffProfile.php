@@ -71,14 +71,14 @@ class StaffProfile extends Model
             ->orderBy('employee_id', 'desc')
             ->first();
 
-        if (!$lastProfile) {
+        if (! $lastProfile) {
             return 'EMP-0001';
         }
 
         $lastNumber = (int) substr($lastProfile->employee_id, 4);
         $nextNumber = $lastNumber + 1;
 
-        return 'EMP-' . str_pad((string) $nextNumber, 4, '0', STR_PAD_LEFT);
+        return 'EMP-'.str_pad((string) $nextNumber, 4, '0', STR_PAD_LEFT);
     }
 
     /**

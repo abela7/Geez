@@ -88,15 +88,15 @@ class InventoryItem extends Model
         if ($this->current_stock <= 0) {
             return 'out';
         }
-        
+
         if ($this->current_stock <= $this->reorder_level) {
             return $this->current_stock <= ($this->reorder_level * 0.5) ? 'critical' : 'low';
         }
-        
+
         if ($this->max_level && $this->current_stock >= $this->max_level) {
             return 'overstocked';
         }
-        
+
         return 'ok';
     }
 
@@ -113,10 +113,10 @@ class InventoryItem extends Model
      */
     public function getDaysRemainingAttribute(): ?int
     {
-        if (!$this->average_daily_usage || $this->average_daily_usage <= 0) {
+        if (! $this->average_daily_usage || $this->average_daily_usage <= 0) {
             return null;
         }
-        
+
         return (int) floor($this->available_stock / $this->average_daily_usage);
     }
 

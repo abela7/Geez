@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Shifts;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
-use Carbon\Carbon;
 
 class ManageController extends Controller
 {
@@ -118,7 +118,7 @@ class ManageController extends Controller
 
         // Calculate summary statistics
         $totalShifts = count($shifts);
-        $activeShifts = count(array_filter($shifts, fn($shift) => $shift['status'] === 'active'));
+        $activeShifts = count(array_filter($shifts, fn ($shift) => $shift['status'] === 'active'));
         $totalRequiredStaff = array_sum(array_column($shifts, 'required_staff'));
         $totalAssignedStaff = array_sum(array_column($shifts, 'assigned_staff'));
         $staffingPercentage = $totalRequiredStaff > 0 ? round(($totalAssignedStaff / $totalRequiredStaff) * 100) : 0;
@@ -127,7 +127,7 @@ class ManageController extends Controller
         $departments = [];
         foreach ($shifts as $shift) {
             $dept = $shift['department'];
-            if (!isset($departments[$dept])) {
+            if (! isset($departments[$dept])) {
                 $departments[$dept] = [
                     'name' => $dept,
                     'shifts' => 0,
@@ -193,7 +193,7 @@ class ManageController extends Controller
     {
         // In a real application, you would validate and store the shift
         // For now, we'll just redirect with a success message
-        
+
         return redirect()->route('admin.shifts.manage.index')
             ->with('success', __('shifts.manage.shift_created_successfully'));
     }
@@ -256,7 +256,7 @@ class ManageController extends Controller
     {
         // In a real application, you would validate and update the shift
         // For now, we'll just redirect with a success message
-        
+
         return redirect()->route('admin.shifts.manage.index')
             ->with('success', __('shifts.manage.shift_updated_successfully'));
     }
@@ -268,7 +268,7 @@ class ManageController extends Controller
     {
         // In a real application, you would delete the shift
         // For now, we'll just redirect with a success message
-        
+
         return redirect()->route('admin.shifts.manage.index')
             ->with('success', __('shifts.manage.shift_deleted_successfully'));
     }

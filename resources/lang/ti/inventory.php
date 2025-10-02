@@ -4,14 +4,14 @@ return [
     // Page Titles
     'title' => 'Inventory Management',
     'subtitle' => 'Manage your restaurant inventory and stock levels',
-    
+
     // Navigation
     'nav_title' => 'Inventory',
-    
+
     // Content Placeholders
     'placeholder_title' => 'Inventory Management',
     'placeholder_description' => 'Inventory features will be implemented here with modular CSS and JavaScript.',
-    
+
     // Stock Management
     'stock_levels' => 'Stock Levels',
     'low_stock' => 'Low Stock',
@@ -22,7 +22,7 @@ return [
     'current_stock' => 'Current Stock',
     'available_stock' => 'Available Stock',
     'reserved_stock' => 'Reserved Stock',
-    
+
     // Product Management
     'products' => 'Products',
     'product' => 'Product',
@@ -37,14 +37,14 @@ return [
     'supplier' => 'Supplier',
     'supplier_name' => 'Supplier Name',
     'supplier_code' => 'Supplier Code',
-    
+
     // Categories
     'categories' => 'Categories',
     'category' => 'Category',
     'category_name' => 'Category Name',
     'main_category' => 'Main Category',
     'subcategory' => 'Subcategory',
-    
+
     // Stock Movements
     'stock_movements' => 'Stock Movements',
     'stock_in' => 'Stock In',
@@ -55,7 +55,7 @@ return [
     'movement_date' => 'Movement Date',
     'movement_reason' => 'Movement Reason',
     'reference_number' => 'Reference Number',
-    
+
     // Purchase Orders
     'purchase_orders' => 'Purchase Orders',
     'purchase_order' => 'Purchase Order',
@@ -66,7 +66,7 @@ return [
     'order_status' => 'Order Status',
     'pending_orders' => 'Pending Orders',
     'received_orders' => 'Received Orders',
-    
+
     // Inventory Reports
     'reports' => 'Inventory Reports',
     'stock_report' => 'Stock Report',
@@ -74,7 +74,7 @@ return [
     'valuation_report' => 'Valuation Report',
     'low_stock_report' => 'Low Stock Report',
     'expiry_report' => 'Expiry Report',
-    
+
     // Actions
     'add_product' => 'Add Product',
     'edit_product' => 'Edit Product',
@@ -84,13 +84,13 @@ return [
     'receive_stock' => 'Receive Stock',
     'create_po' => 'Create Purchase Order',
     'receive_po' => 'Receive Purchase Order',
-    
+
     // Status
     'active_products' => 'Active Products',
     'inactive_products' => 'Inactive Products',
     'discontinued' => 'Discontinued',
     'pending_approval' => 'Pending Approval',
-    
+
     // Alerts & Messages
     'low_stock_alert' => 'Low stock alert for :product',
     'out_of_stock_alert' => 'Out of stock: :product',
@@ -100,7 +100,7 @@ return [
     'product_deleted' => 'Product deleted successfully',
     'po_created' => 'Purchase order created successfully',
     'po_received' => 'Purchase order received successfully',
-    
+
     // Validation Messages
     'product_name_required' => 'Product name is required',
     'sku_required' => 'SKU is required',
@@ -109,14 +109,14 @@ return [
     'category_required' => 'Category is required',
     'supplier_required' => 'Supplier is required',
     'stock_quantity_invalid' => 'Invalid stock quantity',
-    
+
     // Filters & Search
     'filter_by_category' => 'Filter by Category',
     'filter_by_supplier' => 'Filter by Supplier',
     'filter_by_status' => 'Filter by Status',
     'search_products' => 'Search products...',
     'search_by_name_sku' => 'Search by name or SKU',
-    
+
     // Batch Operations
     'bulk_actions' => 'Bulk Actions',
     'bulk_update_prices' => 'Bulk Update Prices',
@@ -125,7 +125,7 @@ return [
     'bulk_change_supplier' => 'Bulk Change Supplier',
     'export_selected' => 'Export Selected',
     'delete_selected' => 'Delete Selected',
-    
+
     // Import/Export
     'import_products' => 'Import Products',
     'export_products' => 'Export Products',
@@ -133,7 +133,7 @@ return [
     'upload_file' => 'Upload File',
     'import_successful' => 'Import completed successfully',
     'export_successful' => 'Export completed successfully',
-    
+
     // Ingredients Subsection (English placeholders for Tigrinya translation)
     'ingredients' => [
         'title' => 'Ingredients',
@@ -262,7 +262,7 @@ return [
         'edit_ingredient_details' => 'Edit ingredient details',
         'delete_ingredient_confirm' => 'Delete this ingredient',
     ],
-    
+
     // Stock Levels Subsection (English placeholders for Tigrinya translation)
     'stock_levels' => [
         'title' => 'Stock Levels',
@@ -430,7 +430,7 @@ return [
         'title' => 'Inventory Settings',
         'subtitle' => 'Manage categories, units, ingredient types, and cost structures',
         'nav_title' => 'Settings',
-        
+
         // Categories
         'categories' => [
             'title' => 'Categories',
@@ -443,7 +443,7 @@ return [
             'active' => 'Active',
             'actions' => 'Actions',
         ],
-        
+
         // Units
         'units' => [
             'title' => 'Units',
@@ -462,7 +462,7 @@ return [
                 'custom' => 'Custom',
             ],
         ],
-        
+
         // Ingredient Types
         'types' => [
             'title' => 'Ingredient Types',
@@ -475,7 +475,7 @@ return [
             'color' => 'Color',
             'properties' => 'Properties',
         ],
-        
+
         // Messages
         'category_created' => 'Category created successfully',
         'category_updated' => 'Category updated successfully',
@@ -486,13 +486,13 @@ return [
         'type_created' => 'Ingredient type created successfully',
         'type_updated' => 'Ingredient type updated successfully',
         'type_deleted' => 'Ingredient type deleted successfully',
-        
+
         // Validation
         'name_required' => 'Name is required',
         'symbol_required' => 'Symbol is required',
         'color_required' => 'Color is required',
         'type_required' => 'Type is required',
-        
+
         // Tabs
         'categories_tab' => 'Categories',
         'units_tab' => 'Units',
@@ -504,14 +504,14 @@ return [
         'title' => 'Recipes & Bill of Materials',
         'nav_title' => 'Recipes / BOM',
         'subtitle' => 'Manage recipes, ingredient lists, and bill of materials for menu items',
-        
+
         // Navigation & Actions
         'add_recipe' => 'Add Recipe',
         'edit_recipe' => 'Edit Recipe',
         'duplicate_recipe' => 'Duplicate Recipe',
         'delete_recipe' => 'Delete Recipe',
         'view_recipe' => 'View Recipe',
-        
+
         // Recipe Fields
         'recipe_name' => 'Recipe Name',
         'recipe_code' => 'Recipe Code',
@@ -526,7 +526,7 @@ return [
         'total_cost' => 'Total Recipe Cost',
         'yield' => 'Recipe Yield',
         'status' => 'Status',
-        
+
         // Recipe Categories
         'categories' => [
             'appetizer' => 'Appetizer',
@@ -538,7 +538,7 @@ return [
             'soup' => 'Soup',
             'salad' => 'Salad',
         ],
-        
+
         // Difficulty Levels
         'difficulty_levels' => [
             'easy' => 'Easy',
@@ -546,7 +546,7 @@ return [
             'hard' => 'Hard',
             'expert' => 'Expert',
         ],
-        
+
         // Recipe Status
         'statuses' => [
             'active' => 'Active',
@@ -554,7 +554,7 @@ return [
             'draft' => 'Draft',
             'testing' => 'Testing',
         ],
-        
+
         // Ingredients Section
         'ingredients' => 'Ingredients',
         'ingredient_name' => 'Ingredient',
@@ -564,13 +564,13 @@ return [
         'notes' => 'Notes',
         'add_ingredient' => 'Add Ingredient',
         'remove_ingredient' => 'Remove Ingredient',
-        
+
         // Instructions
         'instructions' => 'Instructions',
         'step' => 'Step',
         'add_step' => 'Add Step',
         'remove_step' => 'Remove Step',
-        
+
         // Nutrition (Optional)
         'nutrition' => 'Nutrition Information',
         'calories' => 'Calories',
@@ -579,13 +579,13 @@ return [
         'fat' => 'Fat (g)',
         'fiber' => 'Fiber (g)',
         'sodium' => 'Sodium (mg)',
-        
+
         // Table Headers
         'recipe_details' => 'Recipe Details',
         'ingredient_list' => 'Ingredient List',
         'recipe_instructions' => 'Recipe Instructions',
         'cost_analysis' => 'Cost Analysis',
-        
+
         // Filters
         'all_categories' => 'All Categories',
         'all_difficulties' => 'All Difficulties',
@@ -594,7 +594,7 @@ return [
         'filter_by_difficulty' => 'Filter by Difficulty',
         'filter_by_status' => 'Filter by Status',
         'search_recipes' => 'Search recipes...',
-        
+
         // Messages
         'recipe_created' => 'Recipe created successfully',
         'recipe_updated' => 'Recipe updated successfully',
@@ -602,27 +602,27 @@ return [
         'recipe_duplicated' => 'Recipe duplicated successfully',
         'no_recipes' => 'No recipes found',
         'no_recipes_message' => 'Start by creating your first recipe to build your menu.',
-        
+
         // Validation
         'name_required' => 'Recipe name is required',
         'category_required' => 'Category is required',
         'serving_size_required' => 'Serving size is required',
         'ingredients_required' => 'At least one ingredient is required',
         'instructions_required' => 'Recipe instructions are required',
-        
+
         // Actions
         'actions' => 'Actions',
         'bulk_actions' => 'Bulk Actions',
         'export_recipe' => 'Export Recipe',
         'print_recipe' => 'Print Recipe',
         'calculate_cost' => 'Calculate Cost',
-        
+
         // Empty States
         'no_ingredients' => 'No ingredients added',
         'no_instructions' => 'No instructions added',
         'add_first_ingredient' => 'Add your first ingredient',
         'add_first_instruction' => 'Add your first instruction step',
-        
+
         // Tooltips
         'recipe_code_help' => 'Unique identifier for this recipe',
         'serving_size_help' => 'Number of servings this recipe makes',
@@ -635,13 +635,13 @@ return [
         'title' => 'Inventory Movements',
         'nav_title' => 'Movements',
         'subtitle' => 'Track all inventory movements, transfers, adjustments, and stock changes',
-        
+
         // Navigation & Actions
         'add_movement' => 'Add Movement',
         'edit_movement' => 'Edit Movement',
         'delete_movement' => 'Delete Movement',
         'view_movement' => 'View Movement Details',
-        
+
         // Movement Types
         'movement_types' => [
             'receive' => 'Receive',
@@ -652,7 +652,7 @@ return [
             'sale' => 'Sale',
             'production' => 'Production',
         ],
-        
+
         // Table Headers
         'item' => 'Item',
         'quantity' => 'Quantity',
@@ -664,7 +664,7 @@ return [
         'date_time' => 'Date & Time',
         'notes' => 'Notes',
         'reference' => 'Reference',
-        
+
         // Filters
         'filter_by_type' => 'Filter by Movement Type',
         'filter_by_location' => 'Filter by Location',
@@ -676,7 +676,7 @@ return [
         'date_from' => 'From Date',
         'date_to' => 'To Date',
         'search_items' => 'Search items...',
-        
+
         // Form Fields
         'select_item' => 'Select Item',
         'select_movement_type' => 'Select Movement Type',
@@ -689,7 +689,7 @@ return [
         'movement_time' => 'Movement Time',
         'add_notes' => 'Add notes (optional)',
         'reference_number' => 'Reference Number',
-        
+
         // Movement Details
         'movement_details' => 'Movement Details',
         'item_details' => 'Item Details',
@@ -697,7 +697,7 @@ return [
         'location_info' => 'Location Information',
         'staff_info' => 'Staff Information',
         'additional_info' => 'Additional Information',
-        
+
         // Messages
         'movement_created' => 'Movement recorded successfully',
         'movement_updated' => 'Movement updated successfully',
@@ -707,7 +707,7 @@ return [
         'loading_movements' => 'Loading movements...',
         'error_loading' => 'Error loading movements',
         'retry' => 'Retry',
-        
+
         // Validation
         'item_required' => 'Item is required',
         'type_required' => 'Movement type is required',
@@ -719,7 +719,7 @@ return [
         'staff_required' => 'Staff member is required',
         'date_required' => 'Date is required',
         'invalid_date' => 'Invalid date format',
-        
+
         // Actions
         'save_movement' => 'Save Movement',
         'cancel' => 'Cancel',
@@ -728,20 +728,20 @@ return [
         'delete' => 'Delete',
         'confirm_delete' => 'Are you sure you want to delete this movement?',
         'delete_warning' => 'This action cannot be undone.',
-        
+
         // Drawer/Modal
         'movement_drawer_title' => 'Movement Details',
         'add_movement_title' => 'Add New Movement',
         'edit_movement_title' => 'Edit Movement',
         'close_drawer' => 'Close Drawer',
-        
+
         // Summary & Stats
         'total_movements' => 'Total Movements',
         'recent_movements' => 'Recent Movements',
         'movements_today' => 'Movements Today',
         'movements_this_week' => 'This Week',
         'movements_this_month' => 'This Month',
-        
+
         // Locations
         'locations' => [
             'warehouse' => 'Main Warehouse',
@@ -752,7 +752,7 @@ return [
             'bar' => 'Bar Area',
             'prep_area' => 'Prep Area',
         ],
-        
+
         // Staff Roles
         'staff_roles' => [
             'manager' => 'Manager',
@@ -761,14 +761,14 @@ return [
             'server' => 'Server',
             'inventory_clerk' => 'Inventory Clerk',
         ],
-        
+
         // Time Formats
         'time_ago' => ':time ago',
         'just_now' => 'Just now',
         'minutes_ago' => ':count minutes ago',
         'hours_ago' => ':count hours ago',
         'days_ago' => ':count days ago',
-        
+
         // Tooltips
         'click_row_details' => 'Click row to view details',
         'movement_type_help' => 'Select the type of inventory movement',
@@ -782,14 +782,14 @@ return [
         'title' => 'Purchase Orders',
         'nav_title' => 'Purchasing (POs)',
         'subtitle' => 'Manage purchase orders, suppliers, and procurement processes',
-        
+
         // Navigation & Actions
         'new_purchase_order' => 'New Purchase Order',
         'edit_purchase_order' => 'Edit Purchase Order',
         'delete_purchase_order' => 'Delete Purchase Order',
         'view_purchase_order' => 'View Purchase Order Details',
         'duplicate_po' => 'Duplicate PO',
-        
+
         // PO Status
         'po_statuses' => [
             'draft' => 'Draft',
@@ -799,7 +799,7 @@ return [
             'partial' => 'Partial',
             'overdue' => 'Overdue',
         ],
-        
+
         // Table Headers
         'po_number' => 'PO Number',
         'supplier' => 'Supplier',
@@ -809,7 +809,7 @@ return [
         'total' => 'Total Amount',
         'items_count' => 'Items',
         'created_by' => 'Created By',
-        
+
         // Filters
         'filter_by_supplier' => 'Filter by Supplier',
         'filter_by_status' => 'Filter by Status',
@@ -821,7 +821,7 @@ return [
         'delivery_date_from' => 'Delivery Date From',
         'delivery_date_to' => 'Delivery Date To',
         'search_po' => 'Search PO number, items...',
-        
+
         // Form Fields
         'select_supplier' => 'Select Supplier',
         'po_number_auto' => 'PO Number (Auto-generated)',
@@ -830,7 +830,7 @@ return [
         'special_instructions' => 'Special Instructions',
         'payment_terms' => 'Payment Terms',
         'delivery_address' => 'Delivery Address',
-        
+
         // Line Items
         'line_items' => 'Line Items',
         'add_line_item' => 'Add Line Item',
@@ -842,7 +842,7 @@ return [
         'select_item' => 'Select Item',
         'enter_quantity' => 'Enter Quantity',
         'enter_unit_price' => 'Enter Unit Price',
-        
+
         // Totals
         'subtotal' => 'Subtotal',
         'tax_rate' => 'Tax Rate',
@@ -850,7 +850,7 @@ return [
         'shipping_cost' => 'Shipping Cost',
         'discount' => 'Discount',
         'grand_total' => 'Grand Total',
-        
+
         // PO Details
         'po_details' => 'Purchase Order Details',
         'supplier_info' => 'Supplier Information',
@@ -858,7 +858,7 @@ return [
         'delivery_info' => 'Delivery Information',
         'financial_summary' => 'Financial Summary',
         'line_items_summary' => 'Line Items Summary',
-        
+
         // Messages
         'po_created' => 'Purchase order created successfully',
         'po_updated' => 'Purchase order updated successfully',
@@ -871,7 +871,7 @@ return [
         'loading_purchase_orders' => 'Loading purchase orders...',
         'error_loading' => 'Error loading purchase orders',
         'retry' => 'Retry',
-        
+
         // Validation
         'supplier_required' => 'Supplier is required',
         'order_date_required' => 'Order date is required',
@@ -884,7 +884,7 @@ return [
         'unit_price_required' => 'Unit price is required',
         'unit_price_positive' => 'Unit price must be positive',
         'invalid_date' => 'Invalid date format',
-        
+
         // Actions
         'save_po' => 'Save Purchase Order',
         'send_po' => 'Send to Supplier',
@@ -901,13 +901,13 @@ return [
         'confirm_cancel' => 'Are you sure you want to cancel this purchase order?',
         'delete_warning' => 'This action cannot be undone.',
         'cancel_warning' => 'Cancelled purchase orders cannot be modified.',
-        
+
         // Drawer/Modal
         'po_drawer_title' => 'Purchase Order Details',
         'add_po_title' => 'Create New Purchase Order',
         'edit_po_title' => 'Edit Purchase Order',
         'close_drawer' => 'Close Drawer',
-        
+
         // Summary & Stats
         'total_purchase_orders' => 'Total Purchase Orders',
         'draft_pos' => 'Draft POs',
@@ -917,7 +917,7 @@ return [
         'total_value' => 'Total Value',
         'this_month_value' => 'This Month Value',
         'avg_po_value' => 'Average PO Value',
-        
+
         // Suppliers
         'supplier_details' => [
             'name' => 'Supplier Name',
@@ -927,7 +927,7 @@ return [
             'address' => 'Address',
             'payment_terms' => 'Payment Terms',
         ],
-        
+
         // Payment Terms
         'payment_terms_options' => [
             'net_30' => 'Net 30 Days',
@@ -937,12 +937,12 @@ return [
             'prepaid' => 'Prepaid',
             'net_60' => 'Net 60 Days',
         ],
-        
+
         // Time Formats
         'days_ago' => ':count days ago',
         'due_in_days' => 'Due in :count days',
         'overdue_by_days' => 'Overdue by :count days',
-        
+
         // Tooltips
         'click_row_details' => 'Click row to view details',
         'po_number_help' => 'Unique purchase order identifier',
@@ -950,7 +950,7 @@ return [
         'delivery_date_help' => 'Expected date when items will be delivered',
         'line_items_help' => 'Add items to purchase with quantities and prices',
         'special_instructions_help' => 'Any special delivery or handling instructions',
-        
+
         // Status Descriptions
         'status_descriptions' => [
             'draft' => 'Purchase order is being prepared',
@@ -960,14 +960,14 @@ return [
             'partial' => 'Some items received, others pending',
             'overdue' => 'Expected delivery date has passed',
         ],
-        
+
         // Calculations
         'auto_calculate' => 'Auto-calculate',
         'manual_entry' => 'Manual entry',
         'tax_included' => 'Tax included',
         'tax_excluded' => 'Tax excluded',
         'currency_symbol' => '$',
-        
+
         // Line Item Actions
         'move_up' => 'Move Up',
         'move_down' => 'Move Down',

@@ -73,6 +73,7 @@ export default defineConfig({
                 'resources/js/admin/shifts/templates.js',
                 'resources/css/admin/shifts/create.css',
                 'resources/js/admin/shifts/create.js',
+                'resources/css/admin/shifts/edit.css',
                 // Tables section
                 'resources/css/admin/tables/table-types.css',
                 'resources/js/admin/tables/table-types.js',

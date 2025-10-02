@@ -19,9 +19,10 @@ class StaffSeeder extends Seeder
         // Get staff types
         $systemAdmin = StaffType::where('name', 'system_admin')->first();
         $administrator = StaffType::where('name', 'administrator')->first();
-        
-        if (!$systemAdmin || !$administrator) {
+
+        if (! $systemAdmin || ! $administrator) {
             $this->command->error('❌ Staff types not found! Please run StaffTypeSeeder first.');
+
             return;
         }
 
@@ -58,11 +59,11 @@ class StaffSeeder extends Seeder
         $this->command->info('✅ Staff members created successfully!');
         $this->command->table(
             ['Username', 'Full Name', 'Staff Type', 'Status'],
-            Staff::with('staffType')->get()->map(fn($staff) => [
+            Staff::with('staffType')->get()->map(fn ($staff) => [
                 $staff->username,
                 $staff->full_name,
                 $staff->staffType->display_name ?? 'No Type',
-                $staff->status
+                $staff->status,
             ])->toArray()
         );
 

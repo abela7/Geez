@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Shifts;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\JsonResponse;
-use Carbon\Carbon;
 
 class AssignmentsController extends Controller
 {
@@ -197,16 +196,16 @@ class AssignmentsController extends Controller
 
         // Calculate assignment statistics
         $totalShifts = count($shifts);
-        $fullyCovered = count(array_filter($shifts, fn($shift) => $shift['status'] === 'fully_covered'));
-        $partiallyCovered = count(array_filter($shifts, fn($shift) => $shift['status'] === 'partially_covered'));
-        $notCovered = count(array_filter($shifts, fn($shift) => $shift['status'] === 'not_covered'));
-        
+        $fullyCovered = count(array_filter($shifts, fn ($shift) => $shift['status'] === 'fully_covered'));
+        $partiallyCovered = count(array_filter($shifts, fn ($shift) => $shift['status'] === 'partially_covered'));
+        $notCovered = count(array_filter($shifts, fn ($shift) => $shift['status'] === 'not_covered'));
+
         $totalRequiredStaff = array_sum(array_column($shifts, 'required_staff'));
         $totalAssignedStaff = array_sum(array_column($shifts, 'assigned_staff'));
         $coveragePercentage = $totalRequiredStaff > 0 ? round(($totalAssignedStaff / $totalRequiredStaff) * 100) : 0;
 
         // Staff availability summary
-        $availableStaff = count(array_filter($staff, fn($s) => $s['status'] === 'active'));
+        $availableStaff = count(array_filter($staff, fn ($s) => $s['status'] === 'active'));
         $totalStaff = count($staff);
 
         // Recent assignment activity
@@ -265,7 +264,7 @@ class AssignmentsController extends Controller
         $staffId = $request->input('staff_id');
         $shiftId = $request->input('shift_id');
         $role = $request->input('role', 'Staff');
-        
+
         // Mock response
         return response()->json([
             'success' => true,
@@ -277,7 +276,7 @@ class AssignmentsController extends Controller
                 'role' => $role,
                 'status' => 'pending',
                 'assigned_at' => Carbon::now()->toISOString(),
-            ]
+            ],
         ]);
     }
 
@@ -288,12 +287,12 @@ class AssignmentsController extends Controller
     {
         // In a real application, you would remove the assignment
         $assignmentId = $request->input('assignment_id');
-        
+
         // Mock response
         return response()->json([
             'success' => true,
             'message' => __('shifts.assignments.unassignment_successful'),
-            'assignment_id' => $assignmentId
+            'assignment_id' => $assignmentId,
         ]);
     }
 
@@ -304,7 +303,7 @@ class AssignmentsController extends Controller
     {
         $assignmentId = $request->input('assignment_id');
         $status = $request->input('status');
-        
+
         // Mock response
         return response()->json([
             'success' => true,
@@ -313,7 +312,7 @@ class AssignmentsController extends Controller
                 'id' => $assignmentId,
                 'status' => $status,
                 'updated_at' => Carbon::now()->toISOString(),
-            ]
+            ],
         ]);
     }
 
@@ -326,7 +325,7 @@ class AssignmentsController extends Controller
         $startTime = $request->input('start_time');
         $endTime = $request->input('end_time');
         $department = $request->input('department');
-        
+
         // Mock available staff based on filters
         $availableStaff = [
             [
@@ -354,11 +353,11 @@ class AssignmentsController extends Controller
                 'conflicts' => ['Already assigned to Morning Kitchen (06:00-14:00)'],
             ],
         ];
-        
+
         return response()->json([
             'success' => true,
             'available_staff' => $availableStaff,
-            'total_available' => count(array_filter($availableStaff, fn($s) => $s['availability_status'] === 'available')),
+            'total_available' => count(array_filter($availableStaff, fn ($s) => $s['availability_status'] === 'available')),
         ]);
     }
 }

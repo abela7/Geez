@@ -100,7 +100,7 @@ class StockMovement extends Model
      */
     public function getFormattedTypeAttribute(): string
     {
-        return match($this->type) {
+        return match ($this->type) {
             'received' => 'Stock Received',
             'issued' => 'Stock Issued',
             'adjusted' => 'Stock Adjusted',

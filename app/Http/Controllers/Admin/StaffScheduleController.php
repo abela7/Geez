@@ -8,17 +8,17 @@ use App\Http\Controllers\Controller;
 use App\Models\Staff;
 use App\Models\StaffShift;
 use App\Models\StaffShiftAssignment;
-use App\Models\StaffTimeOffRequest;
 use App\Models\StaffShiftSwap;
+use App\Models\StaffTimeOffRequest;
 use Carbon\Carbon;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class StaffScheduleController extends Controller
 {
     use AuthorizesRequests;
+
     /**
      * Display the main scheduling interface.
      */
@@ -27,10 +27,10 @@ class StaffScheduleController extends Controller
         $this->authorize('viewAny', StaffShift::class);
 
         // Get current week or requested week
-        $weekStart = $request->get('week') 
+        $weekStart = $request->get('week')
             ? Carbon::parse($request->get('week'))->startOfWeek()
             : Carbon::now()->startOfWeek();
-        
+
         $weekEnd = $weekStart->copy()->endOfWeek();
 
         // Get all shifts for the week
@@ -53,7 +53,7 @@ class StaffScheduleController extends Controller
 
         return view('admin.staff.schedule.index', compact(
             'assignments',
-            'shifts', 
+            'shifts',
             'staff',
             'weekStart',
             'weekEnd',
@@ -86,7 +86,7 @@ class StaffScheduleController extends Controller
         if ($existingAssignment) {
             return response()->json([
                 'success' => false,
-                'message' => 'Staff member is already assigned for this date.'
+                'message' => 'Staff member is already assigned for this date.',
             ], 422);
         }
 
@@ -103,7 +103,7 @@ class StaffScheduleController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Staff assigned successfully.',
-            'assignment' => $assignment->load(['staff', 'shift'])
+            'assignment' => $assignment->load(['staff', 'shift']),
         ]);
     }
 
@@ -117,7 +117,7 @@ class StaffScheduleController extends Controller
 
         while ($current->lte($endDate)) {
             $dateStr = $current->format('Y-m-d');
-            
+
             // Get all shifts for this date
             $shifts = StaffShift::active()->get();
             $assignments = StaffShiftAssignment::where('assigned_date', $dateStr)
@@ -166,7 +166,7 @@ class StaffScheduleController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->limit(5)
                 ->get(),
-            
+
             'shift_swaps' => StaffShiftSwap::pending()
                 ->with(['requestingStaff', 'targetStaff'])
                 ->orderBy('created_at', 'desc')

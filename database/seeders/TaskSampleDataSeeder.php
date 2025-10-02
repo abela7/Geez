@@ -19,10 +19,10 @@ class TaskSampleDataSeeder extends Seeder
 
         // Get existing staff members or create some if none exist
         $staff = Staff::active()->get();
-        
+
         if ($staff->isEmpty()) {
             $this->command->info('No staff members found. Creating sample staff...');
-            
+
             // Create sample staff members
             $staff = collect([
                 Staff::create([
@@ -60,7 +60,7 @@ class TaskSampleDataSeeder extends Seeder
                     'hire_date' => now()->subYear(),
                     'status' => 'active',
                     'created_by' => '01K5E5GE8XBXG9V91DMK9NEB4Q',
-                ])
+                ]),
             ]);
         }
 
@@ -119,7 +119,7 @@ class TaskSampleDataSeeder extends Seeder
                 'category' => 'inventory',
                 'estimated_hours' => 3.5,
                 'is_active' => true,
-            ]
+            ],
         ];
 
         $createdTasks = [];
@@ -132,18 +132,18 @@ class TaskSampleDataSeeder extends Seeder
             $createdTasks[] = $task;
         }
 
-        $this->command->info('Created ' . count($createdTasks) . ' sample tasks.');
+        $this->command->info('Created '.count($createdTasks).' sample tasks.');
 
         // Create sample assignments
         $assignments = [];
         foreach ($createdTasks as $index => $task) {
             // Assign each task to 1-2 random staff members
             $assignedStaff = $staff->random(rand(1, 2));
-            
+
             foreach ($assignedStaff as $staffMember) {
                 $dueDate = now()->addDays(rand(1, 14)); // Due in 1-14 days
                 $status = ['pending', 'in_progress', 'completed'][rand(0, 2)];
-                
+
                 $assignment = StaffTaskAssignment::create([
                     'id' => Str::ulid(),
                     'staff_task_id' => $task->id,
@@ -158,16 +158,16 @@ class TaskSampleDataSeeder extends Seeder
                     'completed_at' => $status === 'completed' ? now()->subDays(rand(0, 2)) : null,
                     'completed_by' => $status === 'completed' ? $staffMember->id : null,
                 ]);
-                
+
                 $assignments[] = $assignment;
             }
         }
 
-        $this->command->info('Created ' . count($assignments) . ' sample task assignments.');
-        
+        $this->command->info('Created '.count($assignments).' sample task assignments.');
+
         $this->command->info('✅ Sample task data created successfully!');
-        $this->command->info('📋 Tasks: ' . count($createdTasks));
-        $this->command->info('👥 Assignments: ' . count($assignments));
+        $this->command->info('📋 Tasks: '.count($createdTasks));
+        $this->command->info('👥 Assignments: '.count($assignments));
         $this->command->info('🎯 You can now test the task management system!');
     }
 }

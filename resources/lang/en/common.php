@@ -38,7 +38,7 @@ return [
     'print' => 'Print',
     'download' => 'Download',
     'upload' => 'Upload',
-    
+
     // Status
     'status' => 'Status',
     'active' => 'Active',
@@ -64,7 +64,7 @@ return [
     'unknown' => 'Unknown',
     'system' => 'System',
     'update' => 'Update',
-    
+
     // Common fields
     'name' => 'Name',
     'title' => 'Title',
@@ -85,7 +85,7 @@ return [
     'created_by' => 'Created By',
     'updated_by' => 'Updated By',
     'by' => 'by',
-    
+
     // Messages
     'success' => 'Success',
     'error' => 'Error',
@@ -104,7 +104,7 @@ return [
     'no_description' => 'No description provided',
     'showing' => 'Showing',
     'results' => 'results',
-    
+
     // Pagination
     'showing_results' => 'Showing :first to :last of :total results',
     'per_page' => 'Per page',
@@ -114,7 +114,7 @@ return [
     'next' => 'Next',
     'first' => 'First',
     'last' => 'Last',
-    
+
     // Navigation
     'dashboard' => 'Dashboard',
     'home' => 'Home',
@@ -123,7 +123,7 @@ return [
     'logout' => 'Logout',
     'login' => 'Login',
     'register' => 'Register',
-    
+
     // Validation
     'required' => 'This field is required',
     'invalid' => 'Invalid value',
@@ -131,13 +131,13 @@ return [
     'too_long' => 'Too long',
     'invalid_format' => 'Invalid format',
     'already_exists' => 'Already exists',
-    
+
     // Confirmations
     'are_you_sure' => 'Are you sure?',
     'confirm_delete' => 'Are you sure you want to delete this item?',
     'confirm_action' => 'Are you sure you want to perform this action?',
     'cannot_be_undone' => 'This action cannot be undone.',
-    
+
     // Time
     'today' => 'Today',
     'yesterday' => 'Yesterday',
@@ -148,7 +148,7 @@ return [
     'last_month' => 'Last month',
     'this_year' => 'This year',
     'last_year' => 'Last year',
-    
+
     // File operations
     'file' => 'File',
     'files' => 'Files',
@@ -159,7 +159,7 @@ return [
     'size' => 'Size',
     'type' => 'Type',
     'format' => 'Format',
-    
+
     // Numbers
     'total' => 'Total',
     'count' => 'Count',
@@ -173,7 +173,7 @@ return [
     'at' => 'at',
     'clear_selection' => 'Clear Selection',
     'updating' => 'Updating',
-    
+
     // Boolean
     'yes' => 'Yes',
     'no' => 'No',

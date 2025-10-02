@@ -19,18 +19,18 @@ class LoginPageTest extends TestCase
         $response = $this->get('/login');
 
         $response->assertStatus(200);
-        
+
         // Check for form elements
         $response->assertSee('Sign in to your account');
         $response->assertSee('Email address');
         $response->assertSee('Password');
         $response->assertSee('Sign in');
         $response->assertSee('Forgot your password?');
-        
+
         // Check for branding
         $response->assertSee('Geez Restaurant');
         $response->assertSee('ግዕዝ ሬስቶራንት');
-        
+
         // Check for theme/language switches
         $response->assertSee('Switch language');
         $response->assertSee('English');
@@ -50,10 +50,10 @@ class LoginPageTest extends TestCase
         $response = $this->get('/login');
 
         $response->assertStatus(200);
-        
+
         // Check for Vite assets (built assets have different paths)
         $response->assertSee('/build/assets/', false);
-        
+
         // Check for fonts
         $response->assertSee('fonts.googleapis.com', false);
     }

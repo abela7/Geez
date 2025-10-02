@@ -154,12 +154,12 @@ class StaffShiftAssignment extends Model
      */
     public function getTotalHoursWorked(): float
     {
-        if (!$this->actual_start_time || !$this->actual_end_time) {
+        if (! $this->actual_start_time || ! $this->actual_end_time) {
             return 0;
         }
 
         $totalMinutes = $this->actual_end_time->diffInMinutes($this->actual_start_time);
-        
+
         // Subtract break time if recorded
         if ($this->break_start_time && $this->break_end_time) {
             $breakMinutes = $this->break_end_time->diffInMinutes($this->break_start_time);
@@ -224,7 +224,7 @@ class StaffShiftAssignment extends Model
     {
         $startOfWeek = now()->startOfWeek();
         $endOfWeek = now()->endOfWeek();
-        
+
         return $query->whereBetween('date', [$startOfWeek->format('Y-m-d'), $endOfWeek->format('Y-m-d')]);
     }
 

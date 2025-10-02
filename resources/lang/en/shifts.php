@@ -52,7 +52,7 @@ return [
         'shift_created_successfully' => 'Shift created successfully',
         'shift_updated_successfully' => 'Shift updated successfully',
         'shift_deleted_successfully' => 'Shift deleted successfully',
-        
+
         // Form sections
         'basic_information' => 'Basic Information',
         'basic_info_description' => 'General shift details and classification',
@@ -62,7 +62,7 @@ return [
         'staffing_requirements_description' => 'Staff count and compensation details',
         'cost_calculation' => 'Cost Calculation',
         'cost_calculation_description' => 'Estimated labor costs based on current settings',
-        
+
         // Form fields
         'shift_name' => 'Shift Name',
         'name_placeholder' => 'e.g., Morning Kitchen Prep',
@@ -87,12 +87,12 @@ return [
         'overtime_rate' => 'Overtime Rate',
         'overtime_rate_help' => 'Hourly rate for overtime work (optional)',
         'status_help' => 'Draft shifts are not visible in scheduling',
-        
+
         // Cost calculations
         'daily_cost' => 'Daily Cost',
         'weekly_cost' => 'Weekly Cost',
         'monthly_cost' => 'Monthly Cost (Est.)',
-        
+
         // Actions
         'save_draft' => 'Save as Draft',
         'duplicate' => 'Duplicate',
@@ -101,7 +101,7 @@ return [
         'bulk_actions' => 'Bulk Actions',
         'select_all' => 'Select All',
         'selected' => 'selected',
-        
+
         // Table and listing
         'time' => 'Time',
         'staffing' => 'Staffing',
@@ -115,7 +115,7 @@ return [
         'coverage' => 'Coverage',
         'search_placeholder' => 'Search shifts by name or description...',
         'showing_results' => 'Showing :start to :end of :total results',
-        
+
         // Legacy fields (keeping for compatibility)
         'shift_description' => 'Shift Description',
         'department' => 'Department',

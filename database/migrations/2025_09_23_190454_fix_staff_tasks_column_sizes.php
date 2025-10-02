@@ -17,10 +17,10 @@ return new class extends Migration
         Schema::table('staff_tasks', function (Blueprint $table) {
             // Increase task_type column size to handle longer slugs like 'one-time-tasks'
             $table->string('task_type', 100)->change();
-            
+
             // Increase priority column size to handle longer slugs
             $table->string('priority', 50)->change();
-            
+
             // Increase category column size to handle longer slugs
             $table->string('category', 100)->nullable()->change();
         });

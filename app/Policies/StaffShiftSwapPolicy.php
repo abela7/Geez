@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Staff;
 use App\Models\StaffShiftSwap;
-use Illuminate\Auth\Access\Response;
 
 class StaffShiftSwapPolicy
 {
@@ -125,7 +124,7 @@ class StaffShiftSwapPolicy
     public function approve(Staff $staff, StaffShiftSwap $swap): bool
     {
         // Only managers can approve swaps
-        if (!$this->isManagerOrAbove($staff)) {
+        if (! $this->isManagerOrAbove($staff)) {
             return false;
         }
 
@@ -139,7 +138,7 @@ class StaffShiftSwapPolicy
     public function deny(Staff $staff, StaffShiftSwap $swap): bool
     {
         // Only managers can deny swaps
-        if (!$this->isManagerOrAbove($staff)) {
+        if (! $this->isManagerOrAbove($staff)) {
             return false;
         }
 
@@ -214,9 +213,9 @@ class StaffShiftSwapPolicy
     {
         return in_array($staff->staff_type->name, [
             'System Admin',
-            'Administrator', 
+            'Administrator',
             'Management',
-            'Chief'
+            'Chief',
         ]);
     }
 

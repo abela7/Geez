@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Staff;
 use App\Models\StaffTimeOffRequest;
-use Illuminate\Auth\Access\Response;
 
 class StaffTimeOffRequestPolicy
 {
@@ -87,7 +86,7 @@ class StaffTimeOffRequestPolicy
     public function approve(Staff $staff, StaffTimeOffRequest $request): bool
     {
         // Only managers can approve requests
-        if (!$this->isManagerOrAbove($staff)) {
+        if (! $this->isManagerOrAbove($staff)) {
             return false;
         }
 
@@ -106,7 +105,7 @@ class StaffTimeOffRequestPolicy
     public function deny(Staff $staff, StaffTimeOffRequest $request): bool
     {
         // Only managers can deny requests
-        if (!$this->isManagerOrAbove($staff)) {
+        if (! $this->isManagerOrAbove($staff)) {
             return false;
         }
 
@@ -130,7 +129,7 @@ class StaffTimeOffRequestPolicy
         }
 
         // Can only cancel pending or approved requests (not if already started)
-        if (!in_array($request->status, ['pending', 'approved'])) {
+        if (! in_array($request->status, ['pending', 'approved'])) {
             return false;
         }
 
@@ -172,9 +171,9 @@ class StaffTimeOffRequestPolicy
     {
         return in_array($staff->staff_type->name, [
             'System Admin',
-            'Administrator', 
+            'Administrator',
             'Management',
-            'Chief'
+            'Chief',
         ]);
     }
 

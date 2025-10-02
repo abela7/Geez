@@ -49,7 +49,7 @@ class RecipeIngredient extends Model
      */
     public function getFormattedQuantityAttribute(): string
     {
-        return $this->quantity . ' ' . $this->unit;
+        return $this->quantity.' '.$this->unit;
     }
 
     /**
@@ -57,6 +57,6 @@ class RecipeIngredient extends Model
      */
     public function getFormattedCostAttribute(): string
     {
-        return $this->cost ? '$' . number_format($this->cost, 2) : 'N/A';
+        return $this->cost ? '$'.number_format($this->cost, 2) : 'N/A';
     }
 }

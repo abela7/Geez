@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Staff;
 use App\Models\StaffShiftAssignment;
-use Illuminate\Auth\Access\Response;
 
 class StaffShiftAssignmentPolicy
 {
@@ -48,7 +47,7 @@ class StaffShiftAssignmentPolicy
         // Staff can only update their own assignments and only certain fields
         if ($assignment->staff_id === $staff->id) {
             // Staff can only update if assignment is not completed/cancelled
-            return !in_array($assignment->status, ['completed', 'cancelled', 'missed']);
+            return ! in_array($assignment->status, ['completed', 'cancelled', 'missed']);
         }
 
         return false;
@@ -60,12 +59,12 @@ class StaffShiftAssignmentPolicy
     public function delete(Staff $staff, StaffShiftAssignment $assignment): bool
     {
         // Only managers can delete assignments
-        if (!$this->isManagerOrAbove($staff)) {
+        if (! $this->isManagerOrAbove($staff)) {
             return false;
         }
 
         // Cannot delete assignments that are in progress or completed
-        return !in_array($assignment->status, ['checked_in', 'active', 'on_break', 'completed']);
+        return ! in_array($assignment->status, ['checked_in', 'active', 'on_break', 'completed']);
     }
 
     /**
@@ -172,9 +171,9 @@ class StaffShiftAssignmentPolicy
     {
         return in_array($staff->staff_type->name, [
             'System Admin',
-            'Administrator', 
+            'Administrator',
             'Management',
-            'Chief'
+            'Chief',
         ]);
     }
 

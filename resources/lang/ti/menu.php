@@ -3,13 +3,13 @@
 return [
     // Navigation
     'nav_title' => 'Menu Management',
-    
+
     // Food Items
     'food_items' => [
         'title' => 'Food Items',
         'subtitle' => 'Manage your restaurant\'s food items and dishes',
         'nav_title' => 'Food Items',
-        
+
         // Actions
         'add_dish' => 'Add Dish',
         'import_dishes' => 'Import Dishes',
@@ -18,7 +18,7 @@ return [
         'cancel' => 'Cancel',
         'close' => 'Close',
         'actions' => 'Actions',
-        
+
         // Search and Filters
         'search_dishes' => 'Search dishes...',
         'all_categories' => 'All Categories',
@@ -27,19 +27,19 @@ return [
         'clear_filters' => 'Clear Filters',
         'under_50' => 'Under 50 ETB',
         'over_200' => 'Over 200 ETB',
-        
+
         // Categories
         'appetizers' => 'Appetizers',
         'main_courses' => 'Main Courses',
         'desserts' => 'Desserts',
         'beverages' => 'Beverages',
         'select_category' => 'Select Category',
-        
+
         // Status
         'active' => 'Active',
         'inactive' => 'Inactive',
         'out_of_stock' => 'Out of Stock',
-        
+
         // Table Headers
         'dish' => 'Dish',
         'category' => 'Category',
@@ -47,7 +47,7 @@ return [
         'cost' => 'Cost',
         'margin' => 'Margin',
         'status' => 'Status',
-        
+
         // Form Fields
         'dish_name' => 'Dish Name',
         'dish_name_placeholder' => 'Enter dish name (e.g., Grilled Chicken)',
@@ -60,37 +60,37 @@ return [
         'selling_price' => 'Selling Price',
         'profit_margin' => 'Profit Margin',
         'markup' => 'Markup',
-        
+
         // Form Tabs
         'basic_info' => 'Basic Info',
         'ingredients' => 'Ingredients',
         'pricing' => 'Pricing',
         'media' => 'Media',
-        
+
         // Dietary Info
         'dietary_info' => 'Dietary Information',
         'vegetarian' => 'Vegetarian',
         'vegan' => 'Vegan',
         'gluten_free' => 'Gluten Free',
         'spicy' => 'Spicy',
-        
+
         // Ingredients
         'recipe_ingredients' => 'Recipe Ingredients',
         'add_ingredient' => 'Add Ingredient',
         'select_ingredient' => 'Select Ingredient',
-        
+
         // Media Upload
         'upload_image' => 'Upload Dish Image',
         'upload_image_hint' => 'Drag and drop an image or click to select (Max 5MB)',
         'select_image' => 'Select Image',
         'change_image' => 'Change Image',
         'remove_image' => 'Remove Image',
-        
+
         // Empty States
         'no_dishes_found' => 'No dishes found',
         'no_dishes_description' => 'Create your first dish to get started with your menu.',
         'add_first_dish' => 'Add First Dish',
-        
+
         // Messages
         'dish_created' => 'Dish created successfully',
         'dish_updated' => 'Dish updated successfully',
@@ -98,13 +98,13 @@ return [
         'menu_exported' => 'Menu exported successfully',
         'dishes_imported' => 'Dishes imported successfully',
     ],
-    
+
     // Categories
     'categories' => [
         'title' => 'Categories',
         'subtitle' => 'Organize your menu items into categories',
         'nav_title' => 'Categories',
-        
+
         // Actions
         'add_category' => 'Add Category',
         'import_categories' => 'Import Categories',
@@ -114,13 +114,13 @@ return [
         'cancel' => 'Cancel',
         'close' => 'Close',
         'actions' => 'Actions',
-        
+
         // Statistics
         'total_categories' => 'Total Categories',
         'active_categories' => 'Active Categories',
         'total_dishes' => 'Total Dishes',
         'most_popular' => 'Most Popular',
-        
+
         // Search and Filters
         'search_categories' => 'Search categories...',
         'all_status' => 'All Status',
@@ -129,18 +129,18 @@ return [
         'sort_by_dishes' => 'Sort by Dishes',
         'sort_by_created' => 'Sort by Created',
         'sort_by_updated' => 'Sort by Updated',
-        
+
         // Status
         'active' => 'Active',
         'inactive' => 'Inactive',
-        
+
         // Table Headers
         'category' => 'Category',
         'description' => 'Description',
         'dishes_count' => 'Dishes',
         'display_order' => 'Order',
         'status' => 'Status',
-        
+
         // Form Fields
         'category_name' => 'Category Name',
         'category_name_placeholder' => 'Enter category name (e.g., Appetizers)',
@@ -148,15 +148,15 @@ return [
         'category_icon' => 'Category Icon',
         'description_placeholder' => 'Describe this category and what types of dishes it includes...',
         'display_order_hint' => 'Lower numbers appear first in menus',
-        
+
         // Modal Titles
         'category_details' => 'Category Details',
-        
+
         // Empty States
         'no_categories_found' => 'No categories found',
         'no_categories_description' => 'Create your first category to organize your menu items.',
         'add_first_category' => 'Add First Category',
-        
+
         // Messages
         'category_created' => 'Category created successfully',
         'category_updated' => 'Category updated successfully',
@@ -164,13 +164,13 @@ return [
         'categories_exported' => 'Categories exported successfully',
         'categories_imported' => 'Categories imported successfully',
     ],
-    
+
     // Modifiers
     'modifiers' => [
         'title' => 'Modifiers',
         'subtitle' => 'Manage add-ons, extras, and customizations',
         'nav_title' => 'Modifiers',
-        
+
         // Actions
         'add_modifier_group' => 'Add Modifier Group',
         'add_modifier' => 'Add Modifier',
@@ -183,13 +183,13 @@ return [
         'cancel' => 'Cancel',
         'close' => 'Close',
         'actions' => 'Actions',
-        
+
         // Statistics
         'total_groups' => 'Total Groups',
         'total_modifiers' => 'Total Modifiers',
         'active_groups' => 'Active Groups',
         'avg_modifier_price' => 'Avg. Price',
-        
+
         // Search and Filters
         'search_modifiers' => 'Search modifier groups...',
         'all_types' => 'All Types',
@@ -199,19 +199,19 @@ return [
         'sort_by_type' => 'Sort by Type',
         'sort_by_modifiers' => 'Sort by Modifiers',
         'sort_by_created' => 'Sort by Created',
-        
+
         // Selection Types
         'single_select' => 'Single Select',
         'multiple_select' => 'Multiple Select',
         'selection_type' => 'Selection Type',
         'select_type' => 'Select Type',
         'selection_type_hint' => 'Single: customers can choose one option. Multiple: customers can choose several options.',
-        
+
         // Status
         'active' => 'Active',
         'inactive' => 'Inactive',
         'status' => 'Status',
-        
+
         // Form Fields - Group
         'group_name' => 'Group Name',
         'group_name_placeholder' => 'Enter group name (e.g., Size Options)',
@@ -219,19 +219,19 @@ return [
         'description_placeholder' => 'Describe this modifier group and its purpose...',
         'display_order' => 'Display Order',
         'display_order_hint' => 'Lower numbers appear first in menus',
-        
+
         // Form Fields - Modifier
         'modifier_name' => 'Modifier Name',
         'modifier_name_placeholder' => 'Enter modifier name (e.g., Large Size)',
         'price' => 'Price',
         'price_hint' => 'Additional cost for this modifier (0.00 for no extra charge)',
         'modifier_description_placeholder' => 'Optional description for this modifier...',
-        
+
         // Form Tabs
         'basic_info' => 'Basic Info',
         'modifier_options' => 'Modifier Options',
         'settings' => 'Settings',
-        
+
         // Settings
         'required_selection' => 'Required Selection',
         'required' => 'Required',
@@ -246,19 +246,19 @@ return [
         'price_display' => 'Price Display',
         'show_prices' => 'Show Prices',
         'hide_prices' => 'Hide Prices',
-        
+
         // Modifiers List
         'no_modifiers_added' => 'No modifiers added yet.',
         'add_first_modifier' => 'Add First Modifier',
-        
+
         // Modal Titles
         'group_details' => 'Modifier Group Details',
-        
+
         // Empty States
         'no_modifiers_found' => 'No modifier groups found',
         'no_modifiers_description' => 'Create your first modifier group to add customization options to your menu items.',
         'add_first_group' => 'Add First Group',
-        
+
         // Messages
         'group_created' => 'Modifier group created successfully',
         'group_updated' => 'Modifier group updated successfully',
@@ -269,13 +269,13 @@ return [
         'modifiers_exported' => 'Modifiers exported successfully',
         'modifiers_imported' => 'Modifiers imported successfully',
     ],
-    
+
     // Dish Cost
     'dish_cost' => [
         'title' => 'Dish Cost',
         'subtitle' => 'Calculate and manage dish costs and margins',
         'nav_title' => 'Dish Cost',
-        
+
         // Actions
         'load_existing_dish' => 'Load Existing Dish',
         'save_as_template' => 'Save as Template',
@@ -287,7 +287,7 @@ return [
         'cancel' => 'Cancel',
         'close' => 'Close',
         'actions' => 'Actions',
-        
+
         // Dish Information
         'dish_information' => 'Dish Information',
         'dish_info_subtitle' => 'Enter basic information about the dish',
@@ -300,7 +300,7 @@ return [
         'desserts' => 'Desserts',
         'beverages' => 'Beverages',
         'serving_size' => 'Serving Size',
-        
+
         // Ingredients
         'ingredients' => 'Ingredients',
         'ingredients_subtitle' => 'Add all ingredients and their costs',
@@ -314,7 +314,7 @@ return [
         'total' => 'Total',
         'notes' => 'Notes',
         'notes_placeholder' => 'Optional notes about this ingredient...',
-        
+
         // Units
         'kg' => 'Kilograms',
         'g' => 'Grams',
@@ -326,7 +326,7 @@ return [
         'tbsp' => 'Tablespoons',
         'tsp' => 'Teaspoons',
         'piece' => 'Pieces',
-        
+
         // Overhead Costs
         'overhead_costs' => 'Overhead Costs',
         'overhead_subtitle' => 'Calculate additional costs beyond ingredients',
@@ -337,13 +337,13 @@ return [
         'utilities' => 'Utilities',
         'rent_equipment' => 'Rent & Equipment',
         'other_expenses' => 'Other Expenses',
-        
+
         // Cost Summary
         'cost_summary' => 'Cost Summary',
         'ingredients_cost' => 'Ingredients Cost:',
         'overhead_cost' => 'Overhead Cost:',
         'total_cost' => 'Total Cost:',
-        
+
         // Pricing
         'pricing' => 'Pricing',
         'profit_margin' => 'Profit Margin (%)',
@@ -352,18 +352,18 @@ return [
         'actual_margin' => 'Actual Margin:',
         'profit_per_dish' => 'Profit per Dish:',
         'cost_percentage' => 'Cost %:',
-        
+
         // Empty States
         'no_ingredients' => 'No ingredients added',
         'no_ingredients_description' => 'Add ingredients to calculate the dish cost.',
-        
+
         // Quick Tips
         'quick_tips' => 'Quick Tips',
         'tip_1' => 'Aim for food costs between 25-35% of selling price',
         'tip_2' => 'Include all ingredients, even small amounts like spices',
         'tip_3' => 'Update costs regularly based on supplier prices',
         'tip_4' => 'Consider portion sizes when calculating quantities',
-        
+
         // Messages
         'ingredient_added' => 'Ingredient added successfully',
         'ingredient_updated' => 'Ingredient updated successfully',
@@ -373,13 +373,13 @@ return [
         'template_saved' => 'Template saved successfully',
         'dish_loaded' => 'Dish loaded successfully',
     ],
-    
+
     // Pricing
     'pricing' => [
         'title' => 'Pricing',
         'subtitle' => 'Set and manage menu item pricing strategies',
         'nav_title' => 'Pricing',
-        
+
         // Actions
         'export_prices' => 'Export Prices',
         'bulk_update' => 'Bulk Update',
@@ -389,13 +389,13 @@ return [
         'cancel' => 'Cancel',
         'close' => 'Close',
         'actions' => 'Actions',
-        
+
         // Statistics
         'total_items' => 'Total Items',
         'average_price' => 'Average Price',
         'recent_changes' => 'Recent Changes',
         'price_range' => 'Price Range',
-        
+
         // Search and Filters
         'search_items' => 'Search menu items...',
         'all_categories' => 'All Categories',
@@ -405,13 +405,13 @@ return [
         'sort_by_price_low' => 'Price: Low to High',
         'sort_by_price_high' => 'Price: High to Low',
         'sort_by_updated' => 'Recently Updated',
-        
+
         // Categories
         'appetizers' => 'Appetizers',
         'main_courses' => 'Main Courses',
         'desserts' => 'Desserts',
         'beverages' => 'Beverages',
-        
+
         // Table Headers
         'item' => 'Item',
         'category' => 'Category',
@@ -419,7 +419,7 @@ return [
         'cost' => 'Cost',
         'margin' => 'Margin',
         'last_updated' => 'Last Updated',
-        
+
         // Edit Price Modal
         'new_price' => 'New Price',
         'price_change' => 'Price Change',
@@ -437,7 +437,7 @@ return [
         'effective_date' => 'Effective Date',
         'apply_to_similar' => 'Apply to Similar Items',
         'apply_same_category' => 'Apply to same category',
-        
+
         // Price Analysis
         'price_analysis' => 'Price Analysis',
         'new_margin' => 'New Margin',
@@ -445,7 +445,7 @@ return [
         'cost_percentage' => 'Cost %',
         'price_position' => 'Price Position',
         'average' => 'Average',
-        
+
         // Bulk Update Modal
         'bulk_price_update' => 'Bulk Price Update',
         'percentage_change' => 'Percentage Change',
@@ -454,18 +454,18 @@ return [
         'preview_changes' => 'Preview Changes',
         'items_affected' => 'items will be affected',
         'apply_changes' => 'Apply Changes',
-        
+
         // Price History Modal
         'all_items' => 'All Items',
         'last_7_days' => 'Last 7 Days',
         'last_30_days' => 'Last 30 Days',
         'last_90_days' => 'Last 90 Days',
         'last_year' => 'Last Year',
-        
+
         // Empty States
         'no_items_found' => 'No menu items found',
         'no_items_description' => 'Try adjusting your search or filter criteria.',
-        
+
         // Messages
         'price_updated' => 'Price updated successfully',
         'prices_exported' => 'Prices exported successfully',
@@ -474,27 +474,27 @@ return [
         'select_categories' => 'Please select at least one category',
         'price_change_saved' => 'Price change saved to history',
     ],
-    
+
     // Menu Design
     'design' => [
         'title' => 'Menu Design',
         'subtitle' => 'Design and customize your menu layout and appearance',
         'nav_title' => 'Menu Design',
-        
+
         // Actions
         'preview_menu' => 'Preview Menu',
         'export_design' => 'Export Design',
         'save_design' => 'Save Design',
         'download_pdf' => 'Download PDF',
         'close' => 'Close',
-        
+
         // Tabs
         'branding' => 'Branding',
         'layout' => 'Layout',
         'colors' => 'Colors',
         'typography' => 'Typography',
         'content' => 'Content',
-        
+
         // Branding
         'restaurant_branding' => 'Restaurant Branding',
         'logo' => 'Logo',
@@ -507,7 +507,7 @@ return [
         'restaurant_description' => 'Restaurant Description',
         'description_placeholder' => 'Describe your restaurant and dining experience',
         'social_media' => 'Social Media Links',
-        
+
         // Layout
         'menu_layout' => 'Menu Layout',
         'layout_template' => 'Layout Template',
@@ -530,7 +530,7 @@ return [
         'main_courses' => 'Main Courses',
         'desserts' => 'Desserts',
         'beverages' => 'Beverages',
-        
+
         // Colors
         'color_scheme' => 'Color Scheme',
         'color_presets' => 'Color Presets',
@@ -547,7 +547,7 @@ return [
         'solid_color' => 'Solid Color',
         'gradient' => 'Gradient',
         'pattern' => 'Pattern',
-        
+
         // Typography
         'typography_settings' => 'Typography Settings',
         'font_family' => 'Font Family',
@@ -563,7 +563,7 @@ return [
         'spacing_settings' => 'Spacing Settings',
         'line_height' => 'Line Height',
         'paragraph_spacing' => 'Paragraph Spacing',
-        
+
         // Content
         'content_settings' => 'Content Settings',
         'display_options' => 'Display Options',
@@ -582,11 +582,11 @@ return [
         'qr_code_settings' => 'QR Code Settings',
         'include_qr_code' => 'Include QR Code',
         'qr_url' => 'QR Code URL',
-        
+
         // Preview
         'live_preview' => 'Live Preview',
         'menu_preview' => 'Menu Preview',
-        
+
         // Messages
         'design_saved' => 'Menu design saved successfully',
         'design_exported' => 'Menu design exported successfully',

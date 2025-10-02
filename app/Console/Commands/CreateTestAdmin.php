@@ -33,6 +33,7 @@ class CreateTestAdmin extends Command
         // Check if user already exists
         if (Staff::where('username', $username)->exists()) {
             $this->error("User with username '{$username}' already exists!");
+
             return Command::FAILURE;
         }
 
@@ -62,12 +63,12 @@ class CreateTestAdmin extends Command
             'is_active' => true,
         ]);
 
-        $this->info("✅ Test admin created successfully!");
+        $this->info('✅ Test admin created successfully!');
         $this->info("📧 Email: {$email}");
         $this->info("👤 Username: {$username}");
         $this->info("🔑 Password: {$password}");
-        $this->info("🌐 Login URL: " . url('/admin/login'));
-        
+        $this->info('🌐 Login URL: '.url('/admin/login'));
+
         return Command::SUCCESS;
     }
 }

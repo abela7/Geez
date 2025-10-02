@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Todos;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\JsonResponse;
 
 class ProgressController extends Controller
 {
@@ -47,7 +47,7 @@ class ProgressController extends Controller
             'end_date' => 'nullable|date|after:start_date',
             'staff_ids' => 'nullable|array',
             'categories' => 'nullable|array',
-            'format' => 'required|in:pdf,excel,csv'
+            'format' => 'required|in:pdf,excel,csv',
         ]);
 
         // Simulate report generation
@@ -56,8 +56,8 @@ class ProgressController extends Controller
         return response()->json([
             'success' => true,
             'message' => __('todos.progress.report_generated_successfully'),
-            'report_url' => '/admin/todos/progress/reports/' . $reportData['filename'],
-            'report_data' => $reportData
+            'report_url' => '/admin/todos/progress/reports/'.$reportData['filename'],
+            'report_data' => $reportData,
         ]);
     }
 
@@ -68,14 +68,14 @@ class ProgressController extends Controller
     {
         $request->validate([
             'format' => 'required|in:pdf,excel,csv',
-            'data_type' => 'required|in:overview,staff,categories,trends'
+            'data_type' => 'required|in:overview,staff,categories,trends',
         ]);
 
         // Simulate export
         return response()->json([
             'success' => true,
             'message' => __('todos.progress.export_completed_successfully'),
-            'download_url' => '/admin/todos/progress/exports/progress_' . $request->data_type . '_' . date('Y-m-d') . '.' . $request->format
+            'download_url' => '/admin/todos/progress/exports/progress_'.$request->data_type.'_'.date('Y-m-d').'.'.$request->format,
         ]);
     }
 
@@ -98,7 +98,7 @@ class ProgressController extends Controller
             'productivity_score' => 8.4,
             'quality_score' => 9.1,
             'efficiency_trend' => 'up', // up, down, stable
-            'efficiency_change' => 12.5 // percentage
+            'efficiency_change' => 12.5, // percentage
         ];
     }
 
@@ -108,31 +108,31 @@ class ProgressController extends Controller
             'daily_average' => [
                 'completed' => 24.3,
                 'created' => 28.1,
-                'completion_rate' => 86.5
+                'completion_rate' => 86.5,
             ],
             'weekly_average' => [
                 'completed' => 170.1,
                 'created' => 196.7,
-                'completion_rate' => 86.5
+                'completion_rate' => 86.5,
             ],
             'monthly_average' => [
                 'completed' => 738.4,
                 'created' => 854.2,
-                'completion_rate' => 86.5
+                'completion_rate' => 86.5,
             ],
             'peak_hours' => [
                 ['hour' => '09:00', 'completion_count' => 45],
                 ['hour' => '14:00', 'completion_count' => 38],
                 ['hour' => '11:00', 'completion_count' => 35],
                 ['hour' => '16:00', 'completion_count' => 32],
-                ['hour' => '10:00', 'completion_count' => 29]
+                ['hour' => '10:00', 'completion_count' => 29],
             ],
             'response_times' => [
                 'average_start_time' => 1.2, // hours after assignment
                 'average_completion_time' => 2.4, // hours from start to completion
                 'fastest_completion' => 0.3,
-                'slowest_completion' => 8.7
-            ]
+                'slowest_completion' => 8.7,
+            ],
         ];
     }
 
@@ -154,14 +154,14 @@ class ProgressController extends Controller
                 ['date' => '2024-01-12', 'completed' => 33, 'created' => 38, 'rate' => 86.8],
                 ['date' => '2024-01-13', 'completed' => 39, 'created' => 43, 'rate' => 90.7],
                 ['date' => '2024-01-14', 'completed' => 42, 'created' => 46, 'rate' => 91.3],
-                ['date' => '2024-01-15', 'completed' => 36, 'created' => 40, 'rate' => 90.0]
+                ['date' => '2024-01-15', 'completed' => 36, 'created' => 40, 'rate' => 90.0],
             ],
             'weekly_comparison' => [
                 ['week' => 'This Week', 'completed' => 156, 'target' => 180, 'rate' => 86.7],
                 ['week' => 'Last Week', 'completed' => 174, 'target' => 180, 'rate' => 96.7],
                 ['week' => '2 Weeks Ago', 'completed' => 162, 'target' => 175, 'rate' => 92.6],
-                ['week' => '3 Weeks Ago', 'completed' => 148, 'target' => 170, 'rate' => 87.1]
-            ]
+                ['week' => '3 Weeks Ago', 'completed' => 148, 'target' => 170, 'rate' => 87.1],
+            ],
         ];
     }
 
@@ -179,7 +179,7 @@ class ProgressController extends Controller
                 'on_time_rate' => 95.1,
                 'quality_score' => 9.2,
                 'trend' => 'up',
-                'recent_activity' => '2 hours ago'
+                'recent_activity' => '2 hours ago',
             ],
             [
                 'id' => 2,
@@ -192,7 +192,7 @@ class ProgressController extends Controller
                 'on_time_rate' => 97.2,
                 'quality_score' => 9.5,
                 'trend' => 'up',
-                'recent_activity' => '1 hour ago'
+                'recent_activity' => '1 hour ago',
             ],
             [
                 'id' => 3,
@@ -205,7 +205,7 @@ class ProgressController extends Controller
                 'on_time_rate' => 89.8,
                 'quality_score' => 8.9,
                 'trend' => 'stable',
-                'recent_activity' => '30 minutes ago'
+                'recent_activity' => '30 minutes ago',
             ],
             [
                 'id' => 4,
@@ -218,7 +218,7 @@ class ProgressController extends Controller
                 'on_time_rate' => 91.4,
                 'quality_score' => 8.7,
                 'trend' => 'down',
-                'recent_activity' => '4 hours ago'
+                'recent_activity' => '4 hours ago',
             ],
             [
                 'id' => 5,
@@ -231,8 +231,8 @@ class ProgressController extends Controller
                 'on_time_rate' => 94.7,
                 'quality_score' => 9.1,
                 'trend' => 'up',
-                'recent_activity' => '1 hour ago'
-            ]
+                'recent_activity' => '1 hour ago',
+            ],
         ];
     }
 
@@ -245,7 +245,7 @@ class ProgressController extends Controller
                 'completed' => 148,
                 'completion_rate' => 94.9,
                 'average_time' => 1.8,
-                'color' => '#10B981'
+                'color' => '#10B981',
             ],
             [
                 'category' => 'Equipment Checks',
@@ -253,7 +253,7 @@ class ProgressController extends Controller
                 'completed' => 198,
                 'completion_rate' => 84.6,
                 'average_time' => 2.1,
-                'color' => '#3B82F6'
+                'color' => '#3B82F6',
             ],
             [
                 'category' => 'Cleaning Tasks',
@@ -261,7 +261,7 @@ class ProgressController extends Controller
                 'completed' => 167,
                 'completion_rate' => 88.4,
                 'average_time' => 3.2,
-                'color' => '#8B5CF6'
+                'color' => '#8B5CF6',
             ],
             [
                 'category' => 'Inventory Management',
@@ -269,7 +269,7 @@ class ProgressController extends Controller
                 'completed' => 89,
                 'completion_rate' => 90.8,
                 'average_time' => 4.1,
-                'color' => '#F59E0B'
+                'color' => '#F59E0B',
             ],
             [
                 'category' => 'Customer Service',
@@ -277,7 +277,7 @@ class ProgressController extends Controller
                 'completed' => 132,
                 'completion_rate' => 91.0,
                 'average_time' => 1.5,
-                'color' => '#EF4444'
+                'color' => '#EF4444',
             ],
             [
                 'category' => 'Administrative',
@@ -285,8 +285,8 @@ class ProgressController extends Controller
                 'completed' => 58,
                 'completion_rate' => 86.6,
                 'average_time' => 2.8,
-                'color' => '#6B7280'
-            ]
+                'color' => '#6B7280',
+            ],
         ];
     }
 
@@ -301,7 +301,7 @@ class ProgressController extends Controller
                 'category' => 'Equipment Checks',
                 'completed_at' => '2024-01-16 14:30:00',
                 'duration' => 15, // minutes
-                'quality_rating' => 5
+                'quality_rating' => 5,
             ],
             [
                 'id' => 2,
@@ -310,7 +310,7 @@ class ProgressController extends Controller
                 'todo_title' => 'Prepare daily inventory report',
                 'category' => 'Inventory Management',
                 'started_at' => '2024-01-16 14:15:00',
-                'estimated_duration' => 45
+                'estimated_duration' => 45,
             ],
             [
                 'id' => 3,
@@ -319,7 +319,7 @@ class ProgressController extends Controller
                 'todo_title' => 'Update customer feedback log',
                 'category' => 'Administrative',
                 'due_at' => '2024-01-16 13:00:00',
-                'overdue_by' => 90 // minutes
+                'overdue_by' => 90, // minutes
             ],
             [
                 'id' => 4,
@@ -329,7 +329,7 @@ class ProgressController extends Controller
                 'category' => 'Administrative',
                 'completed_at' => '2024-01-16 13:45:00',
                 'duration' => 35,
-                'quality_rating' => 4
+                'quality_rating' => 4,
             ],
             [
                 'id' => 5,
@@ -338,8 +338,8 @@ class ProgressController extends Controller
                 'todo_title' => 'Deep clean kitchen equipment',
                 'category' => 'Cleaning Tasks',
                 'assigned_at' => '2024-01-16 13:30:00',
-                'due_at' => '2024-01-16 16:00:00'
-            ]
+                'due_at' => '2024-01-16 16:00:00',
+            ],
         ];
     }
 
@@ -354,7 +354,7 @@ class ProgressController extends Controller
                 'due_at' => '2024-01-16 17:00:00',
                 'priority' => 'high',
                 'estimated_duration' => 60,
-                'status' => 'pending'
+                'status' => 'pending',
             ],
             [
                 'id' => 2,
@@ -364,7 +364,7 @@ class ProgressController extends Controller
                 'due_at' => '2024-01-16 18:00:00',
                 'priority' => 'high',
                 'estimated_duration' => 30,
-                'status' => 'in_progress'
+                'status' => 'in_progress',
             ],
             [
                 'id' => 3,
@@ -374,7 +374,7 @@ class ProgressController extends Controller
                 'due_at' => '2024-01-17 09:00:00',
                 'priority' => 'medium',
                 'estimated_duration' => 45,
-                'status' => 'pending'
+                'status' => 'pending',
             ],
             [
                 'id' => 4,
@@ -384,27 +384,27 @@ class ProgressController extends Controller
                 'due_at' => '2024-01-17 10:00:00',
                 'priority' => 'medium',
                 'estimated_duration' => 180,
-                'status' => 'scheduled'
-            ]
+                'status' => 'scheduled',
+            ],
         ];
     }
 
     private function generateReportData(array $params): array
     {
         return [
-            'filename' => 'progress_report_' . date('Y-m-d_H-i-s') . '.' . $params['format'],
+            'filename' => 'progress_report_'.date('Y-m-d_H-i-s').'.'.$params['format'],
             'type' => $params['report_type'],
             'period' => [
                 'start' => $params['start_date'] ?? date('Y-m-01'),
-                'end' => $params['end_date'] ?? date('Y-m-d')
+                'end' => $params['end_date'] ?? date('Y-m-d'),
             ],
             'summary' => [
                 'total_todos' => 1247,
                 'completed' => 1089,
                 'completion_rate' => 87.3,
-                'average_time' => 2.4
+                'average_time' => 2.4,
             ],
-            'generated_at' => now()->toISOString()
+            'generated_at' => now()->toISOString(),
         ];
     }
 }

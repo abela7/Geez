@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Activities;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\JsonResponse;
 
 class ManageController extends Controller
 {
@@ -50,7 +50,7 @@ class ManageController extends Controller
             'requires_equipment' => 'boolean',
             'equipment_list' => 'nullable|string',
             'instructions' => 'nullable|string',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
         ]);
 
         return response()->json([
@@ -65,8 +65,8 @@ class ManageController extends Controller
                 'estimated_duration' => $request->estimated_duration,
                 'difficulty_level' => $request->difficulty_level,
                 'is_active' => $request->is_active ?? true,
-                'created_at' => now()->toISOString()
-            ]
+                'created_at' => now()->toISOString(),
+            ],
         ]);
     }
 
@@ -76,6 +76,7 @@ class ManageController extends Controller
     public function show(int $activity): View
     {
         $activityData = $this->getMockActivity($activity);
+
         return view('admin.activities.manage.show', compact('activityData'));
     }
 
@@ -106,12 +107,12 @@ class ManageController extends Controller
             'requires_equipment' => 'boolean',
             'equipment_list' => 'nullable|string',
             'instructions' => 'nullable|string',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => __('activities.manage.activity_updated_successfully')
+            'message' => __('activities.manage.activity_updated_successfully'),
         ]);
     }
 
@@ -122,7 +123,7 @@ class ManageController extends Controller
     {
         return response()->json([
             'success' => true,
-            'message' => __('activities.manage.activity_deleted_successfully')
+            'message' => __('activities.manage.activity_deleted_successfully'),
         ]);
     }
 
@@ -137,8 +138,8 @@ class ManageController extends Controller
             'activity' => [
                 'id' => rand(100, 999),
                 'name' => 'Copy of Activity',
-                'created_at' => now()->toISOString()
-            ]
+                'created_at' => now()->toISOString(),
+            ],
         ]);
     }
 
@@ -176,7 +177,7 @@ class ManageController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:500'
+            'description' => 'nullable|string|max:500',
         ]);
 
         return response()->json([
@@ -188,8 +189,8 @@ class ManageController extends Controller
                 'key' => strtolower(str_replace(' ', '_', $request->name)),
                 'description' => $request->description,
                 'activities_count' => 0,
-                'is_active' => true
-            ]
+                'is_active' => true,
+            ],
         ]);
     }
 
@@ -200,12 +201,12 @@ class ManageController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:500'
+            'description' => 'nullable|string|max:500',
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => __('activities.manage.category_updated_successfully')
+            'message' => __('activities.manage.category_updated_successfully'),
         ]);
     }
 
@@ -216,7 +217,7 @@ class ManageController extends Controller
     {
         return response()->json([
             'success' => true,
-            'message' => __('activities.manage.category_deleted_successfully')
+            'message' => __('activities.manage.category_deleted_successfully'),
         ]);
     }
 
@@ -227,7 +228,7 @@ class ManageController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:500'
+            'description' => 'nullable|string|max:500',
         ]);
 
         return response()->json([
@@ -240,8 +241,8 @@ class ManageController extends Controller
                 'description' => $request->description,
                 'activities_count' => 0,
                 'staff_count' => 0,
-                'is_active' => true
-            ]
+                'is_active' => true,
+            ],
         ]);
     }
 
@@ -252,12 +253,12 @@ class ManageController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:500'
+            'description' => 'nullable|string|max:500',
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => __('activities.manage.department_updated_successfully')
+            'message' => __('activities.manage.department_updated_successfully'),
         ]);
     }
 
@@ -268,7 +269,7 @@ class ManageController extends Controller
     {
         return response()->json([
             'success' => true,
-            'message' => __('activities.manage.department_deleted_successfully')
+            'message' => __('activities.manage.department_deleted_successfully'),
         ]);
     }
 
@@ -292,7 +293,7 @@ class ManageController extends Controller
                 'total_logs' => 45,
                 'average_actual_duration' => 115,
                 'last_performed' => '2024-01-16 14:30:00',
-                'assigned_staff_count' => 3
+                'assigned_staff_count' => 3,
             ],
             [
                 'id' => 2,
@@ -311,7 +312,7 @@ class ManageController extends Controller
                 'total_logs' => 28,
                 'average_actual_duration' => 85,
                 'last_performed' => '2024-01-16 10:15:00',
-                'assigned_staff_count' => 2
+                'assigned_staff_count' => 2,
             ],
             [
                 'id' => 3,
@@ -330,7 +331,7 @@ class ManageController extends Controller
                 'total_logs' => 12,
                 'average_actual_duration' => 175,
                 'last_performed' => '2024-01-15 16:00:00',
-                'assigned_staff_count' => 1
+                'assigned_staff_count' => 1,
             ],
             [
                 'id' => 4,
@@ -349,7 +350,7 @@ class ManageController extends Controller
                 'total_logs' => 67,
                 'average_actual_duration' => 42,
                 'last_performed' => '2024-01-16 17:30:00',
-                'assigned_staff_count' => 4
+                'assigned_staff_count' => 4,
             ],
             [
                 'id' => 5,
@@ -368,7 +369,7 @@ class ManageController extends Controller
                 'total_logs' => 89,
                 'average_actual_duration' => 58,
                 'last_performed' => '2024-01-16 09:00:00',
-                'assigned_staff_count' => 2
+                'assigned_staff_count' => 2,
             ],
             [
                 'id' => 6,
@@ -387,8 +388,8 @@ class ManageController extends Controller
                 'total_logs' => 234,
                 'average_actual_duration' => 12,
                 'last_performed' => '2024-01-16 19:45:00',
-                'assigned_staff_count' => 5
-            ]
+                'assigned_staff_count' => 5,
+            ],
         ];
     }
 
@@ -415,15 +416,15 @@ class ManageController extends Controller
             'assigned_staff' => [
                 ['id' => 1, 'name' => 'Alemayehu Tadesse', 'role' => 'Head Chef'],
                 ['id' => 2, 'name' => 'Meron Gebremedhin', 'role' => 'Kitchen Staff'],
-                ['id' => 3, 'name' => 'Dawit Bekele', 'role' => 'Kitchen Staff']
+                ['id' => 3, 'name' => 'Dawit Bekele', 'role' => 'Kitchen Staff'],
             ],
             'recent_logs' => [
                 ['date' => '2024-01-16 14:30:00', 'staff' => 'Alemayehu Tadesse', 'duration' => 118, 'status' => 'completed'],
                 ['date' => '2024-01-16 11:15:00', 'staff' => 'Meron Gebremedhin', 'duration' => 125, 'status' => 'completed'],
                 ['date' => '2024-01-15 16:00:00', 'staff' => 'Dawit Bekele', 'duration' => 110, 'status' => 'completed'],
                 ['date' => '2024-01-15 13:30:00', 'staff' => 'Alemayehu Tadesse', 'duration' => 115, 'status' => 'completed'],
-                ['date' => '2024-01-14 17:45:00', 'staff' => 'Meron Gebremedhin', 'duration' => 120, 'status' => 'completed']
-            ]
+                ['date' => '2024-01-14 17:45:00', 'staff' => 'Meron Gebremedhin', 'duration' => 120, 'status' => 'completed'],
+            ],
         ];
     }
 
@@ -436,7 +437,7 @@ class ManageController extends Controller
             'Customer Service' => 'Customer Service',
             'Administrative' => 'Administrative',
             'Cleaning' => 'Cleaning',
-            'Inventory' => 'Inventory'
+            'Inventory' => 'Inventory',
         ];
     }
 
@@ -446,7 +447,7 @@ class ManageController extends Controller
             'Kitchen' => 'Kitchen',
             'Front of House' => 'Front of House',
             'Bar' => 'Bar',
-            'Management' => 'Management'
+            'Management' => 'Management',
         ];
     }
 }

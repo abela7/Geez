@@ -55,11 +55,12 @@ class Supplier extends Model
     {
         $contact = $this->name;
         if ($this->contact_person) {
-            $contact .= ' (' . $this->contact_person . ')';
+            $contact .= ' ('.$this->contact_person.')';
         }
         if ($this->phone) {
-            $contact .= ' - ' . $this->phone;
+            $contact .= ' - '.$this->phone;
         }
+
         return $contact;
     }
 }

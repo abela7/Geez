@@ -101,7 +101,7 @@ class StaffTaskAttachment extends Model
         if ($this->is_public) {
             return Storage::disk($this->storage_disk)->url($this->file_path);
         }
-        
+
         // For private files, return a route that handles authentication
         return route('staff.tasks.attachments.download', $this->id);
     }
@@ -113,12 +113,12 @@ class StaffTaskAttachment extends Model
     {
         $bytes = $this->file_size;
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        
+
         for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
             $bytes /= 1024;
         }
-        
-        return round($bytes, 2) . ' ' . $units[$i];
+
+        return round($bytes, 2).' '.$units[$i];
     }
 
     /**
@@ -153,7 +153,7 @@ class StaffTaskAttachment extends Model
             'text/plain',
             'text/csv',
         ];
-        
+
         return in_array($this->mime_type, $documentMimes);
     }
 
@@ -165,7 +165,7 @@ class StaffTaskAttachment extends Model
         if ($this->isImage()) {
             return 'fas fa-image';
         }
-        
+
         if ($this->isDocument()) {
             return match ($this->getFileExtension()) {
                 'pdf' => 'fas fa-file-pdf',
@@ -177,7 +177,7 @@ class StaffTaskAttachment extends Model
                 default => 'fas fa-file',
             };
         }
-        
+
         return match ($this->getFileExtension()) {
             'zip', 'rar', '7z' => 'fas fa-file-archive',
             'mp3', 'wav', 'ogg' => 'fas fa-file-audio',
@@ -272,14 +272,14 @@ class StaffTaskAttachment extends Model
     protected static function boot(): void
     {
         parent::boot();
-        
+
         static::deleted(function ($attachment) {
             // Only delete file if it's a soft delete (not force delete)
             if ($attachment->trashed() && $attachment->fileExists()) {
                 Storage::disk($attachment->storage_disk)->delete($attachment->file_path);
             }
         });
-        
+
         static::forceDeleted(function ($attachment) {
             // Always delete file on force delete
             if ($attachment->fileExists()) {
@@ -293,10 +293,10 @@ class StaffTaskAttachment extends Model
      */
     public function getThumbnailUrl(): ?string
     {
-        if (!$this->isImage()) {
+        if (! $this->isImage()) {
             return null;
         }
-        
+
         // This would typically generate or return a cached thumbnail
         // For now, return the original image URL
         return $this->getFileUrl();
@@ -315,7 +315,7 @@ class StaffTaskAttachment extends Model
             'application/pdf',
             'text/plain',
         ];
-        
+
         return in_array($this->mime_type, $previewableMimes);
     }
 }

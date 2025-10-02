@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\TaskType;
-use App\Models\TaskPriority;
 use App\Models\TaskCategory;
-use App\Models\TaskTag;
+use App\Models\TaskPriority;
 use App\Models\TaskStatus;
+use App\Models\TaskTag;
 use App\Models\TaskTemplate;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
+use App\Models\TaskType;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class TaskSettingsController extends Controller
 {
@@ -37,7 +37,7 @@ class TaskSettingsController extends Controller
                     'total_categories' => TaskCategory::where('is_active', true)->count(),
                     'total_tags' => TaskTag::where('is_active', true)->count(),
                     'total_templates' => TaskTemplate::where('is_active', true)->count(),
-                ]
+                ],
             ];
 
             return view('admin.staff.task-settings', $data);
@@ -56,7 +56,7 @@ class TaskSettingsController extends Controller
                     'total_categories' => 0,
                     'total_tags' => 0,
                     'total_templates' => 0,
-                ]
+                ],
             ];
 
             return view('admin.staff.task-settings', $data);
@@ -98,7 +98,7 @@ class TaskSettingsController extends Controller
     public function updateTaskType(Request $request, TaskType $taskType): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:task_types,name,' . $taskType->id,
+            'name' => 'required|string|max:255|unique:task_types,name,'.$taskType->id,
             'description' => 'nullable|string|max:1000',
             'color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
             'icon' => 'nullable|string|max:100',
@@ -163,11 +163,11 @@ class TaskSettingsController extends Controller
     public function updateTaskPriority(Request $request, TaskPriority $taskPriority): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:task_priorities,name,' . $taskPriority->id,
+            'name' => 'required|string|max:255|unique:task_priorities,name,'.$taskPriority->id,
             'description' => 'nullable|string|max:1000',
             'color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
             'icon' => 'nullable|string|max:100',
-            'level' => 'required|integer|min:1|max:10|unique:task_priorities,level,' . $taskPriority->id,
+            'level' => 'required|integer|min:1|max:10|unique:task_priorities,level,'.$taskPriority->id,
             'is_active' => 'boolean',
         ]);
 
@@ -235,7 +235,7 @@ class TaskSettingsController extends Controller
     public function updateTaskCategory(Request $request, TaskCategory $taskCategory): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:task_categories,name,' . $taskCategory->id,
+            'name' => 'required|string|max:255|unique:task_categories,name,'.$taskCategory->id,
             'description' => 'nullable|string|max:1000',
             'color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
             'icon' => 'nullable|string|max:100',
@@ -303,7 +303,7 @@ class TaskSettingsController extends Controller
     public function updateTaskTag(Request $request, TaskTag $taskTag): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:task_tags,name,' . $taskTag->id,
+            'name' => 'required|string|max:255|unique:task_tags,name,'.$taskTag->id,
             'description' => 'nullable|string|max:1000',
             'color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
             'is_active' => 'boolean',

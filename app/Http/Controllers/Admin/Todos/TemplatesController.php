@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Todos;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\JsonResponse;
 
 class TemplatesController extends Controller
 {
@@ -18,7 +18,7 @@ class TemplatesController extends Controller
     {
         // Mock data for templates
         $templates = $this->getMockTemplates();
-        
+
         // Mock data for filters
         $categories = $this->getCategories();
         $roles = $this->getRoles();
@@ -55,7 +55,7 @@ class TemplatesController extends Controller
             'instructions' => 'nullable|array',
             'instructions.*' => 'string',
             'tags' => 'nullable|array',
-            'tags.*' => 'string'
+            'tags.*' => 'string',
         ]);
 
         return response()->json([
@@ -75,8 +75,8 @@ class TemplatesController extends Controller
                 'usage_count' => 0,
                 'completion_rate' => 0,
                 'instructions' => $request->instructions ?? [],
-                'tags' => $request->tags ?? []
-            ]
+                'tags' => $request->tags ?? [],
+            ],
         ]);
     }
 
@@ -86,6 +86,7 @@ class TemplatesController extends Controller
     public function show(int $template): View
     {
         $templateData = $this->getMockTemplate($template);
+
         return view('admin.todos.templates.show', compact('templateData'));
     }
 
@@ -119,12 +120,12 @@ class TemplatesController extends Controller
             'instructions.*' => 'string',
             'tags' => 'nullable|array',
             'tags.*' => 'string',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => __('todos.templates.template_updated_successfully')
+            'message' => __('todos.templates.template_updated_successfully'),
         ]);
     }
 
@@ -135,7 +136,7 @@ class TemplatesController extends Controller
     {
         return response()->json([
             'success' => true,
-            'message' => __('todos.templates.template_deleted_successfully')
+            'message' => __('todos.templates.template_deleted_successfully'),
         ]);
     }
 
@@ -150,8 +151,8 @@ class TemplatesController extends Controller
             'template' => [
                 'id' => rand(100, 999),
                 'name' => 'Copy of Daily Opening Checklist',
-                'is_active' => false
-            ]
+                'is_active' => false,
+            ],
         ]);
     }
 
@@ -177,9 +178,9 @@ class TemplatesController extends Controller
                     'Check table cleanliness and arrange seating',
                     'Verify POS system is working properly',
                     'Update daily specials on menu boards',
-                    'Check inventory levels for immediate needs'
+                    'Check inventory levels for immediate needs',
                 ],
-                'tags' => ['opening', 'daily', 'essential']
+                'tags' => ['opening', 'daily', 'essential'],
             ],
             [
                 'id' => 2,
@@ -200,9 +201,9 @@ class TemplatesController extends Controller
                     'Prepare injera batter for the day',
                     'Clean and sanitize all cooking stations',
                     'Verify equipment functionality',
-                    'Prepare mise en place for lunch service'
+                    'Prepare mise en place for lunch service',
                 ],
-                'tags' => ['kitchen', 'prep', 'morning']
+                'tags' => ['kitchen', 'prep', 'morning'],
             ],
             [
                 'id' => 3,
@@ -224,10 +225,10 @@ class TemplatesController extends Controller
                     'Calculate usage patterns and forecast needs',
                     'Place orders with approved suppliers',
                     'Update inventory management system',
-                    'Schedule delivery confirmations'
+                    'Schedule delivery confirmations',
                 ],
-                'tags' => ['inventory', 'weekly', 'management']
-            ]
+                'tags' => ['inventory', 'weekly', 'management'],
+            ],
         ];
     }
 
@@ -253,14 +254,14 @@ class TemplatesController extends Controller
                 'Check table cleanliness and arrange seating',
                 'Verify POS system is working properly',
                 'Update daily specials on menu boards',
-                'Check inventory levels for immediate needs'
+                'Check inventory levels for immediate needs',
             ],
             'tags' => ['opening', 'daily', 'essential'],
             'recent_usage' => [
                 ['date' => '2024-01-15', 'staff' => 'Alemayehu Tadesse', 'completion_time' => 25, 'status' => 'completed'],
                 ['date' => '2024-01-14', 'staff' => 'Sara Hailu', 'completion_time' => 32, 'status' => 'completed'],
-                ['date' => '2024-01-13', 'staff' => 'Alemayehu Tadesse', 'completion_time' => 28, 'status' => 'completed']
-            ]
+                ['date' => '2024-01-13', 'staff' => 'Alemayehu Tadesse', 'completion_time' => 28, 'status' => 'completed'],
+            ],
         ];
     }
 
@@ -273,7 +274,7 @@ class TemplatesController extends Controller
             'kitchen_prep' => 'Kitchen Prep',
             'customer_service' => 'Customer Service',
             'administrative' => 'Administrative',
-            'maintenance' => 'Maintenance'
+            'maintenance' => 'Maintenance',
         ];
     }
 
@@ -285,7 +286,7 @@ class TemplatesController extends Controller
             'chef' => 'Chef',
             'cashier' => 'Cashier',
             'manager' => 'Manager',
-            'barista' => 'Barista'
+            'barista' => 'Barista',
         ];
     }
 
@@ -296,7 +297,7 @@ class TemplatesController extends Controller
             'daily' => 'Daily',
             'weekly' => 'Weekly',
             'monthly' => 'Monthly',
-            'custom' => 'Custom'
+            'custom' => 'Custom',
         ];
     }
 }

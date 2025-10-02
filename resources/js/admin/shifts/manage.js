@@ -256,11 +256,32 @@ function shiftsManageData() {
         
         deleteShift(shiftId) {
             if (confirm('Are you sure you want to delete this shift? This action cannot be undone.')) {
-                const row = document.querySelector(`[data-shift-id="${shiftId}"]`);
-                if (row) {
-                    row.remove();
-                    this.showNotification('Shift deleted successfully!', 'success');
+                // Create a form to submit DELETE request
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/shifts/manage/${shiftId}`;
+                form.style.display = 'none';
+                
+                // Add CSRF token
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                if (csrfToken) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = csrfToken;
+                    form.appendChild(csrfInput);
                 }
+                
+                // Add method override for DELETE
+                const methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'DELETE';
+                form.appendChild(methodInput);
+                
+                // Append form to body and submit
+                document.body.appendChild(form);
+                form.submit();
             }
         },
         

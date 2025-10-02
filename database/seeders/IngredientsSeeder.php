@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class IngredientsSeeder extends Seeder
@@ -120,6 +119,6 @@ class IngredientsSeeder extends Seeder
             \App\Models\Ingredient::create($ingredientData);
         }
 
-        $this->command->info('Created ' . count($ingredients) . ' sample ingredients.');
+        $this->command->info('Created '.count($ingredients).' sample ingredients.');
     }
 }

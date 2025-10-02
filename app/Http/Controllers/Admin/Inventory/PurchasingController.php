@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Inventory;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\JsonResponse;
 
 class PurchasingController extends Controller
 {
@@ -68,8 +68,12 @@ class PurchasingController extends Controller
         // Create paginator-like object
         $purchaseOrders = (object) [
             'data' => $filteredPOs->values(),
-            'hasPages' => function() { return false; },
-            'links' => function() { return ''; },
+            'hasPages' => function () {
+                return false;
+            },
+            'links' => function () {
+                return '';
+            },
         ];
 
         // Static data
@@ -83,7 +87,7 @@ class PurchasingController extends Controller
         $avgPOValue = $totalValue / max($totalPOs, 1);
 
         return view('admin.inventory.purchasing.index', compact(
-            'purchaseOrders', 'suppliers', 'statuses', 'totalPOs', 
+            'purchaseOrders', 'suppliers', 'statuses', 'totalPOs',
             'draftPOs', 'sentPOs', 'receivedPOs', 'totalValue', 'avgPOValue'
         ));
     }
@@ -102,6 +106,7 @@ class PurchasingController extends Controller
             'status' => 'sent',
             'total_amount' => 2745.00,
         ];
+
         return response()->json(['success' => true, 'purchase_order' => $po]);
     }
 

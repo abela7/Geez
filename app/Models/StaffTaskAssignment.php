@@ -217,7 +217,6 @@ class StaffTaskAssignment extends Model
         return $this->hasMany(TaskNote::class, 'staff_task_assignment_id');
     }
 
-
     /**
      * Get all reminders for this assignment.
      */
@@ -250,9 +249,9 @@ class StaffTaskAssignment extends Model
      */
     public function isOverdue(): bool
     {
-        return $this->due_date && 
-               $this->due_date->isPast() && 
-               !in_array($this->status, ['completed', 'cancelled']);
+        return $this->due_date &&
+               $this->due_date->isPast() &&
+               ! in_array($this->status, ['completed', 'cancelled']);
     }
 
     /**
@@ -299,7 +298,7 @@ class StaffTaskAssignment extends Model
      */
     public function getDurationInMinutes(): ?int
     {
-        if (!$this->started_at || !$this->completed_at) {
+        if (! $this->started_at || ! $this->completed_at) {
             return null;
         }
 
@@ -328,7 +327,7 @@ class StaffTaskAssignment extends Model
     public function scopeOverdue($query)
     {
         return $query->where('due_date', '<', now())
-                    ->whereNotIn('status', ['completed', 'cancelled']);
+            ->whereNotIn('status', ['completed', 'cancelled']);
     }
 
     /**
@@ -371,15 +370,15 @@ class StaffTaskAssignment extends Model
      */
     public function shouldSendReminder(): bool
     {
-        if (!$this->due_date || $this->isCompleted()) {
+        if (! $this->due_date || $this->isCompleted()) {
             return false;
         }
 
         // Send reminder if due in 24 hours and no reminder sent yet
         $reminderThreshold = $this->due_date->subDay();
-        
-        return now()->gte($reminderThreshold) && 
-               (!$this->reminder_sent_at || $this->reminder_sent_at->lt($reminderThreshold));
+
+        return now()->gte($reminderThreshold) &&
+               (! $this->reminder_sent_at || $this->reminder_sent_at->lt($reminderThreshold));
     }
 
     /**
@@ -396,12 +395,12 @@ class StaffTaskAssignment extends Model
     public function scopeNeedingReminders($query)
     {
         return $query->whereNotIn('status', ['completed', 'cancelled'])
-                    ->whereNotNull('due_date')
-                    ->where('due_date', '<=', now()->addDay())
-                    ->where(function ($q) {
-                        $q->whereNull('reminder_sent_at')
-                          ->orWhere('reminder_sent_at', '<', now()->subDays(1));
-                    });
+            ->whereNotNull('due_date')
+            ->where('due_date', '<=', now()->addDay())
+            ->where(function ($q) {
+                $q->whereNull('reminder_sent_at')
+                    ->orWhere('reminder_sent_at', '<', now()->subDays(1));
+            });
     }
 
     /**
@@ -440,7 +439,7 @@ class StaffTaskAssignment extends Model
     {
         // Stop any existing active time entries first
         $this->stopActiveTimeTracking();
-        
+
         return StaffTaskTimeEntry::startTracking(
             $this->id,
             $this->staff_id,
@@ -455,7 +454,7 @@ class StaffTaskAssignment extends Model
     public function stopActiveTimeTracking(?string $description = null): void
     {
         $activeEntries = $this->activeTimeEntries()->get();
-        
+
         foreach ($activeEntries as $entry) {
             $entry->stop($description);
         }
@@ -478,9 +477,9 @@ class StaffTaskAssignment extends Model
             'message' => $message,
             'created_by' => $createdBy ?? auth()->id(),
         ]);
-        
+
         $notification->send();
-        
+
         return $notification;
     }
 
@@ -489,20 +488,20 @@ class StaffTaskAssignment extends Model
      */
     public function sendReminderNotification(): ?StaffTaskNotification
     {
-        if (!$this->shouldSendReminder()) {
+        if (! $this->shouldSendReminder()) {
             return null;
         }
-        
+
         $notification = StaffTaskNotification::createReminderNotification(
             $this->id,
             $this->staff_id,
             $this->task->title,
             $this->due_date->format('M j, Y')
         );
-        
+
         $notification->send();
         $this->markReminderSent();
-        
+
         return $notification;
     }
 
@@ -511,18 +510,18 @@ class StaffTaskAssignment extends Model
      */
     public function sendOverdueNotification(): ?StaffTaskNotification
     {
-        if (!$this->isOverdue()) {
+        if (! $this->isOverdue()) {
             return null;
         }
-        
+
         $notification = StaffTaskNotification::createOverdueNotification(
             $this->id,
             $this->staff_id,
             $this->task->title
         );
-        
+
         $notification->send();
-        
+
         return $notification;
     }
 
@@ -534,7 +533,7 @@ class StaffTaskAssignment extends Model
         // Notify the assignee
         if ($this->completed_by !== $this->staff_id) {
             $completedByStaff = Staff::find($this->completed_by);
-            
+
             StaffTaskNotification::createCompletionNotification(
                 $this->id,
                 $this->staff_id,
@@ -542,11 +541,11 @@ class StaffTaskAssignment extends Model
                 $completedByStaff->full_name ?? 'Unknown'
             )->send();
         }
-        
+
         // Notify the assigner if different from assignee and completer
         if ($this->assigned_by !== $this->staff_id && $this->assigned_by !== $this->completed_by) {
             $completedByStaff = Staff::find($this->completed_by);
-            
+
             StaffTaskNotification::createCompletionNotification(
                 $this->id,
                 $this->assigned_by,
@@ -576,19 +575,19 @@ class StaffTaskAssignment extends Model
     public function checkAndUpdateOverdueStatus(): bool
     {
         $isOverdue = $this->isOverdue();
-        
-        if ($isOverdue && !$this->is_overdue) {
+
+        if ($isOverdue && ! $this->is_overdue) {
             $this->update([
                 'is_overdue' => true,
                 'overdue_since' => now(),
             ]);
-        } elseif (!$isOverdue && $this->is_overdue) {
+        } elseif (! $isOverdue && $this->is_overdue) {
             $this->update([
                 'is_overdue' => false,
                 'overdue_since' => null,
             ]);
         }
-        
+
         return $isOverdue;
     }
 
@@ -608,15 +607,16 @@ class StaffTaskAssignment extends Model
         if ($this->scheduled_datetime) {
             return $this->scheduled_datetime->format('M j, Y \a\t g:i A');
         }
-        
+
         if ($this->scheduled_date) {
             $dateStr = $this->scheduled_date->format('M j, Y');
             if ($this->scheduled_time) {
-                $dateStr .= ' at ' . $this->scheduled_time->format('g:i A');
+                $dateStr .= ' at '.$this->scheduled_time->format('g:i A');
             }
+
             return $dateStr;
         }
-        
+
         return null;
     }
 

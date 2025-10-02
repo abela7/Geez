@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\View\View;
-use Carbon\Carbon;
 
 class ShiftsTemplatesController extends Controller
 {

@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,
         ]);
-        
+
         // Register admin authentication middleware
         $middleware->alias([
             'admin.auth' => \App\Http\Middleware\AdminAuth::class,

@@ -86,7 +86,7 @@ class StaffPerformanceGoal extends Model
      */
     public function getProgressPercentage(): float
     {
-        if (!$this->target_value || $this->target_value == 0) {
+        if (! $this->target_value || $this->target_value == 0) {
             return 0;
         }
 
@@ -123,10 +123,10 @@ class StaffPerformanceGoal extends Model
     public function scopeOverdue($query)
     {
         return $query->where('status', 'overdue')
-                    ->orWhere(function ($query) {
-                        $query->where('status', 'active')
-                              ->where('target_date', '<', now());
-                    });
+            ->orWhere(function ($query) {
+                $query->where('status', 'active')
+                    ->where('target_date', '<', now());
+            });
     }
 
     /**

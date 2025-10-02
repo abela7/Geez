@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class TodosController extends Controller
@@ -19,7 +18,7 @@ class TodosController extends Controller
             'overdue_todos' => 0,
             'completion_rate' => 0,
             'avg_completion_time' => '0 hours',
-            'high_priority_count' => 0
+            'high_priority_count' => 0,
         ];
 
         return view('admin.todos.overview.index', compact('statistics'));
@@ -42,7 +41,7 @@ class TodosController extends Controller
             'quality_score' => 0,
             'this_week_completed' => 0,
             'this_week_target' => 0,
-            'weekly_progress' => 0
+            'weekly_progress' => 0,
         ];
         $staffPerformance = [];
         $recentActivity = [];
@@ -67,6 +66,7 @@ class TodosController extends Controller
         $schedules = [];
         $frequencies = [];
         $statuses = [];
+
         return view('admin.todos.schedules.index', compact('schedules', 'frequencies', 'statuses'));
     }
 
@@ -75,6 +75,7 @@ class TodosController extends Controller
         $frequencies = [];
         $templates = [];
         $staff = [];
+
         return view('admin.todos.schedules.create', compact('frequencies', 'templates', 'staff'));
     }
 
@@ -85,10 +86,10 @@ class TodosController extends Controller
         $roles = [];
         $statuses = [];
         $staffMembers = [];
-        
+
         return view('admin.todos.staff-lists.index', compact(
             'departments',
-            'roles', 
+            'roles',
             'statuses',
             'staffMembers'
         ));
@@ -97,12 +98,14 @@ class TodosController extends Controller
     public function showStaffList($id): View
     {
         $staffList = []; // Get staff list by ID
+
         return view('admin.todos.staff-lists.show', compact('staffList'));
     }
 
     public function templates(): View
     {
         $templates = []; // Add your templates data here
+
         return view('admin.todos.templates.index', compact('templates'));
     }
 

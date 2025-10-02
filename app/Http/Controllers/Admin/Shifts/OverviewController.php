@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Shifts;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Carbon\Carbon;
 
 class OverviewController extends Controller
 {
@@ -16,12 +16,12 @@ class OverviewController extends Controller
      */
     public function index(Request $request): View
     {
-        $weekStart = $request->get('week') 
+        $weekStart = $request->get('week')
             ? Carbon::parse($request->get('week'))->startOfWeek()
             : Carbon::now()->startOfWeek();
-        
+
         $weekEnd = $weekStart->copy()->endOfWeek();
-        
+
         $weeklySchedule = $this->getWeeklySchedule($weekStart, $weekEnd);
         $shiftSummary = $this->getShiftSummary($weekStart, $weekEnd);
         $upcomingShifts = $this->getUpcomingShifts();
@@ -45,7 +45,7 @@ class OverviewController extends Controller
     {
         $schedule = [];
         $current = $weekStart->copy();
-        
+
         while ($current <= $weekEnd) {
             $dayShifts = $this->getDayShifts($current);
             $schedule[] = [
@@ -57,11 +57,11 @@ class OverviewController extends Controller
                 'shifts' => $dayShifts,
                 'total_shifts' => count($dayShifts),
                 'total_staff' => array_sum(array_column($dayShifts, 'assigned_staff_count')),
-                'total_hours' => array_sum(array_column($dayShifts, 'duration_hours'))
+                'total_hours' => array_sum(array_column($dayShifts, 'duration_hours')),
             ];
             $current->addDay();
         }
-        
+
         return $schedule;
     }
 
@@ -69,7 +69,7 @@ class OverviewController extends Controller
     {
         // Mock data for shifts on a specific day
         $shifts = [];
-        
+
         if ($date->isWeekday()) {
             $shifts = [
                 [
@@ -84,11 +84,11 @@ class OverviewController extends Controller
                     'assigned_staff' => [
                         ['id' => 1, 'name' => 'Alemayehu Tadesse', 'role' => 'Head Chef'],
                         ['id' => 2, 'name' => 'Meron Gebremedhin', 'role' => 'Kitchen Staff'],
-                        ['id' => 3, 'name' => 'Dawit Bekele', 'role' => 'Kitchen Staff']
+                        ['id' => 3, 'name' => 'Dawit Bekele', 'role' => 'Kitchen Staff'],
                     ],
                     'color' => '#3B82F6',
                     'status' => 'fully_covered',
-                    'type' => 'regular'
+                    'type' => 'regular',
                 ],
                 [
                     'id' => 2,
@@ -102,11 +102,11 @@ class OverviewController extends Controller
                     'assigned_staff' => [
                         ['id' => 4, 'name' => 'Sara Ahmed', 'role' => 'Server'],
                         ['id' => 5, 'name' => 'Fatima Hassan', 'role' => 'Server'],
-                        ['id' => 6, 'name' => 'Ahmed Ali', 'role' => 'Host']
+                        ['id' => 6, 'name' => 'Ahmed Ali', 'role' => 'Host'],
                     ],
                     'color' => '#10B981',
                     'status' => 'partially_covered',
-                    'type' => 'regular'
+                    'type' => 'regular',
                 ],
                 [
                     'id' => 3,
@@ -122,12 +122,12 @@ class OverviewController extends Controller
                         ['id' => 7, 'name' => 'Yohannes Tesfaye', 'role' => 'Bartender'],
                         ['id' => 8, 'name' => 'Hanan Osman', 'role' => 'Manager'],
                         ['id' => 9, 'name' => 'Kedir Mohammed', 'role' => 'Server'],
-                        ['id' => 10, 'name' => 'Tigist Wolde', 'role' => 'Server']
+                        ['id' => 10, 'name' => 'Tigist Wolde', 'role' => 'Server'],
                     ],
                     'color' => '#8B5CF6',
                     'status' => 'fully_covered',
-                    'type' => 'regular'
-                ]
+                    'type' => 'regular',
+                ],
             ];
         } elseif ($date->isSaturday()) {
             $shifts = [
@@ -144,11 +144,11 @@ class OverviewController extends Controller
                         ['id' => 1, 'name' => 'Alemayehu Tadesse', 'role' => 'Head Chef'],
                         ['id' => 2, 'name' => 'Meron Gebremedhin', 'role' => 'Kitchen Staff'],
                         ['id' => 11, 'name' => 'Bereket Taye', 'role' => 'Kitchen Staff'],
-                        ['id' => 12, 'name' => 'Selamawit Desta', 'role' => 'Kitchen Staff']
+                        ['id' => 12, 'name' => 'Selamawit Desta', 'role' => 'Kitchen Staff'],
                     ],
                     'color' => '#F59E0B',
                     'status' => 'fully_covered',
-                    'type' => 'weekend'
+                    'type' => 'weekend',
                 ],
                 [
                     'id' => 5,
@@ -163,15 +163,15 @@ class OverviewController extends Controller
                         ['id' => 4, 'name' => 'Sara Ahmed', 'role' => 'Server'],
                         ['id' => 7, 'name' => 'Yohannes Tesfaye', 'role' => 'Bartender'],
                         ['id' => 9, 'name' => 'Kedir Mohammed', 'role' => 'Server'],
-                        ['id' => 10, 'name' => 'Tigist Wolde', 'role' => 'Server']
+                        ['id' => 10, 'name' => 'Tigist Wolde', 'role' => 'Server'],
                     ],
                     'color' => '#EF4444',
                     'status' => 'partially_covered',
-                    'type' => 'weekend'
-                ]
+                    'type' => 'weekend',
+                ],
             ];
         }
-        
+
         return $shifts;
     }
 
@@ -189,14 +189,14 @@ class OverviewController extends Controller
                 'Kitchen' => ['shifts' => 6, 'staff' => 8, 'hours' => 48],
                 'Front of House' => ['shifts' => 10, 'staff' => 14, 'hours' => 84],
                 'Bar' => ['shifts' => 2, 'staff' => 2, 'hours' => 24],
-                'Management' => ['shifts' => 0, 'staff' => 0, 'hours' => 0]
+                'Management' => ['shifts' => 0, 'staff' => 0, 'hours' => 0],
             ],
             'shift_types' => [
                 'regular' => 15,
                 'weekend' => 2,
                 'overtime' => 1,
-                'training' => 0
-            ]
+                'training' => 0,
+            ],
         ];
     }
 
@@ -213,10 +213,10 @@ class OverviewController extends Controller
                 'assigned_staff' => [
                     ['id' => 1, 'name' => 'Alemayehu Tadesse'],
                     ['id' => 2, 'name' => 'Meron Gebremedhin'],
-                    ['id' => 3, 'name' => 'Dawit Bekele']
+                    ['id' => 3, 'name' => 'Dawit Bekele'],
                 ],
                 'status' => 'confirmed',
-                'hours_until' => Carbon::tomorrow()->setTime(6, 0)->diffInHours(Carbon::now())
+                'hours_until' => Carbon::tomorrow()->setTime(6, 0)->diffInHours(Carbon::now()),
             ],
             [
                 'id' => 7,
@@ -227,11 +227,11 @@ class OverviewController extends Controller
                 'department' => 'Front of House',
                 'assigned_staff' => [
                     ['id' => 4, 'name' => 'Sara Ahmed'],
-                    ['id' => 5, 'name' => 'Fatima Hassan']
+                    ['id' => 5, 'name' => 'Fatima Hassan'],
                 ],
                 'status' => 'partially_covered',
-                'hours_until' => Carbon::tomorrow()->setTime(11, 0)->diffInHours(Carbon::now())
-            ]
+                'hours_until' => Carbon::tomorrow()->setTime(11, 0)->diffInHours(Carbon::now()),
+            ],
         ];
     }
 
@@ -239,7 +239,7 @@ class OverviewController extends Controller
     {
         $now = Carbon::now();
         $currentHour = $now->hour;
-        
+
         // Only return current shifts if it's during business hours
         if ($currentHour >= 6 && $currentHour <= 23) {
             return [
@@ -252,15 +252,15 @@ class OverviewController extends Controller
                     'assigned_staff' => [
                         ['id' => 4, 'name' => 'Sara Ahmed', 'checked_in' => true],
                         ['id' => 5, 'name' => 'Fatima Hassan', 'checked_in' => true],
-                        ['id' => 6, 'name' => 'Ahmed Ali', 'checked_in' => false]
+                        ['id' => 6, 'name' => 'Ahmed Ali', 'checked_in' => false],
                     ],
                     'status' => 'in_progress',
                     'progress_percentage' => 60,
-                    'time_remaining' => '2h 30m'
-                ]
+                    'time_remaining' => '2h 30m',
+                ],
             ];
         }
-        
+
         return [];
     }
 
@@ -278,8 +278,8 @@ class OverviewController extends Controller
                 'priority' => 'high',
                 'suggested_staff' => [
                     ['id' => 9, 'name' => 'Kedir Mohammed', 'availability' => 'available'],
-                    ['id' => 10, 'name' => 'Tigist Wolde', 'availability' => 'available']
-                ]
+                    ['id' => 10, 'name' => 'Tigist Wolde', 'availability' => 'available'],
+                ],
             ],
             [
                 'date' => Carbon::now()->addDays(3),
@@ -292,9 +292,9 @@ class OverviewController extends Controller
                 'priority' => 'medium',
                 'suggested_staff' => [
                     ['id' => 11, 'name' => 'Bereket Taye', 'availability' => 'available'],
-                    ['id' => 12, 'name' => 'Selamawit Desta', 'availability' => 'unavailable']
-                ]
-            ]
+                    ['id' => 12, 'name' => 'Selamawit Desta', 'availability' => 'unavailable'],
+                ],
+            ],
         ];
     }
 
@@ -304,8 +304,8 @@ class OverviewController extends Controller
             'current_week' => $weekStart->copy(),
             'previous_week' => $weekStart->copy()->subWeek(),
             'next_week' => $weekStart->copy()->addWeek(),
-            'current_week_label' => $weekStart->format('M d') . ' - ' . $weekStart->copy()->endOfWeek()->format('M d, Y'),
-            'is_current_week' => $weekStart->isSameWeek(Carbon::now())
+            'current_week_label' => $weekStart->format('M d').' - '.$weekStart->copy()->endOfWeek()->format('M d, Y'),
+            'is_current_week' => $weekStart->isSameWeek(Carbon::now()),
         ];
     }
 }

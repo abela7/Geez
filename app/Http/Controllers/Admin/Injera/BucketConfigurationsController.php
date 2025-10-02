@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Injera;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class BucketConfigurationsController extends Controller
 {
@@ -22,10 +20,10 @@ class BucketConfigurationsController extends Controller
     {
         // Get bucket configurations data
         $buckets = $this->getBucketConfigurations($request);
-        
+
         // Get available flours for recipe building
         $availableFlours = $this->getAvailableFlours();
-        
+
         // Get summary statistics
         $statistics = $this->getBucketStatistics();
 
@@ -59,7 +57,7 @@ class BucketConfigurationsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -101,7 +99,7 @@ class BucketConfigurationsController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => __('injera.bucket_configurations.bucket_created_success')
+                'message' => __('injera.bucket_configurations.bucket_created_success'),
             ]);
 
         } catch (\Exception $e) {
@@ -109,7 +107,7 @@ class BucketConfigurationsController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create bucket configuration: ' . $e->getMessage()
+                'message' => 'Failed to create bucket configuration: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -137,7 +135,7 @@ class BucketConfigurationsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -145,13 +143,13 @@ class BucketConfigurationsController extends Controller
             // TODO: Implement actual update logic
             return response()->json([
                 'success' => true,
-                'message' => __('injera.bucket_configurations.bucket_updated_success')
+                'message' => __('injera.bucket_configurations.bucket_updated_success'),
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update bucket configuration: ' . $e->getMessage()
+                'message' => 'Failed to update bucket configuration: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -165,13 +163,13 @@ class BucketConfigurationsController extends Controller
             // TODO: Implement actual deletion logic
             return response()->json([
                 'success' => true,
-                'message' => __('injera.bucket_configurations.bucket_deleted_success')
+                'message' => __('injera.bucket_configurations.bucket_deleted_success'),
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete bucket configuration: ' . $e->getMessage()
+                'message' => 'Failed to delete bucket configuration: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -185,13 +183,13 @@ class BucketConfigurationsController extends Controller
             // TODO: Implement actual duplication logic
             return response()->json([
                 'success' => true,
-                'message' => __('injera.bucket_configurations.bucket_duplicated_success')
+                'message' => __('injera.bucket_configurations.bucket_duplicated_success'),
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to duplicate bucket configuration: ' . $e->getMessage()
+                'message' => 'Failed to duplicate bucket configuration: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -209,7 +207,7 @@ class BucketConfigurationsController extends Controller
                 'capacity' => 90.0,
                 'flour_recipe' => [
                     ['flour_type' => 'Teff', 'quantity' => 15.0, 'cost' => 27.00],
-                    ['flour_type' => 'Wheat', 'quantity' => 5.0, 'cost' => 4.25]
+                    ['flour_type' => 'Wheat', 'quantity' => 5.0, 'cost' => 4.25],
                 ],
                 'total_flour' => 20.0,
                 'total_flour_cost' => 31.25,
@@ -223,7 +221,7 @@ class BucketConfigurationsController extends Controller
                 'cost_per_injera' => 0.375,
                 'notes' => 'Standard production recipe for high-volume days',
                 'created_at' => '2025-01-10',
-                'is_active' => true
+                'is_active' => true,
             ],
             [
                 'id' => 2,
@@ -231,7 +229,7 @@ class BucketConfigurationsController extends Controller
                 'capacity' => 60.0,
                 'flour_recipe' => [
                     ['flour_type' => 'Teff', 'quantity' => 10.0, 'cost' => 18.00],
-                    ['flour_type' => 'Wheat', 'quantity' => 3.0, 'cost' => 2.55]
+                    ['flour_type' => 'Wheat', 'quantity' => 3.0, 'cost' => 2.55],
                 ],
                 'total_flour' => 13.0,
                 'total_flour_cost' => 20.55,
@@ -245,14 +243,14 @@ class BucketConfigurationsController extends Controller
                 'cost_per_injera' => 0.380,
                 'notes' => 'Medium batch for regular production',
                 'created_at' => '2025-01-08',
-                'is_active' => true
+                'is_active' => true,
             ],
             [
                 'id' => 3,
                 'name' => 'Premium Teff Only',
                 'capacity' => 45.0,
                 'flour_recipe' => [
-                    ['flour_type' => 'Teff', 'quantity' => 12.0, 'cost' => 21.60]
+                    ['flour_type' => 'Teff', 'quantity' => 12.0, 'cost' => 21.60],
                 ],
                 'total_flour' => 12.0,
                 'total_flour_cost' => 21.60,
@@ -266,8 +264,8 @@ class BucketConfigurationsController extends Controller
                 'cost_per_injera' => 0.444,
                 'notes' => 'Pure teff recipe for special occasions',
                 'created_at' => '2025-01-05',
-                'is_active' => false
-            ]
+                'is_active' => false,
+            ],
         ];
     }
 

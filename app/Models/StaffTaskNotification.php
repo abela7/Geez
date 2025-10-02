@@ -57,12 +57,19 @@ class StaffTaskNotification extends Model
      * Notification type constants.
      */
     public const TYPE_ASSIGNMENT = 'assignment';
+
     public const TYPE_REMINDER = 'reminder';
+
     public const TYPE_OVERDUE = 'overdue';
+
     public const TYPE_DUE_SOON = 'due_soon';
+
     public const TYPE_COMPLETED = 'completed';
+
     public const TYPE_COMMENT = 'comment';
+
     public const TYPE_STATUS_CHANGE = 'status_change';
+
     public const TYPE_PROGRESS_UPDATE = 'progress_update';
 
     /**
@@ -119,7 +126,7 @@ class StaffTaskNotification extends Model
      */
     public function markRead(): void
     {
-        if (!$this->is_read) {
+        if (! $this->is_read) {
             $this->is_read = true;
             $this->read_at = now();
             $this->updated_by = auth()->id();
@@ -145,7 +152,7 @@ class StaffTaskNotification extends Model
      */
     public function send(): void
     {
-        if (!$this->sent_at) {
+        if (! $this->sent_at) {
             $this->sent_at = now();
             $this->updated_by = auth()->id();
             $this->save();
@@ -388,11 +395,11 @@ class StaffTaskNotification extends Model
     public static function markAllAsRead(string $staffId, ?array $notificationIds = null): int
     {
         $query = static::where('staff_id', $staffId)->where('is_read', false);
-        
+
         if ($notificationIds) {
             $query->whereIn('id', $notificationIds);
         }
-        
+
         return $query->update([
             'is_read' => true,
             'read_at' => now(),

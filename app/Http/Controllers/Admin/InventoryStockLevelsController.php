@@ -60,7 +60,7 @@ class InventoryStockLevelsController extends Controller
 
         $categories = [
             'Dry Goods',
-            'Fresh Produce', 
+            'Fresh Produce',
             'Cooking Essentials',
             'Spices & Seasonings',
             'Dairy Products',
@@ -69,7 +69,7 @@ class InventoryStockLevelsController extends Controller
 
         return view('admin.inventory.stock-levels.index', compact(
             'stats',
-            'stockLevels', 
+            'stockLevels',
             'categories'
         ));
     }

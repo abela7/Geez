@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Shifts;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\JsonResponse;
-use Carbon\Carbon;
 
 class TemplatesController extends Controller
 {
@@ -213,8 +213,8 @@ class TemplatesController extends Controller
 
         // Calculate summary statistics
         $totalTemplates = count($templates);
-        $activeTemplates = count(array_filter($templates, fn($t) => $t['status'] === 'active'));
-        $draftTemplates = count(array_filter($templates, fn($t) => $t['status'] === 'draft'));
+        $activeTemplates = count(array_filter($templates, fn ($t) => $t['status'] === 'active'));
+        $draftTemplates = count(array_filter($templates, fn ($t) => $t['status'] === 'draft'));
         $totalUsage = array_sum(array_column($templates, 'usage_count'));
 
         // Popular templates (most used)
@@ -235,7 +235,7 @@ class TemplatesController extends Controller
         $templateTypes = [];
         foreach ($templates as $template) {
             $type = $template['type'];
-            if (!isset($templateTypes[$type])) {
+            if (! isset($templateTypes[$type])) {
                 $templateTypes[$type] = [
                     'name' => ucfirst($type),
                     'count' => 0,
@@ -301,7 +301,7 @@ class TemplatesController extends Controller
     {
         // In a real application, you would validate and store the template
         // For now, we'll just redirect with a success message
-        
+
         return redirect()->route('admin.shifts.templates.index')
             ->with('success', __('shifts.templates.template_created'));
     }
@@ -375,7 +375,7 @@ class TemplatesController extends Controller
     {
         // In a real application, you would validate and update the template
         // For now, we'll just redirect with a success message
-        
+
         return redirect()->route('admin.shifts.templates.index')
             ->with('success', __('shifts.templates.template_updated'));
     }
@@ -388,10 +388,10 @@ class TemplatesController extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
         $overwriteExisting = $request->input('overwrite_existing', false);
-        
+
         // Mock template application
         $shiftsCreated = rand(15, 45); // Random number for demo
-        
+
         return response()->json([
             'success' => true,
             'message' => __('shifts.templates.template_applied'),
@@ -423,7 +423,7 @@ class TemplatesController extends Controller
     {
         // In a real application, you would delete the template
         // For now, we'll just redirect with a success message
-        
+
         return redirect()->route('admin.shifts.templates.index')
             ->with('success', __('shifts.templates.template_deleted'));
     }
@@ -435,7 +435,7 @@ class TemplatesController extends Controller
     {
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        
+
         // Mock preview data
         $preview = [
             'total_shifts' => rand(20, 60),
@@ -445,7 +445,7 @@ class TemplatesController extends Controller
             'staff_conflicts' => rand(0, 3),
             'weeks_affected' => ceil((strtotime($endDate) - strtotime($startDate)) / (7 * 24 * 60 * 60)),
         ];
-        
+
         return response()->json([
             'success' => true,
             'preview' => $preview,

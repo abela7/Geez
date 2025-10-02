@@ -18,21 +18,21 @@ class LanguageController extends Controller
     {
         // Validate the locale
         $supportedLocales = ['en', 'am', 'ti'];
-        
-        if (!in_array($locale, $supportedLocales)) {
+
+        if (! in_array($locale, $supportedLocales)) {
             abort(404);
         }
-        
+
         // Set the application locale
         App::setLocale($locale);
-        
+
         // Store the locale in session for persistence
         Session::put('locale', $locale);
-        
+
         // Redirect back to the previous page
-        return redirect()->back()->with('success', __('common.language') . ' changed successfully');
+        return redirect()->back()->with('success', __('common.language').' changed successfully');
     }
-    
+
     /**
      * Get the current locale
      */

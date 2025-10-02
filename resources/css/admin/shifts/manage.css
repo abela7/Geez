@@ -8,10 +8,13 @@
 .shift-create-page,
 .shift-edit-page {
     padding: var(--spacing-lg);
+    padding-top: calc(4rem + var(--spacing-lg)); /* Account for sticky header height */
     width: 100%;
     min-height: 100vh;
     background: var(--color-bg-primary);
-    /* Remove conflicting z-index that causes header overlap */
+    /* Ensure this stays below top navigation */
+    position: relative !important;
+    z-index: auto !important;
 }
 
 /* Page Header - Rebuilt with proper z-index hierarchy */
@@ -30,7 +33,9 @@
     border: 1px solid var(--color-surface-card-border);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--color-surface-card-shadow);
-    /* Remove z-index to ensure it stays below top navigation */
+    /* Force this to stay below top navigation */
+    position: relative !important;
+    z-index: auto !important;
 }
 
 @media (max-width: 768px) {
@@ -310,7 +315,7 @@
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--color-surface-card-shadow);
-    overflow: hidden;
+    overflow: visible;
 }
 
 .table-header {
@@ -463,6 +468,7 @@
 /* Table Container */
 .table-container {
     overflow-x: auto;
+    overflow-y: visible;
     background: var(--table-container-bg);
     border-radius: var(--border-radius-lg);
 }
@@ -522,6 +528,7 @@
 
 .shifts-table tbody tr {
     transition: var(--transition-base);
+    position: relative;
 }
 
 .shifts-table tbody tr:hover {
@@ -531,6 +538,12 @@
 .shifts-table td {
     color: var(--table-cell-text);
     vertical-align: middle;
+    overflow: visible;
+}
+
+.shifts-table td:last-child {
+    overflow: visible;
+    position: relative;
 }
 
 /* Table Column Specific Styling */
@@ -788,27 +801,39 @@
 .actions-menu {
     position: absolute;
     right: 0;
-    top: 100%;
-    background: var(--actions-dropdown-bg);
-    border: 1px solid var(--actions-dropdown-border);
+    top: calc(100% + 4px);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-border);
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--actions-dropdown-shadow);
+    box-shadow: var(--color-surface-card-shadow);
     padding: var(--spacing-xs);
     min-width: 180px;
-    z-index: var(--z-dropdown);
-    margin-top: var(--spacing-xs);
+    z-index: var(--z-maximum);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: var(--transition-base);
+    pointer-events: none;
+}
+
+.actions-menu[style*="display: block"],
+.actions-menu[x-show] {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .action-item {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    padding: var(--spacing-sm) var(--spacing-md);
-    color: var(--action-item-text);
+    padding: 10px 14px;
+    color: var(--color-text-secondary);
     text-decoration: none;
     border-radius: var(--border-radius);
     transition: var(--transition-base);
-    font-size: var(--font-size-sm);
+    font-size: 14px;
     border: none;
     background: none;
     cursor: pointer;
@@ -817,11 +842,17 @@
 }
 
 .action-item:hover {
-    background: var(--action-item-hover-bg);
+    background: var(--dropdown-item-hover);
+    color: var(--dropdown-item-hover-text);
 }
 
 .action-item.action-danger {
-    color: var(--action-item-danger-text);
+    color: var(--color-error);
+}
+
+.action-item.action-danger:hover {
+    background: var(--color-error-bg);
+    color: var(--color-error);
 }
 
 .action-item svg {
@@ -1067,4 +1098,21 @@
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
+}
+
+/* Safety net: ensure row action menu can escape scroll containers */
+.shifts-table-section,
+.table-container,
+.shifts-table tbody tr,
+.shifts-table td:last-child,
+.actions-cell,
+.actions-dropdown {
+    overflow: visible !important;
+}
+
+.actions-dropdown { position: relative; }
+.actions-menu {
+    position: absolute;
+    inset: auto 0 auto auto; /* right aligned */
+    z-index: 2147483647; /* sit above any stacking contexts */
 }

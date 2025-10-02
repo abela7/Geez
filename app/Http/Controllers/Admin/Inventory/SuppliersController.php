@@ -6,8 +6,8 @@ namespace App\Http\Controllers\Admin\Inventory;
 
 use App\Http\Controllers\Controller;
 use App\Models\Supplier;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class SuppliersController extends Controller
@@ -24,9 +24,9 @@ class SuppliersController extends Controller
             $search = $request->get('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('contact_person', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
+                    ->orWhere('contact_person', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
@@ -71,7 +71,7 @@ class SuppliersController extends Controller
         return response()->json([
             'success' => true,
             'message' => __('inventory.suppliers.supplier_created'),
-            'supplier' => $supplier
+            'supplier' => $supplier,
         ]);
     }
 
@@ -111,7 +111,7 @@ class SuppliersController extends Controller
 
         return response()->json([
             'success' => true,
-            'supplier' => $supplierData
+            'supplier' => $supplierData,
         ]);
     }
 
@@ -123,7 +123,7 @@ class SuppliersController extends Controller
         $supplier = Supplier::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:suppliers,name,' . $supplier->id,
+            'name' => 'required|string|max:255|unique:suppliers,name,'.$supplier->id,
             'contact_person' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
@@ -137,7 +137,7 @@ class SuppliersController extends Controller
         return response()->json([
             'success' => true,
             'message' => __('inventory.suppliers.supplier_updated'),
-            'supplier' => $supplier
+            'supplier' => $supplier,
         ]);
     }
 
@@ -152,7 +152,7 @@ class SuppliersController extends Controller
         if ($supplier->inventoryItems()->count() > 0) {
             return response()->json([
                 'success' => false,
-                'message' => __('inventory.suppliers.cannot_delete_has_items')
+                'message' => __('inventory.suppliers.cannot_delete_has_items'),
             ], 422);
         }
 
@@ -160,7 +160,7 @@ class SuppliersController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => __('inventory.suppliers.supplier_deleted')
+            'message' => __('inventory.suppliers.supplier_deleted'),
         ]);
     }
 
@@ -174,7 +174,7 @@ class SuppliersController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => __('inventory.suppliers.supplier_activated')
+            'message' => __('inventory.suppliers.supplier_activated'),
         ]);
     }
 
@@ -188,7 +188,7 @@ class SuppliersController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => __('inventory.suppliers.supplier_deactivated')
+            'message' => __('inventory.suppliers.supplier_deactivated'),
         ]);
     }
 }

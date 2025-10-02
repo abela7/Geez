@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Todos;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\JsonResponse;
 
 class SchedulesController extends Controller
 {
@@ -18,7 +18,7 @@ class SchedulesController extends Controller
     {
         // Mock data for schedules
         $schedules = $this->getMockSchedules();
-        
+
         // Mock data for filters
         $frequencies = $this->getFrequencies();
         $statuses = $this->getStatuses();
@@ -56,7 +56,7 @@ class SchedulesController extends Controller
             'template_id' => 'nullable|integer',
             'assigned_staff' => 'nullable|array',
             'auto_assign' => 'boolean',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
         ]);
 
         return response()->json([
@@ -69,8 +69,8 @@ class SchedulesController extends Controller
                 'frequency_type' => $request->frequency_type,
                 'frequency_value' => $request->frequency_value,
                 'is_active' => $request->is_active ?? true,
-                'created_at' => now()->toISOString()
-            ]
+                'created_at' => now()->toISOString(),
+            ],
         ]);
     }
 
@@ -80,6 +80,7 @@ class SchedulesController extends Controller
     public function show(int $schedule): View
     {
         $scheduleData = $this->getMockSchedule($schedule);
+
         return view('admin.todos.schedules.show', compact('scheduleData'));
     }
 
@@ -114,12 +115,12 @@ class SchedulesController extends Controller
             'template_id' => 'nullable|integer',
             'assigned_staff' => 'nullable|array',
             'auto_assign' => 'boolean',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => __('todos.schedules.schedule_updated_successfully')
+            'message' => __('todos.schedules.schedule_updated_successfully'),
         ]);
     }
 
@@ -130,7 +131,7 @@ class SchedulesController extends Controller
     {
         return response()->json([
             'success' => true,
-            'message' => __('todos.schedules.schedule_deleted_successfully')
+            'message' => __('todos.schedules.schedule_deleted_successfully'),
         ]);
     }
 
@@ -141,7 +142,7 @@ class SchedulesController extends Controller
     {
         return response()->json([
             'success' => true,
-            'message' => __('todos.schedules.schedule_activated_successfully')
+            'message' => __('todos.schedules.schedule_activated_successfully'),
         ]);
     }
 
@@ -152,7 +153,7 @@ class SchedulesController extends Controller
     {
         return response()->json([
             'success' => true,
-            'message' => __('todos.schedules.schedule_deactivated_successfully')
+            'message' => __('todos.schedules.schedule_deactivated_successfully'),
         ]);
     }
 
@@ -182,7 +183,7 @@ class SchedulesController extends Controller
                 'next_run' => '2024-01-16 14:00:00',
                 'last_run' => '2024-01-16 12:00:00',
                 'total_runs' => 156,
-                'successful_runs' => 148
+                'successful_runs' => 148,
             ],
             [
                 'id' => 2,
@@ -207,7 +208,7 @@ class SchedulesController extends Controller
                 'next_run' => '2024-01-17 08:00:00',
                 'last_run' => '2024-01-16 08:00:00',
                 'total_runs' => 15,
-                'successful_runs' => 14
+                'successful_runs' => 14,
             ],
             [
                 'id' => 3,
@@ -232,7 +233,7 @@ class SchedulesController extends Controller
                 'next_run' => '2024-01-22 09:00:00',
                 'last_run' => '2024-01-15 09:00:00',
                 'total_runs' => 3,
-                'successful_runs' => 3
+                'successful_runs' => 3,
             ],
             [
                 'id' => 4,
@@ -257,7 +258,7 @@ class SchedulesController extends Controller
                 'next_run' => '2024-02-04 10:00:00',
                 'last_run' => '2024-01-07 10:00:00',
                 'total_runs' => 2,
-                'successful_runs' => 2
+                'successful_runs' => 2,
             ],
             [
                 'id' => 5,
@@ -282,8 +283,8 @@ class SchedulesController extends Controller
                 'next_run' => '2024-01-19 18:00:00',
                 'last_run' => '2024-01-16 18:00:00',
                 'total_runs' => 5,
-                'successful_runs' => 4
-            ]
+                'successful_runs' => 4,
+            ],
         ];
     }
 
@@ -318,8 +319,8 @@ class SchedulesController extends Controller
                 ['date' => '2024-01-16 10:00:00', 'status' => 'completed', 'staff' => 'Meron Gebremedhin', 'duration' => 18],
                 ['date' => '2024-01-16 08:00:00', 'status' => 'completed', 'staff' => 'Alemayehu Tadesse', 'duration' => 12],
                 ['date' => '2024-01-16 06:00:00', 'status' => 'missed', 'staff' => null, 'duration' => null],
-                ['date' => '2024-01-16 04:00:00', 'status' => 'completed', 'staff' => 'Meron Gebremedhin', 'duration' => 20]
-            ]
+                ['date' => '2024-01-16 04:00:00', 'status' => 'completed', 'staff' => 'Meron Gebremedhin', 'duration' => 20],
+            ],
         ];
     }
 
@@ -330,7 +331,7 @@ class SchedulesController extends Controller
             'daily' => 'Daily',
             'weekly' => 'Weekly',
             'monthly' => 'Monthly',
-            'custom' => 'Custom'
+            'custom' => 'Custom',
         ];
     }
 
@@ -339,7 +340,7 @@ class SchedulesController extends Controller
         return [
             'all' => 'All',
             'active' => 'Active',
-            'inactive' => 'Inactive'
+            'inactive' => 'Inactive',
         ];
     }
 
@@ -350,7 +351,7 @@ class SchedulesController extends Controller
             ['id' => 2, 'name' => 'Daily Opening Checklist'],
             ['id' => 3, 'name' => 'Weekly Inventory Review'],
             ['id' => 4, 'name' => 'Monthly Deep Clean'],
-            ['id' => 5, 'name' => 'Special Equipment Maintenance']
+            ['id' => 5, 'name' => 'Special Equipment Maintenance'],
         ];
     }
 
@@ -360,7 +361,7 @@ class SchedulesController extends Controller
             ['id' => 1, 'name' => 'Alemayehu Tadesse', 'role' => 'Waiter'],
             ['id' => 2, 'name' => 'Meron Gebremedhin', 'role' => 'Kitchen Staff'],
             ['id' => 3, 'name' => 'Yonas Assefa', 'role' => 'Manager'],
-            ['id' => 4, 'name' => 'Sara Hailu', 'role' => 'Cashier']
+            ['id' => 4, 'name' => 'Sara Hailu', 'role' => 'Cashier'],
         ];
     }
 }

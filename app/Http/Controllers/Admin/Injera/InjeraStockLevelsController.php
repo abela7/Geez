@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Injera;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class InjeraStockLevelsController extends Controller
 {
@@ -20,7 +20,7 @@ class InjeraStockLevelsController extends Controller
     {
         // Get injera stock levels data
         $stockLevels = $this->getInjeraStockLevels($request);
-        
+
         // Get summary statistics
         $statistics = $this->getStockStatistics();
 
@@ -47,7 +47,7 @@ class InjeraStockLevelsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -64,15 +64,15 @@ class InjeraStockLevelsController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Stock levels updated successfully'
+                'message' => 'Stock levels updated successfully',
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update stock levels: ' . $e->getMessage()
+                'message' => 'Failed to update stock levels: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -95,7 +95,7 @@ class InjeraStockLevelsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -109,15 +109,15 @@ class InjeraStockLevelsController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Stock added successfully'
+                'message' => 'Stock added successfully',
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to add stock: ' . $e->getMessage()
+                'message' => 'Failed to add stock: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -138,7 +138,7 @@ class InjeraStockLevelsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -152,15 +152,15 @@ class InjeraStockLevelsController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Stock reserved successfully'
+                'message' => 'Stock reserved successfully',
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to reserve stock: ' . $e->getMessage()
+                'message' => 'Failed to reserve stock: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -186,7 +186,7 @@ class InjeraStockLevelsController extends Controller
                 'status' => 'fresh',
                 'cost_per_injera' => 0.45,
                 'total_value' => 20.25,
-                'notes' => 'Premium quality batch'
+                'notes' => 'Premium quality batch',
             ],
             [
                 'id' => 2,
@@ -202,7 +202,7 @@ class InjeraStockLevelsController extends Controller
                 'status' => 'fresh',
                 'cost_per_injera' => 0.44,
                 'total_value' => 12.32,
-                'notes' => 'Special order batch'
+                'notes' => 'Special order batch',
             ],
             [
                 'id' => 3,
@@ -218,7 +218,7 @@ class InjeraStockLevelsController extends Controller
                 'status' => 'expiring_soon',
                 'cost_per_injera' => 0.42,
                 'total_value' => 6.30,
-                'notes' => 'Regular quality batch'
+                'notes' => 'Regular quality batch',
             ],
             [
                 'id' => 4,
@@ -234,8 +234,8 @@ class InjeraStockLevelsController extends Controller
                 'status' => 'expired',
                 'cost_per_injera' => 0.38,
                 'total_value' => 3.04,
-                'notes' => 'Lower quality - use for staff meals'
-            ]
+                'notes' => 'Lower quality - use for staff meals',
+            ],
         ];
     }
 
@@ -255,8 +255,8 @@ class InjeraStockLevelsController extends Controller
             'quality_distribution' => [
                 'A' => 73,
                 'B' => 15,
-                'C' => 8
-            ]
+                'C' => 8,
+            ],
         ];
     }
 

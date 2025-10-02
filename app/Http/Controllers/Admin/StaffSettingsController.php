@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\StaffType;
 
 class StaffSettingsController extends Controller
 {
@@ -18,10 +17,10 @@ class StaffSettingsController extends Controller
         $staffTypesCount = 0;
         $activeStaffTypesCount = 0;
         $inactiveStaffTypesCount = 0;
-        
+
         return view('admin.staff.settings.index', compact(
             'staffTypesCount',
-            'activeStaffTypesCount', 
+            'activeStaffTypesCount',
             'inactiveStaffTypesCount'
         ));
     }

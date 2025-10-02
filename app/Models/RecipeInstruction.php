@@ -37,11 +37,11 @@ class RecipeInstruction extends Model
      */
     public function getFormattedDurationAttribute(): string
     {
-        if (!$this->duration) {
+        if (! $this->duration) {
             return '';
         }
 
-        return $this->duration . ' min';
+        return $this->duration.' min';
     }
 
     /**
@@ -49,6 +49,6 @@ class RecipeInstruction extends Model
      */
     public function getStepLabelAttribute(): string
     {
-        return 'Step ' . $this->step_number;
+        return 'Step '.$this->step_number;
     }
 }

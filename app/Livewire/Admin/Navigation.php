@@ -7,7 +7,9 @@ use Livewire\Component;
 class Navigation extends Component
 {
     public $currentRoute;
+
     public $sidebarCollapsed = false;
+
     public $sidebarOpen = false;
 
     public function mount()

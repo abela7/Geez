@@ -70,11 +70,12 @@ class StaffAttendance extends Model
      */
     public function calculateHoursWorked(): ?float
     {
-        if (!$this->clock_in || !$this->clock_out) {
+        if (! $this->clock_in || ! $this->clock_out) {
             return null;
         }
 
         $diffInMinutes = $this->clock_in->diffInMinutes($this->clock_out);
+
         return round($diffInMinutes / 60, 2);
     }
 

@@ -6,13 +6,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Staff;
-use App\Models\StaffPerformanceGoal;
 use App\Models\StaffPerformanceMetric;
 use App\Models\StaffPerformanceReview;
-use App\Models\StaffPerformanceTemplate;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\DB;
 
 class StaffPerformanceController extends Controller
 {
@@ -21,28 +18,28 @@ class StaffPerformanceController extends Controller
         // Get filter parameters
         $period = $request->get('period', 'quarterly');
         $staffTypeId = $request->get('staff_type_id');
-        
+
         // Calculate date ranges based on period
         $dateRange = $this->getDateRange($period);
-        
+
         // Get overview statistics
         $overviewStats = $this->getOverviewStats($dateRange);
-        
+
         // Get top performers
         $topPerformers = $this->getTopPerformers($dateRange, $staffTypeId);
-        
+
         // Get performance trends data
         $performanceTrends = $this->getPerformanceTrends($dateRange);
-        
+
         // Get upcoming reviews
         $upcomingReviews = $this->getUpcomingReviews();
-        
+
         // Get key metrics
         $keyMetrics = $this->getKeyMetrics($dateRange);
-        
+
         // Get staff types for filter
         $staffTypes = \App\Models\StaffType::active()->get();
-        
+
         return view('admin.staff.performance', compact(
             'overviewStats',
             'topPerformers',
@@ -53,7 +50,7 @@ class StaffPerformanceController extends Controller
             'period'
         ));
     }
-    
+
     /**
      * Get date range based on period.
      */
@@ -63,26 +60,26 @@ class StaffPerformanceController extends Controller
             'monthly' => [
                 'start' => now()->subMonth()->startOfMonth(),
                 'end' => now()->endOfMonth(),
-                'label' => 'Last Month'
+                'label' => 'Last Month',
             ],
             'quarterly' => [
                 'start' => now()->subMonths(3)->startOfMonth(),
                 'end' => now()->endOfMonth(),
-                'label' => 'Last 3 Months'
+                'label' => 'Last 3 Months',
             ],
             'yearly' => [
                 'start' => now()->subYear()->startOfYear(),
                 'end' => now()->endOfYear(),
-                'label' => 'Last Year'
+                'label' => 'Last Year',
             ],
             default => [
                 'start' => now()->subMonths(3)->startOfMonth(),
                 'end' => now()->endOfMonth(),
-                'label' => 'Last 3 Months'
+                'label' => 'Last 3 Months',
             ]
         };
     }
-    
+
     /**
      * Get overview statistics.
      */
@@ -92,45 +89,45 @@ class StaffPerformanceController extends Controller
         $completedReviews = StaffPerformanceReview::whereBetween('review_date', [$dateRange['start'], $dateRange['end']])
             ->where('status', 'completed')
             ->get();
-            
+
         // Calculate overall performance score
         $overallScore = $completedReviews->avg('overall_rating') * 20; // Convert 5-point scale to percentage
-        
+
         // Get top performers (rating >= 4.0)
         $topPerformersCount = $completedReviews->where('overall_rating', '>=', 4.0)->count();
-        
+
         // Get staff needing improvement (rating < 3.5)
         $needsImprovementCount = $completedReviews->where('overall_rating', '<', 3.5)->count();
-        
+
         // Get reviews due this week
         $reviewsDue = StaffPerformanceReview::where('status', 'draft')
             ->orWhere(function ($query) {
                 $query->whereNull('review_date')
-                      ->where('review_period_end', '<=', now()->addWeek());
+                    ->where('review_period_end', '<=', now()->addWeek());
             })
             ->count();
-            
+
         // Calculate improvement trend
         $previousPeriodStart = $dateRange['start']->copy()->subMonths(3);
         $previousPeriodEnd = $dateRange['start']->copy()->subDay();
-        
+
         $previousReviews = StaffPerformanceReview::whereBetween('review_date', [$previousPeriodStart, $previousPeriodEnd])
             ->where('status', 'completed')
             ->get();
-            
+
         $previousScore = $previousReviews->avg('overall_rating') * 20;
         $improvementTrend = $overallScore - $previousScore;
-        
+
         return [
             'overall_score' => round($overallScore ?: 0, 1),
             'top_performers' => $topPerformersCount,
             'needs_improvement' => $needsImprovementCount,
             'reviews_due' => $reviewsDue,
             'improvement_trend' => round($improvementTrend, 1),
-            'period_label' => $dateRange['label']
+            'period_label' => $dateRange['label'],
         ];
     }
-    
+
     /**
      * Get top performers.
      */
@@ -138,20 +135,21 @@ class StaffPerformanceController extends Controller
     {
         $query = Staff::with(['staffType', 'performanceReviews' => function ($q) use ($dateRange) {
             $q->whereBetween('review_date', [$dateRange['start'], $dateRange['end']])
-              ->where('status', 'completed')
-              ->latest('review_date');
+                ->where('status', 'completed')
+                ->latest('review_date');
         }]);
-        
+
         if ($staffTypeId) {
             $query->where('staff_type_id', $staffTypeId);
         }
-        
+
         return $query->get()
             ->filter(function ($staff) {
                 return $staff->performanceReviews->isNotEmpty();
             })
             ->map(function ($staff) {
                 $latestReview = $staff->performanceReviews->first();
+
                 return [
                     'id' => $staff->id,
                     'name' => $staff->full_name,
@@ -164,7 +162,7 @@ class StaffPerformanceController extends Controller
             ->take(5)
             ->values();
     }
-    
+
     /**
      * Get performance trends data for chart.
      */
@@ -178,15 +176,15 @@ class StaffPerformanceController extends Controller
             ->map(function ($dayMetrics) {
                 return [
                     'date' => $dayMetrics->first()->recorded_date->format('M d'),
-                    'average_score' => round($dayMetrics->avg('metric_value'), 1)
+                    'average_score' => round($dayMetrics->avg('metric_value'), 1),
                 ];
             })
             ->values()
             ->toArray();
-            
+
         return $metrics;
     }
-    
+
     /**
      * Get upcoming reviews.
      */
@@ -202,9 +200,9 @@ class StaffPerformanceController extends Controller
                 while ($nextReviewDate->isPast()) {
                     $nextReviewDate->addMonths(3);
                 }
-                
+
                 $daysUntilReview = now()->diffInDays($nextReviewDate, false);
-                
+
                 if ($daysUntilReview <= 14) { // Show reviews due within 2 weeks
                     return [
                         'staff_name' => $staff->full_name,
@@ -212,9 +210,10 @@ class StaffPerformanceController extends Controller
                         'review_type' => 'Quarterly Review',
                         'due_date' => $nextReviewDate,
                         'days_until_due' => $daysUntilReview,
-                        'urgency' => $daysUntilReview <= 1 ? 'urgent' : ($daysUntilReview <= 7 ? 'warning' : 'info')
+                        'urgency' => $daysUntilReview <= 1 ? 'urgent' : ($daysUntilReview <= 7 ? 'warning' : 'info'),
                     ];
                 }
+
                 return null;
             })
             ->filter()
@@ -222,7 +221,7 @@ class StaffPerformanceController extends Controller
             ->take(5)
             ->values();
     }
-    
+
     /**
      * Get key metrics summary.
      */
@@ -231,26 +230,26 @@ class StaffPerformanceController extends Controller
         $metrics = StaffPerformanceMetric::whereBetween('recorded_date', [$dateRange['start'], $dateRange['end']])
             ->get()
             ->groupBy('metric_name');
-            
+
         $keyMetrics = [];
-        
+
         foreach ($metrics as $metricName => $metricData) {
             $average = $metricData->avg('metric_value');
-            
+
             // Map metric names to display names and determine if higher is better
             $displayInfo = $this->getMetricDisplayInfo($metricName);
-            
+
             $keyMetrics[] = [
                 'name' => $displayInfo['display_name'],
                 'value' => round($average, 1),
                 'unit' => $displayInfo['unit'],
-                'color' => $this->getMetricColor($average, $displayInfo['target'], $displayInfo['higher_is_better'])
+                'color' => $this->getMetricColor($average, $displayInfo['target'], $displayInfo['higher_is_better']),
             ];
         }
-        
+
         return collect($keyMetrics)->take(4)->toArray();
     }
-    
+
     /**
      * Get metric display information.
      */
@@ -261,54 +260,54 @@ class StaffPerformanceController extends Controller
                 'display_name' => 'Customer Satisfaction',
                 'unit' => '/5',
                 'target' => 4.0,
-                'higher_is_better' => true
+                'higher_is_better' => true,
             ],
             'order_accuracy' => [
                 'display_name' => 'Order Accuracy',
                 'unit' => '%',
                 'target' => 95.0,
-                'higher_is_better' => true
+                'higher_is_better' => true,
             ],
             'orders_per_hour' => [
                 'display_name' => 'Orders Per Hour',
                 'unit' => '',
                 'target' => 15.0,
-                'higher_is_better' => true
+                'higher_is_better' => true,
             ],
             'order_prep_time' => [
                 'display_name' => 'Prep Time',
                 'unit' => 'min',
                 'target' => 12.0,
-                'higher_is_better' => false
+                'higher_is_better' => false,
             ],
             'food_waste_percentage' => [
                 'display_name' => 'Food Waste',
                 'unit' => '%',
                 'target' => 5.0,
-                'higher_is_better' => false
+                'higher_is_better' => false,
             ],
             'dishes_per_hour' => [
                 'display_name' => 'Dishes Per Hour',
                 'unit' => '',
                 'target' => 30.0,
-                'higher_is_better' => true
+                'higher_is_better' => true,
             ],
             default => [
                 'display_name' => ucwords(str_replace('_', ' ', $metricName)),
                 'unit' => '',
                 'target' => 50.0,
-                'higher_is_better' => true
+                'higher_is_better' => true,
             ]
         };
     }
-    
+
     /**
      * Get color class based on metric performance.
      */
     private function getMetricColor(float $value, float $target, bool $higherIsBetter): string
     {
         $percentage = $higherIsBetter ? ($value / $target) : ($target / $value);
-        
+
         if ($percentage >= 1.0) {
             return 'success'; // Green - meeting or exceeding target
         } elseif ($percentage >= 0.8) {

@@ -6,7 +6,6 @@ namespace App\Policies;
 
 use App\Models\Staff;
 use App\Models\StaffAttendance;
-use Illuminate\Auth\Access\Response;
 
 class StaffAttendancePolicy
 {
@@ -92,12 +91,12 @@ class StaffAttendancePolicy
     private function isAdminOrManager(Staff $staff): bool
     {
         $staffType = $staff->staffType;
-        
-        if (!$staffType) {
+
+        if (! $staffType) {
             return false;
         }
 
-        return in_array($staffType->name, ['Administrator', 'Manager', 'System Admin', 'system_admin'], true) 
+        return in_array($staffType->name, ['Administrator', 'Manager', 'System Admin', 'system_admin'], true)
             || in_array($staffType->slug, ['administrator', 'manager', 'system_admin'], true);
     }
 }

@@ -15,19 +15,19 @@ return new class extends Migration
     {
         // 1. Add soft deletes to all staff tables
         $this->addSoftDeletes();
-        
+
         // 2. Update money precision to decimal(12,2)
         $this->updateMoneyPrecision();
-        
+
         // 3. Add unique constraints to prevent duplicates
         $this->addUniqueConstraints();
-        
+
         // 4. Add composite indexes for common queries
         $this->addCompositeIndexes();
-        
+
         // 5. Add audit fields (created_by/updated_by) to operational tables
         $this->addAuditFields();
-        
+
         // 6. Ensure proper engine and charset
         $this->ensureEngineAndCharset();
     }
@@ -39,16 +39,16 @@ return new class extends Migration
     {
         // Remove audit fields
         $this->removeAuditFields();
-        
+
         // Remove composite indexes
         $this->removeCompositeIndexes();
-        
+
         // Remove unique constraints
         $this->removeUniqueConstraints();
-        
+
         // Revert money precision
         $this->revertMoneyPrecision();
-        
+
         // Remove soft deletes
         $this->removeSoftDeletes();
     }
@@ -60,7 +60,7 @@ return new class extends Migration
     {
         $tables = [
             'staff_types',
-            'staff', 
+            'staff',
             'staff_profiles',
             'staff_attendance',
             'staff_shifts',
@@ -68,7 +68,7 @@ return new class extends Migration
             'staff_tasks',
             'staff_task_assignments',
             'staff_performance_reviews',
-            'staff_payroll_records'
+            'staff_payroll_records',
         ];
 
         foreach ($tables as $table) {
@@ -192,7 +192,7 @@ return new class extends Migration
     {
         $tables = [
             'staff_types',
-            'staff', 
+            'staff',
             'staff_profiles',
             'staff_attendance',
             'staff_shifts',
@@ -200,7 +200,7 @@ return new class extends Migration
             'staff_tasks',
             'staff_task_assignments',
             'staff_performance_reviews',
-            'staff_payroll_records'
+            'staff_payroll_records',
         ];
 
         foreach ($tables as $tableName) {
@@ -215,7 +215,7 @@ return new class extends Migration
     {
         $tables = [
             'staff_types',
-            'staff', 
+            'staff',
             'staff_profiles',
             'staff_attendance',
             'staff_shifts',
@@ -223,7 +223,7 @@ return new class extends Migration
             'staff_tasks',
             'staff_task_assignments',
             'staff_performance_reviews',
-            'staff_payroll_records'
+            'staff_payroll_records',
         ];
 
         foreach ($tables as $table) {

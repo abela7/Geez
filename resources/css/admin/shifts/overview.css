@@ -1,6 +1,7 @@
 /* Shift Overview Page Styles */
 .shifts-overview-page {
     padding: 1rem;
+    padding-top: calc(4rem + 1rem); /* Account for sticky header height */
     width: 100%;
     max-width: 100%;
     margin: 0;
@@ -11,12 +12,14 @@
 @media (min-width: 768px) {
     .shifts-overview-page {
         padding: 1.5rem;
+        padding-top: calc(4rem + 1.5rem); /* Account for sticky header height */
     }
 }
 
 @media (min-width: 1024px) {
     .shifts-overview-page {
         padding: 2rem;
+        padding-top: calc(4rem + 2rem); /* Account for sticky header height */
     }
 }
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class IngredientUnit extends Model
 {
@@ -54,6 +54,7 @@ class IngredientUnit extends Model
         if ($this->base_conversion_factor) {
             return $value * $this->base_conversion_factor;
         }
+
         return $value;
     }
 
@@ -62,6 +63,7 @@ class IngredientUnit extends Model
         if ($this->base_conversion_factor) {
             return $baseValue / $this->base_conversion_factor;
         }
+
         return $baseValue;
     }
 }

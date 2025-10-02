@@ -3,7 +3,7 @@
 return [
     // Navigation
     'nav_title' => 'Injera Management',
-    
+
     // Subsection Titles
     'overview' => [
         'title' => 'Overview',
@@ -11,7 +11,7 @@ return [
     'flour_management' => [
         'title' => 'Flour Management',
         'subtitle' => 'Manage flour inventory, track stock levels, and monitor costs for injera production',
-        
+
         // Summary Cards
         'total_flour_types' => 'Total Flour Types',
         'total_stock' => 'Total Stock',
@@ -19,7 +19,7 @@ return [
         'total_value' => 'Total Value',
         'avg_price_per_kg' => 'Average Price/KG',
         'suppliers_count' => 'Active Suppliers',
-        
+
         // Actions
         'add_flour' => 'Add Flour',
         'export_data' => 'Export Data',
@@ -27,7 +27,7 @@ return [
         'clear_filters' => 'Clear Filters',
         'save_flour' => 'Save Flour',
         'cancel' => 'Cancel',
-        
+
         // Table Headers
         'flour_inventory' => 'Flour Inventory',
         'flour_name' => 'Flour Name',
@@ -39,18 +39,18 @@ return [
         'supplier' => 'Supplier',
         'status' => 'Status',
         'actions' => 'Actions',
-        
+
         // Filters
         'search_placeholder' => 'Search flour by name or supplier...',
         'all_types' => 'All Types',
         'all_statuses' => 'All Statuses',
         'select_type' => 'Select Type',
-        
+
         // Statuses
         'in_stock' => 'In Stock',
         'low_stock' => 'Low Stock',
         'out_of_stock' => 'Out of Stock',
-        
+
         // Form Fields
         'notes' => 'Notes',
         'adjustment_type' => 'Adjustment Type',
@@ -58,12 +58,12 @@ return [
         'purchase' => 'Purchase',
         'usage' => 'Usage',
         'adjustment' => 'Adjustment',
-        
+
         // Actions
         'update_stock' => 'Update Stock',
         'edit' => 'Edit',
         'delete' => 'Delete',
-        
+
         // Messages
         'flour_added_success' => 'Flour added successfully',
         'stock_updated_success' => 'Stock updated successfully',
@@ -72,7 +72,7 @@ return [
     'bucket_configurations' => [
         'title' => 'Bucket Configurations',
         'subtitle' => 'Create and manage custom injera production recipes with precise flour mixes, water ratios, and cost calculations',
-        
+
         // Summary Cards
         'total_configurations' => 'Total Configurations',
         'active_configurations' => 'Active Configurations',
@@ -80,7 +80,7 @@ return [
         'total_capacity' => 'Total Capacity',
         'avg_yield_per_kg' => 'Avg Yield per KG',
         'most_used_flour' => 'Most Used Flour',
-        
+
         // Actions
         'create_bucket' => 'Create Bucket',
         'export_configurations' => 'Export Configurations',
@@ -91,7 +91,7 @@ return [
         'duplicate' => 'Duplicate',
         'edit' => 'Edit',
         'delete' => 'Delete',
-        
+
         // Section Titles
         'bucket_recipes' => 'Bucket Recipes',
         'basic_info' => 'Basic Information',
@@ -99,7 +99,7 @@ return [
         'water_requirements' => 'Water Requirements',
         'production_details' => 'Production Details',
         'cost_breakdown' => 'Cost Breakdown',
-        
+
         // Form Fields
         'bucket_name' => 'Bucket Name',
         'capacity' => 'Capacity',
@@ -124,11 +124,11 @@ return [
         'labor' => 'Labor',
         'flour_cost' => 'Flour Cost',
         'notes' => 'Notes',
-        
+
         // Status
         'active' => 'Active',
         'inactive' => 'Inactive',
-        
+
         // Messages
         'bucket_created_success' => 'Bucket configuration created successfully',
         'bucket_updated_success' => 'Bucket configuration updated successfully',
@@ -138,7 +138,7 @@ return [
     'production_batches' => [
         'title' => 'Production Batches',
         'subtitle' => 'Track the complete 5-stage injera production lifecycle from flour purchase to finished injera',
-        
+
         // Summary Cards
         'active_batches' => 'Active Batches',
         'completed_this_week' => 'Completed This Week',
@@ -146,14 +146,14 @@ return [
         'avg_batch_time' => 'Avg Batch Time',
         'success_rate' => 'Success Rate',
         'total_production_cost' => 'Total Production Cost',
-        
+
         // Filter Tabs
         'all_batches' => 'All Batches',
         'active' => 'Active',
         'completed' => 'Completed',
         'planning' => 'Planning',
         'cancelled' => 'Cancelled',
-        
+
         // Actions
         'start_new_batch' => 'Start New Batch',
         'export_batches' => 'Export Batches',
@@ -164,7 +164,7 @@ return [
         'cancel_batch' => 'Cancel Batch',
         'start_batch' => 'Start Batch',
         'cancel' => 'Cancel',
-        
+
         // Batch Info
         'batch_name' => 'Batch Name',
         'bucket_configuration' => 'Bucket Configuration',
@@ -181,12 +181,12 @@ return [
         'not_scheduled' => 'Not Scheduled',
         'recipe_preview' => 'Recipe Preview',
         'notes' => 'Notes',
-        
+
         // Progress
         'progress' => 'Progress',
         'current_stage' => 'Current Stage',
         'day' => 'Day',
-        
+
         // 5 Stages
         'stage_buy_flour' => 'Buy Flour',
         'stage_mixing' => 'Mixing',
@@ -194,25 +194,25 @@ return [
         'stage_hot_water' => 'Add Hot Water',
         'stage_baking' => 'Baking',
         'stage_completed' => 'Completed',
-        
+
         // Stage Status
         'stage_status' => 'Stage Status',
         'in_progress' => 'In Progress',
         'pending' => 'Pending',
         'stage_notes' => 'Stage Notes',
-        
+
         // Priority
         'high_priority' => 'High Priority',
         'medium_priority' => 'Medium Priority',
         'normal_priority' => 'Normal',
         'low_priority' => 'Low',
-        
+
         // Completion
         'complete_batch' => 'Complete Batch',
         'actual_yield_hint' => 'Enter the actual number of injera produced',
         'quality_notes' => 'Quality Notes',
         'quality_notes_placeholder' => 'Note the quality, texture, taste, and any observations about this batch...',
-        
+
         // Messages
         'batch_created_success' => 'Production batch started successfully',
         'stage_updated_success' => 'Stage updated successfully',
@@ -281,7 +281,7 @@ return [
         'weekly' => 'Weekly',
         'monthly' => 'Monthly',
         'reset_filters' => 'Reset Filters',
-        
+
         // Metrics
         'total_production_cost' => 'Total Production Cost',
         'profit_margin' => 'Profit Margin',
@@ -291,7 +291,7 @@ return [
         'gross_profit' => 'Gross Profit',
         'average_cost' => 'Average Cost',
         'efficiency_score' => 'Efficiency Score',
-        
+
         // Charts
         'cost_trends' => 'Cost Trends',
         'cost_breakdown' => 'Cost Breakdown',
@@ -300,7 +300,7 @@ return [
         'materials' => 'Materials',
         'labor' => 'Labor',
         'overhead' => 'Overhead',
-        
+
         // Analysis
         'profitability_analysis' => 'Profitability Analysis',
         'profitability_subtitle' => 'Analyze profit margins by quality grade and batch size',
@@ -315,7 +315,7 @@ return [
         'large_batch' => 'Large',
         'batches' => 'Batches',
         'avg_profit' => 'Avg Profit',
-        
+
         // Breakdown
         'detailed_breakdown' => 'Detailed Cost Breakdown',
         'breakdown_subtitle' => 'Itemized cost analysis by category',
@@ -330,7 +330,7 @@ return [
         'equipment_depreciation' => 'Equipment Depreciation',
         'facility_costs' => 'Facility Costs',
         'maintenance' => 'Maintenance',
-        
+
         // Table
         'batch_comparison' => 'Batch Comparison',
         'batch_name' => 'Batch Name',
@@ -339,7 +339,7 @@ return [
         'pieces' => 'pieces',
         'efficiency' => 'Efficiency',
         'refresh' => 'Refresh',
-        
+
         // Settings Modal
         'analysis_settings' => 'Analysis Settings',
         'currency_symbol' => 'Currency Symbol',
@@ -428,13 +428,13 @@ return [
         'reason_placeholder' => 'Please specify the reason for cancellation...',
         'keep_order' => 'Keep Order',
     ],
-    
+
     // Main Management
     'management' => [
         'title' => 'Injera Management',
         'subtitle' => 'Manage injera production cycle, sales analysis, and intelligent recommendations',
         'nav_title' => 'Injera Management',
-        
+
         // Statistics
         'daily_production' => 'Daily Production',
         'injera_remaining' => 'Injera Remaining',
@@ -447,24 +447,24 @@ return [
         'good' => 'GOOD',
         'caution' => 'CAUTION',
         'avoid' => 'AVOID',
-        
+
         // Actions
         'sales_analytics' => 'Sales Analytics',
         'start_new_batch' => 'Start New Batch',
         'get_recommendation' => 'Get Recommendation',
         'start_new_production' => 'Start New Production',
         'start_production' => 'Start Production',
-        
+
         // Tab Navigation
         'production_cycle' => 'Production Cycle',
         'inventory_tracking' => 'Inventory Tracking',
         'sales_analysis' => 'Sales Analysis',
         'recommendations' => 'Recommendations',
-        
+
         // Production Steps
         'current_production_status' => 'Current Production Status',
         'production_steps' => 'Production Steps',
-        
+
         // Step 1: Ingredients
         'buy_ingredients' => 'Buy Ingredients',
         'buy_ingredients_description' => 'Purchase teff flour, wheat flour, and water for injera production',
@@ -472,27 +472,27 @@ return [
         'wheat_flour' => 'Wheat Flour',
         'water' => 'Water',
         'record_purchase' => 'Record Purchase',
-        
+
         // Step 2: Mixing
         'mix_flour' => 'Mix Flour',
         'mix_flour_description' => 'Mix teff and wheat flour with water to create dough',
         'mixing_time' => 'Mixing Time',
         'fermentation_time' => 'Fermentation Time',
         'start_mixing' => 'Start Mixing',
-        
+
         // Step 3: Hot Water
         'add_hot_water' => 'Add Hot Water',
         'add_hot_water_description' => 'Add hot water to the fermented dough before baking',
         'water_temperature' => 'Water Temperature',
         'resting_time' => 'Resting Time',
-        
+
         // Step 4: Baking
         'bake_injera' => 'Bake Injera',
         'bake_injera_description' => 'Bake the prepared dough into fresh injera',
         'baking_time' => 'Baking Time per Injera',
         'expected_yield' => 'Expected Yield',
         'start_baking' => 'Start Baking',
-        
+
         // Inventory
         'flour_inventory' => 'Flour Inventory',
         'update_inventory' => 'Update Inventory',
@@ -502,7 +502,7 @@ return [
         'in_stock' => 'In Stock',
         'low_stock' => 'Low Stock',
         'ago' => 'ago',
-        
+
         // Current Batches
         'current_batches' => 'Current Batches',
         'finished_injera_stock' => 'Finished Injera Stock',
@@ -511,7 +511,7 @@ return [
         'count_stock' => 'Count Stock',
         'adjust_stock' => 'Adjust Stock',
         'injeras' => 'Injeras',
-        
+
         // Sales Performance
         'sales_performance' => 'Sales Performance',
         'used_for_food_service' => 'Used for Food Service',
@@ -523,7 +523,7 @@ return [
         'this_week' => 'This Week',
         'this_month' => 'This Month',
         'quarter' => 'Quarter',
-        
+
         // Recommendations
         'intelligent_recommendations' => 'Intelligent Recommendations',
         'system_analysis' => 'System Analysis',
@@ -533,7 +533,7 @@ return [
         'production_recommendation_text' => 'Based on historical demand and current inventory, we recommend starting a new production batch.',
         'sales_recommendation_text' => 'Analysis indicates favorable conditions for injera sales today.',
         'waste_reduction_text' => 'Implement these strategies to reduce injera waste and improve profitability.',
-        
+
         // Recommendation Details
         'recommended_batch_size' => 'Recommended Batch Size',
         'flour' => 'Flour',
@@ -546,15 +546,15 @@ return [
         'current_waste_rate' => 'Current Waste Rate',
         'target_waste_rate' => 'Target Waste Rate',
         'potential_savings' => 'Potential Savings',
-        
+
         // Recommendation Actions
         'accept_recommendation' => 'Accept Recommendation',
         'enable_injera_sales' => 'Enable Injera Sales',
         'implement_strategy' => 'Implement Strategy',
-        
+
         // Historical Comparison
         'historical_comparison' => 'Historical Comparison',
-        
+
         // Production Wizard
         'ingredients' => 'Ingredients',
         'mixing' => 'Mixing',
@@ -564,7 +564,7 @@ return [
         'mixing_schedule' => 'Mixing Schedule',
         'hot_water_addition' => 'Hot Water Addition',
         'baking_schedule' => 'Baking Schedule',
-        
+
         // Wizard Form Fields
         'mixing_date' => 'Mixing Date',
         'mixing_duration' => 'Mixing Duration',
@@ -575,7 +575,7 @@ return [
         'baker_assigned' => 'Baker Assigned',
         'select_baker' => 'Select Baker',
         'target_quantity' => 'Target Quantity',
-        
+
         // Production Summary
         'production_summary' => 'Production Summary',
         'total_flour' => 'Total Flour',

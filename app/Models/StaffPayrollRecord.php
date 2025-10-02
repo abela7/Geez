@@ -77,7 +77,7 @@ class StaffPayrollRecord extends Model
     public function getEffectiveHourlyRate(): float
     {
         $totalHours = $this->getTotalHours();
-        
+
         if ($totalHours <= 0) {
             return 0;
         }
@@ -159,7 +159,7 @@ class StaffPayrollRecord extends Model
     public function scopeForPayPeriod($query, string $startDate, string $endDate)
     {
         return $query->where('pay_period_start', $startDate)
-                    ->where('pay_period_end', $endDate);
+            ->where('pay_period_end', $endDate);
     }
 
     /**

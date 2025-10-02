@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Inventory;
 
 use App\Http\Controllers\Controller;
-use App\Models\Recipe;
 use App\Models\Ingredient;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
+use App\Models\Recipe;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class RecipesController extends Controller
 {
@@ -140,8 +140,12 @@ class RecipesController extends Controller
         // Create a simple paginator-like object
         $recipes = (object) [
             'data' => $filteredRecipes->values(),
-            'hasPages' => function() { return false; },
-            'links' => function() { return ''; },
+            'hasPages' => function () {
+                return false;
+            },
+            'links' => function () {
+                return '';
+            },
         ];
 
         // Static filter options
@@ -216,9 +220,10 @@ class RecipesController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating recipe: ' . $e->getMessage(),
+                'message' => 'Error creating recipe: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -229,7 +234,7 @@ class RecipesController extends Controller
     public function show(Recipe $recipe): View
     {
         $recipe->load(['recipeIngredients.ingredient', 'instructions']);
-        
+
         return view('admin.inventory.recipes.show', compact('recipe'));
     }
 
@@ -239,7 +244,7 @@ class RecipesController extends Controller
     public function edit(Recipe $recipe): View
     {
         $recipe->load(['recipeIngredients.ingredient', 'instructions']);
-        
+
         $ingredients = Ingredient::where('status', 'active')
             ->orderBy('name')
             ->get();
@@ -254,7 +259,7 @@ class RecipesController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:50|unique:recipes,code,' . $recipe->id,
+            'code' => 'required|string|max:50|unique:recipes,code,'.$recipe->id,
             'description' => 'nullable|string',
             'category' => 'required|in:appetizer,main_course,dessert,beverage,sauce,side_dish,soup,salad',
             'serving_size' => 'required|integer|min:1',
@@ -284,9 +289,10 @@ class RecipesController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error updating recipe: ' . $e->getMessage(),
+                'message' => 'Error updating recipe: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -306,7 +312,7 @@ class RecipesController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error deleting recipe: ' . $e->getMessage(),
+                'message' => 'Error deleting recipe: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -321,8 +327,8 @@ class RecipesController extends Controller
 
             // Create new recipe with modified name and code
             $newRecipe = $recipe->replicate();
-            $newRecipe->name = $recipe->name . ' (Copy)';
-            $newRecipe->code = $recipe->code . '_COPY_' . time();
+            $newRecipe->name = $recipe->name.' (Copy)';
+            $newRecipe->code = $recipe->code.'_COPY_'.time();
             $newRecipe->status = 'draft';
             $newRecipe->save();
 
@@ -349,9 +355,10 @@ class RecipesController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error duplicating recipe: ' . $e->getMessage(),
+                'message' => 'Error duplicating recipe: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -379,7 +386,7 @@ class RecipesController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error calculating costs: ' . $e->getMessage(),
+                'message' => 'Error calculating costs: '.$e->getMessage(),
             ], 500);
         }
     }

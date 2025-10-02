@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Injera;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class ProductionBatchesController extends Controller
 {
@@ -22,10 +20,10 @@ class ProductionBatchesController extends Controller
     {
         // Get production batches data
         $batches = $this->getProductionBatches($request);
-        
+
         // Get available bucket configurations
         $bucketConfigurations = $this->getBucketConfigurations();
-        
+
         // Get summary statistics
         $statistics = $this->getBatchStatistics();
 
@@ -53,7 +51,7 @@ class ProductionBatchesController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -62,11 +60,11 @@ class ProductionBatchesController extends Controller
 
             // Get bucket configuration details
             $bucketConfig = $this->getBucketConfigById($request->bucket_configuration_id);
-            
-            if (!$bucketConfig) {
+
+            if (! $bucketConfig) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Bucket configuration not found'
+                    'message' => 'Bucket configuration not found',
                 ], 404);
             }
 
@@ -102,7 +100,7 @@ class ProductionBatchesController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => __('injera.production_batches.batch_created_success')
+                'message' => __('injera.production_batches.batch_created_success'),
             ]);
 
         } catch (\Exception $e) {
@@ -110,7 +108,7 @@ class ProductionBatchesController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create production batch: ' . $e->getMessage()
+                'message' => 'Failed to create production batch: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -131,7 +129,7 @@ class ProductionBatchesController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -139,13 +137,13 @@ class ProductionBatchesController extends Controller
             // TODO: Implement actual stage update logic
             return response()->json([
                 'success' => true,
-                'message' => __('injera.production_batches.stage_updated_success')
+                'message' => __('injera.production_batches.stage_updated_success'),
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update stage: ' . $e->getMessage()
+                'message' => 'Failed to update stage: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -164,7 +162,7 @@ class ProductionBatchesController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -172,13 +170,13 @@ class ProductionBatchesController extends Controller
             // TODO: Implement actual completion logic
             return response()->json([
                 'success' => true,
-                'message' => __('injera.production_batches.batch_completed_success')
+                'message' => __('injera.production_batches.batch_completed_success'),
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to complete batch: ' . $e->getMessage()
+                'message' => 'Failed to complete batch: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -192,13 +190,13 @@ class ProductionBatchesController extends Controller
             // TODO: Implement actual cancellation logic
             return response()->json([
                 'success' => true,
-                'message' => __('injera.production_batches.batch_cancelled_success')
+                'message' => __('injera.production_batches.batch_cancelled_success'),
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to cancel batch: ' . $e->getMessage()
+                'message' => 'Failed to cancel batch: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -229,13 +227,13 @@ class ProductionBatchesController extends Controller
                     'mixing' => ['status' => 'completed', 'completed_at' => '2025-01-15 14:00', 'notes' => 'Mixed with 25L cold water'],
                     'fermentation' => ['status' => 'in_progress', 'started_at' => '2025-01-15 14:30', 'notes' => 'Day 2 of fermentation - good bubbling'],
                     'hot_water' => ['status' => 'pending', 'planned_at' => '2025-01-18 10:00'],
-                    'baking' => ['status' => 'pending', 'planned_at' => '2025-01-19 08:00']
+                    'baking' => ['status' => 'pending', 'planned_at' => '2025-01-19 08:00'],
                 ],
                 'total_cost' => 48.75,
                 'cost_per_injera' => 0.375,
                 'notes' => 'High demand weekend batch',
                 'status' => 'active',
-                'priority' => 'high'
+                'priority' => 'high',
             ],
             [
                 'id' => 2,
@@ -257,14 +255,14 @@ class ProductionBatchesController extends Controller
                     'mixing' => ['status' => 'completed', 'completed_at' => '2025-01-10 15:00'],
                     'fermentation' => ['status' => 'completed', 'completed_at' => '2025-01-13 16:00'],
                     'hot_water' => ['status' => 'completed', 'completed_at' => '2025-01-13 18:00'],
-                    'baking' => ['status' => 'completed', 'completed_at' => '2025-01-14 10:00']
+                    'baking' => ['status' => 'completed', 'completed_at' => '2025-01-14 10:00'],
                 ],
                 'total_cost' => 31.10,
                 'cost_per_injera' => 0.444,
                 'actual_cost_per_injera' => 0.457,
                 'notes' => 'Special order for premium customers',
                 'status' => 'completed',
-                'priority' => 'medium'
+                'priority' => 'medium',
             ],
             [
                 'id' => 3,
@@ -285,14 +283,14 @@ class ProductionBatchesController extends Controller
                     'mixing' => ['status' => 'in_progress', 'started_at' => '2025-01-16 13:00'],
                     'fermentation' => ['status' => 'pending', 'planned_at' => '2025-01-16 16:00'],
                     'hot_water' => ['status' => 'pending', 'planned_at' => '2025-01-19 11:00'],
-                    'baking' => ['status' => 'pending', 'planned_at' => '2025-01-20 09:00']
+                    'baking' => ['status' => 'pending', 'planned_at' => '2025-01-20 09:00'],
                 ],
                 'total_cost' => 32.30,
                 'cost_per_injera' => 0.380,
                 'notes' => 'Regular daily production',
                 'status' => 'active',
-                'priority' => 'normal'
-            ]
+                'priority' => 'normal',
+            ],
         ];
     }
 
@@ -319,23 +317,23 @@ class ProductionBatchesController extends Controller
                 'capacity' => 90,
                 'flour_recipe' => [
                     ['flour_type' => 'Teff', 'quantity' => 15.0],
-                    ['flour_type' => 'Wheat', 'quantity' => 5.0]
+                    ['flour_type' => 'Wheat', 'quantity' => 5.0],
                 ],
                 'expected_yield' => 130,
                 'total_cost' => 48.75,
-                'cost_per_injera' => 0.375
+                'cost_per_injera' => 0.375,
             ],
             2 => [
                 'name' => 'Medium Batch',
                 'capacity' => 60,
                 'flour_recipe' => [
                     ['flour_type' => 'Teff', 'quantity' => 10.0],
-                    ['flour_type' => 'Wheat', 'quantity' => 3.0]
+                    ['flour_type' => 'Wheat', 'quantity' => 3.0],
                 ],
                 'expected_yield' => 85,
                 'total_cost' => 32.30,
-                'cost_per_injera' => 0.380
-            ]
+                'cost_per_injera' => 0.380,
+            ],
         ];
 
         return $configs[$bucketId] ?? null;
@@ -346,7 +344,7 @@ class ProductionBatchesController extends Controller
      */
     private function generateBatchNumber(): string
     {
-        return 'INJ-' . date('Y') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+        return 'INJ-'.date('Y').'-'.str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
     }
 
     /**

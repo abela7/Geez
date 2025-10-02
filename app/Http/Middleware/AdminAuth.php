@@ -19,7 +19,7 @@ class AdminAuth
     public function handle(Request $request, Closure $next): Response
     {
         // Check if user is authenticated
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('admin.login')
                 ->with('error', 'Please log in to access the admin panel.')
                 ->with('intended_url', $request->fullUrl());
@@ -28,8 +28,9 @@ class AdminAuth
         $staff = Auth::user();
 
         // Check if staff member is active
-        if (!$staff->isActive()) {
+        if (! $staff->isActive()) {
             Auth::logout();
+
             return redirect()->route('admin.login')->withErrors([
                 'username' => 'Your account has been deactivated. Please contact an administrator.',
             ]);

@@ -26,9 +26,9 @@ class StaffController extends Controller
             ->when($request->search, function ($q, $search) {
                 $q->where(function ($query) use ($search) {
                     $query->where('first_name', 'like', "%{$search}%")
-                          ->orWhere('last_name', 'like', "%{$search}%")
-                          ->orWhere('username', 'like', "%{$search}%")
-                          ->orWhere('email', 'like', "%{$search}%");
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('username', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
                 });
             })
             ->when($request->staff_type_id, function ($q, $staffTypeId) {
@@ -41,9 +41,9 @@ class StaffController extends Controller
             ->orderBy('last_name');
 
         $staff = $query->paginate(15)->withQueryString();
-        
+
         $staffTypes = StaffType::where('is_active', true)->orderBy('display_name')->get();
-        
+
         return view('admin.staff.index', compact('staff', 'staffTypes'));
     }
 
@@ -53,9 +53,9 @@ class StaffController extends Controller
     public function create()
     {
         $this->authorizeStaffAccess();
-        
+
         $staffTypes = StaffType::where('is_active', true)->orderBy('priority', 'desc')->orderBy('display_name')->get();
-        
+
         return view('admin.staff.create', compact('staffTypes'));
     }
 
@@ -65,7 +65,7 @@ class StaffController extends Controller
     public function store(Request $request)
     {
         $this->authorizeStaffAccess();
-        
+
         $validated = $request->validate([
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
@@ -80,7 +80,7 @@ class StaffController extends Controller
 
         // Hash password
         $validated['password'] = Hash::make($validated['password']);
-        
+
         // Set audit fields
         $validated['created_by'] = Auth::id();
         $validated['updated_by'] = Auth::id();
@@ -98,13 +98,13 @@ class StaffController extends Controller
     public function show(Staff $staff)
     {
         $this->authorizeStaffAccess();
-        
+
         // Load all related data for comprehensive profile
         $staff->load([
             'staffType',
             'profile',
         ]);
-        
+
         // Get recent attendance records (last 30 days) - with fallback
         try {
             $recentAttendance = $staff->attendance()
@@ -115,7 +115,7 @@ class StaffController extends Controller
         } catch (\Exception $e) {
             $recentAttendance = collect();
         }
-            
+
         // Get recent payroll records (last 6 months) - with fallback
         try {
             $recentPayroll = $staff->payrollRecords()
@@ -126,7 +126,7 @@ class StaffController extends Controller
         } catch (\Exception $e) {
             $recentPayroll = collect();
         }
-            
+
         // Get active task assignments - with fallback
         try {
             $activeTasks = $staff->taskAssignments()
@@ -138,7 +138,7 @@ class StaffController extends Controller
         } catch (\Exception $e) {
             $activeTasks = collect();
         }
-            
+
         // Get recent performance reviews - with fallback
         try {
             $performanceReviews = $staff->performanceReviews()
@@ -149,7 +149,7 @@ class StaffController extends Controller
         } catch (\Exception $e) {
             $performanceReviews = collect();
         }
-            
+
         // Get upcoming shift assignments (next 14 days) - with fallback
         try {
             $upcomingShifts = $staff->shiftAssignments()
@@ -162,7 +162,7 @@ class StaffController extends Controller
         } catch (\Exception $e) {
             $upcomingShifts = collect();
         }
-            
+
         // Calculate statistics - with safe fallbacks
         $stats = [
             'total_hours_this_month' => $recentAttendance->where('clock_in', '>=', now()->startOfMonth())->sum('hours_worked') ?: 0,
@@ -171,13 +171,13 @@ class StaffController extends Controller
             'average_performance_rating' => $performanceReviews->avg('overall_rating') ?: null,
             'years_of_service' => $staff->hire_date ? $staff->hire_date->diffInYears(now()) : 0,
         ];
-        
+
         return view('admin.staff.show', compact(
-            'staff', 
-            'recentAttendance', 
-            'recentPayroll', 
-            'activeTasks', 
-            'performanceReviews', 
+            'staff',
+            'recentAttendance',
+            'recentPayroll',
+            'activeTasks',
+            'performanceReviews',
             'upcomingShifts',
             'stats'
         ));
@@ -189,9 +189,9 @@ class StaffController extends Controller
     public function edit(Staff $staff)
     {
         $this->authorizeStaffAccess();
-        
+
         $staffTypes = StaffType::where('is_active', true)->orderBy('priority', 'desc')->orderBy('display_name')->get();
-        
+
         return view('admin.staff.edit', compact('staff', 'staffTypes'));
     }
 
@@ -201,7 +201,7 @@ class StaffController extends Controller
     public function update(Request $request, Staff $staff)
     {
         $this->authorizeStaffAccess();
-        
+
         $validated = $request->validate([
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
@@ -215,12 +215,12 @@ class StaffController extends Controller
         ]);
 
         // Handle password update
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
             unset($validated['password']);
         }
-        
+
         // Set audit fields
         $validated['updated_by'] = Auth::id();
 
@@ -237,14 +237,14 @@ class StaffController extends Controller
     public function destroy(Staff $staff)
     {
         $this->authorizeStaffAccess();
-        
+
         // Prevent self-deletion
         if ($staff->id === Auth::id()) {
             return redirect()
                 ->route('admin.staff.index')
                 ->with('error', __('staff.cannot_delete_self'));
         }
-        
+
         $staff->delete();
 
         return redirect()
@@ -258,19 +258,19 @@ class StaffController extends Controller
     public function trashed(Request $request)
     {
         $this->authorizeStaffAccess();
-        
+
         $query = Staff::onlyTrashed()->with(['staffType'])
             ->when($request->search, function ($q, $search) {
                 $q->where(function ($query) use ($search) {
                     $query->where('first_name', 'like', "%{$search}%")
-                          ->orWhere('last_name', 'like', "%{$search}%")
-                          ->orWhere('username', 'like', "%{$search}%");
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('username', 'like', "%{$search}%");
                 });
             })
             ->orderBy('deleted_at', 'desc');
 
         $trashedStaff = $query->paginate(15)->withQueryString();
-        
+
         return view('admin.staff.trashed', compact('trashedStaff'));
     }
 
@@ -280,7 +280,7 @@ class StaffController extends Controller
     public function restore(string $id)
     {
         $this->authorizeStaffAccess();
-        
+
         $staff = Staff::onlyTrashed()->findOrFail($id);
         $staff->restore();
 
@@ -295,16 +295,16 @@ class StaffController extends Controller
     public function forceDelete(string $id)
     {
         $this->authorizeStaffAccess();
-        
+
         $staff = Staff::onlyTrashed()->findOrFail($id);
-        
+
         // Prevent permanent deletion of current user
         if ($staff->id === Auth::id()) {
             return redirect()
                 ->route('admin.staff.trashed')
                 ->with('error', __('staff.cannot_force_delete_self'));
         }
-        
+
         $name = $staff->full_name;
         $staff->forceDelete();
 
@@ -319,21 +319,21 @@ class StaffController extends Controller
     public function toggleStatus(Staff $staff)
     {
         $this->authorizeStaffAccess();
-        
+
         // Prevent deactivating self
         if ($staff->id === Auth::id() && $staff->status === 'active') {
             return redirect()
                 ->route('admin.staff.show', $staff)
                 ->with('error', __('staff.cannot_deactivate_self'));
         }
-        
+
         $newStatus = $staff->status === 'active' ? 'inactive' : 'active';
         $staff->update([
             'status' => $newStatus,
             'updated_by' => Auth::id(),
         ]);
 
-        $message = $newStatus === 'active' 
+        $message = $newStatus === 'active'
             ? __('staff.activated_successfully', ['name' => $staff->full_name])
             : __('staff.deactivated_successfully', ['name' => $staff->full_name]);
 
@@ -349,12 +349,12 @@ class StaffController extends Controller
     {
         $user = Auth::user();
         $allowedRoles = ['system_admin', 'administrator'];
-        
-        if (!$user || !in_array($user->staffType->name, $allowedRoles)) {
+
+        if (! $user || ! in_array($user->staffType->name, $allowedRoles)) {
             abort(403, __('staff.unauthorized_access'));
         }
     }
-    
+
     /**
      * Calculate attendance rate for a staff member.
      */
@@ -366,13 +366,13 @@ class StaffController extends Controller
                 ->where('clock_in', '>=', now()->subDays(30))
                 ->whereIn('status', ['present', 'late', 'overtime'])
                 ->count();
-                
+
             return $totalDays > 0 ? round(($attendedDays / $totalDays) * 100, 1) : 0;
         } catch (\Exception $e) {
             return 0;
         }
     }
-    
+
     /**
      * Calculate task completion rate for a staff member.
      */
@@ -382,12 +382,12 @@ class StaffController extends Controller
             $totalTasks = $staff->taskAssignments()
                 ->where('assigned_date', '>=', now()->subDays(30))
                 ->count();
-                
+
             $completedTasks = $staff->taskAssignments()
                 ->where('assigned_date', '>=', now()->subDays(30))
                 ->where('status', 'completed')
                 ->count();
-                
+
             return $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100, 1) : 0;
         } catch (\Exception $e) {
             return 0;

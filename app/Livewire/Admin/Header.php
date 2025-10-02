@@ -7,6 +7,7 @@ use Livewire\Component;
 class Header extends Component
 {
     public $pageTitle;
+
     public $notificationCount = 3;
 
     public function mount($pageTitle = null)

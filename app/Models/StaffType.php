@@ -42,7 +42,7 @@ class StaffType extends Model
     {
         return $this->hasMany(Staff::class);
     }
-    
+
     /**
      * Get the performance templates for this staff type.
      */

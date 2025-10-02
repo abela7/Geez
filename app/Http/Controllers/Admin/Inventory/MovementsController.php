@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Inventory;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\JsonResponse;
 
 class MovementsController extends Controller
 {
@@ -124,7 +124,7 @@ class MovementsController extends Controller
 
         if ($request->filled('location') && $request->location !== 'all') {
             $filteredMovements = $filteredMovements->filter(function ($movement) use ($request) {
-                return $movement->from_location === $request->location || 
+                return $movement->from_location === $request->location ||
                        $movement->to_location === $request->location;
             });
         }
@@ -144,8 +144,12 @@ class MovementsController extends Controller
         // Create a simple paginator-like object
         $movements = (object) [
             'data' => $filteredMovements->values(),
-            'hasPages' => function() { return false; },
-            'links' => function() { return ''; },
+            'hasPages' => function () {
+                return false;
+            },
+            'links' => function () {
+                return '';
+            },
         ];
 
         // Static filter options

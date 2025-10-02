@@ -108,15 +108,15 @@ class StaffShift extends Model
     {
         $start = \Carbon\Carbon::createFromFormat('H:i', $this->start_time);
         $end = \Carbon\Carbon::createFromFormat('H:i', $this->end_time);
-        
+
         // Handle overnight shifts
         if ($end->lessThan($start)) {
             $end->addDay();
         }
-        
+
         $totalMinutes = $end->diffInMinutes($start);
         $breakMinutes = $this->break_minutes ?? 0;
-        
+
         return round(($totalMinutes - $breakMinutes) / 60, 2);
     }
 

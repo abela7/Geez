@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Injera;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
+use Illuminate\View\View;
 
 class OrdersController extends Controller
 {
@@ -27,10 +26,10 @@ class OrdersController extends Controller
 
         // Get orders data
         $orders = $this->getOrders($status, $priority, $dateFrom, $dateTo);
-        
+
         // Get order statistics
         $statistics = $this->getOrderStatistics();
-        
+
         // Get available stock for allocation
         $availableStock = $this->getAvailableStock();
 
@@ -68,7 +67,7 @@ class OrdersController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -77,7 +76,7 @@ class OrdersController extends Controller
 
             // Create order
             $orderId = $this->createOrder($request->all());
-            
+
             // Attempt automatic allocation
             $allocated = $this->attemptAutoAllocation($orderId, $request->quality_grade, $request->quantity);
 
@@ -87,15 +86,15 @@ class OrdersController extends Controller
                 'success' => true,
                 'message' => 'Order created successfully',
                 'order_id' => $orderId,
-                'auto_allocated' => $allocated
+                'auto_allocated' => $allocated,
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create order: ' . $e->getMessage()
+                'message' => 'Failed to create order: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -114,7 +113,7 @@ class OrdersController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -127,15 +126,15 @@ class OrdersController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Order status updated successfully'
+                'message' => 'Order status updated successfully',
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update order status: ' . $e->getMessage()
+                'message' => 'Failed to update order status: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -156,7 +155,7 @@ class OrdersController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -169,15 +168,15 @@ class OrdersController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Injera allocated successfully'
+                'message' => 'Injera allocated successfully',
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to allocate injera: ' . $e->getMessage()
+                'message' => 'Failed to allocate injera: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -195,7 +194,7 @@ class OrdersController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -208,15 +207,15 @@ class OrdersController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Order cancelled successfully'
+                'message' => 'Order cancelled successfully',
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to cancel order: ' . $e->getMessage()
+                'message' => 'Failed to cancel order: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -250,8 +249,8 @@ class OrdersController extends Controller
                 'special_instructions' => 'Please call before delivery',
                 'allocation_details' => [
                     ['stock_id' => 1, 'batch_number' => 'INJ-2025-001', 'quantity' => 15, 'quality' => 'A'],
-                    ['stock_id' => 2, 'batch_number' => 'INJ-2025-002', 'quantity' => 10, 'quality' => 'A']
-                ]
+                    ['stock_id' => 2, 'batch_number' => 'INJ-2025-002', 'quantity' => 10, 'quality' => 'A'],
+                ],
             ],
             [
                 'id' => 2,
@@ -275,8 +274,8 @@ class OrdersController extends Controller
                 'special_instructions' => 'Mix of A and B grade injera',
                 'allocation_details' => [
                     ['stock_id' => 1, 'batch_number' => 'INJ-2025-001', 'quantity' => 20, 'quality' => 'A'],
-                    ['stock_id' => 3, 'batch_number' => 'INJ-2025-003', 'quantity' => 10, 'quality' => 'B']
-                ]
+                    ['stock_id' => 3, 'batch_number' => 'INJ-2025-003', 'quantity' => 10, 'quality' => 'B'],
+                ],
             ],
             [
                 'id' => 3,
@@ -298,7 +297,7 @@ class OrdersController extends Controller
                 'priority' => 'urgent',
                 'created_at' => '2025-01-18 09:15:00',
                 'special_instructions' => 'For lunch service',
-                'allocation_details' => []
+                'allocation_details' => [],
             ],
             [
                 'id' => 4,
@@ -322,9 +321,9 @@ class OrdersController extends Controller
                 'special_instructions' => 'Large order for event',
                 'allocation_details' => [
                     ['stock_id' => 1, 'batch_number' => 'INJ-2025-001', 'quantity' => 30, 'quality' => 'A'],
-                    ['stock_id' => 2, 'batch_number' => 'INJ-2025-002', 'quantity' => 20, 'quality' => 'A']
-                ]
-            ]
+                    ['stock_id' => 2, 'batch_number' => 'INJ-2025-002', 'quantity' => 20, 'quality' => 'A'],
+                ],
+            ],
         ];
     }
 
@@ -346,7 +345,7 @@ class OrdersController extends Controller
             'total_revenue' => 327.50,
             'average_order_size' => 20.2,
             'urgent_orders' => 3,
-            'high_priority_orders' => 7
+            'high_priority_orders' => 7,
         ];
     }
 
@@ -363,7 +362,7 @@ class OrdersController extends Controller
                 'available_quantity' => 33,
                 'expiry_date' => '2025-01-22',
                 'days_until_expiry' => 3,
-                'storage_location' => 'Cold Storage A1'
+                'storage_location' => 'Cold Storage A1',
             ],
             [
                 'stock_id' => 2,
@@ -372,7 +371,7 @@ class OrdersController extends Controller
                 'available_quantity' => 20,
                 'expiry_date' => '2025-01-21',
                 'days_until_expiry' => 2,
-                'storage_location' => 'Cold Storage A2'
+                'storage_location' => 'Cold Storage A2',
             ],
             [
                 'stock_id' => 3,
@@ -381,7 +380,7 @@ class OrdersController extends Controller
                 'available_quantity' => 10,
                 'expiry_date' => '2025-01-20',
                 'days_until_expiry' => 1,
-                'storage_location' => 'Cold Storage B1'
+                'storage_location' => 'Cold Storage B1',
             ],
             [
                 'stock_id' => 4,
@@ -390,8 +389,8 @@ class OrdersController extends Controller
                 'available_quantity' => 8,
                 'expiry_date' => '2025-01-19',
                 'days_until_expiry' => 0,
-                'storage_location' => 'Cold Storage B2'
-            ]
+                'storage_location' => 'Cold Storage B2',
+            ],
         ];
     }
 
@@ -440,7 +439,7 @@ class OrdersController extends Controller
             //     'quantity' => $allocation['quantity'],
             //     'allocated_at' => now()
             // ]);
-            
+
             // Update stock levels
             // DB::table('injera_stock')->where('id', $allocation['stock_id'])
             //     ->decrement('available_quantity', $allocation['quantity']);

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\HasUlid;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Carbon\Carbon;
 
 class StaffTaskTimeEntry extends Model
 {
@@ -91,7 +91,7 @@ class StaffTaskTimeEntry extends Model
      */
     public function finalizeDuration(): void
     {
-        if ($this->end_time && !$this->duration_minutes) {
+        if ($this->end_time && ! $this->duration_minutes) {
             $this->duration_minutes = $this->start_time->diffInMinutes($this->end_time);
             $this->save();
         }
@@ -102,10 +102,10 @@ class StaffTaskTimeEntry extends Model
      */
     public function calculateDuration(): ?int
     {
-        if (!$this->end_time) {
+        if (! $this->end_time) {
             return null;
         }
-        
+
         return $this->start_time->diffInMinutes($this->end_time);
     }
 
@@ -115,7 +115,7 @@ class StaffTaskTimeEntry extends Model
     public function getDurationInHours(): ?float
     {
         $minutes = $this->duration_minutes ?? $this->calculateDuration();
-        
+
         return $minutes ? round($minutes / 60, 2) : null;
     }
 
@@ -125,18 +125,18 @@ class StaffTaskTimeEntry extends Model
     public function getFormattedDuration(): string
     {
         $minutes = $this->duration_minutes ?? $this->calculateDuration();
-        
-        if (!$minutes) {
+
+        if (! $minutes) {
             return 'In progress';
         }
-        
+
         $hours = floor($minutes / 60);
         $remainingMinutes = $minutes % 60;
-        
+
         if ($hours > 0) {
             return $remainingMinutes > 0 ? "{$hours}h {$remainingMinutes}m" : "{$hours}h";
         }
-        
+
         return "{$remainingMinutes}m";
     }
 
@@ -155,11 +155,11 @@ class StaffTaskTimeEntry extends Model
     {
         if ($this->isActive()) {
             $this->end_time = now();
-            
+
             if ($description) {
                 $this->description = $description;
             }
-            
+
             $this->finalizeDuration();
             $this->updated_by = auth()->id();
             $this->save();
@@ -291,10 +291,10 @@ class StaffTaskTimeEntry extends Model
     protected static function boot(): void
     {
         parent::boot();
-        
+
         // Automatically calculate duration when saving if end_time is set
         static::saving(function ($timeEntry) {
-            if ($timeEntry->end_time && !$timeEntry->duration_minutes) {
+            if ($timeEntry->end_time && ! $timeEntry->duration_minutes) {
                 $timeEntry->duration_minutes = $timeEntry->calculateDuration();
             }
         });

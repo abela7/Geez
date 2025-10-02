@@ -129,17 +129,17 @@ class StaffPerformanceMetric extends Model
     public function getFormattedValue(): string
     {
         $value = number_format($this->metric_value, 2);
-        
+
         // Add common units based on metric name
-        if (str_contains(strtolower($this->metric_name), 'percentage') || 
+        if (str_contains(strtolower($this->metric_name), 'percentage') ||
             str_contains(strtolower($this->metric_name), 'rate')) {
-            return $value . '%';
+            return $value.'%';
         }
-        
+
         if (str_contains(strtolower($this->metric_name), 'hour')) {
-            return $value . 'h';
+            return $value.'h';
         }
-        
+
         return $value;
     }
 }

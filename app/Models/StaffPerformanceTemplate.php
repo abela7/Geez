@@ -80,7 +80,7 @@ class StaffPerformanceTemplate extends Model
      */
     public function getTotalWeight(): int
     {
-        if (!$this->rating_criteria) {
+        if (! $this->rating_criteria) {
             return 0;
         }
 
@@ -100,7 +100,7 @@ class StaffPerformanceTemplate extends Model
      */
     public function getCriteriaByKey(string $key): ?array
     {
-        if (!$this->rating_criteria) {
+        if (! $this->rating_criteria) {
             return null;
         }
 

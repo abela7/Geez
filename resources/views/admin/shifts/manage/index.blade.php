@@ -3,7 +3,7 @@
 @section('title', __('shifts.manage.title'))
 
 @section('content')
-<div class="shifts-manage-page" x-data="window.shiftsManageData ? window.shiftsManageData() : {}">
+<div class="shifts-manage-page" x-data="shiftsManageData()">
     <!-- Page Header -->
     <div class="page-header">
         <div class="page-header-content">

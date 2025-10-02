@@ -60,6 +60,16 @@
             
             <!-- Page Content -->
             <main class="admin-content" role="main" aria-label="{{ __('Main content area') }}">
+        @if (session('success'))
+            <div class="alert alert-success" role="alert">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if ($errors->any())
+            <div class="alert alert-error" role="alert">
+                {{ $errors->first() }}
+            </div>
+        @endif
                 @yield('content')
             </main>
             

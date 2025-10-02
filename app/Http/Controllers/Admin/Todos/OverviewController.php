@@ -7,7 +7,6 @@ namespace App\Http\Controllers\Admin\Todos;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Carbon\Carbon;
 
 class OverviewController extends Controller
 {
@@ -18,19 +17,19 @@ class OverviewController extends Controller
     {
         // Get dashboard statistics
         $statistics = $this->getDashboardStatistics();
-        
+
         // Get today's to-dos by staff
         $todaysTodos = $this->getTodaysTodos();
-        
+
         // Get overdue to-dos
         $overdueTodos = $this->getOverdueTodos();
-        
+
         // Get completion trends
         $completionTrends = $this->getCompletionTrends();
-        
+
         // Get staff performance
         $staffPerformance = $this->getStaffPerformance();
-        
+
         // Get upcoming recurring tasks
         $upcomingTasks = $this->getUpcomingTasks();
 
@@ -61,7 +60,7 @@ class OverviewController extends Controller
             'most_common_category' => 'Opening Tasks',
             'total_templates' => 24,
             'active_schedules' => 18,
-            'recurring_tasks_today' => 67
+            'recurring_tasks_today' => 67,
         ];
     }
 
@@ -89,7 +88,7 @@ class OverviewController extends Controller
                         'due_time' => '13:00',
                         'status' => 'overdue',
                         'estimated_duration' => 5, // minutes
-                        'recurring_type' => 'daily'
+                        'recurring_type' => 'daily',
                     ],
                     [
                         'id' => 2,
@@ -99,9 +98,9 @@ class OverviewController extends Controller
                         'due_time' => '13:15',
                         'status' => 'pending',
                         'estimated_duration' => 10,
-                        'recurring_type' => 'daily'
-                    ]
-                ]
+                        'recurring_type' => 'daily',
+                    ],
+                ],
             ],
             [
                 'staff_id' => 2,
@@ -121,7 +120,7 @@ class OverviewController extends Controller
                         'due_time' => '11:00',
                         'status' => 'completed',
                         'estimated_duration' => 45,
-                        'recurring_type' => 'daily'
+                        'recurring_type' => 'daily',
                     ],
                     [
                         'id' => 4,
@@ -131,9 +130,9 @@ class OverviewController extends Controller
                         'due_time' => '14:00',
                         'status' => 'in_progress',
                         'estimated_duration' => 15,
-                        'recurring_type' => 'daily'
-                    ]
-                ]
+                        'recurring_type' => 'daily',
+                    ],
+                ],
             ],
             [
                 'staff_id' => 3,
@@ -153,7 +152,7 @@ class OverviewController extends Controller
                         'due_time' => '12:45',
                         'status' => 'completed',
                         'estimated_duration' => 10,
-                        'recurring_type' => 'daily'
+                        'recurring_type' => 'daily',
                     ],
                     [
                         'id' => 6,
@@ -163,10 +162,10 @@ class OverviewController extends Controller
                         'due_time' => '21:30',
                         'status' => 'pending',
                         'estimated_duration' => 5,
-                        'recurring_type' => 'daily'
-                    ]
-                ]
-            ]
+                        'recurring_type' => 'daily',
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -186,7 +185,7 @@ class OverviewController extends Controller
                 'due_time' => '13:00',
                 'overdue_minutes' => 45,
                 'estimated_duration' => 5,
-                'recurring_type' => 'daily'
+                'recurring_type' => 'daily',
             ],
             [
                 'id' => 7,
@@ -198,7 +197,7 @@ class OverviewController extends Controller
                 'due_time' => '12:00',
                 'overdue_minutes' => 105,
                 'estimated_duration' => 20,
-                'recurring_type' => 'daily'
+                'recurring_type' => 'daily',
             ],
             [
                 'id' => 8,
@@ -210,8 +209,8 @@ class OverviewController extends Controller
                 'due_time' => '11:30',
                 'overdue_minutes' => 135,
                 'estimated_duration' => 15,
-                'recurring_type' => 'weekly'
-            ]
+                'recurring_type' => 'weekly',
+            ],
         ];
     }
 
@@ -227,7 +226,7 @@ class OverviewController extends Controller
             ['date' => '2025-01-16', 'completed' => 51, 'total' => 55, 'rate' => 92.7],
             ['date' => '2025-01-17', 'completed' => 47, 'total' => 51, 'rate' => 92.2],
             ['date' => '2025-01-18', 'completed' => 49, 'total' => 53, 'rate' => 92.5],
-            ['date' => '2025-01-19', 'completed' => 42, 'total' => 48, 'rate' => 87.5]
+            ['date' => '2025-01-19', 'completed' => 42, 'total' => 48, 'rate' => 87.5],
         ];
     }
 
@@ -247,7 +246,7 @@ class OverviewController extends Controller
                 'completed_todos_week' => 50,
                 'average_completion_time' => 1.8, // hours
                 'streak_days' => 5,
-                'performance_trend' => 'improving'
+                'performance_trend' => 'improving',
             ],
             [
                 'staff_id' => 2,
@@ -259,7 +258,7 @@ class OverviewController extends Controller
                 'completed_todos_week' => 80,
                 'average_completion_time' => 2.1,
                 'streak_days' => 12,
-                'performance_trend' => 'stable'
+                'performance_trend' => 'stable',
             ],
             [
                 'staff_id' => 3,
@@ -271,8 +270,8 @@ class OverviewController extends Controller
                 'completed_todos_week' => 39,
                 'average_completion_time' => 1.5,
                 'streak_days' => 8,
-                'performance_trend' => 'improving'
-            ]
+                'performance_trend' => 'improving',
+            ],
         ];
     }
 
@@ -291,7 +290,7 @@ class OverviewController extends Controller
                 'next_due' => '2025-01-20 09:00',
                 'recurring_type' => 'weekly',
                 'estimated_duration' => 60,
-                'last_completed' => '2025-01-13 09:30'
+                'last_completed' => '2025-01-13 09:30',
             ],
             [
                 'id' => 11,
@@ -302,7 +301,7 @@ class OverviewController extends Controller
                 'next_due' => '2025-01-21 20:00',
                 'recurring_type' => 'weekly',
                 'estimated_duration' => 90,
-                'last_completed' => '2025-01-14 20:15'
+                'last_completed' => '2025-01-14 20:15',
             ],
             [
                 'id' => 12,
@@ -313,8 +312,8 @@ class OverviewController extends Controller
                 'next_due' => '2025-02-01 16:00',
                 'recurring_type' => 'monthly',
                 'estimated_duration' => 45,
-                'last_completed' => '2025-01-01 16:00'
-            ]
+                'last_completed' => '2025-01-01 16:00',
+            ],
         ];
     }
 }

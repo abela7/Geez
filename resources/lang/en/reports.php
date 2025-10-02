@@ -5,63 +5,63 @@ return [
     'nav_title' => 'Reports',
     'title' => 'Reports & Analytics',
     'subtitle' => 'Comprehensive business reporting and analytics dashboard',
-    
+
     // Sales Reports
     'sales' => [
         'title' => 'Sales Reports',
         'subtitle' => 'Revenue analysis, payment methods, and sales performance',
         'nav_title' => 'Sales Reports',
     ],
-    
+
     // Customer Reports
     'customers' => [
         'title' => 'Customer Reports',
         'subtitle' => 'Customer analytics, loyalty performance, and feedback analysis',
         'nav_title' => 'Customer Reports',
     ],
-    
+
     // Menu Performance Reports
     'menu' => [
         'title' => 'Menu Performance',
         'subtitle' => 'Item popularity, category analysis, and pricing insights',
         'nav_title' => 'Menu Performance',
     ],
-    
+
     // Inventory Reports
     'inventory' => [
         'title' => 'Inventory Reports',
         'subtitle' => 'Stock levels, usage patterns, and supplier performance',
         'nav_title' => 'Inventory Reports',
     ],
-    
+
     // Staff Performance Reports
     'staff' => [
         'title' => 'Staff Performance',
         'subtitle' => 'Service analytics, productivity, and performance metrics',
         'nav_title' => 'Staff Performance',
     ],
-    
+
     // Financial Summary Reports
     'financial' => [
         'title' => 'Financial Summary',
         'subtitle' => 'Profit & loss, cost breakdown, and budget analysis',
         'nav_title' => 'Financial Summary',
     ],
-    
+
     // Operational Reports
     'operational' => [
         'title' => 'Operational Reports',
         'subtitle' => 'Table utilization, peak hours, and service efficiency',
         'nav_title' => 'Operational Reports',
     ],
-    
+
     // Executive Dashboard
     'executive' => [
         'title' => 'Executive Dashboard',
         'subtitle' => 'KPI overview, trends, and strategic insights',
         'nav_title' => 'Executive Dashboard',
     ],
-    
+
     // Coming Soon Content
     'coming_soon' => [
         'title' => 'Coming Soon',
@@ -69,7 +69,7 @@ return [
         'features_title' => 'Planned Features:',
         'timeline' => 'Available after full database and backend development is complete.',
     ],
-    
+
     // Sales Reports Features
     'sales' => [
         'title' => 'Sales Reports',
@@ -83,7 +83,7 @@ return [
             'discount_analysis' => 'Discount & Promotion Impact Analysis',
         ],
     ],
-    
+
     // Customer Reports Features
     'customers' => [
         'title' => 'Customer Reports',
@@ -97,7 +97,7 @@ return [
             'demographics' => 'Customer Demographics & Insights',
         ],
     ],
-    
+
     // Menu Performance Features
     'menu' => [
         'title' => 'Menu Performance',
@@ -111,7 +111,7 @@ return [
             'profit_margins' => 'Profit Margin Analysis by Item',
         ],
     ],
-    
+
     // Inventory Reports Features
     'inventory' => [
         'title' => 'Inventory Reports',
@@ -125,7 +125,7 @@ return [
             'cost_analysis' => 'Cost Analysis & Trends',
         ],
     ],
-    
+
     // Staff Performance Features
     'staff' => [
         'title' => 'Staff Performance',
@@ -139,7 +139,7 @@ return [
             'table_turnover' => 'Table Turnover Efficiency',
         ],
     ],
-    
+
     // Financial Summary Features
     'financial' => [
         'title' => 'Financial Summary',
@@ -153,7 +153,7 @@ return [
             'tax_reports' => 'Tax Reports & Calculations',
         ],
     ],
-    
+
     // Operational Reports Features
     'operational' => [
         'title' => 'Operational Reports',
@@ -167,7 +167,7 @@ return [
             'capacity_planning' => 'Capacity Planning Insights',
         ],
     ],
-    
+
     // Executive Dashboard Features
     'executive' => [
         'title' => 'Executive Dashboard',

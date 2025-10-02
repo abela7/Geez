@@ -16,15 +16,15 @@ class StaffTypeSeeder extends Seeder
     {
         // Create default staff types
         StaffType::createDefaultTypes();
-        
+
         $this->command->info('✅ Staff types created successfully!');
         $this->command->table(
             ['Name', 'Display Name', 'Priority', 'Status'],
-            StaffType::all()->map(fn($type) => [
+            StaffType::all()->map(fn ($type) => [
                 $type->name,
                 $type->display_name,
                 $type->priority,
-                $type->is_active ? 'Active' : 'Inactive'
+                $type->is_active ? 'Active' : 'Inactive',
             ])->toArray()
         );
     }

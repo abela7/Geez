@@ -40,7 +40,7 @@ class StaffListsController extends Controller
                         'completed_at' => '2024-01-15 08:45:00',
                         'recurring' => true,
                         'frequency' => 'daily',
-                        'template_id' => 1
+                        'template_id' => 1,
                     ],
                     [
                         'id' => 2,
@@ -52,7 +52,7 @@ class StaffListsController extends Controller
                         'completed_at' => null,
                         'recurring' => true,
                         'frequency' => 'daily',
-                        'template_id' => 2
+                        'template_id' => 2,
                     ],
                     [
                         'id' => 3,
@@ -64,9 +64,9 @@ class StaffListsController extends Controller
                         'completed_at' => null,
                         'recurring' => true,
                         'frequency' => 'daily',
-                        'template_id' => 3
-                    ]
-                ]
+                        'template_id' => 3,
+                    ],
+                ],
             ],
             [
                 'id' => 2,
@@ -91,7 +91,7 @@ class StaffListsController extends Controller
                         'completed_at' => '2024-01-15 07:55:00',
                         'recurring' => true,
                         'frequency' => 'daily',
-                        'template_id' => 4
+                        'template_id' => 4,
                     ],
                     [
                         'id' => 5,
@@ -103,7 +103,7 @@ class StaffListsController extends Controller
                         'completed_at' => '2024-01-15 08:50:00',
                         'recurring' => true,
                         'frequency' => 'daily',
-                        'template_id' => 5
+                        'template_id' => 5,
                     ],
                     [
                         'id' => 6,
@@ -115,9 +115,9 @@ class StaffListsController extends Controller
                         'completed_at' => null,
                         'recurring' => true,
                         'frequency' => 'daily',
-                        'template_id' => 6
-                    ]
-                ]
+                        'template_id' => 6,
+                    ],
+                ],
             ],
             [
                 'id' => 3,
@@ -142,7 +142,7 @@ class StaffListsController extends Controller
                         'completed_at' => '2024-01-15 09:45:00',
                         'recurring' => true,
                         'frequency' => 'daily',
-                        'template_id' => 7
+                        'template_id' => 7,
                     ],
                     [
                         'id' => 8,
@@ -154,7 +154,7 @@ class StaffListsController extends Controller
                         'completed_at' => null,
                         'recurring' => true,
                         'frequency' => 'weekly',
-                        'template_id' => 8
+                        'template_id' => 8,
                     ],
                     [
                         'id' => 9,
@@ -166,9 +166,9 @@ class StaffListsController extends Controller
                         'completed_at' => null,
                         'recurring' => true,
                         'frequency' => 'weekly',
-                        'template_id' => 9
-                    ]
-                ]
+                        'template_id' => 9,
+                    ],
+                ],
             ],
             [
                 'id' => 4,
@@ -193,7 +193,7 @@ class StaffListsController extends Controller
                         'completed_at' => '2024-01-15 08:25:00',
                         'recurring' => true,
                         'frequency' => 'daily',
-                        'template_id' => 10
+                        'template_id' => 10,
                     ],
                     [
                         'id' => 11,
@@ -205,10 +205,10 @@ class StaffListsController extends Controller
                         'completed_at' => '2024-01-15 08:55:00',
                         'recurring' => true,
                         'frequency' => 'daily',
-                        'template_id' => 11
-                    ]
-                ]
-            ]
+                        'template_id' => 11,
+                    ],
+                ],
+            ],
         ];
 
         // Mock data for filters
@@ -254,7 +254,7 @@ class StaffListsController extends Controller
                     'frequency' => 'daily',
                     'template_id' => 1,
                     'estimated_duration' => 15,
-                    'actual_duration' => 12
+                    'actual_duration' => 12,
                 ],
                 [
                     'id' => 2,
@@ -268,7 +268,7 @@ class StaffListsController extends Controller
                     'frequency' => 'daily',
                     'template_id' => 2,
                     'estimated_duration' => 30,
-                    'actual_duration' => null
+                    'actual_duration' => null,
                 ],
                 [
                     'id' => 3,
@@ -282,9 +282,9 @@ class StaffListsController extends Controller
                     'frequency' => 'daily',
                     'template_id' => 3,
                     'estimated_duration' => 20,
-                    'actual_duration' => null
-                ]
-            ]
+                    'actual_duration' => null,
+                ],
+            ],
         ];
 
         return view('admin.todos.staff-lists.show', compact('staffMember'));
@@ -301,7 +301,7 @@ class StaffListsController extends Controller
             'priority' => 'required|in:high,medium,normal',
             'due_date' => 'required|date',
             'template_id' => 'nullable|integer',
-            'estimated_duration' => 'nullable|integer|min:1'
+            'estimated_duration' => 'nullable|integer|min:1',
         ]);
 
         // Mock response - in real implementation, this would save to database
@@ -315,8 +315,8 @@ class StaffListsController extends Controller
                 'priority' => $request->priority,
                 'status' => 'pending',
                 'due_date' => $request->due_date,
-                'estimated_duration' => $request->estimated_duration ?? 30
-            ]
+                'estimated_duration' => $request->estimated_duration ?? 30,
+            ],
         ]);
     }
 
@@ -326,14 +326,14 @@ class StaffListsController extends Controller
     public function updateStatus(Request $request, int $todo)
     {
         $request->validate([
-            'status' => 'required|in:pending,in_progress,completed,cancelled'
+            'status' => 'required|in:pending,in_progress,completed,cancelled',
         ]);
 
         // Mock response - in real implementation, this would update database
         return response()->json([
             'success' => true,
             'message' => __('todos.staff_lists.status_updated_successfully'),
-            'status' => $request->status
+            'status' => $request->status,
         ]);
     }
 }

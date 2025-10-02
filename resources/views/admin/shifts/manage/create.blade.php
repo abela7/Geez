@@ -2,6 +2,14 @@
 
 @section('title', 'Create New Shift')
 
+@push('styles')
+@vite(['resources/css/admin/shifts/create.css'])
+@endpush
+
+@push('scripts')
+@vite(['resources/js/admin/shifts/create.js'])
+@endpush
+
 @section('content')
 <div class="shift-create-page" x-data="shiftCreateData()">
     <!-- Enhanced Page Header -->
@@ -164,6 +172,7 @@
                         <div class="duration-display" x-text="formatDuration(form.duration_hours)">
                             <span class="duration-placeholder">Select start and end times</span>
                         </div>
+                        <input type="hidden" name="duration_hours" x-model="form.duration_hours">
                         <div class="form-help">Automatically calculated from start and end times</div>
                     </div>
 
@@ -351,11 +360,4 @@
     </div>
 </div>
 
-@push('styles')
-@vite(['resources/css/admin/shifts/create.css'])
-@endpush
-
-@push('scripts')
-@vite(['resources/js/admin/shifts/create.js'])
-@endpush
 @endsection

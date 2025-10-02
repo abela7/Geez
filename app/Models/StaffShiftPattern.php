@@ -120,7 +120,7 @@ class StaffShiftPattern extends Model
      */
     public function shouldGenerateForDate(\Carbon\Carbon $date): bool
     {
-        if (!$this->auto_generate || !$this->isActive()) {
+        if (! $this->auto_generate || ! $this->isActive()) {
             return false;
         }
 
@@ -130,21 +130,21 @@ class StaffShiftPattern extends Model
     /**
      * Get the next occurrence of this pattern.
      */
-    public function getNextOccurrence(\Carbon\Carbon $fromDate = null): ?\Carbon\Carbon
+    public function getNextOccurrence(?\Carbon\Carbon $fromDate = null): ?\Carbon\Carbon
     {
         $fromDate = $fromDate ?? now();
-        
+
         // Find next occurrence of the day of week
         $nextDate = $fromDate->copy();
-        
+
         while ($nextDate->dayOfWeek !== $this->day_of_week) {
             $nextDate->addDay();
         }
 
         // Check if it's within effective range and not excluded
-        while (!$this->isEffectiveForDate($nextDate)) {
+        while (! $this->isEffectiveForDate($nextDate)) {
             $nextDate->addWeek();
-            
+
             // Prevent infinite loop
             if ($this->effective_until && $nextDate->gt($this->effective_until)) {
                 return null;
@@ -184,9 +184,9 @@ class StaffShiftPattern extends Model
     public function scopeEffectiveOn($query, \Carbon\Carbon $date)
     {
         return $query->where('effective_from', '<=', $date->format('Y-m-d'))
-                    ->where(function ($q) use ($date) {
-                        $q->whereNull('effective_until')
-                          ->orWhere('effective_until', '>=', $date->format('Y-m-d'));
-                    });
+            ->where(function ($q) use ($date) {
+                $q->whereNull('effective_until')
+                    ->orWhere('effective_until', '>=', $date->format('Y-m-d'));
+            });
     }
 }

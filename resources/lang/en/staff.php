@@ -20,7 +20,7 @@ return [
         'show' => 'Staff Type Details',
         'list' => 'Staff Types List',
         'trashed' => 'Deleted Staff Types',
-        
+
         // Form fields
         'name' => 'Internal Name',
         'name_help' => 'Lowercase with underscores (e.g., system_admin)',
@@ -32,7 +32,7 @@ return [
         'priority_help' => 'Higher numbers = more access (0-100)',
         'is_active' => 'Active',
         'is_active_help' => 'Whether this staff type can be assigned to new staff',
-        
+
         // Actions
         'add_new' => 'Add New Staff Type',
         'edit_type' => 'Edit Staff Type',
@@ -43,7 +43,7 @@ return [
         'toggle_active' => 'Toggle Active Status',
         'activate' => 'Activate',
         'deactivate' => 'Deactivate',
-        
+
         // Messages
         'created_successfully' => 'Staff type ":name" created successfully.',
         'updated_successfully' => 'Staff type ":name" updated successfully.',
@@ -52,23 +52,23 @@ return [
         'force_deleted_successfully' => 'Staff type ":name" permanently deleted.',
         'activated_successfully' => 'Staff type ":name" activated successfully.',
         'deactivated_successfully' => 'Staff type ":name" deactivated successfully.',
-        
+
         // Errors
         'cannot_delete_has_active_staff' => 'Cannot delete staff type with active staff members.',
         'cannot_force_delete_has_staff' => 'Cannot permanently delete staff type with staff members.',
         'not_found' => 'Staff type not found.',
-        
+
         // Status
         'active' => 'Active',
         'inactive' => 'Inactive',
         'deleted' => 'Deleted',
-        
+
         // Stats
         'total_staff' => 'Total Staff',
         'active_staff' => 'Active Staff',
         'no_staff_assigned' => 'No staff assigned',
         'staff_count' => '{0} No staff|{1} 1 staff member|[2,*] :count staff members',
-        
+
         // Priority levels
         'priority_levels' => [
             'system' => 'System Level (100)',
@@ -78,13 +78,13 @@ return [
             'operational' => 'Operational (20-39)',
             'basic' => 'Basic (0-19)',
         ],
-        
+
         // Confirmations
         'confirm_delete' => 'Are you sure you want to delete this staff type?',
         'confirm_force_delete' => 'Are you sure you want to permanently delete this staff type? This action cannot be undone.',
         'confirm_restore' => 'Are you sure you want to restore this staff type?',
         'confirm_toggle_active' => 'Are you sure you want to change the active status of this staff type?',
-        
+
         // Additional fields
         'details' => 'Staff Type Details',
         'assigned_staff' => 'Assigned Staff',
@@ -98,7 +98,7 @@ return [
         'trashed_notice' => 'These staff types have been deleted but can be restored. Staff types with assigned members cannot be permanently deleted.',
         'has_staff_members' => 'Has staff members',
     ],
-    
+
     // Staff CRUD
     'title' => 'Staff Management',
     'list' => 'Staff List',
@@ -106,7 +106,7 @@ return [
     'edit' => 'Edit Staff Member',
     'show' => 'Staff Details',
     'trashed' => 'Deleted Staff',
-    
+
     // Actions
     'add_new' => 'Add New Staff Member',
     'edit_staff' => 'Edit Staff Member',
@@ -118,7 +118,7 @@ return [
     'activate' => 'Activate',
     'deactivate' => 'Deactivate',
     'suspend' => 'Suspend',
-    
+
     // Fields
     'full_name' => 'Full Name',
     'first_name' => 'First Name',
@@ -146,7 +146,7 @@ return [
     'month_of_service' => 'month of service',
     'days_of_service' => 'days of service',
     'day_of_service' => 'day of service',
-    
+
     // Messages
     'created_successfully' => 'Staff member ":name" created successfully.',
     'updated_successfully' => 'Staff member ":name" updated successfully.',
@@ -156,35 +156,35 @@ return [
     'activated_successfully' => 'Staff member ":name" activated successfully.',
     'deactivated_successfully' => 'Staff member ":name" deactivated successfully.',
     'suspended_successfully' => 'Staff member ":name" suspended successfully.',
-    
+
     // Errors
     'cannot_delete_self' => 'You cannot delete your own account.',
     'cannot_force_delete_self' => 'You cannot permanently delete your own account.',
     'cannot_deactivate_self' => 'You cannot deactivate your own account.',
     'unauthorized_access' => 'You do not have permission to manage staff.',
     'not_found' => 'Staff member not found.',
-    
+
     // Search & Filters
     'search_placeholder' => 'Search by name, username, or email...',
     'filter_by_type' => 'Filter by Staff Type',
     'filter_by_status' => 'Filter by Status',
     'all_types' => 'All Types',
     'all_statuses' => 'All Statuses',
-    
+
     // Empty States
     'no_staff_found' => 'No Staff Members Found',
     'no_staff_description' => 'Add your first staff member to get started.',
     'no_trashed_staff' => 'No Deleted Staff Members',
     'no_trashed_description' => 'All staff members are currently active. Deleted staff will appear here.',
     'no_search_results' => 'No staff members match your search criteria.',
-    
+
     // Stats
     'total_staff' => 'Total Staff',
     'active_staff' => 'Active Staff',
     'inactive_staff' => 'Inactive Staff',
     'suspended_staff' => 'Suspended Staff',
     'staff_count' => '{0} No staff|{1} 1 staff member|[2,*] :count staff members',
-    
+
     // Confirmations
     'confirm_delete' => 'Are you sure you want to delete this staff member?',
     'confirm_force_delete' => 'Are you sure you want to permanently delete this staff member? This action cannot be undone.',
@@ -193,13 +193,13 @@ return [
     'delete_warning' => 'This staff member will be moved to trash and can be restored later.',
     'force_delete_warning' => 'This action will permanently delete the staff member and cannot be undone.',
     'trashed_notice' => 'These staff members have been deleted but can be restored. Staff members cannot be permanently deleted if they have related records.',
-    
+
     // Additional
     'view_active_staff' => 'View Active Staff',
     'no_profile_created' => 'No profile has been created for this staff member yet.',
     'create_profile' => 'Create Profile',
     'employee_id' => 'Employee ID',
-    
+
     // Profile & Details
     'profile' => 'Profile',
     'personal_info' => 'Personal Information',
@@ -211,23 +211,23 @@ return [
     'member_since' => 'Member since',
     'view_profile' => 'View Profile',
     'add_staff' => 'Add Staff Member',
-    
+
     // Staff status values
     'status_values' => [
         'active' => 'Active',
         'inactive' => 'Inactive',
         'suspended' => 'Suspended',
     ],
-    
+
     // Navigation
     'nav_overview' => 'Staff Overview',
-    'nav_directory' => 'Staff Directory', 
+    'nav_directory' => 'Staff Directory',
     'nav_performance' => 'Performance',
     'nav_attendance' => 'Attendance',
     'nav_tasks' => 'Tasks',
     'nav_task_settings' => 'Task Settings',
     'nav_payroll' => 'Payroll',
-    
+
     // Profile page
     'show' => 'Staff Profile',
     'edit_staff' => 'Edit Staff Member',
@@ -244,7 +244,7 @@ return [
     'shifts' => 'Shifts',
     'years_of_service' => 'years of service',
     'staff_type' => 'Staff Type',
-    
+
     // Directory page
     'directory_subtitle' => 'Manage and view all staff members in your organization',
     'search_placeholder' => 'Search staff by name, email, or employee ID...',
@@ -258,7 +258,7 @@ return [
     'all_statuses' => 'All Statuses',
     'view_grid' => 'Grid View',
     'view_list' => 'List View',
-    
+
     // Profile Page
     'relationship' => 'Relationship',
     'emergency_contacts' => 'Emergency Contacts',
@@ -332,7 +332,7 @@ return [
     'shift_history' => 'Shift History',
     'shift_history_description' => 'Past shift assignments and completion history will be displayed here.',
     'task_completion_rate' => 'Task Completion Rate',
-    
+
     // Performance Management
     'performance' => [
         'title' => 'Staff Performance',
@@ -432,7 +432,7 @@ return [
         'cancel' => 'Cancel',
         'check_in_time' => 'Check In Time',
         'check_out_time' => 'Check Out Time',
-        
+
         // CRUD Messages
         'created_successfully' => 'Attendance record created successfully',
         'create_failed' => 'Failed to create attendance record',
@@ -441,7 +441,7 @@ return [
         'deleted_successfully' => 'Attendance record deleted successfully',
         'delete_failed' => 'Failed to delete attendance record',
         'already_clocked_in' => 'This staff member has already clocked in today',
-        
+
         // Edit Modal
         'edit_attendance' => 'Edit Attendance Record',
         'update_attendance' => 'Update Attendance',
@@ -457,7 +457,7 @@ return [
         'kanban' => 'Kanban',
         'list' => 'List',
         'calendar' => 'Calendar',
-        
+
         // Dashboard Stats
         'total_tasks' => 'Total Tasks',
         'total_assignments' => 'Total Assignments',
@@ -465,7 +465,7 @@ return [
         'overdue_assignments' => 'Overdue',
         'in_progress_assignments' => 'In Progress',
         'completion_rate' => 'Completion Rate',
-        
+
         // Task Form
         'task_title' => 'Task Title',
         'task_description' => 'Task Description',
@@ -478,19 +478,19 @@ return [
         'requires_approval' => 'Requires Approval',
         'tags' => 'Tags',
         'is_active' => 'Active',
-        
+
         // Task Types
         'daily' => 'Daily',
         'weekly' => 'Weekly',
         'monthly' => 'Monthly',
         'one_time' => 'One Time',
-        
+
         // Priorities
         'low' => 'Low',
         'medium' => 'Medium',
         'high' => 'High',
         'urgent' => 'Urgent',
-        
+
         // Categories
         'kitchen' => 'Kitchen',
         'service' => 'Service',
@@ -498,14 +498,14 @@ return [
         'administration' => 'Administration',
         'maintenance_cat' => 'Maintenance',
         'inventory' => 'Inventory',
-        
+
         // Assignment Form
         'assign_task' => 'Assign Task',
         'select_staff' => 'Select Staff Members',
         'due_date' => 'Due Date',
         'priority_override' => 'Priority Override',
         'assignment_notes' => 'Assignment Notes',
-        
+
         // Status
         'pending' => 'Pending',
         'assigned' => 'Assigned',
@@ -514,7 +514,7 @@ return [
         'completed' => 'Completed',
         'cancelled' => 'Cancelled',
         'overdue' => 'Overdue',
-        
+
         // Modal
         'edit_task' => 'Edit Task',
         'update_task' => 'Update Task',
@@ -524,14 +524,14 @@ return [
         'staff_assignment' => 'Staff Assignment',
         'additional_options' => 'Additional Options',
         'options' => 'Options',
-        
+
         // Help texts
         'task_instructions_help' => 'Provide detailed step-by-step instructions for completing this task',
         'estimated_hours_help' => 'Estimated time to complete this task (e.g., 2.5 hours)',
         'duration_minutes_help' => 'Expected duration in minutes (e.g., 30 minutes)',
         'requires_approval_help' => 'Task completion requires manager approval before marking as complete',
         'is_active_help' => 'Only active tasks can be assigned and worked on',
-        
+
         // Actions
         'edit' => 'Edit',
         'delete' => 'Delete',
@@ -542,7 +542,7 @@ return [
         'stop_timer' => 'Stop Timer',
         'add_comment' => 'Add Comment',
         'attach_file' => 'Attach File',
-        
+
         // Filters
         'filter_by_status' => 'Filter by Status',
         'filter_by_priority' => 'Filter by Priority',
@@ -553,7 +553,7 @@ return [
         'all_priorities' => 'All Priorities',
         'all_categories' => 'All Categories',
         'all_assignees' => 'All Assignees',
-        
+
         // Messages
         'task_created_successfully' => 'Task created successfully',
         'task_creation_failed' => 'Failed to create task',
@@ -574,12 +574,12 @@ return [
         'task_not_found' => 'Task not found',
         'no_tasks_found' => 'No tasks found',
         'no_assignments_found' => 'No assignments found',
-        
+
         // Notifications
         'new_task_assignment' => 'New Task Assignment',
         'you_have_been_assigned_task' => 'You have been assigned to task: :task',
         'status_changed_from_to' => 'Status changed from :old_status to :new_status',
-        
+
         // Time Tracking
         'time_tracking' => 'Time Tracking',
         'total_time' => 'Total Time',
@@ -590,30 +590,30 @@ return [
         'duration' => 'Duration',
         'description' => 'Description',
         'billable' => 'Billable',
-        
+
         // Comments
         'comments' => 'Comments',
         'add_comment' => 'Add Comment',
         'comment_added' => 'Comment added successfully',
         'no_comments' => 'No comments yet',
-        
+
         // Attachments
         'attachments' => 'Attachments',
         'upload_file' => 'Upload File',
         'file_uploaded' => 'File uploaded successfully',
         'no_attachments' => 'No attachments',
-        
+
         // Progress
         'progress' => 'Progress',
         'progress_percentage' => 'Progress Percentage',
         'update_progress' => 'Update Progress',
-        
+
         // Dependencies
         'dependencies' => 'Dependencies',
         'dependent_tasks' => 'Dependent Tasks',
         'add_dependency' => 'Add Dependency',
         'remove_dependency' => 'Remove Dependency',
-        
+
         // Quick Actions
         'quick_actions' => 'Quick Actions',
         'mark_complete' => 'Mark Complete',
@@ -621,13 +621,13 @@ return [
         'reassign' => 'Reassign',
         'duplicate' => 'Duplicate',
         'archive' => 'Archive',
-        
+
         // Empty States
         'no_tasks_title' => 'No Tasks Yet',
         'no_tasks_description' => 'Create your first task to get started with task management.',
         'no_assignments_title' => 'No Assignments',
         'no_assignments_description' => 'No task assignments match your current filters.',
-        
+
         // Placeholders
         'search_tasks' => 'Search tasks...',
         'task_title_placeholder' => 'Enter task title',
@@ -637,7 +637,7 @@ return [
         'template_name_placeholder' => 'Enter template name',
         'tags_placeholder' => 'Enter tags separated by commas',
         'tags_help' => 'Separate multiple tags with commas (e.g., daily, cleaning, kitchen)',
-        
+
         // Additional form labels and messages
         'create_task_subtitle' => 'Create a new task and assign it to staff members',
         'edit_task' => 'Edit Task',
@@ -663,7 +663,7 @@ return [
         'category_required' => 'Category is required',
         'staff_required' => 'At least one staff member must be selected',
         'due_date_future' => 'Due date must be in the future',
-        
+
         // New task creation fields
         'task_instructions' => 'Task Instructions',
         'task_instructions_placeholder' => 'Detailed step-by-step instructions for completing this task...',
@@ -683,7 +683,7 @@ return [
         'scheduled_for' => 'Scheduled For',
         'task_settings' => 'Task Settings',
         'view_full_page' => 'View Full Page',
-        
+
         // Task Settings
         'settings' => [
             'title' => 'Task Settings',
@@ -692,13 +692,13 @@ return [
             'manage_priorities' => 'Manage Priorities',
             'manage_categories' => 'Manage Categories',
             'manage_tags' => 'Manage Tags',
-            
+
             // Stats
             'task_types' => 'Task Types',
             'priorities' => 'Priorities',
             'categories' => 'Categories',
             'tags' => 'Tags',
-            
+
             // Task Types
             'add_task_type' => 'Add Task Type',
             'add_first_task_type' => 'Add Your First Task Type',
@@ -711,7 +711,7 @@ return [
             'task_type_deleted' => 'Task type deleted successfully!',
             'task_type_in_use' => 'Cannot delete task type - it is currently being used by tasks.',
             'confirm_delete_type' => 'Are you sure you want to delete this task type?',
-            
+
             // Task Priorities
             'add_task_priority' => 'Add Priority',
             'add_first_priority' => 'Add Your First Priority',
@@ -729,7 +729,7 @@ return [
             'medium' => 'Medium',
             'high' => 'High',
             'highest' => 'Highest',
-            
+
             // Task Categories
             'add_task_category' => 'Add Category',
             'add_first_category' => 'Add Your First Category',
@@ -743,7 +743,7 @@ return [
             'category_circular_reference' => 'A category cannot be its own parent.',
             'category_has_children' => 'Cannot delete category - it has subcategories.',
             'no_parent' => 'No Parent Category',
-            
+
             // Task Tags
             'add_task_tag' => 'Add Tag',
             'add_first_tag' => 'Add Your First Tag',
@@ -754,7 +754,7 @@ return [
             'task_tag_created' => 'Task tag created successfully!',
             'task_tag_updated' => 'Task tag updated successfully!',
             'task_tag_deleted' => 'Task tag deleted successfully!',
-            
+
             // Form Fields
             'name' => 'Name',
             'description' => 'Description',
@@ -763,7 +763,7 @@ return [
             'level' => 'Priority Level',
             'parent_category' => 'Parent Category',
             'order_updated' => 'Order updated successfully!',
-            
+
             // Placeholders
             'type_name_placeholder' => 'e.g., Cleaning, Maintenance, Training',
             'type_description_placeholder' => 'Describe what this task type covers...',
@@ -804,7 +804,7 @@ return [
         'notes' => 'Notes',
         'notes_placeholder' => 'Additional notes or instructions',
         'confirm_generate_patterns' => 'Generate assignments from recurring patterns for this week?',
-        
+
         // Shift template management
         'templates' => [
             'title' => 'Shift Templates',
@@ -824,7 +824,7 @@ return [
             'description' => 'Description',
             'is_active' => 'Active',
         ],
-        
+
         // Assignment statuses
         'status' => [
             'scheduled' => 'Scheduled',
@@ -838,7 +838,7 @@ return [
             'left_early' => 'Left Early',
             'missed' => 'No Show',
         ],
-        
+
         // Departments
         'departments' => [
             'kitchen' => 'Kitchen',
@@ -847,7 +847,7 @@ return [
             'management' => 'Management',
             'cleaning' => 'Cleaning',
         ],
-        
+
         // Shift types
         'shift_types' => [
             'opening' => 'Opening',

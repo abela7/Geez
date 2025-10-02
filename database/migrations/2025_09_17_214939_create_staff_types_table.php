@@ -16,19 +16,19 @@ return new class extends Migration
         Schema::create('staff_types', function (Blueprint $table) {
             // Primary Key - Using ULID for offline/online sync compatibility
             $table->ulid('id')->primary();
-            
+
             // Staff Type Information
             $table->string('name')->unique()->comment('Internal name (system_admin, administrator, etc.)');
             $table->string('display_name')->comment('Human readable name');
             $table->text('description')->nullable()->comment('Role description and responsibilities');
-            
+
             // Status and Configuration
             $table->boolean('is_active')->default(true)->comment('Whether this staff type is active');
             $table->integer('priority')->default(0)->comment('Priority level for access control (higher = more access)');
-            
+
             // Metadata
             $table->timestamps();
-            
+
             // Indexes for performance
             $table->index(['name']);
             $table->index(['is_active']);

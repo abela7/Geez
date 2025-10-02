@@ -56,7 +56,7 @@ class TaskReminder extends Model
     public function scopeDueNow($query)
     {
         return $query->where('status', 'pending')
-                    ->where('scheduled_for', '<=', now());
+            ->where('scheduled_for', '<=', now());
     }
 
     /**

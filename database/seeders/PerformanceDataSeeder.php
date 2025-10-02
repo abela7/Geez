@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\Staff;
-use App\Models\StaffType;
-use App\Models\StaffProfile;
 use App\Models\StaffPerformanceGoal;
 use App\Models\StaffPerformanceMetric;
 use App\Models\StaffPerformanceReview;
 use App\Models\StaffPerformanceTemplate;
+use App\Models\StaffProfile;
+use App\Models\StaffType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -23,7 +23,7 @@ class PerformanceDataSeeder extends Seeder
     {
         // Create staff types if they don't exist
         $waiterType = StaffType::firstOrCreate([
-            'name' => 'waiter'
+            'name' => 'waiter',
         ], [
             'display_name' => 'Waiter',
             'description' => 'Restaurant service staff responsible for taking orders and serving customers',
@@ -32,7 +32,7 @@ class PerformanceDataSeeder extends Seeder
         ]);
 
         $chefType = StaffType::firstOrCreate([
-            'name' => 'chef'
+            'name' => 'chef',
         ], [
             'display_name' => 'Chef',
             'description' => 'Kitchen staff responsible for food preparation and cooking',
@@ -60,7 +60,7 @@ class PerformanceDataSeeder extends Seeder
             'date_of_birth' => now()->subYears(25),
             'address' => '123 Main Street, City, State 12345',
             'emergency_contacts' => json_encode([
-                ['name' => 'John Johnson', 'relationship' => 'Spouse', 'phone' => '+1234567891']
+                ['name' => 'John Johnson', 'relationship' => 'Spouse', 'phone' => '+1234567891'],
             ]),
             'hourly_rate' => 15.50,
             'notes' => 'Excellent customer service skills, very reliable',
@@ -86,7 +86,7 @@ class PerformanceDataSeeder extends Seeder
             'date_of_birth' => now()->subYears(32),
             'address' => '456 Oak Avenue, City, State 12345',
             'emergency_contacts' => json_encode([
-                ['name' => 'Lisa Chen', 'relationship' => 'Wife', 'phone' => '+1234567893']
+                ['name' => 'Lisa Chen', 'relationship' => 'Wife', 'phone' => '+1234567893'],
             ]),
             'hourly_rate' => 22.00,
             'notes' => 'Experienced chef with excellent knife skills and food safety knowledge',

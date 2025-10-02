@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Admin\Inventory;
 
 use App\Http\Controllers\Controller;
 use App\Models\InventoryItem;
-use App\Models\Supplier;
 use App\Models\StockMovement;
-use Illuminate\Http\Request;
+use App\Models\Supplier;
 use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class StockLevelsController extends Controller
 {
@@ -26,8 +26,8 @@ class StockLevelsController extends Controller
             $search = $request->get('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('code', 'like', "%{$search}%")
-                  ->orWhere('barcode', 'like', "%{$search}%");
+                    ->orWhere('code', 'like', "%{$search}%")
+                    ->orWhere('barcode', 'like', "%{$search}%");
             });
         }
 
@@ -61,7 +61,7 @@ class StockLevelsController extends Controller
         // Sorting
         $sortBy = $request->get('sort_by', 'name');
         $sortDirection = $request->get('sort_direction', 'asc');
-        
+
         $validSortColumns = ['name', 'current_stock', 'reorder_level', 'category', 'location', 'last_updated'];
         if (in_array($sortBy, $validSortColumns)) {
             $query->orderBy($sortBy, $sortDirection);
@@ -135,7 +135,7 @@ class StockLevelsController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error updating stock: ' . $e->getMessage(),
+                'message' => 'Error updating stock: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -156,7 +156,7 @@ class StockLevelsController extends Controller
 
         try {
             $updatedItems = [];
-            
+
             foreach ($request->get('items') as $itemData) {
                 $item = InventoryItem::find($itemData['id']);
                 if ($item) {
@@ -181,7 +181,7 @@ class StockLevelsController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error updating stock: ' . $e->getMessage(),
+                'message' => 'Error updating stock: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -207,7 +207,7 @@ class StockLevelsController extends Controller
         $lowStockItems = InventoryItem::active()->lowStock()->count();
         $outOfStockItems = InventoryItem::active()->outOfStock()->count();
         $totalValue = InventoryItem::active()->sum(DB::raw('current_stock * cost_per_unit'));
-        
+
         $recentMovements = StockMovement::with(['inventoryItem', 'user'])
             ->recent(7)
             ->orderBy('movement_date', 'desc')

@@ -31,10 +31,10 @@ class CheckOverdueTasks extends Command
             ->whereIn('status', ['pending', 'in_progress'])
             ->where(function ($query) {
                 $query->where('scheduled_datetime', '<', now())
-                      ->orWhere(function ($q) {
-                          $q->whereNull('scheduled_datetime')
+                    ->orWhere(function ($q) {
+                        $q->whereNull('scheduled_datetime')
                             ->where('due_date', '<', now()->toDateString());
-                      });
+                    });
             })
             ->get();
 
@@ -45,7 +45,7 @@ class CheckOverdueTasks extends Command
             $wasOverdue = $assignment->is_overdue;
             $isNowOverdue = $assignment->checkAndUpdateOverdueStatus();
 
-            if ($isNowOverdue && !$wasOverdue) {
+            if ($isNowOverdue && ! $wasOverdue) {
                 $overdueCount++;
                 $this->line("Task '{$assignment->task->title}' assigned to {$assignment->staff->first_name} {$assignment->staff->last_name} is now overdue.");
 
@@ -54,7 +54,7 @@ class CheckOverdueTasks extends Command
                     try {
                         $assignment->sendOverdueNotification();
                         $notificationsSent++;
-                        $this->line("  → Overdue notification sent.");
+                        $this->line('  → Overdue notification sent.');
                     } catch (\Exception $e) {
                         $this->error("  → Failed to send notification: {$e->getMessage()}");
                     }

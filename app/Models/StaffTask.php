@@ -302,7 +302,7 @@ class StaffTask extends Model
     public function getUnsatisfiedDependencies()
     {
         return $this->dependencies()->get()->filter(function ($dependency) {
-            return !$dependency->isSatisfied();
+            return ! $dependency->isSatisfied();
         });
     }
 
@@ -320,7 +320,7 @@ class StaffTask extends Model
     public function getEarliestStartDate(): ?\Carbon\Carbon
     {
         $dependencies = $this->dependencies()->get();
-        
+
         if ($dependencies->isEmpty()) {
             return now(); // No dependencies, can start now
         }
@@ -346,7 +346,7 @@ class StaffTask extends Model
         ]);
 
         // Validate no cycles
-        if (!$tempDependency->validateNoCycles()) {
+        if (! $tempDependency->validateNoCycles()) {
             return null; // Would create a cycle
         }
 

@@ -82,16 +82,16 @@ class StaffTasksController extends Controller
             $dashboardData = $this->getDashboardData($filters);
             $tasks = $this->getFilteredTasks($filters);
             $assignments = $this->getFilteredAssignments($filters);
-            
+
             // Get supporting data
             $staffMembers = Staff::active()->with('staffType')->get();
             $staffTypes = StaffType::active()->get();
-            
+
             // Get task settings for filters
             $taskTypes = \App\Models\TaskType::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
             $taskPriorities = \App\Models\TaskPriority::where('is_active', true)->orderBy('sort_order')->orderBy('level')->get();
             $taskCategories = \App\Models\TaskCategory::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
-            
+
             return view('admin.staff.tasks', compact(
                 'dashboardData',
                 'tasks',
@@ -103,7 +103,7 @@ class StaffTasksController extends Controller
                 'taskCategories',
                 'filters'
             ));
-            
+
         } catch (\Exception $e) {
             // Graceful fallback for missing data
             return view('admin.staff.tasks', [
@@ -130,19 +130,19 @@ class StaffTasksController extends Controller
             $totalTasks = StaffTask::active()
                 ->whereHas('assignments')
                 ->count();
-            
-            $totalAssignments = StaffTaskAssignment::whereHas('task', fn($q) => $q->active())->count();
+
+            $totalAssignments = StaffTaskAssignment::whereHas('task', fn ($q) => $q->active())->count();
             $completedAssignments = StaffTaskAssignment::where('status', 'completed')
-                ->whereHas('task', fn($q) => $q->active())
+                ->whereHas('task', fn ($q) => $q->active())
                 ->count();
-            
+
             $overdueAssignments = StaffTaskAssignment::where('status', '!=', 'completed')
-                ->whereHas('task', fn($q) => $q->active())
+                ->whereHas('task', fn ($q) => $q->active())
                 ->where('due_date', '<', now())
                 ->count();
-            
+
             $inProgressAssignments = StaffTaskAssignment::where('status', 'in_progress')
-                ->whereHas('task', fn($q) => $q->active())
+                ->whereHas('task', fn ($q) => $q->active())
                 ->count();
 
             return [
@@ -182,18 +182,18 @@ class StaffTasksController extends Controller
             $query = StaffTask::with(['creator', 'assignments.staff.staffType', 'taskType', 'taskPriority', 'taskCategory'])
                 ->active();
 
-            if (!empty($filters['search'])) {
+            if (! empty($filters['search'])) {
                 $query->where(function ($q) use ($filters) {
                     $q->where('title', 'like', "%{$filters['search']}%")
-                      ->orWhere('description', 'like', "%{$filters['search']}%");
+                        ->orWhere('description', 'like', "%{$filters['search']}%");
                 });
             }
 
-            if (!empty($filters['priority'])) {
+            if (! empty($filters['priority'])) {
                 $query->where('priority', $filters['priority']);
             }
 
-            if (!empty($filters['category'])) {
+            if (! empty($filters['category'])) {
                 $query->where('category', $filters['category']);
             }
 
@@ -210,17 +210,17 @@ class StaffTasksController extends Controller
     {
         try {
             $query = StaffTaskAssignment::with(['task.taskType', 'task.taskPriority', 'task.taskCategory', 'staff.staffType', 'assignedBy'])
-                ->whereHas('task', fn($q) => $q->active());
+                ->whereHas('task', fn ($q) => $q->active());
 
-            if (!empty($filters['status'])) {
+            if (! empty($filters['status'])) {
                 $query->where('status', $filters['status']);
             }
 
-            if (!empty($filters['assignee'])) {
+            if (! empty($filters['assignee'])) {
                 $query->where('staff_id', $filters['assignee']);
             }
 
-            if (!empty($filters['due_date'])) {
+            if (! empty($filters['due_date'])) {
                 $query->whereDate('due_date', $filters['due_date']);
             }
 
@@ -262,7 +262,7 @@ class StaffTasksController extends Controller
             $validated['auto_assign'] = $validated['auto_assign'] ?? false;
 
             // Convert tags string to array
-            if (!empty($validated['tags'])) {
+            if (! empty($validated['tags'])) {
                 $validated['tags'] = array_map('trim', explode(',', $validated['tags']));
             } else {
                 $validated['tags'] = [];
@@ -273,7 +273,7 @@ class StaffTasksController extends Controller
             unset($validated['assigned_staff']); // Remove from task data
 
             // Store default assignees if auto_assign is enabled
-            if ($validated['auto_assign'] && !empty($assignedStaff)) {
+            if ($validated['auto_assign'] && ! empty($assignedStaff)) {
                 $validated['default_assignees'] = $assignedStaff;
             }
 
@@ -284,7 +284,7 @@ class StaffTasksController extends Controller
             ]);
 
             // Create assignments
-            if ($validated['auto_assign'] && !empty($assignedStaff)) {
+            if ($validated['auto_assign'] && ! empty($assignedStaff)) {
                 // Create assignments for selected staff
                 $this->createTaskAssignments($task, $assignedStaff, $validated);
             } else {
@@ -301,10 +301,11 @@ class StaffTasksController extends Controller
                 ->withErrors($e->errors())
                 ->with('error', 'Validation failed. Please check the form and try again.');
         } catch (\Exception $e) {
-            \Log::error('Task creation failed: ' . $e->getMessage());
+            \Log::error('Task creation failed: '.$e->getMessage());
+
             return redirect()->back()
                 ->withInput()
-                ->with('error', __('staff.tasks.task_creation_failed') . ': ' . $e->getMessage());
+                ->with('error', __('staff.tasks.task_creation_failed').': '.$e->getMessage());
         }
     }
 
@@ -317,7 +318,7 @@ class StaffTasksController extends Controller
             'creator',
             'updater',
             'taskType',
-            'taskPriority', 
+            'taskPriority',
             'taskCategory',
             'assignments.staff.staffType',
             'assignments.comments.staff',
@@ -342,8 +343,8 @@ class StaffTasksController extends Controller
                 'assignments.staff.staffType',
                 'assignments.staff',
                 'taskType',
-                'taskPriority', 
-                'taskCategory'
+                'taskPriority',
+                'taskCategory',
             ]);
 
             // Try to load creator/updater relationships safely
@@ -351,22 +352,22 @@ class StaffTasksController extends Controller
                 $task->load(['creator', 'updater']);
             } catch (\Exception $e) {
                 // Ignore if these relationships don't exist
-                \Log::info('Creator/Updater relationships not available: ' . $e->getMessage());
+                \Log::info('Creator/Updater relationships not available: '.$e->getMessage());
             }
 
             $html = view('admin.staff.tasks-modal-content', compact('task'))->render();
 
             return response()->json([
                 'success' => true,
-                'html' => $html
+                'html' => $html,
             ]);
         } catch (\Exception $e) {
-            \Log::error('Failed to load task modal: ' . $e->getMessage());
-            \Log::error('Stack trace: ' . $e->getTraceAsString());
-            
+            \Log::error('Failed to load task modal: '.$e->getMessage());
+            \Log::error('Stack trace: '.$e->getTraceAsString());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to load task details: ' . $e->getMessage()
+                'message' => 'Failed to load task details: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -405,7 +406,7 @@ class StaffTasksController extends Controller
             $validated['is_active'] = $validated['is_active'] ?? true;
 
             // Convert tags string to array
-            if (!empty($validated['tags'])) {
+            if (! empty($validated['tags'])) {
                 $validated['tags'] = array_map('trim', explode(',', $validated['tags']));
             } else {
                 $validated['tags'] = [];
@@ -421,36 +422,36 @@ class StaffTasksController extends Controller
             ]);
 
             // Update staff assignments if auto_assign is enabled
-            if ($validated['auto_assign'] && !empty($assignedStaff)) {
+            if ($validated['auto_assign'] && ! empty($assignedStaff)) {
                 // Get existing assignments directly from database
                 $existingAssignments = \DB::table('staff_task_assignments')
                     ->where('staff_task_id', $task->id)
                     ->pluck('staff_id')
-                    ->map(fn($id) => (string) $id)
+                    ->map(fn ($id) => (string) $id)
                     ->toArray();
-                
+
                 // Convert assigned staff to strings for comparison
                 $assignedStaffStrings = array_map('strval', $assignedStaff);
-                
+
                 // Find staff to add (in new list but not in existing)
                 $staffToAdd = array_values(array_diff($assignedStaffStrings, $existingAssignments));
-                
+
                 // Find staff to remove (in existing but not in new list)
                 $staffToRemove = array_values(array_diff($existingAssignments, $assignedStaffStrings));
-                
+
                 // Remove unassigned staff
-                if (!empty($staffToRemove)) {
+                if (! empty($staffToRemove)) {
                     \DB::table('staff_task_assignments')
                         ->where('staff_task_id', $task->id)
                         ->whereIn('staff_id', $staffToRemove)
                         ->delete();
                 }
-                
+
                 // Add new staff assignments
-                if (!empty($staffToAdd)) {
+                if (! empty($staffToAdd)) {
                     $this->createTaskAssignments($task, $staffToAdd, $validated);
                 }
-            } elseif (!$validated['auto_assign']) {
+            } elseif (! $validated['auto_assign']) {
                 // If auto_assign is disabled, remove all assignments
                 $task->assignments()->delete();
             }
@@ -462,7 +463,7 @@ class StaffTasksController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', __('staff.tasks.task_update_failed') . ': ' . $e->getMessage());
+                ->with('error', __('staff.tasks.task_update_failed').': '.$e->getMessage());
         }
     }
 
@@ -479,7 +480,7 @@ class StaffTasksController extends Controller
 
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', __('staff.tasks.task_deletion_failed') . ': ' . $e->getMessage());
+                ->with('error', __('staff.tasks.task_deletion_failed').': '.$e->getMessage());
         }
     }
 
@@ -504,13 +505,13 @@ class StaffTasksController extends Controller
                     // Delete the task assignments and their tasks if no other assignments exist
                     $assignments = \App\Models\StaffTaskAssignment::whereIn('id', $assignmentIds)->get();
                     $tasksToCheck = [];
-                    
+
                     foreach ($assignments as $assignment) {
                         $tasksToCheck[] = $assignment->task_id;
                         $assignment->delete();
                         $count++;
                     }
-                    
+
                     // Clean up orphaned tasks (tasks with no assignments)
                     $uniqueTaskIds = array_unique($tasksToCheck);
                     foreach ($uniqueTaskIds as $taskId) {
@@ -519,7 +520,7 @@ class StaffTasksController extends Controller
                             $task->delete();
                         }
                     }
-                    
+
                     // Also clean up any other orphaned tasks
                     $this->cleanupOrphanedTasks();
                     break;
@@ -558,7 +559,7 @@ class StaffTasksController extends Controller
                     break;
             }
 
-            $message = match($action) {
+            $message = match ($action) {
                 'delete' => "Successfully deleted {$count} task assignment(s).",
                 'complete' => "Successfully marked {$count} task(s) as completed.",
                 'pending' => "Successfully marked {$count} task(s) as pending.",
@@ -570,7 +571,7 @@ class StaffTasksController extends Controller
 
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', __('staff.tasks.bulk_action_failed') . ': ' . $e->getMessage());
+                ->with('error', __('staff.tasks.bulk_action_failed').': '.$e->getMessage());
         }
     }
 
@@ -589,7 +590,7 @@ class StaffTasksController extends Controller
             ]);
 
             $assignments = [];
-            
+
             foreach ($validated['staff_ids'] as $staffId) {
                 $assignment = StaffTaskAssignment::create([
                     'staff_task_id' => $task->id,
@@ -633,12 +634,12 @@ class StaffTasksController extends Controller
             ]);
 
             $oldStatus = $assignment->status;
-            
+
             $assignment->update([
                 'status' => $validated['status'],
                 'progress_percentage' => $validated['progress_percentage'] ?? $assignment->progress_percentage,
                 'notes' => $validated['notes'] ?? $assignment->notes,
-                'started_at' => $validated['status'] === 'in_progress' && !$assignment->started_at ? now() : $assignment->started_at,
+                'started_at' => $validated['status'] === 'in_progress' && ! $assignment->started_at ? now() : $assignment->started_at,
                 'completed_at' => $validated['status'] === 'completed' ? now() : null,
                 'completed_by' => $validated['status'] === 'completed' ? auth()->id() : null,
                 'updated_by' => auth()->id(),
@@ -666,19 +667,19 @@ class StaffTasksController extends Controller
     {
         $staffMembers = Staff::active()->with('staffType')->get();
         $staffTypes = StaffType::active()->get();
-        
+
         // Get task settings data from database
         $taskTypes = \App\Models\TaskType::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
         $taskPriorities = \App\Models\TaskPriority::where('is_active', true)->orderBy('sort_order')->orderBy('level')->get();
         $taskCategories = \App\Models\TaskCategory::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
         $taskTags = \App\Models\TaskTag::where('is_active', true)->orderBy('name')->get();
-        
+
         return view('admin.staff.tasks-create', compact(
-            'staffMembers', 
-            'staffTypes', 
-            'taskTypes', 
-            'taskPriorities', 
-            'taskCategories', 
+            'staffMembers',
+            'staffTypes',
+            'taskTypes',
+            'taskPriorities',
+            'taskCategories',
             'taskTags'
         ));
     }
@@ -690,23 +691,23 @@ class StaffTasksController extends Controller
     {
         // Load task relationships
         $task->load(['assignments.staff']);
-        
+
         $staffMembers = Staff::active()->with('staffType')->get();
         $staffTypes = StaffType::active()->get();
-        
+
         // Get task settings data from database
         $taskTypes = \App\Models\TaskType::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
         $taskPriorities = \App\Models\TaskPriority::where('is_active', true)->orderBy('sort_order')->orderBy('level')->get();
         $taskCategories = \App\Models\TaskCategory::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
         $taskTags = \App\Models\TaskTag::where('is_active', true)->orderBy('name')->get();
-        
+
         return view('admin.staff.tasks-edit', compact(
-            'task', 
-            'staffMembers', 
-            'staffTypes', 
-            'taskTypes', 
-            'taskPriorities', 
-            'taskCategories', 
+            'task',
+            'staffMembers',
+            'staffTypes',
+            'taskTypes',
+            'taskPriorities',
+            'taskCategories',
             'taskTags'
         ));
     }
@@ -718,11 +719,11 @@ class StaffTasksController extends Controller
     {
         $baseDate = $taskData['scheduled_date'] ?? now()->toDateString();
         $baseTime = $taskData['scheduled_time'] ?? null;
-        
+
         // Combine date and time if both are provided
         $scheduledDateTime = null;
         if ($baseDate && $baseTime) {
-            $scheduledDateTime = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $baseDate . ' ' . $baseTime);
+            $scheduledDateTime = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $baseDate.' '.$baseTime);
         }
 
         foreach ($staffIds as $staffId) {
@@ -750,12 +751,11 @@ class StaffTasksController extends Controller
         // Clean up tasks without assignments
         $orphanedTasksCount = StaffTask::whereDoesntHave('assignments')->count();
         StaffTask::whereDoesntHave('assignments')->delete();
-        
+
         // Clean up assignments without tasks
         $orphanedAssignmentsCount = \App\Models\StaffTaskAssignment::whereDoesntHave('task')->count();
         \App\Models\StaffTaskAssignment::whereDoesntHave('task')->delete();
-        
+
         return $orphanedTasksCount + $orphanedAssignmentsCount;
     }
-
 }

@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use App\Models\Supplier;
 use App\Models\InventoryItem;
 use App\Models\StockMovement;
+use App\Models\Supplier;
+use Illuminate\Database\Seeder;
 
 class InventorySeeder extends Seeder
 {
@@ -247,7 +246,7 @@ class InventorySeeder extends Seeder
 
         foreach ($inventoryItems as $itemData) {
             $item = InventoryItem::create($itemData);
-            
+
             // Create some sample stock movements for each item
             $movements = [
                 [
@@ -255,7 +254,7 @@ class InventorySeeder extends Seeder
                     'type' => 'received',
                     'quantity' => $item->current_stock + $item->reserved_stock + 10,
                     'unit_cost' => $item->cost_per_unit,
-                    'reference_number' => 'PO-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT),
+                    'reference_number' => 'PO-'.str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT),
                     'reason' => 'Initial stock receipt',
                     'notes' => 'Stock received from supplier',
                     'movement_date' => now()->subDays(rand(1, 30)),

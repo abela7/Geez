@@ -705,6 +705,156 @@
   /* Form Actions - Light Theme */
   --form-actions-bg: var(--color-bg-tertiary);
   --form-actions-border: var(--color-border);
+
+  /* ======================================================================
+     DEPARTMENT & SHIFT TYPE MANAGEMENT THEME VARIABLES - LIGHT THEME
+     ====================================================================== */
+  
+  /* Department & Shift Type Management Pages */
+  --management-page-bg: var(--color-bg-primary);
+  --management-page-padding: var(--page-padding);
+  
+  /* Page Headers */
+  --management-header-bg: transparent;
+  --management-header-title-color: var(--color-text-primary);
+  --management-header-description-color: var(--color-text-secondary);
+  --management-breadcrumb-link-color: var(--color-text-muted);
+  --management-breadcrumb-link-hover-color: var(--color-primary);
+  --management-breadcrumb-separator-color: var(--color-text-muted);
+  --management-breadcrumb-current-color: var(--color-text-primary);
+  
+  /* Action Buttons */
+  --management-action-btn-bg: var(--color-primary);
+  --management-action-btn-hover-bg: var(--color-secondary);
+  --management-action-btn-text: #FFFFFF;
+  --management-action-btn-shadow: var(--button-primary-shadow);
+  --management-action-btn-hover-shadow: var(--button-primary-hover-shadow);
+  
+  /* Content Cards */
+  --management-card-bg: var(--color-surface-card);
+  --management-card-border: var(--color-border);
+  --management-card-shadow: var(--color-surface-card-shadow);
+  --management-card-padding: var(--spacing-xl);
+  
+  /* Tables */
+  --management-table-container-bg: var(--color-surface-card);
+  --management-table-container-border: var(--color-border);
+  --management-table-container-shadow: var(--color-surface-card-shadow);
+  --management-table-header-bg: var(--color-bg-tertiary);
+  --management-table-header-text: var(--color-text-primary);
+  --management-table-header-border: var(--color-border);
+  --management-table-row-bg: transparent;
+  --management-table-row-hover-bg: var(--surface-card-hover);
+  --management-table-row-border: var(--color-border);
+  --management-table-cell-text: var(--color-text-primary);
+  --management-table-cell-text-secondary: var(--color-text-secondary);
+  
+  /* Color Indicators */
+  --management-color-indicator-size: 12px;
+  --management-color-indicator-border: var(--color-border);
+  --management-color-indicator-border-radius: 50%;
+  
+  /* Color Swatches */
+  --management-color-swatch-padding: 4px 8px;
+  --management-color-swatch-border-radius: var(--border-radius);
+  --management-color-swatch-font-family: var(--font-mono);
+  --management-color-swatch-font-size: var(--font-size-xs);
+  --management-color-swatch-text-color: #FFFFFF;
+  --management-color-swatch-text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  
+  /* Status Badges */
+  --management-status-active-bg: var(--color-success-bg);
+  --management-status-active-text: var(--color-success);
+  --management-status-inactive-bg: var(--color-text-muted);
+  --management-status-inactive-text: var(--color-text-secondary);
+  
+  /* Actions Menu */
+  --management-actions-trigger-bg: transparent;
+  --management-actions-trigger-hover-bg: var(--color-surface-card-hover);
+  --management-actions-trigger-text: var(--color-text-muted);
+  --management-actions-trigger-hover-text: var(--color-text-primary);
+  --management-actions-menu-bg: var(--color-surface-card);
+  --management-actions-menu-border: var(--color-border);
+  --management-actions-menu-shadow: var(--shadow-lg);
+  --management-actions-menu-padding: var(--spacing-sm);
+  --management-actions-menu-min-width: 180px;
+  --management-action-item-padding: var(--spacing-md) var(--spacing-lg);
+  --management-action-item-text: var(--color-text-secondary);
+  --management-action-item-hover-bg: var(--dropdown-item-hover);
+  --management-action-item-hover-text: var(--dropdown-item-hover-text);
+  --management-action-item-danger-text: var(--color-error);
+  --management-action-item-danger-hover-bg: rgba(var(--color-error-rgb), 0.1);
+  --management-action-item-danger-hover-text: var(--color-error);
+  --management-action-separator-bg: var(--divider-subtle);
+  
+  /* Empty States */
+  --management-empty-state-bg: var(--color-surface-card);
+  --management-empty-state-icon-color: var(--color-text-muted);
+  --management-empty-state-title-color: var(--color-text-secondary);
+  --management-empty-state-description-color: var(--color-text-muted);
+  
+  /* Forms */
+  --management-form-section-bg: var(--color-surface-card);
+  --management-form-section-border: var(--color-border);
+  --management-form-section-padding: var(--spacing-xl);
+  --management-form-section-header-bg: transparent;
+  --management-form-section-title-color: var(--color-text-primary);
+  --management-form-section-description-color: var(--color-text-secondary);
+  
+  /* Form Elements */
+  --management-form-label-color: var(--color-text-primary);
+  --management-form-label-required-color: var(--color-error);
+  --management-form-input-bg: var(--color-surface-card);
+  --management-form-input-border: var(--color-border);
+  --management-form-input-border-focus: var(--color-primary);
+  --management-form-input-border-error: var(--color-error);
+  --management-form-input-text: var(--color-text-primary);
+  --management-form-input-placeholder: var(--color-text-muted);
+  --management-form-input-shadow-focus: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+  --management-form-input-shadow-error: 0 0 0 3px rgba(var(--color-error-rgb), 0.1);
+  
+  /* Color Input */
+  --management-color-input-container-gap: var(--spacing-sm);
+  --management-color-input-size: 60px;
+  --management-color-input-height: 40px;
+  --management-color-input-border: var(--color-border);
+  --management-color-input-border-radius: var(--border-radius);
+  --management-color-text-input-font-family: var(--font-mono);
+  --management-color-text-input-text-transform: uppercase;
+  
+  /* Checkboxes */
+  --management-checkbox-group-gap: var(--spacing-xs);
+  --management-checkbox-gap: var(--spacing-sm);
+  --management-checkbox-indicator-size: 20px;
+  --management-checkbox-indicator-border: 2px solid var(--color-border);
+  --management-checkbox-indicator-border-radius: var(--border-radius);
+  --management-checkbox-indicator-checked-bg: var(--color-primary);
+  --management-checkbox-indicator-checked-border-color: var(--color-primary);
+  --management-checkbox-indicator-checked-text-color: #FFFFFF;
+  --management-checkbox-label-color: var(--color-text-primary);
+  
+  /* Form Actions */
+  --management-form-actions-bg: var(--color-bg-tertiary);
+  --management-form-actions-border: var(--color-border);
+  --management-form-actions-padding: var(--spacing-xl);
+  
+  /* Detail Views */
+  --management-detail-grid-gap: var(--spacing-lg);
+  --management-detail-grid-cols: 2;
+  --management-detail-item-full-cols: 1 / -1;
+  --management-detail-label-color: var(--color-text-secondary);
+  --management-detail-label-font-size: var(--font-size-sm);
+  --management-detail-label-font-weight: var(--font-weight-semibold);
+  --management-detail-label-text-transform: uppercase;
+  --management-detail-label-letter-spacing: 0.025em;
+  --management-detail-value-color: var(--color-text-primary);
+  --management-detail-code-bg: var(--color-surface-secondary);
+  --management-detail-code-padding: var(--spacing-xs) var(--spacing-sm);
+  --management-detail-code-border-radius: var(--border-radius);
+  --management-detail-code-font-family: var(--font-mono);
+  --management-detail-code-font-size: var(--font-size-sm);
+  --management-detail-code-color: var(--color-text-primary);
+  --management-detail-code-border: 1px solid var(--color-border);
 }
 
 [data-theme="dark"],
@@ -1448,6 +1598,156 @@
   /* Form Actions - Dark Theme */
   --form-actions-bg: var(--color-bg-tertiary);
   --form-actions-border: var(--color-border);
+
+  /* ======================================================================
+     DEPARTMENT & SHIFT TYPE MANAGEMENT THEME VARIABLES - DARK THEME
+     ====================================================================== */
+  
+  /* Department & Shift Type Management Pages - Dark Theme */
+  --management-page-bg: var(--color-bg-primary);
+  --management-page-padding: var(--page-padding);
+  
+  /* Page Headers - Dark Theme */
+  --management-header-bg: transparent;
+  --management-header-title-color: var(--color-text-primary);
+  --management-header-description-color: var(--color-text-secondary);
+  --management-breadcrumb-link-color: var(--color-text-muted);
+  --management-breadcrumb-link-hover-color: var(--color-primary);
+  --management-breadcrumb-separator-color: var(--color-text-muted);
+  --management-breadcrumb-current-color: var(--color-text-primary);
+  
+  /* Action Buttons - Dark Theme */
+  --management-action-btn-bg: var(--color-primary);
+  --management-action-btn-hover-bg: var(--color-secondary);
+  --management-action-btn-text: var(--color-bg-primary);
+  --management-action-btn-shadow: var(--button-primary-shadow);
+  --management-action-btn-hover-shadow: var(--button-primary-hover-shadow);
+  
+  /* Content Cards - Dark Theme */
+  --management-card-bg: var(--color-surface-card);
+  --management-card-border: var(--color-border);
+  --management-card-shadow: var(--color-surface-card-shadow);
+  --management-card-padding: var(--spacing-xl);
+  
+  /* Tables - Dark Theme */
+  --management-table-container-bg: var(--color-surface-card);
+  --management-table-container-border: var(--color-border);
+  --management-table-container-shadow: var(--color-surface-card-shadow);
+  --management-table-header-bg: var(--color-bg-tertiary);
+  --management-table-header-text: var(--color-text-primary);
+  --management-table-header-border: var(--color-border);
+  --management-table-row-bg: transparent;
+  --management-table-row-hover-bg: var(--color-surface-card-hover);
+  --management-table-row-border: var(--color-border);
+  --management-table-cell-text: var(--color-text-primary);
+  --management-table-cell-text-secondary: var(--color-text-secondary);
+  
+  /* Color Indicators - Dark Theme */
+  --management-color-indicator-size: 12px;
+  --management-color-indicator-border: var(--color-border);
+  --management-color-indicator-border-radius: 50%;
+  
+  /* Color Swatches - Dark Theme */
+  --management-color-swatch-padding: 4px 8px;
+  --management-color-swatch-border-radius: var(--border-radius);
+  --management-color-swatch-font-family: var(--font-mono);
+  --management-color-swatch-font-size: var(--font-size-xs);
+  --management-color-swatch-text-color: #FFFFFF;
+  --management-color-swatch-text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  
+  /* Status Badges - Dark Theme */
+  --management-status-active-bg: var(--color-success-bg);
+  --management-status-active-text: var(--color-success);
+  --management-status-inactive-bg: var(--color-text-muted);
+  --management-status-inactive-text: var(--color-text-secondary);
+  
+  /* Actions Menu - Dark Theme */
+  --management-actions-trigger-bg: transparent;
+  --management-actions-trigger-hover-bg: var(--color-surface-card-hover);
+  --management-actions-trigger-text: var(--color-text-muted);
+  --management-actions-trigger-hover-text: var(--color-text-primary);
+  --management-actions-menu-bg: var(--color-surface-card);
+  --management-actions-menu-border: var(--color-border);
+  --management-actions-menu-shadow: var(--shadow-lg);
+  --management-actions-menu-padding: var(--spacing-sm);
+  --management-actions-menu-min-width: 180px;
+  --management-action-item-padding: var(--spacing-md) var(--spacing-lg);
+  --management-action-item-text: var(--color-text-secondary);
+  --management-action-item-hover-bg: var(--dropdown-item-hover);
+  --management-action-item-hover-text: var(--dropdown-item-hover-text);
+  --management-action-item-danger-text: var(--color-error);
+  --management-action-item-danger-hover-bg: rgba(var(--color-error-rgb), 0.15);
+  --management-action-item-danger-hover-text: var(--color-error);
+  --management-action-separator-bg: var(--divider-subtle);
+  
+  /* Empty States - Dark Theme */
+  --management-empty-state-bg: var(--color-surface-card);
+  --management-empty-state-icon-color: var(--color-text-muted);
+  --management-empty-state-title-color: var(--color-text-secondary);
+  --management-empty-state-description-color: var(--color-text-muted);
+  
+  /* Forms - Dark Theme */
+  --management-form-section-bg: var(--color-surface-card);
+  --management-form-section-border: var(--color-border);
+  --management-form-section-padding: var(--spacing-xl);
+  --management-form-section-header-bg: transparent;
+  --management-form-section-title-color: var(--color-text-primary);
+  --management-form-section-description-color: var(--color-text-secondary);
+  
+  /* Form Elements - Dark Theme */
+  --management-form-label-color: var(--color-text-primary);
+  --management-form-label-required-color: var(--color-error);
+  --management-form-input-bg: var(--color-surface-card);
+  --management-form-input-border: var(--color-border);
+  --management-form-input-border-focus: var(--color-primary);
+  --management-form-input-border-error: var(--color-error);
+  --management-form-input-text: var(--color-text-primary);
+  --management-form-input-placeholder: var(--color-text-muted);
+  --management-form-input-shadow-focus: 0 0 0 3px rgba(var(--color-primary-rgb), 0.2);
+  --management-form-input-shadow-error: 0 0 0 3px rgba(var(--color-error-rgb), 0.2);
+  
+  /* Color Input - Dark Theme */
+  --management-color-input-container-gap: var(--spacing-sm);
+  --management-color-input-size: 60px;
+  --management-color-input-height: 40px;
+  --management-color-input-border: var(--color-border);
+  --management-color-input-border-radius: var(--border-radius);
+  --management-color-text-input-font-family: var(--font-mono);
+  --management-color-text-input-text-transform: uppercase;
+  
+  /* Checkboxes - Dark Theme */
+  --management-checkbox-group-gap: var(--spacing-xs);
+  --management-checkbox-gap: var(--spacing-sm);
+  --management-checkbox-indicator-size: 20px;
+  --management-checkbox-indicator-border: 2px solid var(--color-border);
+  --management-checkbox-indicator-border-radius: var(--border-radius);
+  --management-checkbox-indicator-checked-bg: var(--color-primary);
+  --management-checkbox-indicator-checked-border-color: var(--color-primary);
+  --management-checkbox-indicator-checked-text-color: var(--color-bg-primary);
+  --management-checkbox-label-color: var(--color-text-primary);
+  
+  /* Form Actions - Dark Theme */
+  --management-form-actions-bg: var(--color-bg-tertiary);
+  --management-form-actions-border: var(--color-border);
+  --management-form-actions-padding: var(--spacing-xl);
+  
+  /* Detail Views - Dark Theme */
+  --management-detail-grid-gap: var(--spacing-lg);
+  --management-detail-grid-cols: 2;
+  --management-detail-item-full-cols: 1 / -1;
+  --management-detail-label-color: var(--color-text-secondary);
+  --management-detail-label-font-size: var(--font-size-sm);
+  --management-detail-label-font-weight: var(--font-weight-semibold);
+  --management-detail-label-text-transform: uppercase;
+  --management-detail-label-letter-spacing: 0.025em;
+  --management-detail-value-color: var(--color-text-primary);
+  --management-detail-code-bg: var(--color-bg-tertiary);
+  --management-detail-code-padding: var(--spacing-xs) var(--spacing-sm);
+  --management-detail-code-border-radius: var(--border-radius);
+  --management-detail-code-font-family: var(--font-mono);
+  --management-detail-code-font-size: var(--font-size-sm);
+  --management-detail-code-color: var(--color-text-primary);
+  --management-detail-code-border: 1px solid var(--color-border);
 }
 
 /* ======================================================================

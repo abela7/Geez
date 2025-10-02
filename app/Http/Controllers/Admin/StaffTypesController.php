@@ -6,11 +6,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\StaffType;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class StaffTypesController extends Controller
 {
@@ -67,8 +67,8 @@ class StaffTypesController extends Controller
     {
         $staffType->load(['staff' => function ($query) {
             $query->select('id', 'first_name', 'last_name', 'username', 'status', 'staff_type_id', 'hire_date')
-                  ->orderBy('first_name')
-                  ->orderBy('last_name');
+                ->orderBy('first_name')
+                ->orderBy('last_name');
         }]);
 
         return view('admin.staff.types.show', compact('staffType'));
@@ -144,7 +144,7 @@ class StaffTypesController extends Controller
     public function restore(string $id): RedirectResponse
     {
         $staffType = StaffType::onlyTrashed()->findOrFail($id);
-        
+
         // Set audit field
         $staffType->updated_by = Auth::id();
         $staffType->save();
@@ -161,7 +161,7 @@ class StaffTypesController extends Controller
     public function forceDelete(string $id): RedirectResponse
     {
         $staffType = StaffType::onlyTrashed()->findOrFail($id);
-        
+
         // Check if staff type has any staff members (even inactive)
         if ($staffType->staff()->exists()) {
             return redirect()
@@ -183,12 +183,12 @@ class StaffTypesController extends Controller
     public function toggleActive(StaffType $staffType): RedirectResponse
     {
         $staffType->update([
-            'is_active' => !$staffType->is_active,
+            'is_active' => ! $staffType->is_active,
             'updated_by' => Auth::id(),
         ]);
 
         $status = $staffType->is_active ? 'activated' : 'deactivated';
-        
+
         return redirect()
             ->route('admin.staff.types.show', $staffType)
             ->with('success', __("staff.types.{$status}_successfully", ['name' => $staffType->display_name]));

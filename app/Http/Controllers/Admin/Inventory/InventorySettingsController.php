@@ -6,13 +6,13 @@ namespace App\Http\Controllers\Admin\Inventory;
 
 use App\Http\Controllers\Controller;
 use App\Models\IngredientCategory;
-use App\Models\IngredientUnit;
 use App\Models\IngredientType;
-use Illuminate\Http\Request;
+use App\Models\IngredientUnit;
 use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class InventorySettingsController extends Controller
 {
@@ -51,14 +51,14 @@ class InventorySettingsController extends Controller
         return response()->json([
             'success' => true,
             'message' => __('inventory.settings.category_created'),
-            'category' => $category
+            'category' => $category,
         ]);
     }
 
     public function updateCategory(Request $request, IngredientCategory $category): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:ingredient_categories,name,' . $category->id,
+            'name' => 'required|string|max:255|unique:ingredient_categories,name,'.$category->id,
             'description' => 'nullable|string',
             'color_code' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
             'icon' => 'nullable|string|max:255',
@@ -81,7 +81,7 @@ class InventorySettingsController extends Controller
         return response()->json([
             'success' => true,
             'message' => __('inventory.settings.category_updated'),
-            'category' => $category
+            'category' => $category,
         ]);
     }
 
@@ -91,7 +91,7 @@ class InventorySettingsController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => __('inventory.settings.category_deleted')
+            'message' => __('inventory.settings.category_deleted'),
         ]);
     }
 
@@ -124,7 +124,7 @@ class InventorySettingsController extends Controller
         return response()->json([
             'success' => true,
             'message' => __('inventory.settings.unit_created'),
-            'unit' => $unit
+            'unit' => $unit,
         ]);
     }
 
@@ -132,7 +132,7 @@ class InventorySettingsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'symbol' => 'required|string|max:10|unique:ingredient_units,symbol,' . $unit->id,
+            'symbol' => 'required|string|max:10|unique:ingredient_units,symbol,'.$unit->id,
             'type' => 'required|string|in:weight,volume,count,custom',
             'description' => 'nullable|string',
             'base_conversion_factor' => 'nullable|numeric|min:0',
@@ -145,14 +145,14 @@ class InventorySettingsController extends Controller
         }
 
         $unit->update($request->only([
-            'name', 'symbol', 'type', 'description', 
-            'base_conversion_factor', 'base_unit'
+            'name', 'symbol', 'type', 'description',
+            'base_conversion_factor', 'base_unit',
         ]) + ['is_active' => $request->boolean('is_active', true)]);
 
         return response()->json([
             'success' => true,
             'message' => __('inventory.settings.unit_updated'),
-            'unit' => $unit
+            'unit' => $unit,
         ]);
     }
 
@@ -162,7 +162,7 @@ class InventorySettingsController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => __('inventory.settings.unit_deleted')
+            'message' => __('inventory.settings.unit_deleted'),
         ]);
     }
 
@@ -197,14 +197,14 @@ class InventorySettingsController extends Controller
         return response()->json([
             'success' => true,
             'message' => __('inventory.settings.type_created'),
-            'type' => $type
+            'type' => $type,
         ]);
     }
 
     public function updateType(Request $request, IngredientType $type): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:ingredient_types,name,' . $type->id,
+            'name' => 'required|string|max:255|unique:ingredient_types,name,'.$type->id,
             'description' => 'nullable|string',
             'measurement_type' => 'required|string|in:weight,volume,count',
             'compatible_units' => 'nullable|array',
@@ -232,7 +232,7 @@ class InventorySettingsController extends Controller
         return response()->json([
             'success' => true,
             'message' => __('inventory.settings.type_updated'),
-            'type' => $type
+            'type' => $type,
         ]);
     }
 
@@ -242,7 +242,7 @@ class InventorySettingsController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => __('inventory.settings.type_deleted')
+            'message' => __('inventory.settings.type_deleted'),
         ]);
     }
 }

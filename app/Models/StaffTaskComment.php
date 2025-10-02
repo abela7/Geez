@@ -80,7 +80,7 @@ class StaffTaskComment extends Model
      */
     public function isVisibleToAssignee(): bool
     {
-        return !$this->is_internal;
+        return ! $this->is_internal;
     }
 
     /**
@@ -229,12 +229,12 @@ class StaffTaskComment extends Model
     public function getFormattedComment(): string
     {
         $comment = $this->comment;
-        
+
         // Add timestamp for system updates
         if ($this->isSystemUpdate()) {
-            $comment .= " at " . $this->created_at->format('M j, Y H:i');
+            $comment .= ' at '.$this->created_at->format('M j, Y H:i');
         }
-        
+
         return $comment;
     }
 }

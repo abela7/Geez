@@ -220,7 +220,7 @@
 </div>
 
 @push('styles')
-@vite(['resources/css/admin/shifts/manage.css'])
+@vite(['resources/css/admin/shifts/edit.css'])
 @endpush
 
 @push('scripts')
