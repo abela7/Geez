@@ -3,11 +3,13 @@
     padding: 2rem;
     max-width: 1600px;
     margin: 0 auto;
+    /* Remove conflicting z-index */
 }
 
-/* Page Header */
+/* Page Header - Rebuilt with proper hierarchy */
 .page-header {
     margin-bottom: 2rem;
+    /* Remove background and styling that causes z-index conflicts */
 }
 
 .page-header-content {
@@ -15,6 +17,11 @@
     justify-content: space-between;
     align-items: flex-start;
     gap: 2rem;
+    padding: var(--spacing-lg);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-surface-card-border);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--color-surface-card-shadow);
 }
 
 .page-header-left {
