@@ -244,7 +244,7 @@
                     <a href="{{ route('admin.shifts.manage.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.manage.*') ? 'active' : '' }}">
                         {{ __('shifts.manage.title') }}
                     </a>
-                    <a href="{{ route('admin.shifts.shifts.assignments.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.shifts.assignments.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.shifts.assignments.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.assignments.*') ? 'active' : '' }}">
                         {{ __('shifts.assignments.title') }}
                     </a>
                     <a href="{{ route('admin.shifts.shifts.templates.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.shifts.templates.*') ? 'active' : '' }}">

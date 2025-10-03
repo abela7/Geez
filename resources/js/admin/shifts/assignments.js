@@ -1,541 +1,502 @@
-// Shift Assignments JavaScript
+/**
+ * Shift Assignments (Rota) JavaScript
+ * Handles drag & drop functionality, assignment management, and UI interactions
+ */
 
-// Main Shifts Assignments Data
+// Alpine.js component for shift assignments
 function shiftsAssignmentsData() {
     return {
-        // Filters
-        filterDepartment: 'all',
-        filterStatus: 'all',
+        // UI State
+        showAssignStaffModal: false,
+        showBulkActions: false,
+        isLoading: false,
+        
+        // Filter State
+        selectedDepartment: '',
+        viewMode: 'all',
         staffSearchQuery: '',
-        staffFilterDepartment: 'all',
         
-        // Modal states
-        showAssignmentModal: false,
-        showAutoAssign: false,
-        showBulkAssign: false,
+        // Statistics
+        totalShifts: 0,
+        assignedShifts: 0,
+        unassignedShifts: 0,
         
-        // Selection states
-        selectedShift: null,
-        selectedStaffForAssignment: null,
-        
-        // Data
-        availableStaff: [],
-        
-        // Methods
+        // Assignment Data
+        modalShiftId: null,
+        modalDate: null,
+        modalShiftName: '',
+
+        // Initialize component
         init() {
-            this.applyFilters();
-            this.filterStaff();
-        },
-        
-        applyFilters() {
-            const cards = document.querySelectorAll('.shift-assignment-card');
-            let visibleCount = 0;
+            // Ensure modal starts closed
+            this.showAssignStaffModal = false;
+            this.showBulkActions = false;
             
-            cards.forEach(card => {
-                const department = card.dataset.department;
-                const status = card.dataset.status;
-                
-                let visible = true;
-                
-                // Department filter
-                if (this.filterDepartment !== 'all' && department !== this.filterDepartment) {
-                    visible = false;
+            this.calculateStats();
+            this.setupNotifications();
+            
+            // Auto-hide bulk actions after 10 seconds
+            this.$watch('showBulkActions', (value) => {
+                if (value) {
+                    setTimeout(() => {
+                        this.showBulkActions = false;
+                    }, 10000);
                 }
-                
-                // Status filter
-                if (this.filterStatus !== 'all' && status !== this.filterStatus) {
-                    visible = false;
-                }
-                
-                card.style.display = visible ? 'block' : 'none';
-                if (visible) visibleCount++;
             });
             
-            this.showFilterNotification(visibleCount, cards.length);
+            console.log('Shift Assignments initialized');
         },
-        
-        filterStaff() {
-            const cards = document.querySelectorAll('.staff-card');
-            let visibleCount = 0;
+
+        // Calculate assignment statistics
+        calculateStats() {
+            const allShiftElements = document.querySelectorAll('.shift-row');
+            const assignedElements = document.querySelectorAll('.assigned-staff');
             
-            cards.forEach(card => {
-                const department = card.dataset.department;
-                const name = card.dataset.name;
-                
-                let visible = true;
-                
-                // Department filter
-                if (this.staffFilterDepartment !== 'all' && department !== this.staffFilterDepartment) {
-                    visible = false;
+            this.totalShifts = allShiftElements.length * 7; // 7 days per week
+            this.assignedShifts = assignedElements.length;
+            this.unassignedShifts = this.totalShifts - this.assignedShifts;
+        },
+
+        // Setup drag and drop event listeners
+        setupDragAndDrop() {
+            // Add drag over effects to drop zones
+            document.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const dropZone = e.target.closest('.assignment-drop-zone');
+                if (dropZone) {
+                    dropZone.classList.add('drag-over');
                 }
-                
-                // Search filter
-                if (this.staffSearchQuery) {
-                    const query = this.staffSearchQuery.toLowerCase();
-                    if (!name.includes(query)) {
-                        visible = false;
+            });
+
+            document.addEventListener('dragleave', (e) => {
+                const dropZone = e.target.closest('.assignment-drop-zone');
+                if (dropZone && !dropZone.contains(e.relatedTarget)) {
+                    dropZone.classList.remove('drag-over');
+                }
+            });
+
+            document.addEventListener('drop', (e) => {
+                const dropZone = e.target.closest('.assignment-drop-zone');
+                if (dropZone) {
+                    dropZone.classList.remove('drag-over');
+                }
+            });
+        },
+
+        // Setup notification system
+        setupNotifications() {
+            // Add notification styles if not already present
+            if (!document.querySelector('#assignment-notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'assignment-notification-styles';
+                style.textContent = `
+                    .notification {
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        z-index: 9999;
+                        max-width: 400px;
+                        padding: 1rem;
+                        border-radius: 0.5rem;
+                        box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+                        animation: slideIn 0.3s ease-out;
+                        font-weight: 500;
+                        color: white;
                     }
-                }
-                
-                card.style.display = visible ? 'flex' : 'none';
-                if (visible) visibleCount++;
-            });
-        },
-        
-        showAssignModal(shift) {
-            this.selectedShift = shift;
-            this.selectedStaffForAssignment = null;
-            this.showAssignmentModal = true;
-            this.loadAvailableStaff(shift);
-        },
-        
-        async loadAvailableStaff(shift) {
-            try {
-                // In a real app, this would be an API call
-                const response = await fetch('/admin/shifts/assignments/availability', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        date: shift.date,
-                        start_time: shift.start_time,
-                        end_time: shift.end_time,
-                        department: shift.department
-                    })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    this.availableStaff = data.available_staff;
-                }
-            } catch (error) {
-                console.error('Error loading available staff:', error);
-                this.showNotification('Error loading available staff', 'error');
+                    
+                    .notification-success { background: var(--color-success); }
+                    .notification-error { background: var(--color-error); }
+                    .notification-info { background: var(--color-info); }
+                    .notification-warning { background: var(--color-warning); }
+                    
+                    .notification-content {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        gap: 1rem;
+                    }
+                    
+                    .notification-close {
+                        background: none;
+                        border: none;
+                        font-size: 1.5rem;
+                        cursor: pointer;
+                        opacity: 0.7;
+                        transition: opacity 0.2s;
+                        color: white;
+                    }
+                    
+                    .notification-close:hover { opacity: 1; }
+                    
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
             }
         },
-        
-        selectStaffForAssignment(staff) {
-            // Remove previous selection
-            document.querySelectorAll('.staff-option').forEach(option => {
-                option.classList.remove('selected');
-            });
-            
-            // Add selection to clicked option
-            event.currentTarget.classList.add('selected');
-            this.selectedStaffForAssignment = staff;
+
+        // Filter Methods
+        shouldShowShift(department) {
+            if (this.selectedDepartment === '') return true;
+            return department === this.selectedDepartment;
         },
-        
-        async confirmAssignment() {
-            if (!this.selectedShift || !this.selectedStaffForAssignment) {
-                this.showNotification('Please select a staff member', 'warning');
+
+        filterShifts() {
+            this.calculateStats();
+        },
+
+        updateView() {
+            // Implementation for view mode filtering would go here
+            this.calculateStats();
+        },
+
+        staffMatchesSearch(staffName, staffType) {
+            if (this.staffSearch === '') return true;
+            const search = this.staffSearch.toLowerCase();
+            return staffName.toLowerCase().includes(search) || 
+                   staffType.toLowerCase().includes(search);
+        },
+
+        // Drag & Drop Handlers
+        handleStaffDragStart(event, staffData) {
+            this.draggedItem = staffData;
+            this.draggedType = 'staff';
+            
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/html', event.target.outerHTML);
+            
+            // Add visual feedback
+            event.target.classList.add('dragging');
+            
+            console.log('Started dragging staff:', staffData);
+        },
+
+        handleDragStart(event, assignmentData) {
+            this.draggedItem = assignmentData;
+            this.draggedType = 'assignment';
+            
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/html', event.target.outerHTML);
+            
+            // Add visual feedback
+            event.target.classList.add('dragging');
+            
+            console.log('Started dragging assignment:', assignmentData);
+        },
+
+        async handleDrop(event, shiftId, date) {
+            event.preventDefault();
+            
+            // Remove drag over effect
+            const dropZone = event.target.closest('.assignment-drop-zone');
+            if (dropZone) {
+                dropZone.classList.remove('drag-over');
+            }
+
+            if (!this.draggedItem) {
+                console.log('No dragged item');
                 return;
             }
-            
+
             try {
-                const response = await fetch('/admin/shifts/assignments/assign', {
+                if (this.draggedType === 'staff') {
+                    // Assign new staff to shift
+                    await this.assignStaff(this.draggedItem.staff_id, shiftId, date);
+                } else if (this.draggedType === 'assignment') {
+                    // Move existing assignment
+                    await this.moveAssignment(this.draggedItem.assignment_id, shiftId, date);
+                }
+            } catch (error) {
+                console.error('Drop error:', error);
+                this.showNotification('Drop operation failed', 'error');
+            } finally {
+                // Clean up drag state
+                this.cleanupDrag();
+            }
+        },
+
+        cleanupDrag() {
+            // Remove dragging class from all elements
+            document.querySelectorAll('.dragging').forEach(el => {
+                el.classList.remove('dragging');
+            });
+            
+            // Reset drag state
+            this.draggedItem = null;
+            this.draggedType = null;
+        },
+
+        // Assignment Management
+        async assignStaff(staffId, shiftId, date) {
+            this.isLoading = true;
+
+            try {
+                const response = await fetch('/admin/shifts/assignments', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
                     },
                     body: JSON.stringify({
-                        shift_id: this.selectedShift.id,
-                        staff_id: this.selectedStaffForAssignment.id,
-                        role: this.selectedStaffForAssignment.role
-                    })
+                        staff_id: staffId,
+                        staff_shift_id: shiftId,
+                        assigned_date: date,
+                    }),
                 });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    this.showNotification(data.message, 'success');
-                    this.showAssignmentModal = false;
-                    this.updateShiftAssignment(this.selectedShift.id, this.selectedStaffForAssignment);
+
+                const result = await response.json();
+
+                if (result.success) {
+                    this.showNotification(result.message, 'success');
+                    this.refreshAssignments();
                 } else {
-                    this.showNotification(data.message || 'Assignment failed', 'error');
+                    this.showNotification(result.message, 'error');
                 }
             } catch (error) {
-                console.error('Error assigning staff:', error);
-                this.showNotification('Error assigning staff', 'error');
+                console.error('Assignment error:', error);
+                this.showNotification('Failed to assign staff', 'error');
+            } finally {
+                this.isLoading = false;
             }
         },
-        
-        async unassignStaff(shiftId, staffId) {
-            if (!confirm('Are you sure you want to unassign this staff member?')) {
+
+        async moveAssignment(assignmentId, newShiftId, newDate) {
+            // For now, we'll just show a message
+            // In a full implementation, this would update the assignment
+            this.showNotification('Assignment moving not yet implemented', 'info');
+        },
+
+        async removeAssignment(assignmentId) {
+            if (!confirm('Are you sure you want to remove this assignment?')) {
                 return;
             }
-            
+
+            this.isLoading = true;
+
             try {
-                const response = await fetch('/admin/shifts/assignments/unassign', {
+                const response = await fetch(`/admin/shifts/assignments/${assignmentId}`, {
                     method: 'DELETE',
                     headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    this.showNotification(result.message, 'success');
+                    this.refreshAssignments();
+                } else {
+                    this.showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Remove assignment error:', error);
+                this.showNotification('Failed to remove assignment', 'error');
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        // Assignment Editing
+        editAssignment(assignmentId) {
+            // Find the assignment element to get current data
+            const assignmentElement = document.querySelector(`[data-assignment-id="${assignmentId}"]`);
+            if (!assignmentElement) return;
+
+            // Extract current data (in a real app, this would come from the server)
+            const statusElement = assignmentElement.querySelector('.assignment-status');
+            const currentStatus = statusElement ? statusElement.textContent.toLowerCase().trim() : 'scheduled';
+
+            this.editingAssignment = {
+                id: assignmentId,
+                status: currentStatus,
+                notes: ''
+            };
+
+            this.showAssignmentModal = true;
+        },
+
+        async saveAssignment() {
+            if (!this.editingAssignment.id) return;
+
+            this.isLoading = true;
+
+            try {
+                const response = await fetch(`/admin/shifts/assignments/${this.editingAssignment.id}`, {
+                    method: 'PUT',
+                    headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
                     },
                     body: JSON.stringify({
-                        shift_id: shiftId,
-                        staff_id: staffId
-                    })
+                        status: this.editingAssignment.status,
+                        notes: this.editingAssignment.notes,
+                    }),
                 });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    this.showNotification(data.message, 'success');
-                    this.removeShiftAssignment(shiftId, staffId);
+
+                const result = await response.json();
+
+                if (result.success) {
+                    this.showNotification(result.message, 'success');
+                    this.closeAssignmentModal();
+                    this.refreshAssignments();
                 } else {
-                    this.showNotification(data.message || 'Unassignment failed', 'error');
+                    this.showNotification(result.message, 'error');
                 }
             } catch (error) {
-                console.error('Error unassigning staff:', error);
-                this.showNotification('Error unassigning staff', 'error');
+                console.error('Save assignment error:', error);
+                this.showNotification('Failed to save assignment', 'error');
+            } finally {
+                this.isLoading = false;
             }
         },
-        
-        updateShiftAssignment(shiftId, staff) {
-            // Find the shift card and update it
-            const shiftCard = document.querySelector(`[data-shift-id="${shiftId}"]`);
-            if (!shiftCard) return;
-            
-            // Update assignments list
-            const assignmentsList = shiftCard.querySelector('.assignments-list');
-            if (assignmentsList) {
-                const newAssignment = document.createElement('div');
-                newAssignment.className = 'assignment-item';
-                newAssignment.innerHTML = `
-                    <div class="assignment-info">
-                        <span class="staff-name">${staff.name}</span>
-                        <span class="staff-role">${staff.role}</span>
-                    </div>
-                    <div class="assignment-actions">
-                        <span class="assignment-status status-pending">Pending</span>
-                        <button class="btn-icon-sm btn-danger" onclick="unassignStaff(${shiftId}, ${staff.id})">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                            </svg>
-                        </button>
-                    </div>
-                `;
-                assignmentsList.appendChild(newAssignment);
-            }
-            
-            // Update staffing progress
-            this.updateStaffingProgress(shiftCard);
+
+        closeAssignmentModal() {
+            this.showAssignmentModal = false;
+            this.editingAssignment = {
+                id: null,
+                status: '',
+                notes: ''
+            };
         },
-        
-        removeShiftAssignment(shiftId, staffId) {
-            // Find and remove the assignment item
-            const shiftCard = document.querySelector(`[data-shift-id="${shiftId}"]`);
-            if (!shiftCard) return;
-            
-            const assignmentItems = shiftCard.querySelectorAll('.assignment-item');
-            assignmentItems.forEach(item => {
-                const staffName = item.querySelector('.staff-name')?.textContent;
-                // In a real app, you'd have a data attribute with staff ID
-                if (staffName && this.shouldRemoveAssignment(staffName, staffId)) {
-                    item.remove();
-                }
-            });
-            
-            // Update staffing progress
-            this.updateStaffingProgress(shiftCard);
-        },
-        
-        shouldRemoveAssignment(staffName, staffId) {
-            // This is a simplified check - in a real app you'd use proper IDs
-            return true; // For demo purposes
-        },
-        
-        updateStaffingProgress(shiftCard) {
-            const assignmentItems = shiftCard.querySelectorAll('.assignment-item');
-            const assignedCount = assignmentItems.length;
-            
-            // Update staffing text and progress bar
-            const staffingText = shiftCard.querySelector('.staffing-text');
-            const progressFill = shiftCard.querySelector('.progress-fill');
-            const statusBadge = shiftCard.querySelector('.status-badge');
-            
-            if (staffingText && progressFill && statusBadge) {
-                // Extract required count from existing text
-                const requiredMatch = staffingText.textContent.match(/\/\s*(\d+)/);
-                const requiredCount = requiredMatch ? parseInt(requiredMatch[1]) : 1;
-                
-                // Update text
-                staffingText.textContent = `${assignedCount} / ${requiredCount} Staff`;
-                
-                // Update progress
-                const percentage = (assignedCount / requiredCount) * 100;
-                progressFill.style.width = `${percentage}%`;
-                
-                // Update status
-                let newStatus, newStatusText;
-                if (assignedCount === 0) {
-                    newStatus = 'not_covered';
-                    newStatusText = 'Not Covered';
-                } else if (assignedCount < requiredCount) {
-                    newStatus = 'partially_covered';
-                    newStatusText = 'Partially Covered';
-                } else {
-                    newStatus = 'fully_covered';
-                    newStatusText = 'Fully Covered';
-                }
-                
-                statusBadge.className = `status-badge status-${newStatus}`;
-                statusBadge.textContent = newStatusText;
-                
-                // Update card data attribute
-                shiftCard.dataset.status = newStatus;
-            }
-        },
-        
-        async checkAvailability(shift) {
-            try {
-                const response = await this.loadAvailableStaff(shift);
-                this.showNotification(`Found ${this.availableStaff.length} available staff members`, 'info');
-            } catch (error) {
-                this.showNotification('Error checking availability', 'error');
-            }
-        },
-        
-        quickAssign(staffId) {
-            // Find the first shift that needs staff
-            const needsStaffCards = document.querySelectorAll('[data-status="not_covered"], [data-status="partially_covered"]');
-            
-            if (needsStaffCards.length === 0) {
-                this.showNotification('No shifts currently need staff assignments', 'info');
+
+        // Bulk Operations
+        async copyPreviousWeek() {
+            if (!confirm('This will copy assignments from the previous week. Continue?')) {
                 return;
             }
+
+            this.isLoading = true;
             
-            // For demo, assign to the first available shift
-            const firstShift = needsStaffCards[0];
-            const shiftName = firstShift.querySelector('.shift-name')?.textContent;
-            
-            this.showNotification(`Quick assigned staff to ${shiftName}`, 'success');
-        },
-        
-        viewStaffSchedule(staffId) {
-            // In a real app, this would open a detailed schedule view
-            this.showNotification('Opening staff schedule...', 'info');
-        },
-        
-        formatDate(dateString) {
-            if (!dateString) return '';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
-                weekday: 'short',
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
-        },
-        
-        showFilterNotification(visible, total) {
-            if (visible < total) {
-                this.showNotification(`Showing ${visible} of ${total} shifts`, 'info');
+            try {
+                // In a real implementation, this would call the bulk assign endpoint
+                await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
+                
+                this.showNotification('Previous week copied successfully', 'success');
+                this.refreshAssignments();
+            } catch (error) {
+                this.showNotification('Failed to copy previous week', 'error');
+            } finally {
+                this.isLoading = false;
             }
         },
-        
+
+        async clearWeek() {
+            if (!confirm('This will remove ALL assignments for this week. This cannot be undone. Continue?')) {
+                return;
+            }
+
+            this.isLoading = true;
+            
+            try {
+                // In a real implementation, this would call a bulk delete endpoint
+                await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
+                
+                this.showNotification('Week cleared successfully', 'success');
+                this.refreshAssignments();
+            } catch (error) {
+                this.showNotification('Failed to clear week', 'error');
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        async publishWeek() {
+            if (!confirm('This will notify all assigned staff about their shifts. Continue?')) {
+                return;
+            }
+
+            this.isLoading = true;
+            
+            try {
+                // In a real implementation, this would call a notification endpoint
+                await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
+                
+                this.showNotification('Week published and staff notified', 'success');
+            } catch (error) {
+                this.showNotification('Failed to publish week', 'error');
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        // Utility Methods
+        refreshAssignments() {
+            // In a real implementation, this would reload the page or fetch new data
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        },
+
         showNotification(message, type = 'info') {
-            // Create notification element
             const notification = document.createElement('div');
             notification.className = `notification notification-${type}`;
-            notification.textContent = message;
-            
-            // Style the notification
-            Object.assign(notification.style, {
-                position: 'fixed',
-                top: '20px',
-                right: '20px',
-                padding: '12px 24px',
-                borderRadius: '8px',
-                color: 'white',
-                fontWeight: '500',
-                zIndex: '9999',
-                transform: 'translateX(100%)',
-                transition: 'transform 0.3s ease',
-                maxWidth: '400px'
-            });
-            
-            // Set background color based on type
-            const colors = {
-                success: '#10B981',
-                error: '#EF4444',
-                warning: '#F59E0B',
-                info: '#3B82F6'
-            };
-            notification.style.backgroundColor = colors[type] || colors.info;
-            
-            // Add to page
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span class="notification-message">${message}</span>
+                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                </div>
+            `;
+
             document.body.appendChild(notification);
-            
-            // Animate in
-            setTimeout(() => {
-                notification.style.transform = 'translateX(0)';
-            }, 100);
-            
-            // Remove after delay
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
-            }, 3000);
-        }
-    };
-}
 
-// Auto Assignment Logic
-function autoAssignShifts() {
-    return {
-        isProcessing: false,
-        
-        async process() {
-            if (this.isProcessing) return;
-            
-            this.isProcessing = true;
-            
-            try {
-                // Mock auto-assignment logic
-                const unassignedShifts = document.querySelectorAll('[data-status="not_covered"], [data-status="partially_covered"]');
-                
-                for (let i = 0; i < Math.min(unassignedShifts.length, 3); i++) {
-                    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate processing
-                    
-                    const shift = unassignedShifts[i];
-                    const shiftName = shift.querySelector('.shift-name')?.textContent;
-                    
-                    // Mock assignment
-                    this.showNotification(`Auto-assigned staff to ${shiftName}`, 'success');
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
                 }
-                
-                this.showNotification('Auto-assignment completed!', 'success');
-            } catch (error) {
-                this.showNotification('Auto-assignment failed', 'error');
-            } finally {
-                this.isProcessing = false;
-            }
+            }, 5000);
         },
-        
-        showNotification(message, type) {
-            // Reuse the notification function from main component
-            const event = new CustomEvent('show-notification', {
-                detail: { message, type }
-            });
-            document.dispatchEvent(event);
-        }
-    };
-}
 
-// Bulk Assignment Logic
-function bulkAssignShifts() {
-    return {
-        selectedShifts: [],
-        selectedStaff: [],
-        
-        toggleShiftSelection(shiftId) {
-            const index = this.selectedShifts.indexOf(shiftId);
-            if (index > -1) {
-                this.selectedShifts.splice(index, 1);
-            } else {
-                this.selectedShifts.push(shiftId);
-            }
-        },
-        
-        toggleStaffSelection(staffId) {
-            const index = this.selectedStaff.indexOf(staffId);
-            if (index > -1) {
-                this.selectedStaff.splice(index, 1);
-            } else {
-                this.selectedStaff.push(staffId);
-            }
-        },
-        
-        async processBulkAssignment() {
-            if (this.selectedShifts.length === 0 || this.selectedStaff.length === 0) {
-                this.showNotification('Please select both shifts and staff members', 'warning');
-                return;
+        // Keyboard Shortcuts
+        handleKeydown(event) {
+            // ESC to close modals/panels
+            if (event.key === 'Escape') {
+                if (this.showAssignmentModal) {
+                    this.closeAssignmentModal();
+                } else if (this.showStaffPanel) {
+                    this.showStaffPanel = false;
+                } else if (this.showBulkActions) {
+                    this.showBulkActions = false;
+                }
             }
             
-            try {
-                // Mock bulk assignment
-                const assignments = this.selectedShifts.length * this.selectedStaff.length;
-                
-                this.showNotification(`Processing ${assignments} bulk assignments...`, 'info');
-                
-                // Simulate processing
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                this.showNotification(`Successfully created ${assignments} assignments!`, 'success');
-                
-                // Reset selections
-                this.selectedShifts = [];
-                this.selectedStaff = [];
-            } catch (error) {
-                this.showNotification('Bulk assignment failed', 'error');
+            // Ctrl/Cmd + S to save (prevent default)
+            if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+                event.preventDefault();
+                if (this.showAssignmentModal) {
+                    this.saveAssignment();
+                }
             }
-        },
-        
-        showNotification(message, type) {
-            const event = new CustomEvent('show-notification', {
-                detail: { message, type }
-            });
-            document.dispatchEvent(event);
         }
     };
 }
 
-// Listen for custom notification events
-document.addEventListener('show-notification', function(event) {
-    const { message, type } = event.detail;
-    
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-    
-    // Style the notification
-    Object.assign(notification.style, {
-        position: 'fixed',
-        top: '20px',
-        right: '20px',
-        padding: '12px 24px',
-        borderRadius: '8px',
-        color: 'white',
-        fontWeight: '500',
-        zIndex: '9999',
-        transform: 'translateX(100%)',
-        transition: 'transform 0.3s ease',
-        maxWidth: '400px'
+// Initialize keyboard shortcuts when DOM loads
+document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('keydown', function(event) {
+        // Get the Alpine component instance
+        const assignmentsPage = document.querySelector('.assignments-page');
+        if (assignmentsPage && assignmentsPage._x_dataStack) {
+            const component = assignmentsPage._x_dataStack[0];
+            if (component && component.handleKeydown) {
+                component.handleKeydown(event);
+            }
+        }
     });
     
-    // Set background color based on type
-    const colors = {
-        success: '#10B981',
-        error: '#EF4444',
-        warning: '#F59E0B',
-        info: '#3B82F6'
-    };
-    notification.style.backgroundColor = colors[type] || colors.info;
-    
-    // Add to page
-    document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // Remove after delay
-    setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 300);
-    }, 3000);
+    console.log('Shift Assignments JS loaded');
 });
+
+// Export for use in other modules
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { shiftsAssignmentsData };
+}
+
+// Export for ES6 modules
+export { shiftsAssignmentsData };

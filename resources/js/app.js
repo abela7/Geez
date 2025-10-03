@@ -10,6 +10,7 @@ window.deferLoadingAlpine = function(callback) {
 import Alpine from 'alpinejs';
 import persist from '@alpinejs/persist';
 import { shiftCreateComponent, shiftEditComponent } from './admin/shifts/create-component.js';
+import { shiftsAssignmentsData } from './admin/shifts/assignments.js';
 
 // Expose Alpine globally so Livewire detects it and doesn't inject its own
 window.Alpine = Alpine;
@@ -18,6 +19,7 @@ window.Alpine = Alpine;
 Alpine.plugin(persist);
 Alpine.data('shiftCreateData', shiftCreateComponent);
 Alpine.data('shiftEditData', shiftEditComponent);
+Alpine.data('shiftsAssignmentsData', shiftsAssignmentsData);
 
 // Register shifts manage component with full functionality
 Alpine.data('shiftsManageData', () => ({

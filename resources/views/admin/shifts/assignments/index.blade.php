@@ -1,362 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', __('shifts.assignments.title'))
-
-@section('content')
-<div class="shifts-assignments-page" x-data="shiftsAssignmentsData()">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="page-header-content">
-            <div class="page-header-left">
-                <h1 class="page-title">{{ __('shifts.assignments.title') }}</h1>
-                <p class="page-description">{{ __('shifts.assignments.subtitle') }}</p>
-            </div>
-            <div class="page-header-right">
-                <div class="header-actions">
-                    <button class="btn btn-secondary" @click="showAutoAssign = true">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
-                        {{ __('shifts.assignments.auto_assign') }}
-                    </button>
-                    <button class="btn btn-primary" @click="showBulkAssign = true">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                        </svg>
-                        {{ __('shifts.assignments.bulk_assign') }}
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Summary Dashboard -->
-    <div class="summary-section">
-        <div class="summary-grid">
-            <div class="summary-card summary-card-primary">
-                <div class="summary-icon">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <div class="summary-content">
-                    <div class="summary-value">{{ $totalShifts }}</div>
-                    <div class="summary-label">{{ __('shifts.assignments.total_shifts') }}</div>
-                </div>
-            </div>
-
-            <div class="summary-card summary-card-success">
-                <div class="summary-icon">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <div class="summary-content">
-                    <div class="summary-value">{{ $fullyCovered }}</div>
-                    <div class="summary-label">{{ __('shifts.assignments.fully_covered') }}</div>
-                </div>
-            </div>
-
-            <div class="summary-card summary-card-warning">
-                <div class="summary-icon">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <div class="summary-content">
-                    <div class="summary-value">{{ $partiallyCovered }}</div>
-                    <div class="summary-label">{{ __('shifts.assignments.partially_covered') }}</div>
-                </div>
-            </div>
-
-            <div class="summary-card summary-card-danger">
-                <div class="summary-icon">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <div class="summary-content">
-                    <div class="summary-value">{{ $notCovered }}</div>
-                    <div class="summary-label">{{ __('shifts.assignments.not_covered') }}</div>
-                </div>
-            </div>
-
-            <div class="summary-card summary-card-info">
-                <div class="summary-icon">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
-                    </svg>
-                </div>
-                <div class="summary-content">
-                    <div class="summary-value">{{ $coveragePercentage }}%</div>
-                    <div class="summary-label">{{ __('shifts.assignments.coverage_rate') }}</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content Grid -->
-    <div class="main-content-grid">
-        <!-- Shifts Needing Assignment -->
-        <div class="shifts-section">
-            <div class="section-header">
-                <h2 class="section-title">{{ __('shifts.assignments.shifts_needing_assignment') }}</h2>
-                <div class="section-filters">
-                    <select x-model="filterDepartment" @change="applyFilters()" class="filter-select">
-                        <option value="all">{{ __('shifts.departments.all_departments') }}</option>
-                        <option value="Kitchen">{{ __('shifts.departments.kitchen') }}</option>
-                        <option value="Front of House">{{ __('shifts.departments.front_of_house') }}</option>
-                        <option value="Bar">{{ __('shifts.departments.bar') }}</option>
-                        <option value="Management">{{ __('shifts.departments.management') }}</option>
-                        <option value="Maintenance">{{ __('shifts.departments.maintenance') }}</option>
-                    </select>
-                    <select x-model="filterStatus" @change="applyFilters()" class="filter-select">
-                        <option value="all">{{ __('shifts.common.all_statuses') }}</option>
-                        <option value="not_covered">{{ __('shifts.assignments.not_covered') }}</option>
-                        <option value="partially_covered">{{ __('shifts.assignments.partially_covered') }}</option>
-                        <option value="fully_covered">{{ __('shifts.assignments.fully_covered') }}</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="shifts-list">
-                @foreach($shifts as $shift)
-                <div class="shift-assignment-card" data-department="{{ $shift['department'] }}" data-status="{{ $shift['status'] }}">
-                    <div class="shift-card-header">
-                        <div class="shift-info">
-                            <h3 class="shift-name">{{ $shift['name'] }}</h3>
-                            <div class="shift-details">
-                                <span class="shift-date">{{ $shift['date']->format('M d, Y') }}</span>
-                                <span class="shift-time">{{ $shift['start_time'] }} - {{ $shift['end_time'] }}</span>
-                                <span class="shift-department">{{ __('shifts.departments.' . strtolower(str_replace(' ', '_', $shift['department']))) }}</span>
-                            </div>
-                        </div>
-                        <div class="shift-status">
-                            <span class="status-badge status-{{ $shift['status'] }}">
-                                {{ __('shifts.assignments.' . $shift['status']) }}
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="staffing-progress">
-                        <div class="staffing-info">
-                            <span class="staffing-text">
-                                {{ $shift['assigned_staff'] }} / {{ $shift['required_staff'] }} {{ __('shifts.common.staff') }}
-                            </span>
-                            <span class="staffing-percentage">
-                                {{ $shift['required_staff'] > 0 ? round(($shift['assigned_staff'] / $shift['required_staff']) * 100) : 0 }}%
-                            </span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ $shift['required_staff'] > 0 ? ($shift['assigned_staff'] / $shift['required_staff']) * 100 : 0 }}%"></div>
-                        </div>
-                    </div>
-
-                    @if(!empty($shift['assignments']))
-                    <div class="current-assignments">
-                        <h4 class="assignments-title">{{ __('shifts.assignments.current_assignments') }}</h4>
-                        <div class="assignments-list">
-                            @foreach($shift['assignments'] as $assignment)
-                            <div class="assignment-item">
-                                <div class="assignment-info">
-                                    <span class="staff-name">{{ $assignment['staff_name'] }}</span>
-                                    <span class="staff-role">{{ $assignment['role'] }}</span>
-                                </div>
-                                <div class="assignment-actions">
-                                    <span class="assignment-status status-{{ $assignment['status'] }}">
-                                        {{ __('shifts.assignments.' . $assignment['status']) }}
-                                    </span>
-                                    <button class="btn-icon-sm btn-danger" @click="unassignStaff({{ $shift['id'] }}, {{ $assignment['staff_id'] }})">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
-
-                    <div class="shift-actions">
-                        <button class="btn btn-primary btn-sm" @click="showAssignModal({{ json_encode($shift) }})">
-                            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                            </svg>
-                            {{ __('shifts.assignments.assign_staff') }}
-                        </button>
-                        <button class="btn btn-secondary btn-sm" @click="checkAvailability({{ json_encode($shift) }})">
-                            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            {{ __('shifts.assignments.check_availability') }}
-                        </button>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-
-        <!-- Staff Availability Sidebar -->
-        <div class="staff-sidebar">
-            <!-- Available Staff -->
-            <div class="staff-section">
-                <div class="section-header">
-                    <h3 class="section-title">{{ __('shifts.assignments.available_staff') }}</h3>
-                    <span class="staff-count">{{ $availableStaff }}/{{ $totalStaff }}</span>
-                </div>
-                
-                <div class="staff-search">
-                    <input type="text" x-model="staffSearchQuery" @input="filterStaff()" class="search-input" placeholder="{{ __('shifts.assignments.search_staff') }}">
-                </div>
-
-                <div class="staff-filters">
-                    <select x-model="staffFilterDepartment" @change="filterStaff()" class="filter-select">
-                        <option value="all">{{ __('shifts.departments.all_departments') }}</option>
-                        <option value="Kitchen">{{ __('shifts.departments.kitchen') }}</option>
-                        <option value="Front of House">{{ __('shifts.departments.front_of_house') }}</option>
-                        <option value="Bar">{{ __('shifts.departments.bar') }}</option>
-                        <option value="Management">{{ __('shifts.departments.management') }}</option>
-                        <option value="Maintenance">{{ __('shifts.departments.maintenance') }}</option>
-                    </select>
-                </div>
-                
-                <div class="staff-list">
-                    @foreach($staff as $member)
-                    <div class="staff-card" data-department="{{ $member['department'] }}" data-name="{{ strtolower($member['name']) }}">
-                        <div class="staff-avatar">
-                            <span class="avatar-initials">{{ substr($member['name'], 0, 1) }}{{ substr(explode(' ', $member['name'])[1] ?? '', 0, 1) }}</span>
-                        </div>
-                        <div class="staff-info">
-                            <div class="staff-name">{{ $member['name'] }}</div>
-                            <div class="staff-role">{{ $member['role'] }}</div>
-                            <div class="staff-department">{{ __('shifts.departments.' . strtolower(str_replace(' ', '_', $member['department']))) }}</div>
-                        </div>
-                        <div class="staff-actions">
-                            <button class="btn-icon-sm btn-primary" @click="quickAssign({{ $member['id'] }})" title="{{ __('shifts.assignments.quick_assign') }}">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                                </svg>
-                            </button>
-                            <button class="btn-icon-sm btn-secondary" @click="viewStaffSchedule({{ $member['id'] }})" title="{{ __('shifts.assignments.view_schedule') }}">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <!-- Recent Activity -->
-            <div class="activity-section">
-                <div class="section-header">
-                    <h3 class="section-title">{{ __('shifts.assignments.recent_activity') }}</h3>
-                </div>
-                
-                <div class="activity-list">
-                    @foreach($recentActivity as $activity)
-                    <div class="activity-item">
-                        <div class="activity-icon activity-{{ $activity['type'] }}">
-                            @if($activity['type'] === 'assignment')
-                            <svg fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/>
-                            </svg>
-                            @else
-                            <svg fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                            </svg>
-                            @endif
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-text">
-                                <strong>{{ $activity['staff_name'] }}</strong>
-                                {{ $activity['type'] === 'assignment' ? __('shifts.assignments.assigned_to') : __('shifts.assignments.unassigned_from') }}
-                                <strong>{{ $activity['shift_name'] }}</strong>
-                            </div>
-                            <div class="activity-meta">
-                                <span class="activity-time">{{ $activity['date']->diffForHumans() }}</span>
-                                <span class="activity-by">{{ __('shifts.assignments.by') }} {{ $activity['assigned_by'] }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Assignment Modal -->
-    <div x-show="showAssignmentModal" x-transition class="modal-overlay" @click.self="showAssignmentModal = false">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">{{ __('shifts.assignments.assign_staff_to_shift') }}</h3>
-                <button class="modal-close" @click="showAssignmentModal = false">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-            
-            <div class="modal-body">
-                <div class="shift-summary" x-show="selectedShift">
-                    <h4>{{ __('shifts.assignments.shift_details') }}</h4>
-                    <div class="shift-details-grid">
-                        <div class="detail-item">
-                            <span class="detail-label">{{ __('shifts.manage.shift_name') }}</span>
-                            <span class="detail-value" x-text="selectedShift?.name"></span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">{{ __('shifts.common.date') }}</span>
-                            <span class="detail-value" x-text="formatDate(selectedShift?.date)"></span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">{{ __('shifts.common.time') }}</span>
-                            <span class="detail-value" x-text="`${selectedShift?.start_time} - ${selectedShift?.end_time}`"></span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">{{ __('shifts.common.department') }}</span>
-                            <span class="detail-value" x-text="selectedShift?.department"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="staff-selection">
-                    <h4>{{ __('shifts.assignments.select_staff_member') }}</h4>
-                    <div class="available-staff-list">
-                        @foreach($staff as $member)
-                        <div class="staff-option" @click="selectStaffForAssignment({{ json_encode($member) }})">
-                            <div class="staff-avatar">
-                                <span class="avatar-initials">{{ substr($member['name'], 0, 1) }}{{ substr(explode(' ', $member['name'])[1] ?? '', 0, 1) }}</span>
-                            </div>
-                            <div class="staff-info">
-                                <div class="staff-name">{{ $member['name'] }}</div>
-                                <div class="staff-role">{{ $member['role'] }}</div>
-                                <div class="staff-department">{{ __('shifts.departments.' . strtolower(str_replace(' ', '_', $member['department']))) }}</div>
-                            </div>
-                            <div class="availability-indicator available">
-                                <svg fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-            
-            <div class="modal-actions">
-                <button class="btn btn-secondary" @click="showAssignmentModal = false">
-                    {{ __('shifts.common.cancel') }}
-                </button>
-                <button class="btn btn-primary" @click="confirmAssignment()" :disabled="!selectedStaffForAssignment">
-                    {{ __('shifts.assignments.assign_staff') }}
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+@section('title', 'Shift Assignments - Weekly Rota')
 
 @push('styles')
 @vite(['resources/css/admin/shifts/assignments.css'])
@@ -365,4 +9,319 @@
 @push('scripts')
 @vite(['resources/js/admin/shifts/assignments.js'])
 @endpush
+
+@section('content')
+<div class="assignments-page" x-data="shiftsAssignmentsData()">
+    <!-- Page Header -->
+    <div class="page-header-assignments">
+        <div class="header-content">
+            <div class="header-text">
+                <h1 class="header-title">
+                    <svg class="title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    Weekly Shift Assignments
+                </h1>
+                <p class="header-description">Create and manage staff rota for {{ $weekStart->format('M j') }} - {{ $weekEnd->format('M j, Y') }}</p>
+            </div>
+            <div class="header-actions">
+                <button @click="copyPreviousWeek()" class="btn btn-outline" :disabled="isLoading">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
+                    Copy Previous Week
+                </button>
+                <a href="{{ route('admin.shifts.manage.create') }}" class="btn btn-primary">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    Create Shift Template
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Week Navigation -->
+    <div class="week-navigation">
+        <div class="week-nav-content">
+            <div class="week-nav-controls">
+                <a href="{{ route('admin.shifts.assignments.index', ['week' => $weekStart->copy()->subWeek()->format('Y-m-d')]) }}" 
+                   class="btn-week-nav">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Previous Week
+                </a>
+                
+                <div class="current-week">
+                    <h2 class="week-title">{{ $weekStart->format('M j') }} - {{ $weekEnd->format('M j, Y') }}</h2>
+                    <p class="week-subtitle">Week {{ $weekStart->weekOfYear }} of {{ $weekStart->year }}</p>
+                </div>
+                
+                <a href="{{ route('admin.shifts.assignments.index', ['week' => $weekStart->copy()->addWeek()->format('Y-m-d')]) }}" 
+                   class="btn-week-nav">
+                    Next Week
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+            
+            <div class="week-actions">
+                <button @click="showBulkActions = !showBulkActions" class="btn btn-ghost-sm">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                    </svg>
+                    Actions
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Actions Panel -->
+    <div x-show="showBulkActions" x-transition class="bulk-actions-panel">
+        <div class="bulk-actions-content">
+            <h3 class="bulk-actions-title">Bulk Actions</h3>
+            <div class="bulk-actions-buttons">
+                <button @click="clearWeek()" class="btn btn-warning-outline">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    Clear Week
+                </button>
+                <button @click="publishWeek()" class="btn btn-success-outline">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Publish & Notify Staff
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-content">
+            <div class="filter-group">
+                <label class="filter-label">Filter by Department:</label>
+                <select x-model="selectedDepartment" @change="filterShifts()" class="filter-select">
+                    <option value="">All Departments</option>
+                    @foreach($departments as $department)
+                    <option value="{{ $department }}">{{ $department }}</option>
+                    @endforeach
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Show:</label>
+                <select x-model="viewMode" @change="updateView()" class="filter-select">
+                    <option value="all">All Shifts</option>
+                    <option value="assigned">Assigned Only</option>
+                    <option value="unassigned">Unassigned Only</option>
+                </select>
+            </div>
+
+            <div class="filter-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Total Shifts:</span>
+                    <span class="stat-value" x-text="totalShifts">{{ $shiftTemplates->count() * 7 }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Assigned:</span>
+                    <span class="stat-value stat-success" x-text="assignedShifts">{{ $assignments->count() }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Remaining:</span>
+                    <span class="stat-value stat-warning" x-text="unassignedShifts">{{ ($shiftTemplates->count() * 7) - $assignments->count() }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weekly Rota Grid -->
+    <div class="rota-container">
+        <!-- Days Header -->
+        <div class="rota-header">
+            <div class="shift-column-header">Shifts</div>
+            @foreach($weekDays as $day)
+            <div class="day-column-header {{ $day['is_today'] ? 'is-today' : '' }} {{ $day['is_weekend'] ? 'is-weekend' : '' }}">
+                <div class="day-name">{{ $day['display'] }}</div>
+                <div class="day-date">{{ $day['date']->format('M j') }}</div>
+            </div>
+            @endforeach
+        </div>
+
+        <!-- Shifts Grid -->
+        <div class="rota-grid">
+            @foreach($shiftTemplates as $shift)
+            <div class="shift-row" data-shift-id="{{ $shift->id }}" 
+                 data-department="{{ $shift->department }}"
+                 x-show="shouldShowShift('{{ $shift->department }}')">
+                
+                <!-- Shift Info Column -->
+                <div class="shift-info-column">
+                    <div class="shift-info">
+                        <div class="shift-header">
+                            <h3 class="shift-name">{{ $shift->name }}</h3>
+                            @if($shift->position_name)
+                            <span class="shift-position">{{ $shift->position_name }}</span>
+                            @endif
+                        </div>
+                        <div class="shift-meta">
+                            <div class="shift-time">
+                                <svg class="meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                {{ \Carbon\Carbon::parse($shift->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($shift->end_time)->format('H:i') }}
+                            </div>
+                            <div class="shift-department">
+                                <svg class="meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                </svg>
+                                {{ $shift->department }}
+                            </div>
+                            <div class="shift-staff-needed">
+                                <svg class="meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                                {{ $shift->min_staff_required }} staff needed
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day Assignment Columns -->
+                @foreach($weekDays as $day)
+                <div class="assignment-column {{ $day['is_weekend'] ? 'is-weekend' : '' }}" 
+                     data-date="{{ $day['formatted'] }}"
+                     data-shift-id="{{ $shift->id }}">
+                    
+                    @php
+                        $dayAssignments = $assignments->get($day['formatted'] . '_' . $shift->id) ?? collect();
+                    @endphp
+
+                    <div class="assignment-drop-zone" 
+                         @drop="handleDrop($event, '{{ $shift->id }}', '{{ $day['formatted'] }}')"
+                         @dragover.prevent
+                         @dragenter.prevent>
+                        
+                        @if($dayAssignments->count() > 0)
+                            @foreach($dayAssignments as $assignment)
+                            <div class="assigned-staff" 
+                                 data-assignment-id="{{ $assignment->id }}">
+                                
+                                <div class="staff-avatar">
+                                    @if($assignment->staff->profile?->photo_url)
+                                    <img src="{{ $assignment->staff->profile->photo_url }}" alt="{{ $assignment->staff->full_name }}">
+                                    @else
+                                    <div class="avatar-placeholder">
+                                        {{ substr($assignment->staff->first_name, 0, 1) }}{{ substr($assignment->staff->last_name, 0, 1) }}
+                                    </div>
+                                    @endif
+                                </div>
+                                
+                                <div class="staff-info">
+                                    <div class="staff-name">{{ $assignment->staff->full_name }}</div>
+                                    <div class="staff-type">{{ $assignment->staff->staffType?->display_name ?? 'No Type' }}</div>
+                                </div>
+                                
+                                <div class="assignment-actions">
+                                    <button @click="removeAssignment('{{ $assignment->id }}')" class="btn-action btn-action-delete" title="Remove">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            @endforeach
+                        @endif
+                        
+                        @if($dayAssignments->count() < $shift->min_staff_required)
+                            <button @click="openAssignStaffModal('{{ $shift->id }}', '{{ $day['formatted'] }}', '{{ $shift->name }}')" 
+                                    class="btn-assign-staff">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                </svg>
+                                <span>Assign Staff</span>
+                            </button>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            @endforeach
+        </div>
+    </div>
+
+
+    <!-- Loading Overlay -->
+    <div x-show="isLoading" class="loading-overlay">
+        <div class="loading-spinner">
+            <svg class="spinner" viewBox="0 0 50 50">
+                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"/>
+            </svg>
+            <p class="loading-text">Processing...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Assign Staff Modal -->
+<div x-show="showAssignStaffModal" x-transition x-cloak class="modal-overlay" @click="closeAssignStaffModal()">
+    <div class="modal-content-large" @click.stop>
+        <div class="modal-header">
+            <div>
+                <h3 class="modal-title">Assign Staff to Shift</h3>
+                <p class="modal-subtitle" x-text="modalShiftName + ' - ' + formatDate(modalDate)"></p>
+            </div>
+            <button @click="closeAssignStaffModal()" class="btn-close-modal">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="modal-search">
+            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <input type="text" x-model="staffSearchQuery" placeholder="Search staff by name or role..." class="modal-search-input">
+        </div>
+        
+        <div class="modal-body-scroll">
+            <div class="staff-grid">
+                @foreach($staff as $staffMember)
+                <div class="staff-card" 
+                     x-show="staffMatchesSearch('{{ $staffMember->full_name }}', '{{ $staffMember->staffType?->display_name ?? '' }}')"
+                     @click="assignStaffToShift('{{ $staffMember->id }}', '{{ $staffMember->full_name }}')">
+                    <div class="staff-card-avatar">
+                        @if($staffMember->profile?->photo_url)
+                        <img src="{{ $staffMember->profile->photo_url }}" alt="{{ $staffMember->full_name }}">
+                        @else
+                        <div class="avatar-placeholder-large">
+                            {{ substr($staffMember->first_name, 0, 1) }}{{ substr($staffMember->last_name, 0, 1) }}
+                        </div>
+                        @endif
+                    </div>
+                    <div class="staff-card-info">
+                        <div class="staff-card-name">{{ $staffMember->full_name }}</div>
+                        <div class="staff-card-type">{{ $staffMember->staffType?->display_name ?? 'No Type' }}</div>
+                        @if($staffMember->profile?->hourly_rate)
+                        <div class="staff-card-rate">£{{ number_format($staffMember->profile->hourly_rate, 2) }}/hr</div>
+                        @endif
+                    </div>
+                    <div class="staff-card-action">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button @click="closeAssignStaffModal()" class="btn btn-ghost">Cancel</button>
+        </div>
+    </div>
+</div>
 @endsection
