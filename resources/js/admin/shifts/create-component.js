@@ -443,3 +443,113 @@ export function shiftCreateComponent() {
     };
 }
 
+/**
+ * Shift Edit Form Component
+ * Similar to create but pre-populates with existing data
+ */
+export function shiftEditComponent(shiftData) {
+    const baseComponent = shiftCreateComponent();
+    
+    // Override the init method to load existing shift data
+    const originalInit = baseComponent.init;
+    baseComponent.init = function() {
+        // Load existing shift data first
+        if (shiftData) {
+            this.form = {
+                name: shiftData.name || '',
+                position_name: shiftData.position_name || '',
+                department: shiftData.department || '',
+                type: shiftData.shift_type || '',
+                description: shiftData.description || '',
+                start_time: shiftData.start_time || '',
+                end_time: shiftData.end_time || '',
+                break_duration: shiftData.break_minutes || 30,
+                required_staff: shiftData.min_staff_required || 1,
+                hourly_rate: shiftData.hourly_rate_multiplier || '',
+                overtime_rate: shiftData.overtime_rate || '',
+                status: shiftData.is_active ? 'active' : 'draft',
+                duration_hours: shiftData.duration_hours || 0
+            };
+        }
+        
+        // Call original init
+        originalInit.call(this);
+        
+        // Calculate duration with loaded times
+        this.calculateDuration();
+        
+        console.log('Shift Edit Form initialized with data:', this.form);
+    };
+    
+    // Override localStorage methods to use different key
+    baseComponent.saveToLocalStorage = function() {
+        try {
+            localStorage.setItem('shift_edit_form', JSON.stringify(this.form));
+        } catch (error) {
+            console.error('Error saving to localStorage:', error);
+        }
+    };
+    
+    baseComponent.loadFromLocalStorage = function() {
+        // Don't load from localStorage on edit - use database data
+        return;
+    };
+    
+    baseComponent.clearLocalStorage = function() {
+        try {
+            localStorage.removeItem('shift_edit_form');
+        } catch (error) {
+            console.error('Error clearing localStorage:', error);
+        }
+    };
+    
+    // Override notification messages for edit context
+    const originalSubmitFormAjax = baseComponent.submitFormAjax;
+    baseComponent.submitFormAjax = async function(form) {
+        try {
+            const formData = new FormData(form);
+            
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                }
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                this.showNotification(`Shift template "${this.form.name}" updated successfully!`, 'success');
+                this.clearLocalStorage();
+                
+                setTimeout(() => {
+                    window.location.href = result.redirect || '/admin/shifts/manage';
+                }, 1500);
+            } else {
+                const errorMessage = result.message || 'Failed to update shift. Please check your input.';
+                this.showNotification(errorMessage, 'error');
+                
+                if (result.errors) {
+                    Object.keys(result.errors).forEach(field => {
+                        const errorMsg = result.errors[field][0];
+                        this.showNotification(`${field}: ${errorMsg}`, 'error');
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Form submission error:', error);
+            this.showNotification('Network error. Please try again.', 'error');
+        } finally {
+            this.isSubmitting = false;
+            const formElement = document.querySelector('.shift-form');
+            if (formElement) {
+                formElement.classList.remove('form-loading');
+            }
+        }
+    };
+    
+    return baseComponent;
+}
+

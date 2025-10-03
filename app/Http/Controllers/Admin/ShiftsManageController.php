@@ -226,58 +226,75 @@ class ShiftsManageController extends Controller
         $shift = [
             'id' => $dbShift->id,
             'name' => $dbShift->name,
+            'position_name' => $dbShift->position_name ?? '',
             'department' => $dbShift->department,
-            'type' => $dbShift->shift_type,
+            'shift_type' => $dbShift->shift_type,
             'start_time' => $startTime,
             'end_time' => $endTime,
-            'break_duration' => $dbShift->break_minutes ?? 0,
-            'required_staff' => $dbShift->min_staff_required,
-            'hourly_rate' => $dbShift->hourly_rate_multiplier ?? 1.00,
+            'break_minutes' => $dbShift->break_minutes ?? 0,
+            'min_staff_required' => $dbShift->min_staff_required,
+            'hourly_rate_multiplier' => $dbShift->hourly_rate_multiplier ?? 1.00,
             'overtime_rate' => ($dbShift->hourly_rate_multiplier ?? 1.00) * 1.5,
-            'status' => $dbShift->is_active ? 'active' : 'inactive',
+            'is_active' => $dbShift->is_active,
             'description' => $dbShift->description ?? '',
             'days_of_week' => $dbShift->days_of_week ?? [],
+            'duration_hours' => $dbShift->getDurationInHours(),
         ];
 
-        return view('admin.shifts.manage.edit', compact('shift', 'departments', 'shiftTypes', 'daysOfWeek'));
+        return view('admin.shifts.manage.edit', compact('shift', 'departments', 'shiftTypes'));
     }
 
     /**
      * Update the specified shift in storage.
      */
-    public function update(Request $request, string $id): RedirectResponse
+    public function update(Request $request, string $id): RedirectResponse|\Illuminate\Http\JsonResponse
     {
         $shift = StaffShift::findOrFail($id);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'position_name' => 'nullable|string|max:255',
             'department' => 'required|string',
             'type' => 'required|string',
             'description' => 'nullable|string|max:1000',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i',
             'break_duration' => 'nullable|integer|min:0|max:480',
-            'days_of_week' => 'required|array|min:1',
-            'days_of_week.*' => 'string|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
             'required_staff' => 'required|integer|min:1|max:50',
             'hourly_rate' => 'nullable|numeric|min:0',
             'overtime_rate' => 'nullable|numeric|min:0',
-            'status' => 'required|string|in:draft,active,inactive',
+            'status' => 'required|string|in:draft,active',
         ]);
+
+        // Validate that end time is different from start time
+        if ($validated['start_time'] === $validated['end_time']) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'End time must be different from start time.',
+                    'errors' => ['end_time' => ['End time must be different from start time.']],
+                ], 422);
+            }
+
+            return redirect()->back()
+                ->withErrors(['end_time' => 'End time must be different from start time.'])
+                ->withInput();
+        }
 
         // Get the authenticated staff member
         $updatedBy = auth()->user()->id ?? null;
 
-        // Update shift in database
+        // Update shift template in database
         $shift->update([
             'name' => $validated['name'],
+            'position_name' => $validated['position_name'] ?? null,
             'department' => $validated['department'],
             'shift_type' => $validated['type'],
             'description' => $validated['description'] ?? null,
             'start_time' => $validated['start_time'],
             'end_time' => $validated['end_time'],
             'break_minutes' => $validated['break_duration'] ?? 0,
-            'days_of_week' => $validated['days_of_week'],
+            'days_of_week' => null, // Templates don't have specific days
             'min_staff_required' => $validated['required_staff'],
             'max_staff_allowed' => $validated['required_staff'] * 2, // Default to 2x min
             'hourly_rate_multiplier' => $validated['hourly_rate'] ?? 1.00,
@@ -286,8 +303,19 @@ class ShiftsManageController extends Controller
             'updated_by' => $updatedBy,
         ]);
 
+        $successMessage = 'Shift template "'.$shift->name.'" updated successfully!';
+
+        // Return JSON response for AJAX requests
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $successMessage,
+                'redirect' => route('admin.shifts.manage.index'),
+            ]);
+        }
+
         return redirect()->route('admin.shifts.manage.index')
-            ->with('success', "Shift '{$shift->name}' updated successfully!");
+            ->with('success', $successMessage);
     }
 
     /**
