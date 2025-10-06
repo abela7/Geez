@@ -115,7 +115,7 @@ class ShiftsAssignmentsController extends Controller
                 'staff_shift_id' => $validated['staff_shift_id'],
                 'assigned_date' => $validated['assigned_date'],
                 'status' => 'scheduled',
-                'notes' => $validated['notes'],
+                'notes' => $validated['notes'] ?? null,
                 'assigned_by' => auth()->user()->id ?? null,
             ]);
 

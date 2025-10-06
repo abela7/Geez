@@ -57,31 +57,6 @@ function shiftsAssignmentsData() {
             this.unassignedShifts = this.totalShifts - this.assignedShifts;
         },
 
-        // Setup drag and drop event listeners
-        setupDragAndDrop() {
-            // Add drag over effects to drop zones
-            document.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                const dropZone = e.target.closest('.assignment-drop-zone');
-                if (dropZone) {
-                    dropZone.classList.add('drag-over');
-                }
-            });
-
-            document.addEventListener('dragleave', (e) => {
-                const dropZone = e.target.closest('.assignment-drop-zone');
-                if (dropZone && !dropZone.contains(e.relatedTarget)) {
-                    dropZone.classList.remove('drag-over');
-                }
-            });
-
-            document.addEventListener('drop', (e) => {
-                const dropZone = e.target.closest('.assignment-drop-zone');
-                if (dropZone) {
-                    dropZone.classList.remove('drag-over');
-                }
-            });
-        },
 
         // Setup notification system
         setupNotifications() {
@@ -153,83 +128,45 @@ function shiftsAssignmentsData() {
         },
 
         staffMatchesSearch(staffName, staffType) {
-            if (this.staffSearch === '') return true;
-            const search = this.staffSearch.toLowerCase();
+            if (this.staffSearchQuery === '') return true;
+            const search = this.staffSearchQuery.toLowerCase();
             return staffName.toLowerCase().includes(search) || 
                    staffType.toLowerCase().includes(search);
         },
 
-        // Drag & Drop Handlers
-        handleStaffDragStart(event, staffData) {
-            this.draggedItem = staffData;
-            this.draggedType = 'staff';
+        // Modal Management
+        openAssignStaffModal(shiftId, date, shiftName) {
+            this.modalShiftId = shiftId;
+            this.modalDate = date;
+            this.modalShiftName = shiftName;
+            this.staffSearchQuery = '';
+            this.showAssignStaffModal = true;
             
-            event.dataTransfer.effectAllowed = 'move';
-            event.dataTransfer.setData('text/html', event.target.outerHTML);
-            
-            // Add visual feedback
-            event.target.classList.add('dragging');
-            
-            console.log('Started dragging staff:', staffData);
+            console.log('Opening assign staff modal:', { shiftId, date, shiftName });
         },
 
-        handleDragStart(event, assignmentData) {
-            this.draggedItem = assignmentData;
-            this.draggedType = 'assignment';
-            
-            event.dataTransfer.effectAllowed = 'move';
-            event.dataTransfer.setData('text/html', event.target.outerHTML);
-            
-            // Add visual feedback
-            event.target.classList.add('dragging');
-            
-            console.log('Started dragging assignment:', assignmentData);
+        closeAssignStaffModal() {
+            this.showAssignStaffModal = false;
+            this.modalShiftId = null;
+            this.modalDate = null;
+            this.modalShiftName = '';
+            this.staffSearchQuery = '';
         },
 
-        async handleDrop(event, shiftId, date) {
-            event.preventDefault();
-            
-            // Remove drag over effect
-            const dropZone = event.target.closest('.assignment-drop-zone');
-            if (dropZone) {
-                dropZone.classList.remove('drag-over');
-            }
-
-            if (!this.draggedItem) {
-                console.log('No dragged item');
-                return;
-            }
-
-            try {
-                if (this.draggedType === 'staff') {
-                    // Assign new staff to shift
-                    await this.assignStaff(this.draggedItem.staff_id, shiftId, date);
-                } else if (this.draggedType === 'assignment') {
-                    // Move existing assignment
-                    await this.moveAssignment(this.draggedItem.assignment_id, shiftId, date);
-                }
-            } catch (error) {
-                console.error('Drop error:', error);
-                this.showNotification('Drop operation failed', 'error');
-            } finally {
-                // Clean up drag state
-                this.cleanupDrag();
-            }
-        },
-
-        cleanupDrag() {
-            // Remove dragging class from all elements
-            document.querySelectorAll('.dragging').forEach(el => {
-                el.classList.remove('dragging');
-            });
-            
-            // Reset drag state
-            this.draggedItem = null;
-            this.draggedType = null;
+        formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-GB', options);
         },
 
         // Assignment Management
-        async assignStaff(staffId, shiftId, date) {
+        async assignStaffToShift(staffId, staffName) {
+            if (!this.modalShiftId || !this.modalDate) {
+                this.showNotification('Invalid shift or date', 'error');
+                return;
+            }
+
             this.isLoading = true;
 
             try {
@@ -242,31 +179,30 @@ function shiftsAssignmentsData() {
                     },
                     body: JSON.stringify({
                         staff_id: staffId,
-                        staff_shift_id: shiftId,
-                        assigned_date: date,
+                        staff_shift_id: this.modalShiftId,
+                        assigned_date: this.modalDate,
                     }),
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
-                    this.showNotification(result.message, 'success');
-                    this.refreshAssignments();
+                    this.showNotification(`${staffName} assigned successfully!`, 'success');
+                    this.closeAssignStaffModal();
+                    
+                    // Refresh the page after a short delay
+                    setTimeout(() => {
+                        this.refreshAssignments();
+                    }, 800);
                 } else {
-                    this.showNotification(result.message, 'error');
+                    this.showNotification(result.message || 'Failed to assign staff', 'error');
                 }
             } catch (error) {
                 console.error('Assignment error:', error);
-                this.showNotification('Failed to assign staff', 'error');
+                this.showNotification('Failed to assign staff. Please try again.', 'error');
             } finally {
                 this.isLoading = false;
             }
-        },
-
-        async moveAssignment(assignmentId, newShiftId, newDate) {
-            // For now, we'll just show a message
-            // In a full implementation, this would update the assignment
-            this.showNotification('Assignment moving not yet implemented', 'info');
         },
 
         async removeAssignment(assignmentId) {
@@ -301,69 +237,6 @@ function shiftsAssignmentsData() {
             }
         },
 
-        // Assignment Editing
-        editAssignment(assignmentId) {
-            // Find the assignment element to get current data
-            const assignmentElement = document.querySelector(`[data-assignment-id="${assignmentId}"]`);
-            if (!assignmentElement) return;
-
-            // Extract current data (in a real app, this would come from the server)
-            const statusElement = assignmentElement.querySelector('.assignment-status');
-            const currentStatus = statusElement ? statusElement.textContent.toLowerCase().trim() : 'scheduled';
-
-            this.editingAssignment = {
-                id: assignmentId,
-                status: currentStatus,
-                notes: ''
-            };
-
-            this.showAssignmentModal = true;
-        },
-
-        async saveAssignment() {
-            if (!this.editingAssignment.id) return;
-
-            this.isLoading = true;
-
-            try {
-                const response = await fetch(`/admin/shifts/assignments/${this.editingAssignment.id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        status: this.editingAssignment.status,
-                        notes: this.editingAssignment.notes,
-                    }),
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    this.showNotification(result.message, 'success');
-                    this.closeAssignmentModal();
-                    this.refreshAssignments();
-                } else {
-                    this.showNotification(result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Save assignment error:', error);
-                this.showNotification('Failed to save assignment', 'error');
-            } finally {
-                this.isLoading = false;
-            }
-        },
-
-        closeAssignmentModal() {
-            this.showAssignmentModal = false;
-            this.editingAssignment = {
-                id: null,
-                status: '',
-                notes: ''
-            };
-        },
 
         // Bulk Operations
         async copyPreviousWeek() {

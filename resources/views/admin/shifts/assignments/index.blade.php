@@ -6,10 +6,6 @@
 @vite(['resources/css/admin/shifts/assignments.css'])
 @endpush
 
-@push('scripts')
-@vite(['resources/js/admin/shifts/assignments.js'])
-@endpush
-
 @section('content')
 <div class="assignments-page" x-data="shiftsAssignmentsData()">
     <!-- Page Header -->
@@ -263,10 +259,9 @@
             <p class="loading-text">Processing...</p>
         </div>
     </div>
-</div>
 
-<!-- Assign Staff Modal -->
-<div x-show="showAssignStaffModal" x-transition x-cloak class="modal-overlay" @click="closeAssignStaffModal()">
+    <!-- Assign Staff Modal -->
+    <div x-show="showAssignStaffModal" x-transition x-cloak class="modal-overlay" @click="closeAssignStaffModal()">
     <div class="modal-content-large" @click.stop>
         <div class="modal-header">
             <div>
@@ -322,6 +317,7 @@
         <div class="modal-footer">
             <button @click="closeAssignStaffModal()" class="btn btn-ghost">Cancel</button>
         </div>
+    </div>
     </div>
 </div>
 @endsection

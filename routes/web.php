@@ -171,16 +171,16 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         // Shift templates management
         Route::resource('templates', \App\Http\Controllers\Admin\StaffShiftController::class, ['as' => 'shifts']);
 
-        // Assignment management
-        Route::resource('assignments', \App\Http\Controllers\Admin\StaffShiftAssignmentController::class, ['as' => 'shifts']);
-
-        // Weekly Rota/Assignments Interface
+        // Weekly Rota/Assignments Interface (Must be BEFORE resource route to avoid conflicts)
+        Route::get('/assignments/staff-availability', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'getStaffAvailability'])->name('assignments.staff-availability');
+        Route::post('/assignments/bulk-assign', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'bulkAssign'])->name('assignments.bulk-assign');
         Route::get('/assignments', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'index'])->name('assignments.index');
         Route::post('/assignments', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'store'])->name('assignments.store');
         Route::put('/assignments/{id}', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'update'])->name('assignments.update');
         Route::delete('/assignments/{id}', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'destroy'])->name('assignments.destroy');
-        Route::get('/assignments/staff-availability', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'getStaffAvailability'])->name('assignments.staff-availability');
-        Route::post('/assignments/bulk-assign', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'bulkAssign'])->name('assignments.bulk-assign');
+
+        // Assignment management (Resource routes for API/CRUD - different from weekly rota UI)
+        Route::resource('assignment-records', \App\Http\Controllers\Admin\StaffShiftAssignmentController::class, ['as' => 'shifts']);
 
         // Legacy UI routes (keep for backward compatibility)
         Route::get('/overview', [\App\Http\Controllers\Admin\ShiftsOverviewController::class, 'index'])->name('overview.index');
