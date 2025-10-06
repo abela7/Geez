@@ -21,6 +21,19 @@
                 <p class="header-description">Create and manage staff rota for {{ $weekStart->format('M j') }} - {{ $weekEnd->format('M j, Y') }}</p>
             </div>
             <div class="header-actions">
+                <!-- Template Actions -->
+                <button @click="openApplyTemplateModal()" class="btn btn-secondary" :disabled="isLoading">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Apply Template
+                </button>
+                <button @click="showSaveTemplateModal = true" class="btn btn-success" :disabled="isLoading">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+                    </svg>
+                    Save as Template
+                </button>
                 <button @click="copyPreviousWeek()" class="btn btn-outline" :disabled="isLoading">
                     <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
@@ -762,6 +775,21 @@ document.addEventListener('alpine:init', () => {
                 exceptionMinutes: 0,
                 exceptionDescription: '',
                 
+                // Template functionality
+                showSaveTemplateModal: false,
+                showApplyTemplateModal: false,
+                templates: [],
+                templateForm: {
+                    name: '',
+                    description: '',
+                    type: 'standard',
+                    setAsDefault: false
+                },
+                applyTemplateForm: {
+                    templateId: '',
+                    overwriteExisting: false
+                },
+                
                 async openAssignmentModal(assignmentId) {
                     this.isLoading = true;
                     try {
@@ -840,6 +868,114 @@ document.addEventListener('alpine:init', () => {
                             this.refreshAssignments();
                         }
                     } catch (e) { this.showNotification('Replacement failed', 'error'); }
+                },
+
+                // Template Methods
+                async loadTemplates() {
+                    try {
+                        const response = await fetch('/admin/shifts/assignments/templates');
+                        const data = await response.json();
+                        if (data.success) {
+                            this.templates = data.templates;
+                        }
+                    } catch (e) {
+                        console.error('Failed to load templates:', e);
+                    }
+                },
+
+                async saveTemplate() {
+                    if (!this.templateForm.name.trim()) return;
+                    
+                    this.isLoading = true;
+                    try {
+                        const response = await fetch('/admin/shifts/assignments/save-as-template', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({
+                                name: this.templateForm.name,
+                                description: this.templateForm.description,
+                                type: this.templateForm.type,
+                                week_start: '{{ $weekStart->format("Y-m-d") }}',
+                                set_as_default: this.templateForm.setAsDefault
+                            })
+                        });
+
+                        const data = await response.json();
+                        if (data.success) {
+                            this.showNotification(data.message, 'success');
+                            this.showSaveTemplateModal = false;
+                            this.resetTemplateForm();
+                            this.loadTemplates(); // Refresh templates list
+                        } else {
+                            this.showNotification(data.message, 'error');
+                        }
+                    } catch (e) {
+                        this.showNotification('Failed to save template', 'error');
+                    } finally {
+                        this.isLoading = false;
+                    }
+                },
+
+                async applyTemplate() {
+                    if (!this.applyTemplateForm.templateId) return;
+                    
+                    this.isLoading = true;
+                    try {
+                        const response = await fetch('/admin/shifts/assignments/apply-template', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({
+                                template_id: this.applyTemplateForm.templateId,
+                                week_start: '{{ $weekStart->format("Y-m-d") }}',
+                                overwrite_existing: this.applyTemplateForm.overwriteExisting
+                            })
+                        });
+
+                        const data = await response.json();
+                        if (data.success) {
+                            this.showNotification(data.message, 'success');
+                            this.showApplyTemplateModal = false;
+                            this.resetApplyTemplateForm();
+                            // Refresh the page to show new assignments
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
+                        } else {
+                            this.showNotification(data.message, 'error');
+                        }
+                    } catch (e) {
+                        this.showNotification('Failed to apply template', 'error');
+                    } finally {
+                        this.isLoading = false;
+                    }
+                },
+
+                resetTemplateForm() {
+                    this.templateForm = {
+                        name: '',
+                        description: '',
+                        type: 'standard',
+                        setAsDefault: false
+                    };
+                },
+
+                resetApplyTemplateForm() {
+                    this.applyTemplateForm = {
+                        templateId: '',
+                        overwriteExisting: false
+                    };
+                },
+
+                // Initialize templates when apply modal opens
+                async openApplyTemplateModal() {
+                    this.showApplyTemplateModal = true;
+                    await this.loadTemplates();
                 }
             });
         };
@@ -921,6 +1057,132 @@ document.addEventListener('alpine:init', () => {
 
         <div class="modal-footer">
             <button class="btn btn-ghost" @click="closeAssignmentModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Save as Template Modal -->
+<div x-show="showSaveTemplateModal" x-transition x-cloak class="modal-overlay" @click="showSaveTemplateModal = false">
+    <div class="modal-content" @click.stop>
+        <div class="modal-header">
+            <h3 class="modal-title">Save as Template</h3>
+            <button @click="showSaveTemplateModal = false" class="btn-close-modal">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="templateName" class="form-label">Template Name</label>
+                <input type="text" id="templateName" x-model="templateForm.name" class="form-input" placeholder="e.g., Standard Restaurant Week">
+            </div>
+            
+            <div class="form-group">
+                <label for="templateDescription" class="form-label">Description (Optional)</label>
+                <textarea id="templateDescription" x-model="templateForm.description" class="form-textarea" rows="3" placeholder="Describe this template..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="templateType" class="form-label">Template Type</label>
+                <select id="templateType" x-model="templateForm.type" class="form-select">
+                    <option value="standard">Standard</option>
+                    <option value="holiday">Holiday</option>
+                    <option value="seasonal">Seasonal</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" x-model="templateForm.setAsDefault">
+                    <span class="checkbox-text">Set as default template</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-ghost" @click="showSaveTemplateModal = false">Cancel</button>
+            <button class="btn btn-success" @click="saveTemplate()" :disabled="!templateForm.name || isLoading">
+                <span x-show="!isLoading">Save Template</span>
+                <span x-show="isLoading">Saving...</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Apply Template Modal -->
+<div x-show="showApplyTemplateModal" x-transition x-cloak class="modal-overlay" @click="showApplyTemplateModal = false">
+    <div class="modal-content-large" @click.stop>
+        <div class="modal-header">
+            <h3 class="modal-title">Apply Template</h3>
+            <button @click="showApplyTemplateModal = false" class="btn-close-modal">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        <div class="modal-body-scroll">
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" x-model="applyTemplateForm.overwriteExisting">
+                    <span class="checkbox-text">Overwrite existing assignments</span>
+                </label>
+                <p class="form-help">If unchecked, existing assignments will be skipped</p>
+            </div>
+
+            <div class="templates-list" x-show="templates.length > 0">
+                <h4>Available Templates</h4>
+                <div class="template-cards">
+                    <template x-for="template in templates" :key="template.id">
+                        <div class="template-card" :class="{ 'selected': applyTemplateForm.templateId === template.id }" @click="applyTemplateForm.templateId = template.id">
+                            <div class="template-header">
+                                <div class="template-name" x-text="template.name"></div>
+                                <div class="template-badge" x-text="template.type" :class="'badge-' + template.type"></div>
+                            </div>
+                            <div class="template-description" x-text="template.description || 'No description'"></div>
+                            <div class="template-stats">
+                                <span class="stat">
+                                    <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                    </svg>
+                                    <span x-text="template.unique_staff_count + ' staff'"></span>
+                                </span>
+                                <span class="stat">
+                                    <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    <span x-text="template.shifts_count + ' shifts'"></span>
+                                </span>
+                                <span class="stat">
+                                    <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                    </svg>
+                                    <span x-text="template.total_assignments + ' assignments'"></span>
+                                </span>
+                            </div>
+                            <div class="template-meta">
+                                <span>Used <span x-text="template.usage_count"></span> times</span>
+                                <span x-show="template.is_default" class="default-badge">Default</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <div x-show="templates.length === 0 && !isLoading" class="empty-state">
+                <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <p>No templates available</p>
+                <p class="empty-subtitle">Create your first template by saving the current week's assignments</p>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-ghost" @click="showApplyTemplateModal = false">Cancel</button>
+            <button class="btn btn-primary" @click="applyTemplate()" :disabled="!applyTemplateForm.templateId || isLoading">
+                <span x-show="!isLoading">Apply Template</span>
+                <span x-show="isLoading">Applying...</span>
+            </button>
         </div>
     </div>
 </div>
