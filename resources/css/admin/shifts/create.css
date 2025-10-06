@@ -327,6 +327,21 @@
     font-size: var(--font-size-xs);
     color: var(--form-help-text);
     line-height: var(--line-height-relaxed);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.form-help .help-icon,
+.form-help svg.help-icon {
+    width: 1rem !important;
+    height: 1rem !important;
+    min-width: 1rem !important;
+    min-height: 1rem !important;
+    max-width: 1rem !important;
+    max-height: 1rem !important;
+    flex-shrink: 0;
+    opacity: 0.7;
 }
 
 /* Enhanced Form Errors */

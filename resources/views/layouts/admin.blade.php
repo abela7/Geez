@@ -52,14 +52,14 @@
         @livewire('admin.navigation')
         
         <!-- Main Content Area -->
-        <div class="admin-main">
+        <div class="admin-main pt-16">  <!-- Add pt-16 for fixed header offset -->
             <!-- Header Component -->
-            <header class="admin-header">
+            <header class="admin-header fixed top-0 left-0 right-0 z-50 bg-primary shadow-lg">  <!-- Make fixed with z-index -->
                 @livewire('admin.header', ['pageTitle' => $pageTitle ?? __('dashboard.title')])
             </header>
             
             <!-- Page Content -->
-            <main class="admin-content" role="main" aria-label="{{ __('Main content area') }}">
+            <main class="admin-content relative z-10" role="main" aria-label="{{ __('Main content area') }}">  <!-- z-10 below nav; relative for stacking -->
         @if (session('success'))
             <div class="alert alert-success" role="alert">
                 {{ session('success') }}

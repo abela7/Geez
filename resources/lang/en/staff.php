@@ -227,6 +227,7 @@ return [
     'nav_tasks' => 'Tasks',
     'nav_task_settings' => 'Task Settings',
     'nav_payroll' => 'Payroll',
+    'nav_shifts' => 'Shifts',
 
     // Profile page
     'show' => 'Staff Profile',
@@ -238,6 +239,7 @@ return [
     'performance_review' => 'Performance Rating',
     'overview' => 'Overview',
     'attendance' => 'Attendance',
+    'nav_attendance' => 'Attendance',
     'tasks' => 'Tasks',
     'payroll' => 'Payroll',
     'performance' => 'Performance',
@@ -857,4 +859,25 @@ return [
             'regular' => 'Regular',
         ],
     ],
+
+    // Overview page
+    'overview' => 'Overview',
+    'directory' => 'Directory',
+    'total_staff' => 'Total Staff',
+    'active_staff' => 'Active Staff',
+    'avg_tenure' => 'Average Tenure',
+    'recent_hires' => 'Recent Hires',
+    'recent_hires_title' => 'Recent Hires (Last 30 Days)',
+    'filtered_results' => 'Showing filtered results:',
+    'all_staff_overview' => 'Showing all staff overview',
+    'no_recent_hires' => 'No recent hires in the last 30 days',
+    'hire_year' => 'Hire Year',
+    'staff_members_title' => 'Staff Members',
+    'staff_members_count' => ':count Staff Members',
+    'no_staff_members' => 'No staff members match your filters.',
+
+    // Add new keys for labels
+    'search_label' => 'Search staff by name, email,',
+    'staff_type_label' => 'Staff Type',
+    'status_label' => 'Status',
 ];

@@ -32,6 +32,8 @@ return [
     'reset' => 'Reset',
     'clear' => 'Clear',
     'refresh' => 'Refresh',
+    'apply' => 'Apply',
+    'last_30_days' => 'Last 30 Days',
     'reload' => 'Reload',
     'export' => 'Export',
     'import' => 'Import',

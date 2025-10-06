@@ -174,10 +174,19 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         // Weekly Rota/Assignments Interface (Must be BEFORE resource route to avoid conflicts)
         Route::get('/assignments/staff-availability', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'getStaffAvailability'])->name('assignments.staff-availability');
         Route::post('/assignments/bulk-assign', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'bulkAssign'])->name('assignments.bulk-assign');
+        
+        // Weekly Rota Template Routes
+        Route::post('/assignments/save-as-template', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'saveAsTemplate'])->name('assignments.save-template');
+        Route::post('/assignments/apply-template', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'applyTemplate'])->name('assignments.apply-template');
+        Route::get('/assignments/templates', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'getTemplates'])->name('assignments.get-templates');
+        
         Route::get('/assignments', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'index'])->name('assignments.index');
         Route::post('/assignments', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'store'])->name('assignments.store');
-        Route::put('/assignments/{id}', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'update'])->name('assignments.update');
-        Route::delete('/assignments/{id}', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'destroy'])->name('assignments.destroy');
+        Route::put('/assignments/{assignment}', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'update'])->name('assignments.update');
+        Route::delete('/assignments/{assignment}', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'destroy'])->name('assignments.destroy');
+        Route::get('/assignments/{assignment}', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'show'])->name('assignments.show');
+        Route::post('/assignments/{assignment}/exceptions', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'addException'])->name('assignments.exceptions.store');
+        Route::post('/assignments/{assignment}/replace', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'replaceStaff'])->name('assignments.replace');
 
         // Assignment management (Resource routes for API/CRUD - different from weekly rota UI)
         Route::resource('assignment-records', \App\Http\Controllers\Admin\StaffShiftAssignmentController::class, ['as' => 'shifts']);
@@ -187,9 +196,14 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         Route::get('/manage', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'index'])->name('manage.index');
         Route::get('/manage/create', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'create'])->name('manage.create');
         Route::post('/manage', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'store'])->name('manage.store');
-        Route::get('/manage/{id}/edit', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'edit'])->name('manage.edit');
-        Route::put('/manage/{id}', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'update'])->name('manage.update');
-        Route::delete('/manage/{id}', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'destroy'])->name('manage.destroy');
+        Route::get('/manage/{shift}/edit', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'edit'])->name('manage.edit');
+        Route::put('/manage/{shift}', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'update'])->name('manage.update');
+        Route::delete('/manage/{shift}', [\App\Http\Controllers\Admin\ShiftsManageController::class, 'destroy'])->name('manage.destroy');
+
+        // Bulk actions for manage
+        Route::patch('manage/bulk-activate', [\App\Http\Controllers\Admin\Shifts\ManageController::class, 'bulkActivate'])->name('manage.bulk-activate');
+        Route::patch('manage/bulk-deactivate', [\App\Http\Controllers\Admin\Shifts\ManageController::class, 'bulkDeactivate'])->name('manage.bulk-deactivate');
+        Route::delete('manage/bulk-delete', [\App\Http\Controllers\Admin\Shifts\ManageController::class, 'bulkDelete'])->name('manage.bulk-delete');
     });
 
     // Menu Management Routes (your actual pages)

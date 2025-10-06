@@ -19,32 +19,48 @@ class StaffController extends Controller
      */
     public function index(Request $request)
     {
-        // Check authorization - only System Admin and Administrator
         $this->authorizeStaffAccess();
 
-        $query = Staff::with(['staffType'])
-            ->when($request->search, function ($q, $search) {
-                $q->where(function ($query) use ($search) {
-                    $query->where('first_name', 'like', "%{$search}%")
-                        ->orWhere('last_name', 'like', "%{$search}%")
-                        ->orWhere('username', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
-                });
-            })
-            ->when($request->staff_type_id, function ($q, $staffTypeId) {
-                $q->where('staff_type_id', $staffTypeId);
-            })
-            ->when($request->status, function ($q, $status) {
-                $q->where('status', $status);
-            })
-            ->orderBy('first_name')
-            ->orderBy('last_name');
+        $baseQuery = Staff::with(['staffType', 'profile']);
 
-        $staff = $query->paginate(15)->withQueryString();
+        // Apply filters to base query for counts
+        $filteredQuery = clone $baseQuery;
+        $filteredQuery->when($request->search, function ($q, $search) {
+            $q->where(function ($inner) use ($search) {
+                $inner->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('username', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        })
+        ->when($request->staff_type_id, function ($q, $staffTypeId) {
+            $q->where('staff_type_id', $staffTypeId);
+        })
+        ->when($request->status, function ($q, $status) {
+            $q->where('status', $status);
+        });
+
+        // Total stats (filtered, calculated in PHP for safety)
+        $filteredStaff = $filteredQuery->get();  // Fetch once for efficiency (small dataset)
+        $totalStats = [
+            'total' => $filteredStaff->count(),
+            'active' => $filteredStaff->where('status', 'active')->count(),
+            'avg_tenure' => $filteredStaff->avg(function ($staff) {
+                return $staff->hire_date ? $staff->hire_date->diffInYears(now(), false) : 0;
+            }) ?? 0.0,  // PHP avg on collection—safe, accurate years
+            'recent_hires' => (clone $filteredQuery)->where('hire_date', '>=', now()->subDays(30))->count(),
+        ];
+
+        // Staff preview (filtered, all, alphabetical)
+        $staffPreview = $filteredQuery
+            ->with(['staffType', 'profile'])
+            ->orderBy('first_name', 'asc')
+            ->orderBy('last_name', 'asc')
+            ->get();
 
         $staffTypes = StaffType::where('is_active', true)->orderBy('display_name')->get();
 
-        return view('admin.staff.index', compact('staff', 'staffTypes'));
+        return view('admin.staff.index', compact('totalStats', 'staffPreview', 'staffTypes'));
     }
 
     /**

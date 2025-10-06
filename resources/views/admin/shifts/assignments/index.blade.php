@@ -217,12 +217,18 @@
                                 </div>
                                 
                                 <div class="staff-info">
-                                    <div class="staff-name">{{ $assignment->staff->full_name }}</div>
+                                    <div class="staff-name">{{ $assignment->staff->first_name }}</div>
                                     <div class="staff-type">{{ $assignment->staff->staffType?->display_name ?? 'No Type' }}</div>
                                 </div>
                                 
                                 <div class="assignment-actions">
-                                    <button @click="removeAssignment('{{ $assignment->id }}')" class="btn-action btn-action-delete" title="Remove">
+                                    <button onclick="openAssignmentDetails('{{ $assignment->id }}')" class="btn-action btn-action-view" title="View Details">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                        </svg>
+                                    </button>
+                                    <button onclick="removeAssignmentConfirm('{{ $assignment->id }}')" class="btn-action btn-action-delete" title="Remove">
                                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                         </svg>
@@ -321,3 +327,601 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+// Global variables for assignment management
+let assignmentModal = null;
+let currentAssignmentId = null;
+
+// Assignment Details Modal Functions
+async function openAssignmentDetails(assignmentId) {
+    try {
+        showLoading(true);
+        const response = await fetch(`/admin/shifts/assignments/${assignmentId}`, {
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            currentAssignmentId = assignmentId;
+            showAssignmentModal(data.assignment);
+        } else {
+            showNotification('Failed to load assignment details', 'error');
+        }
+    } catch (error) {
+        console.error('Error loading assignment:', error);
+        showNotification('Failed to load assignment details', 'error');
+    } finally {
+        showLoading(false);
+    }
+}
+
+function showAssignmentModal(assignment) {
+    if (document.getElementById('assignmentDetailsModal')) {
+        document.getElementById('assignmentDetailsModal').remove();
+    }
+
+    const modalHTML = `
+        <div id="assignmentDetailsModal" class="modal-overlay" style="display: flex;">
+            <div class="modal-content-large">
+                <div class="modal-header">
+                    <div>
+                        <h2 class="modal-title">Assignment Details</h2>
+                        <p class="modal-subtitle">Manage shift assignment for ${formatDate(assignment.date)}</p>
+                    </div>
+                    <button onclick="closeAssignmentModal()" class="btn-close-modal" aria-label="Close modal">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="modal-body-scroll">
+                    <!-- Assignment Overview -->
+                    <div class="form-group">
+                        <h3 style="margin-bottom: var(--spacing-md); color: var(--color-text-primary);">Overview</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
+                            <!-- Staff Info -->
+                            <div>
+                                <h4 style="margin-bottom: var(--spacing-sm); color: var(--color-text-primary);">Staff Information</h4>
+                                <div class="staff-avatar" style="width: 4rem; height: 4rem; margin-bottom: var(--spacing-sm);">
+                                    ${assignment.staff.photo ? `<img src="${assignment.staff.photo}" alt="${assignment.staff.name}">` : `<div class="avatar-placeholder-large">${assignment.staff.name.charAt(0).toUpperCase()}</div>`}
+                                </div>
+                                <p><strong>Name:</strong> ${assignment.staff.name}</p>
+                                <p><strong>Type:</strong> ${assignment.staff.type || 'N/A'}</p>
+                                <p><strong>Status:</strong> 
+                                    <select id="assignmentStatus" class="form-select" style="margin-left: 0.5rem; width: auto; display: inline-block;">
+                                        <option value="scheduled" ${assignment.status === 'scheduled' ? 'selected' : ''}>Scheduled</option>
+                                        <option value="confirmed" ${assignment.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                                        <option value="cancelled" ${assignment.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                                        <option value="completed" ${assignment.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                    </select>
+                                </p>
+                                <button onclick="updateAssignmentStatus()" class="btn btn-primary" style="margin-top: 0.5rem;">Update Status</button>
+                            </div>
+                            
+                            <!-- Shift Info -->
+                            <div>
+                                <h4 style="margin-bottom: var(--spacing-sm); color: var(--color-text-primary);">Shift Details</h4>
+                                <p><strong>Shift:</strong> ${assignment.shift.name}</p>
+                                <p><strong>Department:</strong> ${assignment.shift.department}</p>
+                                <p><strong>Time:</strong> ${assignment.shift.start_time} - ${assignment.shift.end_time}</p>
+                                <p><strong>Break:</strong> ${assignment.shift.break_minutes} minutes</p>
+                                <p><strong>Min Staff Required:</strong> ${assignment.shift.min_staff_required}</p>
+                                ${assignment.notes ? `<p><strong>Notes:</strong> ${assignment.notes}</p>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Existing Exceptions -->
+                    ${assignment.exceptions && assignment.exceptions.length > 0 ? `
+                        <div class="form-group">
+                            <h3 style="margin-bottom: var(--spacing-md); color: var(--color-text-primary);">Exceptions History</h3>
+                            <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+                                ${assignment.exceptions.map(ex => `
+                                    <div style="background: var(--color-info-bg); padding: var(--spacing-md); border-radius: var(--border-radius); border-left: 4px solid var(--color-info);">
+                                        <p><strong>Type:</strong> ${ex.type}</p>
+                                        <p><strong>Minutes Affected:</strong> ${ex.minutes_affected || 'N/A'}</p>
+                                        <p><strong>Description:</strong> ${ex.description}</p>
+                                        ${ex.replacement ? `<p><strong>Replacement:</strong> ${ex.replacement_staff_name}</p>` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    <hr style="margin: 2rem 0; opacity: 0.2;">
+                    
+                    <!-- Actions Grid -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <!-- Record Exception -->
+                        <div>
+                            <h4 style="margin-bottom: 1rem; color: var(--color-text-primary);">Record Exception</h4>
+                            <div style="background: var(--color-warning-bg); padding: 1rem; border-radius: var(--border-radius); border-left: 4px solid var(--color-warning);">
+                                <div class="form-group">
+                                    <label class="form-label">Exception Type:</label>
+                                    <select id="exceptionType" class="form-select">
+                                        <option value="">Select...</option>
+                                        <option value="late_arrival">Late Arrival</option>
+                                        <option value="early_departure">Early Departure</option>
+                                        <option value="extended_break">Extended Break</option>
+                                        <option value="no_show">No-show</option>
+                                        <option value="sick_call_out">Sick Call-out</option>
+                                        <option value="emergency_leave">Emergency Leave</option>
+                                        <option value="overtime">Overtime</option>
+                                        <option value="role_change">Role Change</option>
+                                        <option value="replacement">Replacement</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Minutes Affected:</label>
+                                    <input type="number" id="exceptionMinutes" min="0" class="form-select" placeholder="e.g., 30">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Description:</label>
+                                    <textarea id="exceptionDescription" class="form-textarea" rows="3" placeholder="Describe the exception..."></textarea>
+                                </div>
+                                
+                                <button onclick="submitException()" class="btn btn-warning-outline" style="width: 100%;">Record Exception</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Replace Staff -->
+                        <div>
+                            <h4 style="margin-bottom: 1rem; color: var(--color-text-primary);">Replace Staff</h4>
+                            <div style="background: var(--color-error-bg); padding: 1rem; border-radius: var(--border-radius); border-left: 4px solid var(--color-error);">
+                                <div class="form-group">
+                                    <label class="form-label">Replacement Staff:</label>
+                                    <select id="replacementStaff" class="form-select">
+                                        <option value="">Select staff...</option>
+                                        ${getStaffOptions()}
+                                    </select>
+                                </div>
+                                <button onclick="replaceStaff()" class="btn btn-outline" style="background: var(--color-error); color: white; width: 100%;">Replace Staff</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button onclick="closeAssignmentModal()" class="btn btn-ghost">Close</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function getStaffOptions() {
+    // Get staff from PHP data - this would be better if we had it as JSON
+    const staffOptions = @json($staff->map(function($s) { return ['id' => $s->id, 'name' => $s->full_name, 'type' => $s->staffType?->display_name ?? 'No Type']; }));
+    return staffOptions.map(staff => `<option value="${staff.id}">${staff.name} (${staff.type})</option>`).join('');
+}
+
+function closeAssignmentModal() {
+    const modal = document.getElementById('assignmentDetailsModal');
+    if (modal) {
+        modal.remove();
+    }
+    currentAssignmentId = null;
+}
+
+async function updateAssignmentStatus() {
+    if (!currentAssignmentId) return;
+    
+    const status = document.getElementById('assignmentStatus').value;
+    
+    try {
+        showLoading(true);
+        const response = await fetch(`/admin/shifts/assignments/${currentAssignmentId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ status: status })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification('Status updated successfully', 'success');
+            setTimeout(() => window.location.reload(), 1000);
+        } else {
+            showNotification('Failed to update status', 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to update status', 'error');
+    } finally {
+        showLoading(false);
+    }
+}
+
+async function submitException() {
+    if (!currentAssignmentId) return;
+    
+    const exceptionType = document.getElementById('exceptionType').value;
+    const minutes = document.getElementById('exceptionMinutes').value;
+    const description = document.getElementById('exceptionDescription').value;
+    
+    if (!exceptionType) {
+        showNotification('Please select an exception type', 'warning');
+        return;
+    }
+    
+    try {
+        showLoading(true);
+        const response = await fetch(`/admin/shifts/assignments/${currentAssignmentId}/exceptions`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                exception_type: exceptionType,
+                minutes_affected: parseInt(minutes) || 0,
+                description: description || 'Exception recorded'
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification('Exception recorded successfully', 'success');
+            closeAssignmentModal();
+            setTimeout(() => window.location.reload(), 1000);
+        } else {
+            showNotification('Failed to record exception', 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to record exception', 'error');
+    } finally {
+        showLoading(false);
+    }
+}
+
+async function replaceStaff() {
+    if (!currentAssignmentId) return;
+    
+    const replacementId = document.getElementById('replacementStaff').value;
+    
+    if (!replacementId) {
+        showNotification('Please select a replacement staff member', 'warning');
+        return;
+    }
+    
+    try {
+        showLoading(true);
+        const response = await fetch(`/admin/shifts/assignments/${currentAssignmentId}/replace`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                replacement_staff_id: replacementId,
+                notes: 'Staff replaced via rota interface'
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification('Staff replaced successfully', 'success');
+            closeAssignmentModal();
+            setTimeout(() => window.location.reload(), 1000);
+        } else {
+            showNotification('Failed to replace staff', 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to replace staff', 'error');
+    } finally {
+        showLoading(false);
+    }
+}
+
+async function removeAssignmentConfirm(assignmentId) {
+    if (!confirm('Are you sure you want to remove this assignment?')) {
+        return;
+    }
+    
+    try {
+        showLoading(true);
+        const response = await fetch(`/admin/shifts/assignments/${assignmentId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification('Assignment removed successfully', 'success');
+            setTimeout(() => window.location.reload(), 1000);
+        } else {
+            showNotification('Failed to remove assignment', 'error');
+        }
+    } catch (error) {
+        showNotification('Failed to remove assignment', 'error');
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Utility functions
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+}
+
+function showLoading(show) {
+    let loader = document.getElementById('globalLoader');
+    if (show) {
+        if (!loader) {
+            loader = document.createElement('div');
+            loader.id = 'globalLoader';
+            loader.innerHTML = `
+                <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;">
+                    <div style="background:white;padding:2rem;border-radius:8px;text-align:center;">
+                        <div style="width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid #3498db;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 1rem;"></div>
+                        <p>Loading...</p>
+                    </div>
+                </div>
+                <style>
+                    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                </style>
+            `;
+            document.body.appendChild(loader);
+        }
+    } else {
+        if (loader) {
+            loader.remove();
+        }
+    }
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        max-width: 400px;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        color: white;
+        font-weight: 500;
+        animation: slideIn 0.3s ease-out;
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
+    `;
+    
+    notification.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span>${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:white;font-size:1.5rem;cursor:pointer;margin-left:1rem;">&times;</button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// Add slide in animation
+if (!document.getElementById('notificationStyles')) {
+    const style = document.createElement('style');
+    style.id = 'notificationStyles';
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+}
+</script>
+
+<!-- Keep existing Alpine.js scripts -->
+<script>
+document.addEventListener('alpine:init', () => {
+    if (typeof window.shiftsAssignmentsData === 'function') {
+        const original = window.shiftsAssignmentsData;
+        window.shiftsAssignmentsData = function() {
+            const state = original();
+            return Object.assign(state, {
+                showAssignmentModal: false,
+                assignmentDetails: null,
+                replacementStaffId: '',
+                assignmentStatus: '',
+                exceptionType: '',
+                exceptionMinutes: 0,
+                exceptionDescription: '',
+                
+                async openAssignmentModal(assignmentId) {
+                    this.isLoading = true;
+                    try {
+                        const res = await fetch(`/admin/shifts/assignments/${assignmentId}`);
+                        const data = await res.json();
+                        if (data.success) {
+                            this.assignmentDetails = data.assignment;
+                            this.assignmentStatus = data.assignment.status;
+                            this.showAssignmentModal = true;
+                        }
+                    } catch (e) {
+                        alert('Failed to load assignment details');
+                    } finally {
+                        this.isLoading = false;
+                    }
+                },
+                closeAssignmentModal() {
+                    this.showAssignmentModal = false;
+                    this.assignmentDetails = null;
+                    this.replacementStaffId = '';
+                    this.exceptionType = '';
+                    this.exceptionMinutes = 0;
+                    this.exceptionDescription = '';
+                },
+                async saveAssignmentStatus() {
+                    if (!this.assignmentDetails) return;
+                    try {
+                        const res = await fetch(`/admin/shifts/assignments/${this.assignmentDetails.id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+                            body: JSON.stringify({ status: this.assignmentStatus })
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            this.showNotification('Assignment updated', 'success');
+                            this.closeAssignmentModal();
+                            this.refreshAssignments();
+                        }
+                    } catch (e) { this.showNotification('Update failed', 'error'); }
+                },
+                async submitException() {
+                    if (!this.assignmentDetails || !this.exceptionType) return;
+                    try {
+                        const res = await fetch(`/admin/shifts/assignments/${this.assignmentDetails.id}/exceptions`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+                            body: JSON.stringify({
+                                exception_type: this.exceptionType,
+                                minutes_affected: this.exceptionMinutes || 0,
+                                description: this.exceptionDescription || 'Exception reported'
+                            })
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            this.showNotification('Exception recorded', 'success');
+                            this.closeAssignmentModal();
+                            this.refreshAssignments();
+                        }
+                    } catch (e) { this.showNotification('Failed to record exception', 'error'); }
+                },
+                async replaceAssignedStaff() {
+                    if (!this.assignmentDetails || !this.replacementStaffId) return;
+                    try {
+                        const res = await fetch(`/admin/shifts/assignments/${this.assignmentDetails.id}/replace`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+                            body: JSON.stringify({
+                                replacement_staff_id: this.replacementStaffId,
+                                notes: 'Replacement via rota UI'
+                            })
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            this.showNotification('Staff replaced', 'success');
+                            this.closeAssignmentModal();
+                            this.refreshAssignments();
+                        }
+                    } catch (e) { this.showNotification('Replacement failed', 'error'); }
+                }
+            });
+        };
+    }
+});
+</script>
+
+<!-- Assignment Details Modal -->
+<div x-show="showAssignmentModal" x-transition x-cloak class="modal-overlay" @click="closeAssignmentModal()">
+    <div class="modal-content-large" @click.stop>
+        <div class="modal-header">
+            <div>
+                <h3 class="modal-title">Assignment Details</h3>
+                <p class="modal-subtitle" x-text="assignmentDetails ? (assignmentDetails.shift.name + ' • ' + assignmentDetails.date) : ''"></p>
+            </div>
+            <button @click="closeAssignmentModal()" class="btn-close-modal">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        <div class="modal-body-scroll">
+            <div class="grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                <div>
+                    <h4>Shift</h4>
+                    <p><strong>Time:</strong> <span x-text="assignmentDetails ? (assignmentDetails.shift.start_time + ' - ' + assignmentDetails.shift.end_time) : ''"></span></p>
+                    <p><strong>Department:</strong> <span x-text="assignmentDetails?.shift.department"></span></p>
+                    <p><strong>Staff Needed:</strong> <span x-text="assignmentDetails?.shift.min_staff_required"></span></p>
+                </div>
+                <div>
+                    <h4>Staff</h4>
+                    <p><strong>Name:</strong> <span x-text="assignmentDetails?.staff.name"></span></p>
+                    <p><strong>Type:</strong> <span x-text="assignmentDetails?.staff.type || 'N/A'"></span></p>
+                    <p><strong>Status:</strong>
+                        <select x-model="assignmentStatus" class="filter-select">
+                            <option value="scheduled">Scheduled</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </p>
+                    <button class="btn btn-outline" @click="saveAssignmentStatus()">Save Status</button>
+                </div>
+            </div>
+
+            <hr style="margin:1rem 0;opacity:.2;">
+
+            <div class="grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                <div>
+                    <h4>Exceptions</h4>
+                    <label>Type</label>
+                    <select x-model="exceptionType" class="filter-select">
+                        <option value="">Select...</option>
+                        <option value="late_arrival">Late Arrival</option>
+                        <option value="early_departure">Early Departure</option>
+                        <option value="no_show">No-show</option>
+                        <option value="replacement">Replacement</option>
+                        <option value="overtime">Overtime</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <label>Minutes Affected</label>
+                    <input type="number" x-model.number="exceptionMinutes" min="0" class="filter-input-modern">
+                    <label>Description</label>
+                    <textarea x-model="exceptionDescription" rows="3" class="filter-input-modern"></textarea>
+                    <button class="btn btn-primary" @click="submitException()">Record Exception</button>
+                </div>
+                <div>
+                    <h4>Replace Staff</h4>
+                    <label>Replacement Staff</label>
+                    <select x-model="replacementStaffId" class="filter-select">
+                        <option value="">Select staff...</option>
+                        @foreach($staff as $s)
+                        <option value="{{ $s->id }}">{{ $s->full_name }} ({{ $s->staffType?->display_name ?? 'No Type' }})</option>
+                        @endforeach
+                    </select>
+                    <button class="btn btn-warning-outline" style="margin-top:.5rem" @click="replaceAssignedStaff()">Replace</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-ghost" @click="closeAssignmentModal()">Close</button>
+        </div>
+    </div>
+</div>
+@endpush

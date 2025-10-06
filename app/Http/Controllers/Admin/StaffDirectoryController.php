@@ -17,6 +17,8 @@ class StaffDirectoryController extends Controller
      */
     public function index(Request $request): View
     {
+        $viewMode = $request->get('view', 'grid'); // 'grid' or 'list'
+
         $query = Staff::query()
             ->with(['staffType', 'profile'])
             ->when($request->filled('search'), function ($q) use ($request) {
@@ -35,12 +37,25 @@ class StaffDirectoryController extends Controller
             ->when($request->filled('status'), function ($q) use ($request) {
                 $q->where('status', $request->string('status'));
             })
-            ->orderBy('first_name')
-            ->orderBy('last_name');
+            ->when($request->filled('department'), function ($q) use ($request) {
+                $q->where('department', $request->string('department')); // Assuming 'department' field on Staff; adjust if join needed
+            });
 
-        $staff = $query->paginate(12)->withQueryString();
+        $staff = $query->orderBy('first_name')
+            ->orderBy('last_name')
+            ->paginate(12)->withQueryString();
+
         $staffTypes = StaffType::active()->orderBy('display_name')->get();
 
-        return view('admin.staff.directory', compact('staff', 'staffTypes'));
+        // Departments (static for now; fetch from DB if model exists)
+        $departments = [
+            '' => __('staff.all_departments'),
+            'kitchen' => __('staff.kitchen'),
+            'service' => __('staff.service'),
+            'administration' => __('staff.administration'),
+            'maintenance' => __('staff.maintenance'),
+        ];
+
+        return view('admin.staff.directory', compact('staff', 'staffTypes', 'viewMode', 'departments'));
     }
 }

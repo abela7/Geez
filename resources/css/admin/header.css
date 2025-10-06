@@ -4,8 +4,7 @@
 
 /* Header Container */
 .admin-header {
-  position: sticky;
-  top: 0;
+  /* Removed position: sticky; top: 0; to avoid conflict with Tailwind fixed - now viewport-relative */
   z-index: var(--z-sticky);
   background: var(--surface-panel);
   border-bottom: 1px solid var(--surface-panel-border);

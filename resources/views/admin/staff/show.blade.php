@@ -155,19 +155,19 @@
                     <i class="fas fa-user"></i>{{ __('staff.overview') }}
                 </button>
                 <button @click="activeTab = 'attendance'" :class="{ 'active': activeTab === 'attendance' }" class="staff-nav-tab">
-                    <i class="fas fa-calendar-check"></i>{{ __('staff.attendance') }}
+                    <i class="fas fa-calendar-check"></i>{{ __('staff.nav_attendance') }}
                 </button>
                 <button @click="activeTab = 'tasks'" :class="{ 'active': activeTab === 'tasks' }" class="staff-nav-tab">
-                    <i class="fas fa-tasks"></i>{{ __('staff.tasks') }}
+                    <i class="fas fa-tasks"></i>{{ __('staff.nav_tasks') }}
                 </button>
                 <button @click="activeTab = 'payroll'" :class="{ 'active': activeTab === 'payroll' }" class="staff-nav-tab">
-                    <i class="fas fa-money-bill-wave"></i>{{ __('staff.payroll') }}
+                    <i class="fas fa-money-bill-wave"></i>{{ __('staff.nav_payroll') }}
                 </button>
                 <button @click="activeTab = 'performance'" :class="{ 'active': activeTab === 'performance' }" class="staff-nav-tab">
-                    <i class="fas fa-chart-line"></i>{{ __('staff.performance') }}
+                    <i class="fas fa-chart-line"></i>{{ __('staff.nav_performance') }}
                 </button>
                 <button @click="activeTab = 'shifts'" :class="{ 'active': activeTab === 'shifts' }" class="staff-nav-tab">
-                    <i class="fas fa-clock"></i>{{ __('staff.shifts') }}
+                    <i class="fas fa-clock"></i>{{ __('staff.nav_shifts') }}
                 </button>
             </nav>
                         </div>
@@ -213,5 +213,19 @@
             </div>
         </div>
     </div>
+
+        <!-- Simple Delete Button at Bottom -->
+        @if($staff->id !== Auth::id())
+        <div class="mt-8 p-4 text-center border-t border-gray-200 dark:border-gray-700">
+            <form action="{{ route('admin.staff.destroy', $staff) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('staff.confirm_delete') }} - {{ $staff->full_name }}?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn-danger inline-flex items-center px-6 py-3 rounded-lg font-medium transition-colors bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white">
+                    <i class="fas fa-trash-alt mr-2"></i>{{ __('staff.delete_staff') }}
+                </button>
+            </form>
+        </div>
+        @endif
+
 </div>
 @endsection

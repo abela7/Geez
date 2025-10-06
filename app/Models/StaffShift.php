@@ -52,6 +52,7 @@ class StaffShift extends Model
         'is_template' => 'boolean',
         'is_holiday_shift' => 'boolean',
         'days_of_week' => 'array',
+        'deleted_at' => 'datetime',
     ];
 
     /**
@@ -143,7 +144,7 @@ class StaffShift extends Model
             $end->addDay();
         }
 
-        $totalMinutes = $end->diffInMinutes($start);
+        $totalMinutes = $start->diffInMinutes($end);
         $breakMinutes = $this->break_minutes ?? 0;
 
         return round(($totalMinutes - $breakMinutes) / 60, 2);

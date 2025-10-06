@@ -348,17 +348,17 @@ function shiftCreateData() {
         form: {
             name: '',
             department: '',
-            type: '',
+            shift_type: '',  // Changed from 'type'
             description: '',
             start_time: '',
             end_time: '',
             duration_hours: 0,
-            break_duration: 30,
+            break_duration: '',
             days_of_week: [],
-            required_staff: 1,
-            hourly_rate: 15.00,
-            overtime_rate: 22.50,
-            status: 'draft'
+            required_staff: '',
+            max_staff_allowed: '',
+            hourly_rate: '',
+            is_active: false
         },
         
         init() {
@@ -367,42 +367,51 @@ function shiftCreateData() {
         
         calculateDuration() {
             if (this.form.start_time && this.form.end_time) {
-                const start = new Date(`2000-01-01 ${this.form.start_time}`);
-                let end = new Date(`2000-01-01 ${this.form.end_time}`);
-                
-                // Handle overnight shifts
-                if (end <= start) {
-                    end.setDate(end.getDate() + 1);
+                try {
+                    const start = new Date(`2000-01-01 ${this.form.start_time}:00`);
+                    let end = new Date(`2000-01-01 ${this.form.end_time}:00`);
+                    
+                    if (end <= start) {
+                        end.setDate(end.getDate() + 1);
+                    }
+                    
+                    const diffMs = end - start;
+                    this.form.duration_hours = Math.round((diffMs / (1000 * 60 * 60)) * 100) / 100;
+                } catch (error) {
+                    console.error('Duration calculation error:', error);
+                    this.form.duration_hours = 0;
                 }
-                
-                const diffMs = end - start;
-                this.form.duration_hours = diffMs / (1000 * 60 * 60);
+            } else {
+                this.form.duration_hours = 0;
             }
         },
         
         formatDuration(hours) {
-            if (!hours || hours === 0) return 'Not calculated';
+            if (!hours || isNaN(hours) || hours === 0) return 'Not calculated';
             
             const wholeHours = Math.floor(hours);
             const minutes = Math.round((hours - wholeHours) * 60);
             
             if (minutes === 0) {
                 return `${wholeHours} hour${wholeHours !== 1 ? 's' : ''}`;
-            } else {
-                return `${wholeHours}h ${minutes}m`;
             }
+            return `${wholeHours}h ${minutes}m`;
         },
         
         calculateDailyCost() {
-            return this.form.required_staff * this.form.duration_hours * this.form.hourly_rate;
+            const staff = parseFloat(this.form.required_staff) || 0;
+            const hours = parseFloat(this.form.duration_hours) || 0;
+            const rate = parseFloat(this.form.hourly_rate) || 0;
+            return staff * hours * rate;
         },
         
         calculateWeeklyCost() {
-            return this.calculateDailyCost() * this.form.days_of_week.length;
+            const daysCount = Array.isArray(this.form.days_of_week) ? this.form.days_of_week.length : 0;
+            return this.calculateDailyCost() * daysCount;
         },
         
         calculateMonthlyCost() {
-            return this.calculateWeeklyCost() * 4.33; // Average weeks per month
+            return this.calculateWeeklyCost() * 4.33;
         },
         
         formatCurrency(amount) {
@@ -412,21 +421,31 @@ function shiftCreateData() {
             }).format(amount || 0);
         },
         
+        isFormValid() {
+            return this.form.name && 
+                   this.form.department && 
+                   this.form.shift_type &&  // Changed from this.form.type
+                   this.form.start_time && 
+                   this.form.end_time && 
+                   this.form.required_staff && 
+                   this.form.max_staff_allowed;
+        },
+        
         resetForm() {
             this.form = {
                 name: '',
                 department: '',
-                type: '',
+                shift_type: '',
                 description: '',
                 start_time: '',
                 end_time: '',
                 duration_hours: 0,
-                break_duration: 30,
+                break_duration: '',
                 days_of_week: [],
-                required_staff: 1,
-                hourly_rate: 15.00,
-                overtime_rate: 22.50,
-                status: 'draft'
+                required_staff: '',
+                max_staff_allowed: '',
+                hourly_rate: '',
+                is_active: false
             };
         },
         
@@ -483,46 +502,69 @@ function shiftCreateData() {
 
 // Shift Edit Data - Based on Create Data Structure
 function shiftEditData(shiftData) {
+    console.log('Raw shift data received:', shiftData);
+    
+    // Helper function to format time from H:i:s to H:i
+    function formatTimeForInput(timeString) {
+        if (!timeString) return '';
+        // Handle both "16:00:00" and "16:00" formats
+        return timeString.substring(0, 5);
+    }
+    
     return {
         form: {
             name: shiftData.name || '',
+            position_name: shiftData.position_name || '',
             department: shiftData.department || '',
-            type: shiftData.type || '',
+            shift_type: shiftData.shift_type || '', // Note: model uses 'shift_type', form uses 'type'
             description: shiftData.description || '',
-            start_time: shiftData.start_time || '',
-            end_time: shiftData.end_time || '',
+            start_time: formatTimeForInput(shiftData.start_time),
+            end_time: formatTimeForInput(shiftData.end_time),
             duration_hours: 0,
-            break_duration: shiftData.break_duration || 30,
+            break_duration: shiftData.break_minutes || '', // Note: model uses 'break_minutes'
             days_of_week: Array.isArray(shiftData.days_of_week) ? shiftData.days_of_week : [],
-            required_staff: shiftData.required_staff || 1,
-            hourly_rate: shiftData.hourly_rate || 15.00,
-            overtime_rate: shiftData.overtime_rate || 22.50,
-            status: shiftData.status || 'draft'
+            required_staff: shiftData.min_staff_required || '', // Note: model uses 'min_staff_required'
+            max_staff_allowed: shiftData.max_staff_allowed || '',
+            hourly_rate: shiftData.hourly_rate_multiplier || '', // Note: model uses 'hourly_rate_multiplier'
+            overtime_rate: (parseFloat(shiftData.hourly_rate_multiplier) * 1.5) || '', // Calculate 1.5x base rate
+            hourly_rate_multiplier: shiftData.hourly_rate_multiplier || 1.0,
+            status: shiftData.is_active ? 'active' : 'draft', // Convert boolean to string
+            is_active: !!shiftData.is_active, // Boolean conversion
+            is_template: shiftData.is_template !== false // Default to true
         },
         
         init() {
-            console.log('Initializing edit form with data:', shiftData);
-            console.log('Form data:', this.form);
+            console.log('Initializing edit form with mapped data:', this.form);
             this.calculateDuration();
         },
         
         calculateDuration() {
             if (this.form.start_time && this.form.end_time) {
-                const start = new Date(`2000-01-01 ${this.form.start_time}`);
-                let end = new Date(`2000-01-01 ${this.form.end_time}`);
-                
-                // Handle overnight shifts
-                if (end <= start) {
-                    end.setDate(end.getDate() + 1);
+                try {
+                    const start = new Date(`2000-01-01 ${this.form.start_time}:00`);
+                    let end = new Date(`2000-01-01 ${this.form.end_time}:00`);
+                    
+                    // Handle overnight shifts
+                    if (end <= start) {
+                        end.setDate(end.getDate() + 1);
+                    }
+                    
+                    const diffMs = end - start;
+                    const hours = diffMs / (1000 * 60 * 60);
+                    this.form.duration_hours = Math.round(hours * 100) / 100; // Round to 2 decimal places
+                    
+                    console.log('Duration calculated:', this.form.duration_hours, 'hours');
+                } catch (error) {
+                    console.error('Error calculating duration:', error);
+                    this.form.duration_hours = 0;
                 }
-                
-                const diffMs = end - start;
-                this.form.duration_hours = diffMs / (1000 * 60 * 60);
+            } else {
+                this.form.duration_hours = 0;
             }
         },
         
         formatDuration(hours) {
-            if (!hours || hours === 0) return 'Not calculated';
+            if (!hours || hours === 0 || isNaN(hours)) return 'Not calculated';
             
             const wholeHours = Math.floor(hours);
             const minutes = Math.round((hours - wholeHours) * 60);
@@ -535,7 +577,10 @@ function shiftEditData(shiftData) {
         },
         
         calculateDailyCost() {
-            return this.form.required_staff * this.form.duration_hours * this.form.hourly_rate;
+            const hours = this.form.duration_hours || 0;
+            const staff = this.form.required_staff || 0;
+            const rate = this.form.hourly_rate || 0;
+            return hours * staff * rate;
         },
         
         calculateWeeklyCost() {
@@ -561,11 +606,11 @@ function shiftEditData(shiftData) {
         isFormValid() {
             return this.form.name && 
                    this.form.department && 
-                   this.form.type && 
+                   this.form.shift_type && 
                    this.form.start_time && 
                    this.form.end_time && 
-                   this.form.required_staff > 0 && 
-                   this.form.days_of_week.length > 0;
+                   this.form.required_staff && 
+                   this.form.max_staff_allowed;
         },
         
         duplicateShift() {
@@ -627,6 +672,7 @@ function shiftEditData(shiftData) {
                 break_duration: shiftData.break_duration || 30,
                 days_of_week: Array.isArray(shiftData.days_of_week) ? [...shiftData.days_of_week] : [],
                 required_staff: shiftData.required_staff || 1,
+                max_staff_allowed: shiftData.max_staff_allowed || 1,
                 hourly_rate: shiftData.hourly_rate || 15.00,
                 overtime_rate: shiftData.overtime_rate || 22.50,
                 status: shiftData.status || 'draft'

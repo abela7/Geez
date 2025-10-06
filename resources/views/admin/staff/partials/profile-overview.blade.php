@@ -44,10 +44,18 @@
 
         <!-- Emergency Contacts -->
         @if ($staff->profile && $staff->profile->emergency_contacts)
+        @php
+            $emergencyContacts = is_array($staff->profile->emergency_contacts) 
+                ? $staff->profile->emergency_contacts 
+                : (is_string($staff->profile->emergency_contacts) 
+                    ? json_decode($staff->profile->emergency_contacts, true) ?? [] 
+                    : []);
+        @endphp
+        @if (!empty($emergencyContacts))
         <div>
             <h3 class="text-lg font-semibold text-primary mb-4">{{ __('staff.emergency_contacts') }}</h3>
             <div class="bg-background border border-main rounded-lg p-4 space-y-3">
-                @foreach ($staff->profile->emergency_contacts as $contact)
+                @foreach ($emergencyContacts as $contact)
                 <div class="border-b border-main pb-3 last:border-b-0 last:pb-0">
                     <div class="flex justify-between">
                         <span class="text-secondary">{{ __('common.name') }}:</span>
@@ -65,6 +73,7 @@
                 @endforeach
             </div>
         </div>
+        @endif
         @endif
     </div>
 

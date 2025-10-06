@@ -1,5 +1,33 @@
         @forelse ($staff as $member)
-        <div class="employee-card">
+        <div class="employee-card relative overflow-hidden group">
+            <!-- Action Bar - Hidden by default, shows on hover -->
+            <div class="action-bar absolute top-0 left-0 right-0 bg-gradient-to-r from-primary/90 to-accent/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 flex justify-end p-2 gap-1">
+                <!-- View -->
+                <a href="{{ route('admin.staff.show', $member) }}" 
+                   class="action-btn bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-110" 
+                   title="{{ __('common.view') }}" 
+                   aria-label="{{ __('common.view') }}">
+                    <i class="fas fa-eye text-sm"></i>
+                </a>
+                <!-- Edit -->
+                <a href="{{ route('admin.staff.edit', $member) }}" 
+                   class="action-btn bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-110" 
+                   title="{{ __('common.edit') }}" 
+                   aria-label="{{ __('common.edit') }}">
+                    <i class="fas fa-pencil-alt text-sm"></i>
+                </a>
+                <!-- Delete -->
+                <form action="{{ route('admin.staff.destroy', $member) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('common.confirm_delete') }}')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" 
+                            class="action-btn bg-white/20 hover:bg-red-500/80 text-white p-2 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-110" 
+                            title="{{ __('common.delete') }}" 
+                            aria-label="{{ __('common.delete') }}">
+                        <i class="fas fa-trash text-sm"></i>
+                    </button>
+                </form>
+            </div>
             <div class="employee-card-header">
                 <div class="employee-avatar flex items-center justify-center bg-card">
                     @if ($member->profile && $member->profile->photo_url)
