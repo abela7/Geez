@@ -606,4 +606,35 @@ class ShiftsAssignmentsController extends Controller
             'templates' => $templates,
         ]);
     }
+
+    /**
+     * Clear all assignments for a specific week.
+     */
+    public function clearWeek(Request $request): JsonResponse
+    {
+        $request->validate([
+            'week_start' => 'required|date',
+        ]);
+
+        try {
+            $weekStart = Carbon::parse($request->week_start)->startOfWeek();
+            $weekEnd = $weekStart->copy()->endOfWeek();
+
+            // Delete all assignments for the specified week
+            $deletedCount = StaffShiftAssignment::whereBetween('assigned_date', [$weekStart, $weekEnd])
+                ->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => __('admin.shifts.assignments.week_cleared_success', ['count' => $deletedCount]),
+                'deleted_count' => $deletedCount,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => __('admin.shifts.assignments.week_clear_failed'),
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

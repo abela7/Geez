@@ -169,7 +169,9 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         Route::get('/coverage-analysis', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'coverageAnalysis'])->name('coverage-analysis');
 
         // Shift templates management
-        Route::resource('templates', \App\Http\Controllers\Admin\StaffShiftController::class, ['as' => 'shifts']);
+        Route::resource('templates', \App\Http\Controllers\Admin\Shifts\TemplatesController::class, ['as' => 'shifts']);
+        Route::post('/templates/{id}/duplicate', [\App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'duplicate'])->name('shifts.templates.duplicate');
+        Route::post('/templates/{id}/apply', [\App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'apply'])->name('shifts.templates.apply');
 
         // Weekly Rota/Assignments Interface (Must be BEFORE resource route to avoid conflicts)
         Route::get('/assignments/staff-availability', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'getStaffAvailability'])->name('assignments.staff-availability');
@@ -179,6 +181,9 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         Route::post('/assignments/save-as-template', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'saveAsTemplate'])->name('assignments.save-template');
         Route::post('/assignments/apply-template', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'applyTemplate'])->name('assignments.apply-template');
         Route::get('/assignments/templates', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'getTemplates'])->name('assignments.get-templates');
+        
+        // Bulk Actions
+        Route::post('/assignments/clear-week', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'clearWeek'])->name('assignments.clear-week');
         
         Route::get('/assignments', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'index'])->name('assignments.index');
         Route::post('/assignments', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'store'])->name('assignments.store');

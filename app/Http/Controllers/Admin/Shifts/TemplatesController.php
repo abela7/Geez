@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Shifts;
 
 use App\Http\Controllers\Controller;
+use App\Models\WeeklyRotaTemplate;
+use App\Models\WeeklyRotaTemplateAssignment;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -18,220 +20,39 @@ class TemplatesController extends Controller
      */
     public function index(): View
     {
-        // Mock data for shift templates
-        $templates = [
-            [
-                'id' => 1,
-                'name' => 'Standard Weekday',
-                'description' => 'Monday to Friday regular operations schedule',
-                'type' => 'weekly',
-                'status' => 'active',
-                'created_by' => 'Admin User',
-                'created_at' => Carbon::now()->subDays(30),
-                'updated_at' => Carbon::now()->subDays(5),
-                'usage_count' => 15,
-                'last_used' => Carbon::now()->subDays(2),
-                'shifts' => [
-                    [
-                        'name' => 'Morning Kitchen',
-                        'department' => 'Kitchen',
-                        'start_time' => '06:00',
-                        'end_time' => '14:00',
-                        'required_staff' => 4,
-                        'days' => ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
-                    ],
-                    [
-                        'name' => 'Evening Service',
-                        'department' => 'Front of House',
-                        'start_time' => '17:00',
-                        'end_time' => '23:00',
-                        'required_staff' => 6,
-                        'days' => ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
-                    ],
-                    [
-                        'name' => 'Bar Evening',
-                        'department' => 'Bar',
-                        'start_time' => '18:00',
-                        'end_time' => '02:00',
-                        'required_staff' => 2,
-                        'days' => ['thursday', 'friday'],
-                    ],
-                ],
-                'total_shifts' => 3,
-                'total_staff_required' => 12,
-                'estimated_cost' => 2400.00,
-            ],
-            [
-                'id' => 2,
-                'name' => 'Weekend Special',
-                'description' => 'Saturday and Sunday brunch and dinner service',
-                'type' => 'weekend',
-                'status' => 'active',
-                'created_by' => 'Sarah Johnson',
-                'created_at' => Carbon::now()->subDays(20),
-                'updated_at' => Carbon::now()->subDays(1),
-                'usage_count' => 8,
-                'last_used' => Carbon::now()->subDays(1),
-                'shifts' => [
-                    [
-                        'name' => 'Weekend Brunch',
-                        'department' => 'Kitchen',
-                        'start_time' => '09:00',
-                        'end_time' => '15:00',
-                        'required_staff' => 3,
-                        'days' => ['saturday', 'sunday'],
-                    ],
-                    [
-                        'name' => 'Weekend Dinner',
-                        'department' => 'Front of House',
-                        'start_time' => '17:00',
-                        'end_time' => '23:00',
-                        'required_staff' => 8,
-                        'days' => ['saturday', 'sunday'],
-                    ],
-                    [
-                        'name' => 'Weekend Bar',
-                        'department' => 'Bar',
-                        'start_time' => '16:00',
-                        'end_time' => '02:00',
-                        'required_staff' => 3,
-                        'days' => ['saturday', 'sunday'],
-                    ],
-                ],
-                'total_shifts' => 3,
-                'total_staff_required' => 14,
-                'estimated_cost' => 1680.00,
-            ],
-            [
-                'id' => 3,
-                'name' => 'Holiday Rush',
-                'description' => 'Extended hours for holiday periods and special events',
-                'type' => 'special',
-                'status' => 'active',
-                'created_by' => 'Admin User',
-                'created_at' => Carbon::now()->subDays(45),
-                'updated_at' => Carbon::now()->subDays(10),
-                'usage_count' => 4,
-                'last_used' => Carbon::now()->subDays(30),
-                'shifts' => [
-                    [
-                        'name' => 'Extended Kitchen',
-                        'department' => 'Kitchen',
-                        'start_time' => '05:00',
-                        'end_time' => '16:00',
-                        'required_staff' => 6,
-                        'days' => ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
-                    ],
-                    [
-                        'name' => 'Holiday Service',
-                        'department' => 'Front of House',
-                        'start_time' => '11:00',
-                        'end_time' => '01:00',
-                        'required_staff' => 10,
-                        'days' => ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
-                    ],
-                    [
-                        'name' => 'Holiday Bar',
-                        'department' => 'Bar',
-                        'start_time' => '15:00',
-                        'end_time' => '03:00',
-                        'required_staff' => 4,
-                        'days' => ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
-                    ],
-                ],
-                'total_shifts' => 3,
-                'total_staff_required' => 20,
-                'estimated_cost' => 4200.00,
-            ],
-            [
-                'id' => 4,
-                'name' => 'Minimal Operations',
-                'description' => 'Reduced staff for slow periods or maintenance days',
-                'type' => 'minimal',
-                'status' => 'active',
-                'created_by' => 'Michael Chen',
-                'created_at' => Carbon::now()->subDays(15),
-                'updated_at' => Carbon::now()->subDays(3),
-                'usage_count' => 6,
-                'last_used' => Carbon::now()->subDays(7),
-                'shifts' => [
-                    [
-                        'name' => 'Basic Kitchen',
-                        'department' => 'Kitchen',
-                        'start_time' => '08:00',
-                        'end_time' => '16:00',
-                        'required_staff' => 2,
-                        'days' => ['monday', 'tuesday'],
-                    ],
-                    [
-                        'name' => 'Limited Service',
-                        'department' => 'Front of House',
-                        'start_time' => '12:00',
-                        'end_time' => '20:00',
-                        'required_staff' => 3,
-                        'days' => ['monday', 'tuesday'],
-                    ],
-                ],
-                'total_shifts' => 2,
-                'total_staff_required' => 5,
-                'estimated_cost' => 640.00,
-            ],
-            [
-                'id' => 5,
-                'name' => 'Training Week',
-                'description' => 'Template for new staff training periods with mentors',
-                'type' => 'training',
-                'status' => 'draft',
-                'created_by' => 'Emma Rodriguez',
-                'created_at' => Carbon::now()->subDays(5),
-                'updated_at' => Carbon::now()->subDays(1),
-                'usage_count' => 0,
-                'last_used' => null,
-                'shifts' => [
-                    [
-                        'name' => 'Training Kitchen',
-                        'department' => 'Kitchen',
-                        'start_time' => '09:00',
-                        'end_time' => '15:00',
-                        'required_staff' => 3,
-                        'days' => ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
-                    ],
-                    [
-                        'name' => 'Training Service',
-                        'department' => 'Front of House',
-                        'start_time' => '16:00',
-                        'end_time' => '22:00',
-                        'required_staff' => 4,
-                        'days' => ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
-                    ],
-                ],
-                'total_shifts' => 2,
-                'total_staff_required' => 7,
-                'estimated_cost' => 1260.00,
-            ],
-        ];
+        $templates = WeeklyRotaTemplate::with(['creator', 'assignments.staff', 'assignments.shift'])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($template) {
+                return [
+                    'id' => $template->id,
+                    'name' => $template->name,
+                    'description' => $template->description,
+                    'type' => $template->type,
+                    'status' => $template->is_active ? 'active' : 'draft',
+                    'created_by' => $template->creator?->full_name ?? 'Unknown',
+                    'created_at' => $template->created_at,
+                    'updated_at' => $template->updated_at,
+                    'usage_count' => $template->usage_count,
+                    'last_used' => $template->last_used_at,
+                    'total_shifts' => $template->getShiftsCount(),
+                    'total_staff' => $template->getUniqueStaffCount(),
+                    'total_assignments' => $template->getTotalAssignments(),
+                ];
+            });
 
-        // Calculate summary statistics
-        $totalTemplates = count($templates);
-        $activeTemplates = count(array_filter($templates, fn ($t) => $t['status'] === 'active'));
-        $draftTemplates = count(array_filter($templates, fn ($t) => $t['status'] === 'draft'));
-        $totalUsage = array_sum(array_column($templates, 'usage_count'));
+        $totalTemplates = $templates->count();
+        $activeTemplates = $templates->where('status', 'active')->count();
+        $draftTemplates = $templates->where('status', 'draft')->count();
+        $totalUsage = $templates->sum('usage_count');
 
-        // Popular templates (most used)
-        $popularTemplates = collect($templates)
-            ->sortByDesc('usage_count')
-            ->take(3)
-            ->values()
-            ->toArray();
+        // Get popular templates (most used)
+        $popularTemplates = $templates->sortByDesc('usage_count')->take(3)->values();
 
-        // Recent templates (recently updated)
-        $recentTemplates = collect($templates)
-            ->sortByDesc('updated_at')
-            ->take(3)
-            ->values()
-            ->toArray();
+        // Get recent templates
+        $recentTemplates = $templates->sortByDesc('updated_at')->take(3)->values();
 
-        // Template types breakdown
+        // Group by type for statistics
         $templateTypes = [];
         foreach ($templates as $template) {
             $type = $template['type'];
@@ -263,35 +84,7 @@ class TemplatesController extends Controller
      */
     public function create(): View
     {
-        // Mock data for form options
-        $departments = [
-            'Kitchen' => 'Kitchen',
-            'Front of House' => 'Front of House',
-            'Bar' => 'Bar',
-            'Management' => 'Management',
-            'Maintenance' => 'Maintenance',
-        ];
-
-        $templateTypes = [
-            'weekly' => 'Weekly Pattern',
-            'weekend' => 'Weekend Only',
-            'special' => 'Special Events',
-            'minimal' => 'Minimal Operations',
-            'training' => 'Training Period',
-            'seasonal' => 'Seasonal',
-        ];
-
-        $daysOfWeek = [
-            'monday' => 'Monday',
-            'tuesday' => 'Tuesday',
-            'wednesday' => 'Wednesday',
-            'thursday' => 'Thursday',
-            'friday' => 'Friday',
-            'saturday' => 'Saturday',
-            'sunday' => 'Sunday',
-        ];
-
-        return view('admin.shifts.templates.create', compact('departments', 'templateTypes', 'daysOfWeek'));
+        return view('admin.shifts.templates.create');
     }
 
     /**
@@ -299,44 +92,32 @@ class TemplatesController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // In a real application, you would validate and store the template
-        // For now, we'll just redirect with a success message
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'type' => 'required|in:standard,holiday,seasonal,custom',
+            'is_active' => 'boolean',
+        ]);
+
+        $template = WeeklyRotaTemplate::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'type' => $request->type,
+            'is_active' => $request->boolean('is_active', true),
+            'created_by' => auth()->id(), // Assuming we have auth
+        ]);
 
         return redirect()->route('admin.shifts.templates.index')
             ->with('success', __('shifts.templates.template_created'));
     }
 
     /**
-     * Show the form for editing a template
+     * Show the form for editing the specified template
      */
-    public function edit(int $id): View
+    public function edit(string $id): View
     {
-        // Mock template data for editing
-        $template = [
-            'id' => $id,
-            'name' => 'Standard Weekday',
-            'description' => 'Monday to Friday regular operations schedule',
-            'type' => 'weekly',
-            'status' => 'active',
-            'shifts' => [
-                [
-                    'name' => 'Morning Kitchen',
-                    'department' => 'Kitchen',
-                    'start_time' => '06:00',
-                    'end_time' => '14:00',
-                    'required_staff' => 4,
-                    'days' => ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
-                ],
-                [
-                    'name' => 'Evening Service',
-                    'department' => 'Front of House',
-                    'start_time' => '17:00',
-                    'end_time' => '23:00',
-                    'required_staff' => 6,
-                    'days' => ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
-                ],
-            ],
-        ];
+        $template = WeeklyRotaTemplate::with(['assignments.staff', 'assignments.shift'])
+            ->findOrFail($id);
 
         $departments = [
             'Kitchen' => 'Kitchen',
@@ -347,22 +128,20 @@ class TemplatesController extends Controller
         ];
 
         $templateTypes = [
-            'weekly' => 'Weekly Pattern',
-            'weekend' => 'Weekend Only',
-            'special' => 'Special Events',
-            'minimal' => 'Minimal Operations',
-            'training' => 'Training Period',
+            'standard' => 'Standard',
+            'holiday' => 'Holiday',
             'seasonal' => 'Seasonal',
+            'custom' => 'Custom',
         ];
 
         $daysOfWeek = [
-            'monday' => 'Monday',
-            'tuesday' => 'Tuesday',
-            'wednesday' => 'Wednesday',
-            'thursday' => 'Thursday',
-            'friday' => 'Friday',
-            'saturday' => 'Saturday',
-            'sunday' => 'Sunday',
+            0 => 'Sunday',
+            1 => 'Monday',
+            2 => 'Tuesday',
+            3 => 'Wednesday',
+            4 => 'Thursday',
+            5 => 'Friday',
+            6 => 'Saturday',
         ];
 
         return view('admin.shifts.templates.edit', compact('template', 'departments', 'templateTypes', 'daysOfWeek'));
@@ -371,10 +150,24 @@ class TemplatesController extends Controller
     /**
      * Update the specified template
      */
-    public function update(Request $request, int $id): RedirectResponse
+    public function update(Request $request, string $id): RedirectResponse
     {
-        // In a real application, you would validate and update the template
-        // For now, we'll just redirect with a success message
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'type' => 'required|in:standard,holiday,seasonal,custom',
+            'is_active' => 'boolean',
+        ]);
+
+        $template = WeeklyRotaTemplate::findOrFail($id);
+        
+        $template->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'type' => $request->type,
+            'is_active' => $request->boolean('is_active', true),
+            'updated_by' => auth()->id(),
+        ]);
 
         return redirect()->route('admin.shifts.templates.index')
             ->with('success', __('shifts.templates.template_updated'));
@@ -383,22 +176,30 @@ class TemplatesController extends Controller
     /**
      * Apply a template to a date range
      */
-    public function apply(Request $request, int $id): JsonResponse
+    public function apply(Request $request, string $id): JsonResponse
     {
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $overwriteExisting = $request->input('overwrite_existing', false);
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+            'overwrite_existing' => 'boolean',
+        ]);
 
-        // Mock template application
-        $shiftsCreated = rand(15, 45); // Random number for demo
+        $template = WeeklyRotaTemplate::with('assignments')->findOrFail($id);
+        
+        // Mark template as used
+        $template->markAsUsed();
+
+        // In a real implementation, you would apply the template to the specified date range
+        // For now, we'll return a success response
+        $shiftsCreated = $template->assignments->count();
 
         return response()->json([
             'success' => true,
             'message' => __('shifts.templates.template_applied'),
             'shifts_created' => $shiftsCreated,
             'date_range' => [
-                'start' => $startDate,
-                'end' => $endDate,
+                'start' => $request->start_date,
+                'end' => $request->end_date,
             ],
         ]);
     }
@@ -406,23 +207,52 @@ class TemplatesController extends Controller
     /**
      * Duplicate a template
      */
-    public function duplicate(int $id): JsonResponse
+    public function duplicate(string $id): JsonResponse
     {
-        // Mock template duplication
+        $originalTemplate = WeeklyRotaTemplate::with('assignments')->findOrFail($id);
+        
+        // Create duplicate template
+        $duplicateTemplate = WeeklyRotaTemplate::create([
+            'name' => 'Copy of ' . $originalTemplate->name,
+            'description' => $originalTemplate->description,
+            'type' => $originalTemplate->type,
+            'is_active' => false, // Start as draft
+            'created_by' => auth()->id(),
+        ]);
+
+        // Duplicate assignments
+        foreach ($originalTemplate->assignments as $assignment) {
+            WeeklyRotaTemplateAssignment::create([
+                'template_id' => $duplicateTemplate->id,
+                'staff_shift_id' => $assignment->staff_shift_id,
+                'staff_id' => $assignment->staff_id,
+                'day_of_week' => $assignment->day_of_week,
+                'status' => $assignment->status,
+                'notes' => $assignment->notes,
+            ]);
+        }
+
         return response()->json([
             'success' => true,
             'message' => __('shifts.templates.template_duplicated'),
-            'new_template_id' => rand(100, 999),
+            'new_template_id' => $duplicateTemplate->id,
         ]);
     }
 
     /**
      * Delete a template
      */
-    public function destroy(int $id): RedirectResponse
+    public function destroy(string $id): RedirectResponse
     {
-        // In a real application, you would delete the template
-        // For now, we'll just redirect with a success message
+        $template = WeeklyRotaTemplate::findOrFail($id);
+        
+        // Check if template is in use
+        if ($template->usage_count > 0) {
+            return redirect()->route('admin.shifts.templates.index')
+                ->with('error', __('shifts.templates.cannot_delete_used_template'));
+        }
+
+        $template->delete();
 
         return redirect()->route('admin.shifts.templates.index')
             ->with('success', __('shifts.templates.template_deleted'));
@@ -431,19 +261,25 @@ class TemplatesController extends Controller
     /**
      * Preview template application
      */
-    public function preview(Request $request, int $id): JsonResponse
+    public function preview(Request $request, string $id): JsonResponse
     {
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+        ]);
 
-        // Mock preview data
+        $template = WeeklyRotaTemplate::with('assignments.staff', 'assignments.shift')->findOrFail($id);
+        
+        // Generate preview data
         $preview = [
-            'total_shifts' => rand(20, 60),
-            'total_staff_required' => rand(50, 150),
-            'estimated_cost' => rand(5000, 15000),
-            'date_conflicts' => rand(0, 5),
-            'staff_conflicts' => rand(0, 3),
-            'weeks_affected' => ceil((strtotime($endDate) - strtotime($startDate)) / (7 * 24 * 60 * 60)),
+            'template_name' => $template->name,
+            'total_assignments' => $template->assignments->count(),
+            'unique_staff' => $template->assignments->pluck('staff_id')->unique()->count(),
+            'date_range' => [
+                'start' => $request->start_date,
+                'end' => $request->end_date,
+            ],
+            'assignments_by_day' => $template->getAssignmentsByDay(),
         ];
 
         return response()->json([

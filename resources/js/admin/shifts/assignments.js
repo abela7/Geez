@@ -25,15 +25,35 @@ function shiftsAssignmentsData() {
         modalShiftId: null,
         modalDate: null,
         modalShiftName: '',
+        
+        // Template functionality
+        showSaveTemplateModal: false,
+        showApplyTemplateModal: false,
+        templates: [],
+        templateForm: {
+            name: '',
+            description: '',
+            type: 'standard',
+            setAsDefault: false
+        },
+        applyTemplateForm: {
+            templateId: '',
+            overwriteExisting: false
+        },
 
         // Initialize component
         init() {
-            // Ensure modal starts closed
+            // Ensure all modals start closed
             this.showAssignStaffModal = false;
             this.showBulkActions = false;
+            this.showSaveTemplateModal = false;
+            this.showApplyTemplateModal = false;
             
             this.calculateStats();
             this.setupNotifications();
+            
+            // Load templates on initialization
+            this.loadTemplates();
             
             // Auto-hide bulk actions after 10 seconds
             this.$watch('showBulkActions', (value) => {
@@ -267,11 +287,30 @@ function shiftsAssignmentsData() {
             this.isLoading = true;
             
             try {
-                // In a real implementation, this would call a bulk delete endpoint
-                await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
+                const urlParams = new URLSearchParams(window.location.search);
+                const weekStart = urlParams.get('week') || new Date().toISOString().split('T')[0];
                 
-                this.showNotification('Week cleared successfully', 'success');
-                this.refreshAssignments();
+                const response = await fetch('/admin/shifts/assignments/clear-week', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        week_start: weekStart
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    this.showNotification(data.message, 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    this.showNotification(data.message, 'error');
+                }
             } catch (error) {
                 this.showNotification('Failed to clear week', 'error');
             } finally {
@@ -326,6 +365,122 @@ function shiftsAssignmentsData() {
             }, 5000);
         },
 
+        // Template Methods
+        async loadTemplates() {
+            try {
+                const response = await fetch('/admin/shifts/assignments/templates');
+                const data = await response.json();
+                if (data.success) {
+                    this.templates = data.templates;
+                }
+            } catch (e) {
+                console.error('Failed to load templates:', e);
+            }
+        },
+
+        async saveTemplate() {
+            if (!this.templateForm.name.trim()) return;
+            
+            this.isLoading = true;
+            try {
+                // Get the current week start date from the URL or page
+                const urlParams = new URLSearchParams(window.location.search);
+                const weekStart = urlParams.get('week') || new Date().toISOString().split('T')[0];
+                
+                const response = await fetch('/admin/shifts/assignments/save-as-template', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        name: this.templateForm.name,
+                        description: this.templateForm.description,
+                        type: this.templateForm.type,
+                        week_start: weekStart,
+                        set_as_default: this.templateForm.setAsDefault
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    this.showNotification(data.message, 'success');
+                    this.showSaveTemplateModal = false;
+                    this.resetTemplateForm();
+                    this.loadTemplates(); // Refresh templates list
+                } else {
+                    this.showNotification(data.message, 'error');
+                }
+            } catch (e) {
+                this.showNotification('Failed to save template', 'error');
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        async applyTemplate() {
+            if (!this.applyTemplateForm.templateId) return;
+            
+            this.isLoading = true;
+            try {
+                // Get the current week start date from the URL or page
+                const urlParams = new URLSearchParams(window.location.search);
+                const weekStart = urlParams.get('week') || new Date().toISOString().split('T')[0];
+                
+                const response = await fetch('/admin/shifts/assignments/apply-template', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        template_id: this.applyTemplateForm.templateId,
+                        week_start: weekStart,
+                        overwrite_existing: this.applyTemplateForm.overwriteExisting
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    this.showNotification(data.message, 'success');
+                    this.showApplyTemplateModal = false;
+                    this.resetApplyTemplateForm();
+                    // Refresh the page to show new assignments
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    this.showNotification(data.message, 'error');
+                }
+            } catch (e) {
+                this.showNotification('Failed to apply template', 'error');
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        resetTemplateForm() {
+            this.templateForm = {
+                name: '',
+                description: '',
+                type: 'standard',
+                setAsDefault: false
+            };
+        },
+
+        resetApplyTemplateForm() {
+            this.applyTemplateForm = {
+                templateId: '',
+                overwriteExisting: false
+            };
+        },
+
+        // Initialize templates when apply modal opens
+        async openApplyTemplateModal() {
+            this.showApplyTemplateModal = true;
+            await this.loadTemplates();
+        },
+
         // Keyboard Shortcuts
         handleKeydown(event) {
             // ESC to close modals/panels
@@ -373,3 +528,6 @@ if (typeof module !== 'undefined' && module.exports) {
 
 // Export for ES6 modules
 export { shiftsAssignmentsData };
+
+// Make available globally for Alpine.js
+window.shiftsAssignmentsData = shiftsAssignmentsData;
