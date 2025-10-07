@@ -172,6 +172,7 @@ return [
     'value' => 'Value',
     'hours' => 'hours',
     'minutes' => 'minutes',
+    'characters' => 'characters',
     'at' => 'at',
     'clear_selection' => 'Clear Selection',
     'updating' => 'Updating',

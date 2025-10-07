@@ -7,9 +7,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Staff;
 use App\Models\StaffAttendance;
+use App\Models\StaffAttendanceInterval;
 use App\Models\StaffType;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
@@ -32,8 +34,14 @@ class StaffAttendanceController extends Controller
         // Get attendance records with filters
         $attendanceRecords = $this->getAttendanceRecords($request);
 
-        // Get currently clocked in staff
-        $currentlyClocked = $this->getCurrentlyClockedIn();
+        // Get currently clocked in staff (active sessions)
+        $currentlyClocked = $this->getCurrentlyActive();
+
+        // Get staff on break
+        $staffOnBreak = $this->getStaffOnBreak();
+
+        // Get attendance needing review
+        $needsReview = $this->getAttendanceNeedingReview();
 
         // Get recent attendance activity
         $recentActivity = $this->getRecentActivity();
@@ -51,6 +59,8 @@ class StaffAttendanceController extends Controller
             'todayStats',
             'attendanceRecords',
             'currentlyClocked',
+            'staffOnBreak',
+            'needsReview',
             'recentActivity',
             'staffTypes',
             'allStaff',
@@ -118,7 +128,8 @@ class StaffAttendanceController extends Controller
     private function getAttendanceRecords(Request $request)
     {
         try {
-            $query = StaffAttendance::with(['staff.staffType'])
+            $query = StaffAttendance::with(['staff.staffType', 'shiftAssignment', 'intervals'])
+                ->whereHas('staff') // Only get records that have valid staff
                 ->orderBy('clock_in', 'desc');
 
             // Apply filters
@@ -146,7 +157,9 @@ class StaffAttendanceController extends Controller
 
             return $query->paginate(20)->withQueryString();
         } catch (\Exception $e) {
-            // Return empty paginated result when table doesn't exist
+            \Log::error('Failed to get attendance records: ' . $e->getMessage());
+            
+            // Return empty paginated result when there's an error
             return new LengthAwarePaginator(
                 collect(), // Empty collection
                 0, // Total items
@@ -161,18 +174,59 @@ class StaffAttendanceController extends Controller
     }
 
     /**
-     * Get staff currently clocked in.
+     * Get currently active staff (clocked in or on break).
      */
-    private function getCurrentlyClockedIn()
+    private function getCurrentlyActive()
+    {
+        try {
+            return StaffAttendance::with(['staff.staffType', 'intervals' => function ($query) {
+                $query->active()->latest();
+            }])
+                ->whereHas('staff') // Only get records that have valid staff
+                ->active() // Using the new scope
+                ->whereDate('clock_in', now())
+                ->orderBy('clock_in', 'desc')
+                ->limit(15)
+                ->get();
+        } catch (\Exception $e) {
+            \Log::error('Failed to get currently active staff: ' . $e->getMessage());
+            return collect();
+        }
+    }
+
+    /**
+     * Get staff currently on break.
+     */
+    private function getStaffOnBreak()
     {
         try {
             return StaffAttendance::with(['staff.staffType'])
-                ->whereNull('clock_out')
+                ->whereHas('staff') // Only get records that have valid staff
+                ->where('current_state', 'on_break')
                 ->whereDate('clock_in', now())
+                ->orderBy('current_break_start', 'desc')
+                ->limit(10)
+                ->get();
+        } catch (\Exception $e) {
+            \Log::error('Failed to get staff on break: ' . $e->getMessage());
+            return collect();
+        }
+    }
+
+    /**
+     * Get attendance records needing review.
+     */
+    private function getAttendanceNeedingReview()
+    {
+        try {
+            return StaffAttendance::with(['staff.staffType'])
+                ->whereHas('staff') // Only get records that have valid staff
+                ->needsReview() // Using the new scope
                 ->orderBy('clock_in', 'desc')
                 ->limit(10)
                 ->get();
         } catch (\Exception $e) {
+            \Log::error('Failed to get attendance needing review: ' . $e->getMessage());
             return collect();
         }
     }
@@ -184,11 +238,13 @@ class StaffAttendanceController extends Controller
     {
         try {
             return StaffAttendance::with(['staff.staffType'])
+                ->whereHas('staff') // Only get records that have valid staff
                 ->where('clock_in', '>=', now()->subDays(7))
                 ->orderBy('clock_in', 'desc')
                 ->limit(15)
                 ->get();
         } catch (\Exception $e) {
+            \Log::error('Failed to get recent activity: ' . $e->getMessage());
             return collect();
         }
     }
@@ -217,7 +273,7 @@ class StaffAttendanceController extends Controller
             if ($existingAttendance) {
                 return redirect()->back()
                     ->withInput()
-                    ->with('error', __('admin.staff.attendance.already_clocked_in'));
+                    ->with('error', __('staff.attendance.already_clocked_in'));
             }
 
             $attendance = StaffAttendance::create([
@@ -226,13 +282,13 @@ class StaffAttendanceController extends Controller
             ]);
 
             return redirect()->route('admin.staff.attendance.index')
-                ->with('success', __('admin.staff.attendance.created_successfully'));
+                ->with('success', __('staff.attendance.created_successfully'));
         } catch (\Exception $e) {
             \Log::error('Failed to create attendance: '.$e->getMessage());
 
             return redirect()->back()
                 ->withInput()
-                ->with('error', __('admin.staff.attendance.create_failed'));
+                ->with('error', __('staff.attendance.create_failed'));
         }
     }
 
@@ -257,13 +313,13 @@ class StaffAttendanceController extends Controller
             ]);
 
             return redirect()->route('admin.staff.attendance.index')
-                ->with('success', __('admin.staff.attendance.updated_successfully'));
+                ->with('success', __('staff.attendance.updated_successfully'));
         } catch (\Exception $e) {
             \Log::error('Failed to update attendance: '.$e->getMessage());
 
             return redirect()->back()
                 ->withInput()
-                ->with('error', __('admin.staff.attendance.update_failed'));
+                ->with('error', __('staff.attendance.update_failed'));
         }
     }
 
@@ -278,12 +334,323 @@ class StaffAttendanceController extends Controller
             $staffAttendance->delete();
 
             return redirect()->route('admin.staff.attendance.index')
-                ->with('success', __('admin.staff.attendance.deleted_successfully'));
+                ->with('success', __('staff.attendance.deleted_successfully'));
         } catch (\Exception $e) {
             \Log::error('Failed to delete attendance: '.$e->getMessage());
 
             return redirect()->back()
-                ->with('error', __('admin.staff.attendance.delete_failed'));
+                ->with('error', __('staff.attendance.delete_failed'));
+        }
+    }
+
+    // ==================== STATE MACHINE METHODS ====================
+
+    /**
+     * Start a break for a staff member.
+     */
+    public function startBreak(Request $request, StaffAttendance $staffAttendance): JsonResponse
+    {
+        $this->authorize('update', $staffAttendance);
+
+        $validated = $request->validate([
+            'break_category' => 'required|in:scheduled,emergency,restroom,personal,unauthorized',
+            'reason' => 'nullable|string|max:500',
+        ]);
+
+        try {
+            // Check if already on break
+            if ($staffAttendance->is_currently_on_break) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('staff.attendance.already_on_break')
+                ], 400);
+            }
+
+            // Start break
+            $interval = $staffAttendance->startBreak(
+                $validated['break_category'],
+                $validated['reason'] ?? null
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => __('staff.attendance.break_started'),
+                'data' => [
+                    'attendance' => $staffAttendance->fresh(['staff', 'intervals']),
+                    'interval' => $interval,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Failed to start break: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => __('staff.attendance.break_start_failed')
+            ], 500);
+        }
+    }
+
+    /**
+     * Resume work after break.
+     */
+    public function resumeWork(StaffAttendance $staffAttendance): JsonResponse
+    {
+        $this->authorize('update', $staffAttendance);
+
+        try {
+            // Check if on break
+            if (!$staffAttendance->is_currently_on_break) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('staff.attendance.not_on_break')
+                ], 400);
+            }
+
+            // Resume work
+            $interval = $staffAttendance->resumeWork();
+
+            return response()->json([
+                'success' => true,
+                'message' => __('staff.attendance.work_resumed'),
+                'data' => [
+                    'attendance' => $staffAttendance->fresh(['staff', 'intervals']),
+                    'interval' => $interval,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Failed to resume work: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => __('staff.attendance.resume_work_failed')
+            ], 500);
+        }
+    }
+
+    /**
+     * Clock out a staff member.
+     */
+    public function clockOut(StaffAttendance $staffAttendance): JsonResponse
+    {
+        $this->authorize('update', $staffAttendance);
+
+        try {
+            // Check if already clocked out
+            if ($staffAttendance->current_state === 'clocked_out') {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('staff.attendance.already_clocked_out')
+                ], 400);
+            }
+
+            // Clock out
+            $staffAttendance->clockOut();
+
+            return response()->json([
+                'success' => true,
+                'message' => __('staff.attendance.clocked_out_successfully'),
+                'data' => [
+                    'attendance' => $staffAttendance->fresh(['staff', 'intervals']),
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Failed to clock out: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => __('staff.attendance.clock_out_failed')
+            ], 500);
+        }
+    }
+
+    /**
+     * Auto-close attendance session.
+     */
+    public function autoClose(Request $request, StaffAttendance $staffAttendance): JsonResponse
+    {
+        $this->authorize('update', $staffAttendance);
+
+        $validated = $request->validate([
+            'reason' => 'required|string|max:500',
+            'close_time' => 'nullable|date',
+        ]);
+
+        try {
+            $closeTime = $validated['close_time'] ? Carbon::parse($validated['close_time']) : now();
+            
+            $staffAttendance->autoClose($closeTime, $validated['reason']);
+
+            return response()->json([
+                'success' => true,
+                'message' => __('staff.attendance.auto_closed_successfully'),
+                'data' => [
+                    'attendance' => $staffAttendance->fresh(['staff', 'intervals']),
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Failed to auto-close: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => __('staff.attendance.auto_close_failed')
+            ], 500);
+        }
+    }
+
+    // ==================== INTERVAL MANAGEMENT ====================
+
+    /**
+     * Get intervals for an attendance record.
+     */
+    public function getIntervals(StaffAttendance $staffAttendance): JsonResponse
+    {
+        $this->authorize('view', $staffAttendance);
+
+        try {
+            $intervals = $staffAttendance->intervals()
+                ->with(['approver', 'creator'])
+                ->orderBy('start_time')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'intervals' => $intervals,
+                    'summary' => [
+                        'total_work_minutes' => $intervals->where('interval_type', 'work')->sum('duration_minutes'),
+                        'total_break_minutes' => $intervals->whereIn('interval_type', ['break', 'emergency', 'unauthorized'])->sum('duration_minutes'),
+                        'break_count' => $intervals->whereIn('interval_type', ['break', 'emergency', 'unauthorized'])->count(),
+                    ]
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Failed to get intervals: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => __('staff.attendance.intervals_fetch_failed')
+            ], 500);
+        }
+    }
+
+    /**
+     * Approve a break interval.
+     */
+    public function approveInterval(Request $request, StaffAttendanceInterval $interval): JsonResponse
+    {
+        $validated = $request->validate([
+            'approval_notes' => 'nullable|string|max:1000',
+        ]);
+
+        try {
+            $interval->update([
+                'is_approved' => true,
+                'approved_by' => auth()->id(),
+                'approved_at' => now(),
+                'approval_notes' => $validated['approval_notes'] ?? null,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => __('staff.attendance.interval_approved'),
+                'data' => [
+                    'interval' => $interval->fresh(['approver']),
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Failed to approve interval: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => __('staff.attendance.interval_approval_failed')
+            ], 500);
+        }
+    }
+
+    // ==================== REAL-TIME API METHODS ====================
+
+    /**
+     * Get real-time attendance dashboard data.
+     */
+    public function getDashboardData(Request $request): JsonResponse
+    {
+        try {
+            $date = $request->get('date', now()->format('Y-m-d'));
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'stats' => $this->getTodayStats($date),
+                    'currently_active' => $this->getCurrentlyActive(),
+                    'staff_on_break' => $this->getStaffOnBreak(),
+                    'needs_review' => $this->getAttendanceNeedingReview(),
+                    'timestamp' => now()->toISOString(),
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Failed to get dashboard data: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => __('staff.attendance.dashboard_data_failed')
+            ], 500);
+        }
+    }
+
+    /**
+     * Get active session details for a staff member.
+     */
+    public function getActiveSession(Staff $staff): JsonResponse
+    {
+        try {
+            $attendance = StaffAttendance::with(['intervals' => function ($query) {
+                $query->orderBy('start_time');
+            }])
+                ->where('staff_id', $staff->id)
+                ->active()
+                ->whereDate('clock_in', now())
+                ->first();
+
+            if (!$attendance) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('staff.attendance.no_active_session')
+                ], 404);
+            }
+
+            // Calculate real-time duration
+            $currentInterval = $attendance->getCurrentInterval();
+            $totalMinutes = $attendance->clock_in->diffInMinutes(now());
+            $workMinutes = $totalMinutes - $attendance->total_break_minutes;
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'attendance' => $attendance,
+                    'current_interval' => $currentInterval,
+                    'real_time' => [
+                        'total_minutes' => $totalMinutes,
+                        'work_minutes' => $workMinutes,
+                        'break_minutes' => $attendance->total_break_minutes,
+                        'current_interval_minutes' => $currentInterval ? $currentInterval->start_time->diffInMinutes(now()) : 0,
+                    ]
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Failed to get active session: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => __('staff.attendance.active_session_failed')
+            ], 500);
         }
     }
 }

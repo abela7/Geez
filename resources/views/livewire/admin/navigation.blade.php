@@ -250,9 +250,6 @@
                     <a href="{{ route('admin.shifts.shifts.templates.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.shifts.templates.*') ? 'active' : '' }}">
                         {{ __('shifts.templates.title') }}
                     </a>
-                    <a href="{{ route('admin.shifts.schedule.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.schedule.*') ? 'active' : '' }}">
-                        {{ __('admin.staff.shifts.schedule_title') }}
-                    </a>
                     <div class="submenu-separator"></div>
                     <div class="submenu-section-title">{{ __('staff.settings.section_title') }}</div>
                     <a href="{{ route('admin.staff.settings.index') }}" class="submenu-link {{ request()->routeIs('admin.staff.settings.*') ? 'active' : '' }}">

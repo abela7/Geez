@@ -114,6 +114,7 @@ export default defineConfig({
                 'resources/css/admin/bar-inventory.css',
                 'resources/js/admin/bar-inventory.js',
                 // Settings and other sections
+                'resources/css/admin/settings.css',
                 'resources/css/admin/restaurant-settings.css',
                 'resources/js/admin/restaurant-settings.js',
                 'resources/css/admin/expenses.css',

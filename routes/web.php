@@ -96,6 +96,20 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         Route::post('/attendance', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'store'])->name('attendance.store');
         Route::put('/attendance/{staffAttendance}', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'update'])->name('attendance.update');
         Route::delete('/attendance/{staffAttendance}', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'destroy'])->name('attendance.destroy');
+        
+        // Enhanced Attendance - State Machine API Routes
+        Route::post('/attendance/{staffAttendance}/start-break', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'startBreak'])->name('attendance.start_break');
+        Route::post('/attendance/{staffAttendance}/resume-work', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'resumeWork'])->name('attendance.resume_work');
+        Route::post('/attendance/{staffAttendance}/clock-out', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'clockOut'])->name('attendance.clock_out');
+        Route::post('/attendance/{staffAttendance}/auto-close', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'autoClose'])->name('attendance.auto_close');
+        
+        // Attendance Intervals Management
+        Route::get('/attendance/{staffAttendance}/intervals', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'getIntervals'])->name('attendance.intervals');
+        Route::post('/attendance/intervals/{interval}/approve', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'approveInterval'])->name('attendance.intervals.approve');
+        
+        // Real-time API endpoints
+        Route::get('/attendance/dashboard-data', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'getDashboardData'])->name('attendance.dashboard_data');
+        Route::get('/attendance/staff/{staff}/active-session', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'getActiveSession'])->name('attendance.active_session');
 
         // Staff Tasks (Simple Implementation)
         Route::get('/tasks', [\App\Http\Controllers\Admin\StaffTasksController::class, 'index'])->name('tasks.index');
