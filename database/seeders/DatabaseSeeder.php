@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             ShiftTypeSeeder::class,
             StaffTypeSeeder::class,
             StaffSeeder::class,
+            ScheduleTestSeeder::class,
         ]);
     }
 }

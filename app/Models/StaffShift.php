@@ -80,6 +80,50 @@ class StaffShift extends Model
     }
 
     /**
+     * Get the shift type for this shift.
+     * Try to match by slug first, fallback to name or id
+     */
+    public function getShiftTypeModel()
+    {
+        if (empty($this->shift_type)) {
+            return null;
+        }
+
+        try {
+            // First try by slug
+            $shiftType = ShiftType::where('slug', $this->shift_type)->first();
+
+            // If not found, try by name
+            if (!$shiftType) {
+                $shiftType = ShiftType::where('name', $this->shift_type)->first();
+            }
+
+            // If not found and it's numeric, try by id
+            if (!$shiftType && is_numeric($this->shift_type)) {
+                $shiftType = ShiftType::find($this->shift_type);
+            }
+
+            return $shiftType;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get the effective hourly rate for this shift.
+     * Uses shift type default rate if available, otherwise returns 0.
+     */
+    public function getEffectiveHourlyRate(): float
+    {
+        try {
+            $shiftType = $this->getShiftTypeModel();
+            return $shiftType ? (float) $shiftType->default_hourly_rate : 15.0;
+        } catch (\Exception $e) {
+            return 15.0; // Safe fallback
+        }
+    }
+
+    /**
      * Get all patterns for this shift.
      */
     public function patterns(): HasMany

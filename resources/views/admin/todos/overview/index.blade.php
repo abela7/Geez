@@ -408,7 +408,6 @@
 
 @push('scripts')
 @vite(['resources/js/admin/todos/overview.js'])
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Pass data to JavaScript
     window.completionTrends = @json($completionTrends);

@@ -209,7 +209,7 @@ return [
             'template_duplicated' => 'Template duplicated successfully.',
             'template_applied' => 'Template applied successfully.',
             'cannot_delete_used_template' => 'Cannot delete template that has been used. Archive it instead.',
-            
+
             // Additional keys for the index view
             'import_template' => 'Import Template',
             'create_template' => 'Create Template',
@@ -342,10 +342,8 @@ return [
             'deactivate' => 'Deactivate',
             'set_default' => 'Set Default',
             'view_all' => 'View All',
-            'all_status' => 'All Status',
-            'total_usage' => 'Total Usage',
         ],
-        
+
         'common' => [
             'edit' => 'Edit',
             'delete' => 'Delete',
@@ -355,7 +353,7 @@ return [
             'staff' => 'Staff',
             'type' => 'Type',
         ],
-        
+
         'statuses' => [
             'active' => 'Active',
             'draft' => 'Draft',

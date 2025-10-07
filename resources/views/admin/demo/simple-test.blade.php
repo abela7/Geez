@@ -108,10 +108,10 @@
         </div>
     </div>
 
-    <!-- GSAP CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    
-    <script>
+    <!-- GSAP via Vite -->
+    <script type="module">
+        import { gsap } from 'gsap';
+        
         // Initialize GSAP
         const logo = document.querySelector('#geez-logo');
         const logoPath = document.querySelector('#logo-path');

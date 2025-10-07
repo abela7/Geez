@@ -185,11 +185,9 @@ logoAnimations.pulseAnimation();</code></pre>
 @endsection
 
 @push('scripts')
-    <!-- GSAP CDN for immediate availability -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    
-    <script>
-        // Global variables
+@vite(['resources/js/admin/geez-logo-animations.js'])
+<script>
+    // Global variables
         let logoAnimations;
         let hoverEnabled = false;
         let pulseEnabled = false;

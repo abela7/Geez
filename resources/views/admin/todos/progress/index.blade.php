@@ -473,8 +473,7 @@
 @endpush
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-@vite('resources/js/admin/todos/progress.js')
+@vite(['resources/js/admin/todos/progress.js'])
 <script>
     // Pass data to JavaScript
     window.progressChartData = {

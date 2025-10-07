@@ -1,23 +1,38 @@
 @extends('layouts.admin')
 
-@section('title', __('admin.shifts.templates.create_title'))
+@section('title', __('admin.shifts.templates.create_template'))
+
+@push('styles')
+@vite(['resources/css/admin/shifts/templates.css'])
+@endpush
+
+@push('scripts')
+@vite(['resources/js/admin/shifts/templates.js'])
+@endpush
 
 @section('content')
-<div class="shift-template-create-page" x-data="templateCreateData()">
+<div class="template-create-page" x-data="templateCreateData()">
     <!-- Page Header -->
-    <div class="page-header">
+    <div class="page-header-modern">
         <div class="page-header-content">
             <div class="page-header-left">
-                <h1 class="page-title">{{ __('admin.shifts.templates.create_title') }}</h1>
-                <p class="page-description">{{ __('admin.shifts.templates.create_description') }}</p>
+                <div class="page-title-section">
+                    <h1 class="page-title">
+                        <svg class="page-title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        {{ __('admin.shifts.templates.create_template') }}
+                    </h1>
+                    <p class="page-description">{{ __('admin.shifts.templates.create_template_desc') }}</p>
+                </div>
             </div>
             <div class="page-header-right">
                 <div class="header-actions">
-                    <a href="{{ route('admin.shifts.shifts.templates.index') }}" class="btn btn-ghost">
+                    <a href="{{ route('admin.shifts.templates.index') }}" class="btn btn-secondary">
                         <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                         </svg>
-                        Back to Templates
+                        {{ __('admin.shifts.templates.back_to_templates') }}
                     </a>
                 </div>
             </div>
@@ -25,122 +40,256 @@
     </div>
 
     <!-- Create Form -->
-    <div class="form-container">
-        <form action="{{ route('admin.shifts.shifts.templates.store') }}" method="POST" class="template-form">
-            @csrf
-            
-            <!-- Basic Information -->
-            <div class="form-section">
-                <div class="section-header">
-                    <div class="section-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                    <div class="section-content">
-                        <h2 class="section-title">Template Information</h2>
-                        <p class="section-description">Create a new shift template for your schedules</p>
-                    </div>
-                </div>
-                
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="name" class="form-label">Template Name</label>
-                        <input type="text" id="name" name="name" class="form-input" 
-                               value="{{ old('name') }}" required>
-                        @error('name')
-                            <div class="form-error">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="type" class="form-label">Template Type</label>
-                        <select id="type" name="type" class="form-select" required>
-                            <option value="standard" {{ old('type') == 'standard' ? 'selected' : '' }}>Standard</option>
-                            <option value="holiday" {{ old('type') == 'holiday' ? 'selected' : '' }}>Holiday</option>
-                            <option value="seasonal" {{ old('type') == 'seasonal' ? 'selected' : '' }}>Seasonal</option>
-                            <option value="custom" {{ old('type') == 'custom' ? 'selected' : '' }}>Custom</option>
-                        </select>
-                        @error('type')
-                            <div class="form-error">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea id="description" name="description" class="form-textarea" rows="3">{{ old('description') }}</textarea>
-                    @error('description')
-                        <div class="form-error">{{ $message }}</div>
-                    @enderror
-                </div>
-                
-                <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
-                        <span class="checkbox-text">Active Template</span>
-                        <span class="checkbox-description">Only active templates can be applied to schedules</span>
-                    </label>
-                </div>
+    <form @submit.prevent="submitTemplate()" class="template-create-form">
+        <!-- Template Basic Info -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <h3 class="section-title">{{ __('admin.shifts.templates.basic_info') }}</h3>
+                <p class="section-description">{{ __('admin.shifts.templates.basic_info_desc') }}</p>
             </div>
 
-            <!-- Template Preview -->
-            <div class="form-section">
-                <div class="section-header">
-                    <div class="section-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                        </svg>
-                    </div>
-                    <div class="section-content">
-                        <h2 class="section-title">Template Preview</h2>
-                        <p class="section-description">This template will be created empty. You can add assignments after creation.</p>
-                    </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="name" class="form-label required">{{ __('admin.shifts.templates.template_name') }}</label>
+                    <input type="text"
+                           id="name"
+                           x-model="templateData.name"
+                           required
+                           class="form-input"
+                           placeholder="{{ __('admin.shifts.templates.template_name_placeholder') }}">
+                    <div class="form-help">{{ __('admin.shifts.templates.template_name_help') }}</div>
                 </div>
-                
-                <div class="preview-card">
-                    <div class="preview-content">
-                        <div class="preview-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+
+                <div class="form-group">
+                    <label for="type" class="form-label required">{{ __('admin.shifts.templates.template_type') }}</label>
+                    <select id="type" x-model="templateData.type" required class="form-select">
+                        <option value="">{{ __('admin.shifts.templates.select_type') }}</option>
+                        @foreach($templateTypeOptions as $key => $label)
+                            <option value="{{ $key }}">{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    <div class="form-help">{{ __('admin.shifts.templates.template_type_help') }}</div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="description" class="form-label">{{ __('admin.shifts.templates.description') }}</label>
+                    <textarea id="description"
+                              x-model="templateData.description"
+                              rows="3"
+                              class="form-textarea"
+                              placeholder="{{ __('admin.shifts.templates.description_placeholder') }}"></textarea>
+                    <div class="form-help">{{ __('admin.shifts.templates.description_help') }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ __('admin.shifts.templates.settings') }}</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" x-model="templateData.is_active" class="checkbox-input">
+                            <span class="checkbox-mark"></span>
+                            {{ __('admin.shifts.templates.active_template') }}
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" x-model="templateData.is_default" class="checkbox-input">
+                            <span class="checkbox-mark"></span>
+                            {{ __('admin.shifts.templates.default_template') }}
+                        </label>
+                    </div>
+                    <div class="form-help">{{ __('admin.shifts.templates.settings_help') }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shift Assignments -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <h3 class="section-title">{{ __('admin.shifts.templates.shift_assignments') }}</h3>
+                <p class="section-description">{{ __('admin.shifts.templates.shift_assignments_desc') }}</p>
+            </div>
+
+            <!-- Assignment Builder -->
+            <div class="assignment-builder">
+                <!-- Days of Week Tabs -->
+                <div class="days-tabs">
+                    @foreach($daysOfWeek as $dayNum => $dayName)
+                        <button type="button"
+                                class="day-tab"
+                                :class="{ 'active': activeDay === {{ $dayNum }} }"
+                                @click="activeDay = {{ $dayNum }}">
+                            <span class="day-name">{{ $dayName }}</span>
+                            <span class="assignment-count"
+                                  x-text="getAssignmentsForDay({{ $dayNum }}).length"></span>
+                        </button>
+                    @endforeach
+                </div>
+
+                <!-- Current Day Assignments -->
+                <div class="day-assignments">
+                    <div class="assignments-header">
+                        <h4 class="assignments-title" x-text="getDayName(activeDay) + ' Assignments'"></h4>
+                        <button type="button" @click="showAddAssignmentModal = true" class="btn btn-primary btn-sm">
+                            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                             </svg>
-                        </div>
-                        <div class="preview-text">
-                            <h3 class="preview-title">Empty Template</h3>
-                            <p class="preview-description">This template will be created without any assignments. You can add staff assignments after creation by editing the template.</p>
+                            {{ __('admin.shifts.templates.add_assignment') }}
+                        </button>
+                    </div>
+
+                    <!-- Assignments List -->
+                    <div class="assignments-list">
+                        <template x-for="(assignment, index) in getAssignmentsForDay(activeDay)" :key="index">
+                            <div class="assignment-item">
+                                <div class="assignment-content">
+                                    <div class="assignment-shift">
+                                        <span class="shift-name" x-text="getShiftName(assignment.staff_shift_id)"></span>
+                                        <span class="shift-time" x-text="getShiftTime(assignment.staff_shift_id)"></span>
+                                    </div>
+                                    <div class="assignment-staff">
+                                        <span class="staff-name" x-text="getStaffName(assignment.staff_id)"></span>
+                                        <span class="staff-type" x-text="getStaffType(assignment.staff_id)"></span>
+                                    </div>
+                                    <div class="assignment-status">
+                                        <span class="status-badge" :class="'status-' + assignment.status" x-text="assignment.status"></span>
+                                    </div>
+                                </div>
+                                <div class="assignment-actions">
+                                    <button type="button" @click="editAssignment(activeDay, index)" class="btn-icon">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" @click="removeAssignment(activeDay, index)" class="btn-icon btn-danger">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Empty State -->
+                        <div class="empty-assignments" x-show="getAssignmentsForDay(activeDay).length === 0">
+                            <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-5.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                            </svg>
+                            <p class="empty-text">{{ __('admin.shifts.templates.no_assignments') }}</p>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Form Actions -->
-            <div class="form-actions">
-                <a href="{{ route('admin.shifts.shifts.templates.index') }}" class="btn btn-ghost">Cancel</a>
-                <button type="submit" class="btn btn-primary">
-                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                    </svg>
-                    Create Template
+                <!-- Summary Stats -->
+                <div class="assignment-summary">
+                    <div class="summary-item">
+                        <span class="summary-label">{{ __('admin.shifts.templates.total_assignments') }}</span>
+                        <span class="summary-value" x-text="getTotalAssignments()"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">{{ __('admin.shifts.templates.unique_staff') }}</span>
+                        <span class="summary-value" x-text="getUniqueStaffCount()"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">{{ __('admin.shifts.templates.unique_shifts') }}</span>
+                        <span class="summary-value" x-text="getUniqueShiftsCount()"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">{{ __('admin.shifts.templates.estimated_cost') }}</span>
+                        <span class="summary-value" x-text="'£' + calculateEstimatedCost()"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <div class="form-actions-left">
+                <button type="button"
+                        @click="clearAllAssignments()"
+                        class="btn btn-outline btn-danger">
+                    {{ __('admin.shifts.templates.clear_all') }}
                 </button>
             </div>
-        </form>
+            <div class="form-actions-right">
+                <a href="{{ route('admin.shifts.templates.index') }}" class="btn btn-secondary">
+                    {{ __('admin.shifts.templates.cancel') }}
+                </a>
+                <button type="submit"
+                        :disabled="!isFormValid() || isSubmitting"
+                        class="btn btn-primary">
+                    <span x-show="!isSubmitting">{{ __('admin.shifts.templates.create_template') }}</span>
+                    <span x-show="isSubmitting" class="loading-spinner">{{ __('admin.shifts.templates.creating') }}</span>
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Add/Edit Assignment Modal -->
+    <div class="modal-overlay" x-show="showAddAssignmentModal" x-transition>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" x-text="editingAssignment !== null ? 'Edit Assignment' : 'Add Assignment'"></h3>
+                <button @click="closeAssignmentModal()" class="modal-close">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <form @submit.prevent="saveAssignment()" class="modal-form">
+                <div class="form-group">
+                    <label class="form-label required">{{ __('admin.shifts.templates.select_shift') }}</label>
+                    <select x-model="assignmentForm.staff_shift_id" required class="form-select">
+                        <option value="">{{ __('admin.shifts.templates.choose_shift') }}</option>
+                        @foreach($shifts as $department => $departmentShifts)
+                            <optgroup label="{{ $department }}">
+                                @foreach($departmentShifts as $shift)
+                                    <option value="{{ $shift->id }}">
+                                        {{ $shift->name }} ({{ $shift->start_time }}-{{ $shift->end_time }})
+                                    </option>
+                                @endforeach
+                            </optgroup>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required">{{ __('admin.shifts.templates.select_staff') }}</label>
+                    <select x-model="assignmentForm.staff_id" required class="form-select">
+                        <option value="">{{ __('admin.shifts.templates.choose_staff') }}</option>
+                        @foreach($staff as $staffMember)
+                            <option value="{{ $staffMember->id }}">
+                                {{ $staffMember->full_name }} - {{ $staffMember->staffType?->display_name ?? 'No Type' }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required">{{ __('admin.shifts.templates.assignment_status') }}</label>
+                    <select x-model="assignmentForm.status" required class="form-select">
+                        <option value="scheduled">{{ __('admin.shifts.templates.scheduled') }}</option>
+                        <option value="confirmed">{{ __('admin.shifts.templates.confirmed') }}</option>
+                        <option value="optional">{{ __('admin.shifts.templates.optional') }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ __('admin.shifts.templates.notes') }}</label>
+                    <textarea x-model="assignmentForm.notes"
+                              rows="2"
+                              class="form-textarea"
+                              placeholder="{{ __('admin.shifts.templates.notes_placeholder') }}"></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" @click="closeAssignmentModal()" class="btn btn-secondary">
+                        {{ __('admin.shifts.templates.cancel') }}
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <span x-text="editingAssignment !== null ? 'Update Assignment' : 'Add Assignment'"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/admin/shifts/templates.css') }}">
-@endpush
-
-@push('scripts')
-<script>
-function templateCreateData() {
-    return {
-        init() {
-            // Initialize any needed functionality
-        }
-    };
-}
-</script>
-@endpush
 @endsection

@@ -156,27 +156,19 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
 
     // Shift Scheduling System Routes
     Route::prefix('shifts')->name('shifts.')->group(function () {
-        // Main scheduling interface
-        Route::get('/schedule', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'index'])->name('schedule.index');
-        Route::get('/calendar', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'calendar'])->name('schedule.calendar');
-
-        // Assignment management
-        Route::post('/assign', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'assign'])->name('assign');
-        Route::delete('/assignments/{assignment}', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'unassign'])->name('unassign');
-        Route::post('/generate-from-patterns', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'generateFromPatterns'])->name('generate-patterns');
-
-        // Analytics and reporting
-        Route::get('/coverage-analysis', [\App\Http\Controllers\Admin\StaffScheduleController::class, 'coverageAnalysis'])->name('coverage-analysis');
 
         // Shift templates management
         Route::resource('templates', \App\Http\Controllers\Admin\Shifts\TemplatesController::class, ['as' => 'shifts']);
         Route::post('/templates/{id}/duplicate', [\App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'duplicate'])->name('shifts.templates.duplicate');
         Route::post('/templates/{id}/apply', [\App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'apply'])->name('shifts.templates.apply');
+        Route::post('/templates/{id}/preview', [\App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'preview'])->name('shifts.templates.preview');
+        Route::post('/templates/{id}/set-default', [\App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'setDefault'])->name('shifts.templates.set-default');
+        Route::post('/templates/{id}/toggle-active', [\App\Http\Controllers\Admin\Shifts\TemplatesController::class, 'toggleActive'])->name('shifts.templates.toggle-active');
 
         // Weekly Rota/Assignments Interface (Must be BEFORE resource route to avoid conflicts)
         Route::get('/assignments/staff-availability', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'getStaffAvailability'])->name('assignments.staff-availability');
         Route::post('/assignments/bulk-assign', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'bulkAssign'])->name('assignments.bulk-assign');
-        
+
         // Weekly Rota Template Routes
         Route::post('/assignments/save-as-template', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'saveAsTemplate'])->name('assignments.save-template');
         Route::post('/assignments/apply-template', [\App\Http\Controllers\Admin\ShiftsAssignmentsController::class, 'applyTemplate'])->name('assignments.apply-template');

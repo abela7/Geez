@@ -389,6 +389,17 @@
   --btn-border-radius: 0.5rem;
   --btn-font-weight: 500;
   --btn-transition: var(--transition-all);
+
+  /* Button Shadow Variants */
+  --button-success-shadow: 0 2px 8px rgba(var(--color-success-rgb), 0.2);
+  --button-success-hover-shadow: 0 4px 16px rgba(var(--color-success-rgb), 0.3);
+  --button-error-shadow: 0 2px 8px rgba(var(--color-error-rgb), 0.2);
+  --button-error-hover-shadow: 0 4px 16px rgba(var(--color-error-rgb), 0.3);
+  --button-warning-shadow: 0 2px 8px rgba(var(--color-warning-rgb), 0.2);
+  --button-warning-hover-shadow: 0 4px 16px rgba(var(--color-warning-rgb), 0.3);
+
+  /* Header Text Opacity */
+  --header-text-opacity: 0.9;
   
   /* Action Buttons */
   --btn-action-size: 2rem;
@@ -1211,6 +1222,14 @@
   --button-secondary-text: var(--color-text-primary);
   --button-secondary-border: transparent;
   --button-secondary-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+
+  /* Button Shadow Variants - Dark Theme */
+  --button-success-shadow: 0 2px 8px rgba(var(--color-success-rgb), 0.3);
+  --button-success-hover-shadow: 0 4px 16px rgba(var(--color-success-rgb), 0.4);
+  --button-error-shadow: 0 2px 8px rgba(var(--color-error-rgb), 0.3);
+  --button-error-hover-shadow: 0 4px 16px rgba(var(--color-error-rgb), 0.4);
+  --button-warning-shadow: 0 2px 8px rgba(var(--color-warning-rgb), 0.3);
+  --button-warning-hover-shadow: 0 4px 16px rgba(var(--color-warning-rgb), 0.3);
 
   --badge-critical-bg: #EF4444;
   --badge-critical-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);

@@ -2,23 +2,38 @@
 
 @section('title', __('admin.shifts.templates.title'))
 
+@push('styles')
+@vite(['resources/css/admin/shifts/templates.css'])
+@endpush
+
+@push('scripts')
+@vite(['resources/js/admin/shifts/templates.js'])
+@endpush
+
 @section('content')
-<div class="shifts-templates-page" x-data="shiftsTemplatesData()">
-    <!-- Page Header -->
-    <div class="page-header">
+<div class="templates-page" x-data="templatesPageData(@js($templates ?? []), @js($shifts ?? []), @js($staff ?? []))">
+    <!-- Modern Page Header -->
+    <div class="page-header-modern">
         <div class="page-header-content">
             <div class="page-header-left">
-                <h1 class="page-title">{{ __('admin.shifts.templates.title') }}</h1>
-                <p class="page-description">{{ __('admin.shifts.templates.subtitle') }}</p>
+                <div class="page-title-section">
+                    <h1 class="page-title">
+                        <svg class="page-title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        {{ __('admin.shifts.templates.title') }}
+                    </h1>
+                    <p class="page-description">{{ __('admin.shifts.templates.subtitle') }}</p>
+                </div>
             </div>
             <div class="page-header-right">
                 <div class="header-actions">
-                    <button class="btn btn-secondary" @click="showImportModal = true">
+                    <a href="{{ route('admin.shifts.assignments.index') }}" class="btn btn-secondary">
                         <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h6a2 2 0 012 2v4m-6 8v10m0 0l-3-3m3 3l3-3"/>
                         </svg>
-                        {{ __('admin.shifts.templates.import_template') }}
-                    </button>
+                        {{ __('admin.shifts.templates.view_assignments') }}
+                    </a>
                     <a href="{{ route('admin.shifts.shifts.templates.create') }}" class="btn btn-primary">
                         <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -30,396 +45,306 @@
         </div>
     </div>
 
-    <!-- Summary Dashboard -->
-    <div class="summary-section">
-        <div class="summary-grid">
-            <div class="summary-card summary-card-primary">
-                <div class="summary-icon">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
-                        <path fill-rule="evenodd" d="M4 5a2 2 0 012-2v1a1 1 0 102 0V3h4v1a1 1 0 102 0V3a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <div class="summary-content">
-                    <div class="summary-value">{{ $totalTemplates }}</div>
-                    <div class="summary-label">{{ __('admin.shifts.templates.total_templates') }}</div>
-                </div>
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
             </div>
-
-            <div class="summary-card summary-card-success">
-                <div class="summary-icon">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <div class="summary-content">
-                    <div class="summary-value">{{ $activeTemplates }}</div>
-                    <div class="summary-label">{{ __('admin.shifts.templates.active_templates') }}</div>
-                </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ $totalTemplates }}</div>
+                <div class="stat-label">{{ __('admin.shifts.templates.total_templates') }}</div>
             </div>
+        </div>
 
-            <div class="summary-card summary-card-warning">
-                <div class="summary-icon">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
-                        <path fill-rule="evenodd" d="M4 5a2 2 0 012-2v1a1 1 0 102 0V3h4v1a1 1 0 102 0V3a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm8 8a1 1 0 01-1-1V8a1 1 0 012 0v4a1 1 0 01-1 1z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <div class="summary-content">
-                    <div class="summary-value">{{ $draftTemplates }}</div>
-                    <div class="summary-label">{{ __('admin.shifts.templates.draft_templates') }}</div>
-                </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
             </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ $activeTemplates }}</div>
+                <div class="stat-label">{{ __('admin.shifts.templates.active_templates') }}</div>
+            </div>
+        </div>
 
-            <div class="summary-card summary-card-info">
-                <div class="summary-icon">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <div class="summary-content">
-                    <div class="summary-value">{{ $totalUsage }}</div>
-                    <div class="summary-label">{{ __('admin.shifts.templates.total_applications') }}</div>
-                </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ $draftTemplates }}</div>
+                <div class="stat-label">{{ __('admin.shifts.templates.draft_templates') }}</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ $totalUsage }}</div>
+                <div class="stat-label">{{ __('admin.shifts.templates.total_usage') }}</div>
             </div>
         </div>
     </div>
 
-    <!-- Template Types Overview -->
-    <div class="template-types-section">
-        <div class="section-header">
-            <h2 class="section-title">{{ __('admin.shifts.templates.template_types') }}</h2>
-        </div>
-        <div class="template-types-grid">
-            @foreach($templateTypes as $type => $data)
-            <div class="template-type-card">
-                <div class="type-header">
-                    <h3 class="type-name">{{ $data['name'] }}</h3>
-                    <span class="type-count">{{ $data['count'] }} {{ __('admin.shifts.templates.templates') }}</span>
-                </div>
-                <div class="type-stats">
-                    <div class="stat-item">
-                        <span class="stat-value">{{ $data['total_usage'] }}</span>
-                        <span class="stat-label">{{ __('admin.shifts.templates.times_used') }}</span>
-                    </div>
-                </div>
+    <!-- Filters and Search -->
+    <div class="filters-section">
+        <div class="filters-content">
+            <div class="search-box">
+                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input type="text"
+                       x-model="searchQuery"
+                       @input.debounce.300ms="filterTemplates()"
+                       placeholder="{{ __('admin.shifts.templates.search_templates') }}"
+                       class="search-input">
             </div>
-            @endforeach
-        </div>
-    </div>
 
-    <!-- Quick Access Sections -->
-    <div class="quick-access-grid">
-        <!-- Popular Templates -->
-        <div class="popular-templates-section">
-            <div class="section-header">
-                <h3 class="section-title">{{ __('admin.shifts.templates.popular_templates') }}</h3>
-                <a href="#all-templates" class="view-all-link">{{ __('admin.shifts.templates.view_all') }}</a>
-            </div>
-            <div class="templates-quick-list">
-                @foreach($popularTemplates as $template)
-                <div class="template-quick-card">
-                    <div class="template-info">
-                        <h4 class="template-name">{{ $template['name'] }}</h4>
-                        <p class="template-description">{{ Str::limit($template['description'], 60) }}</p>
-                        <div class="template-meta">
-                            <span class="usage-count">{{ $template['usage_count'] }} {{ __('admin.shifts.templates.uses') }}</span>
-                            <span class="template-type">{{ ucfirst($template['type']) }}</span>
-                        </div>
-                    </div>
-                    <div class="template-actions">
-                        <button class="btn btn-sm btn-primary" @click="showApplyModal({{ json_encode($template) }})">
-                            {{ __('admin.shifts.templates.apply_template') }}
-                        </button>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-
-        <!-- Recent Templates -->
-        <div class="recent-templates-section">
-            <div class="section-header">
-                <h3 class="section-title">{{ __('admin.shifts.templates.recent_templates') }}</h3>
-                <a href="#all-templates" class="view-all-link">{{ __('admin.shifts.templates.view_all') }}</a>
-            </div>
-            <div class="templates-quick-list">
-                @foreach($recentTemplates as $template)
-                <div class="template-quick-card">
-                    <div class="template-info">
-                        <h4 class="template-name">{{ $template['name'] }}</h4>
-                        <p class="template-description">{{ Str::limit($template['description'], 60) }}</p>
-                        <div class="template-meta">
-                            <span class="last-updated">{{ $template['updated_at']->diffForHumans() }}</span>
-                            <span class="created-by">{{ __('admin.shifts.templates.by') }} {{ $template['created_by'] }}</span>
-                        </div>
-                    </div>
-                    <div class="template-actions">
-                        <button class="btn btn-sm btn-secondary" @click="editTemplate({{ $template['id'] }})">
-                            {{ __('admin.shifts.common.edit') }}
-                        </button>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-
-    <!-- All Templates Section -->
-    <div class="all-templates-section" id="all-templates">
-        <div class="section-header">
-            <h2 class="section-title">{{ __('admin.shifts.templates.all_templates') }}</h2>
-            <div class="section-filters">
-                <select x-model="filterType" @change="applyFilters()" class="filter-select">
+            <div class="filter-buttons">
+                <select x-model="filterType" @change="filterTemplates()" class="filter-select">
                     <option value="all">{{ __('admin.shifts.templates.all_types') }}</option>
-                    <option value="weekly">{{ __('admin.shifts.templates.weekly') }}</option>
-                    <option value="weekend">{{ __('admin.shifts.templates.weekend') }}</option>
-                    <option value="special">{{ __('admin.shifts.templates.special') }}</option>
-                    <option value="minimal">{{ __('admin.shifts.templates.minimal') }}</option>
-                    <option value="training">{{ __('admin.shifts.templates.training') }}</option>
+                    @foreach($templateTypeOptions as $key => $label)
+                        <option value="{{ $key }}">{{ $label }}</option>
+                    @endforeach
                 </select>
-                <select x-model="filterStatus" @change="applyFilters()" class="filter-select">
-                    <option value="all">{{ __('admin.shifts.common.all_statuses') }}</option>
-                    <option value="active">{{ __('admin.shifts.statuses.active') }}</option>
-                    <option value="draft">{{ __('admin.shifts.statuses.draft') }}</option>
+
+                <select x-model="filterStatus" @change="filterTemplates()" class="filter-select">
+                    <option value="all">{{ __('admin.shifts.templates.all_status') }}</option>
+                    <option value="active">{{ __('admin.shifts.templates.active') }}</option>
+                    <option value="draft">{{ __('admin.shifts.templates.draft') }}</option>
                 </select>
-                <input type="text" x-model="searchQuery" @input="applyFilters()" class="search-input" placeholder="{{ __('admin.shifts.templates.search_templates') }}">
+
+                <select x-model="sortBy" @change="filterTemplates()" class="filter-select">
+                    <option value="created_at">{{ __('admin.shifts.templates.sort_newest') }}</option>
+                    <option value="name">{{ __('admin.shifts.templates.sort_name') }}</option>
+                    <option value="usage_count">{{ __('admin.shifts.templates.sort_usage') }}</option>
+                    <option value="type">{{ __('admin.shifts.templates.sort_type') }}</option>
+                </select>
             </div>
         </div>
-        
-        <div class="templates-grid">
+    </div>
+
+    <!-- Templates Grid -->
+    <div class="templates-grid" x-show="filteredTemplates.length > 0" x-transition>
+        <div class="templates-container">
             @foreach($templates as $template)
-            <div class="template-card" data-type="{{ $template['type'] }}" data-status="{{ $template['status'] }}" data-name="{{ strtolower($template['name']) }}">
-                <div class="template-card-header">
-                    <div class="template-title-section">
-                        <h3 class="template-name">{{ $template['name'] }}</h3>
-                        <div class="template-badges">
-                            <span class="template-type-badge type-{{ $template['type'] }}">
-                                {{ ucfirst($template['type']) }}
-                            </span>
-                            <span class="template-status-badge status-{{ $template['status'] }}">
-                                {{ ucfirst($template['status']) }}
-                            </span>
+                <div class="template-card"
+                     x-show="isTemplateVisible('{{ $template['id'] }}')"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 transform scale-95"
+                     x-transition:enter-end="opacity-100 transform scale-100">
+                    <div class="template-header">
+                        <div class="template-title-section">
+                            <h3 class="template-title">{{ $template['name'] }}</h3>
+                            <div class="template-meta">
+                                <span class="template-type type-{{ $template['type'] }}">
+                                    {{ ucfirst($template['type']) }}
+                                </span>
+                                <span class="template-status status-{{ $template['status'] }}">
+                                    {{ ucfirst($template['status']) }}
+                                </span>
+                                @if($template['is_default'])
+                                    <span class="template-default">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                                        </svg>
+                                        {{ __('admin.shifts.templates.default') }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="template-actions">
+                            <div class="dropdown">
+                                <button class="dropdown-trigger" @click="toggleDropdown('{{ $template['id'] }}')">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                                    </svg>
+                                </button>
+                                <div class="dropdown-menu"
+                                     x-show="activeDropdown === '{{ $template['id'] }}'"
+                                     x-transition
+                                     @click.outside="activeDropdown = null">
+                                    <a href="{{ route('admin.shifts.shifts.templates.show', $template['id']) }}"
+                                       class="dropdown-item">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                        </svg>
+                                        {{ __('admin.shifts.templates.view_details') }}
+                                    </a>
+                                    <a href="{{ route('admin.shifts.shifts.templates.edit', $template['id']) }}"
+                                       class="dropdown-item">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                        {{ __('admin.shifts.templates.edit') }}
+                                    </a>
+                                    <button class="dropdown-item"
+                                            @click="duplicateTemplate('{{ $template['id'] }}')">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                        </svg>
+                                        {{ __('admin.shifts.templates.duplicate') }}
+                                    </button>
+                                    @if(!$template['is_default'])
+                                        <button class="dropdown-item"
+                                                @click="setAsDefault('{{ $template['id'] }}')">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                                            </svg>
+                                            {{ __('admin.shifts.templates.set_default') }}
+                                        </button>
+                                    @endif
+                                    <button class="dropdown-item"
+                                            @click="toggleTemplateStatus('{{ $template['id'] }}')">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                        {{ $template['status'] === 'active' ? __('admin.shifts.templates.deactivate') : __('admin.shifts.templates.activate') }}
+                                    </button>
+                                    <div class="dropdown-divider"></div>
+                                    @if($template['usage_count'] === 0)
+                                        <button class="dropdown-item text-danger"
+                                                @click="deleteTemplate('{{ $template['id'] }}', '{{ $template['name'] }}')">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            </svg>
+                                            {{ __('admin.shifts.templates.delete') }}
+                                        </button>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="template-menu" x-data="{ open: false }">
-                        <button class="menu-trigger" @click="open = !open">
-                            <svg fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
-                            </svg>
-                        </button>
-                        <div x-show="open" @click.away="open = false" x-transition class="menu-dropdown">
-                            <a href="{{ route('admin.shifts.shifts.templates.edit', $template['id']) }}" class="menu-item">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                </svg>
-                                {{ __('admin.shifts.common.edit') }}
-                            </a>
-                            <button class="menu-item" @click="duplicateTemplate({{ $template['id'] }})">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                </svg>
-                                {{ __('admin.shifts.templates.duplicate') }}
-                            </button>
-                            <button class="menu-item" @click="exportTemplate({{ $template['id'] }})">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                </svg>
-                                {{ __('admin.shifts.templates.export') }}
-                            </button>
-                            <div class="menu-separator"></div>
-                            <button class="menu-item menu-item-danger" @click="deleteTemplate({{ $template['id'] }})">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                </svg>
-                                {{ __('admin.shifts.common.delete') }}
-                            </button>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="template-description">
-                    <p>{{ $template['description'] }}</p>
-                </div>
-
-                <div class="template-stats">
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <span class="stat-value">{{ $template['total_shifts'] }}</span>
-                            <span class="stat-label">{{ __('admin.shifts.common.shifts') }}</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value">{{ $template['total_staff_required'] }}</span>
-                            <span class="stat-label">{{ __('admin.shifts.common.staff') }}</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value">${{ number_format($template['estimated_cost']) }}</span>
-                            <span class="stat-label">{{ __('admin.shifts.templates.estimated_cost') }}</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value">{{ $template['usage_count'] }}</span>
-                            <span class="stat-label">{{ __('admin.shifts.templates.uses') }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="template-shifts-preview">
-                    <h4 class="preview-title">{{ __('admin.shifts.templates.shifts_included') }}</h4>
-                    <div class="shifts-preview-list">
-                        @foreach(array_slice($template['shifts'], 0, 3) as $shift)
-                        <div class="shift-preview-item">
-                            <span class="shift-name">{{ $shift['name'] }}</span>
-                            <span class="shift-time">{{ $shift['start_time'] }}-{{ $shift['end_time'] }}</span>
-                            <span class="shift-department">{{ $shift['department'] }}</span>
-                        </div>
-                        @endforeach
-                        @if(count($template['shifts']) > 3)
-                        <div class="more-shifts">
-                            +{{ count($template['shifts']) - 3 }} {{ __('admin.shifts.templates.more_shifts') }}
-                        </div>
+                    <div class="template-content">
+                        @if($template['description'])
+                            <p class="template-description">{{ Str::limit($template['description'], 100) }}</p>
                         @endif
+
+                        <div class="template-stats">
+                            <div class="stat-item">
+                                <span class="stat-value">{{ $template['total_assignments'] }}</span>
+                                <span class="stat-label">{{ __('admin.shifts.templates.assignments') }}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">{{ $template['total_staff'] }}</span>
+                                <span class="stat-label">{{ __('admin.shifts.templates.staff') }}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">{{ $template['usage_count'] }}</span>
+                                <span class="stat-label">{{ __('admin.shifts.templates.usage') }}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">£{{ number_format($template['estimated_cost'], 0) }}</span>
+                                <span class="stat-label">{{ __('admin.shifts.templates.cost') }}</span>
+                            </div>
+                        </div>
+
+                        <div class="template-footer">
+                            <div class="template-meta-info">
+                                <span class="created-by">{{ __('admin.shifts.templates.created_by') }}: {{ $template['created_by'] }}</span>
+                                @if($template['last_used'])
+                                    <span class="last-used">{{ __('admin.shifts.templates.last_used') }}: {{ $template['last_used']->format('M j, Y') }}</span>
+                                @endif
+                            </div>
+                            <div class="template-quick-actions">
+                                <button class="btn-apply-template"
+                                        @click="applyTemplate('{{ $template['id'] }}', '{{ $template['name'] }}')">
+                                    {{ __('admin.shifts.templates.apply') }}
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <div class="template-meta">
-                    <div class="meta-info">
-                        <span class="created-by">{{ __('admin.shifts.templates.created_by') }} {{ $template['created_by'] }}</span>
-                        <span class="created-date">{{ $template['created_at']->format('M d, Y') }}</span>
-                        @if($template['last_used'])
-                        <span class="last-used">{{ __('admin.shifts.templates.last_used') }} {{ $template['last_used']->diffForHumans() }}</span>
-                        @endif
-                    </div>
-                </div>
-
-                <div class="template-actions">
-                    <button class="btn btn-primary" @click="showApplyModal({{ json_encode($template) }})">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                        {{ __('admin.shifts.templates.apply_template') }}
-                    </button>
-                    <button class="btn btn-secondary" @click="previewTemplate({{ json_encode($template) }})">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                        </svg>
-                        {{ __('admin.shifts.templates.preview') }}
-                    </button>
-                </div>
-            </div>
             @endforeach
         </div>
     </div>
 
-    <!-- Apply Template Modal -->
-    <div x-show="showApplyTemplateModal" x-transition class="modal-overlay" @click.self="showApplyTemplateModal = false">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">{{ __('admin.shifts.templates.apply_template') }}</h3>
-                <button class="modal-close" @click="showApplyTemplateModal = false">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-            
-            <div class="modal-body">
-                <div class="template-summary" x-show="selectedTemplate">
-                    <h4>{{ __('admin.shifts.templates.template_details') }}</h4>
-                    <div class="template-info-grid">
-                        <div class="info-item">
-                            <span class="info-label">{{ __('admin.shifts.templates.template_name') }}</span>
-                            <span class="info-value" x-text="selectedTemplate?.name"></span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">{{ __('admin.shifts.common.type') }}</span>
-                            <span class="info-value" x-text="selectedTemplate?.type"></span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">{{ __('admin.shifts.templates.total_shifts') }}</span>
-                            <span class="info-value" x-text="selectedTemplate?.total_shifts"></span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">{{ __('admin.shifts.templates.estimated_cost') }}</span>
-                            <span class="info-value" x-text="formatCurrency(selectedTemplate?.estimated_cost)"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="application-settings">
-                    <h4>{{ __('admin.shifts.templates.application_settings') }}</h4>
-                    <div class="settings-grid">
-                        <div class="form-group">
-                            <label class="form-label">{{ __('admin.shifts.templates.start_date') }}</label>
-                            <input type="date" x-model="applicationSettings.startDate" class="form-input">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">{{ __('admin.shifts.templates.end_date') }}</label>
-                            <input type="date" x-model="applicationSettings.endDate" class="form-input">
-                        </div>
-                        <div class="form-group form-group-full">
-                            <label class="form-checkbox">
-                                <input type="checkbox" x-model="applicationSettings.overwriteExisting">
-                                <span class="checkbox-label">{{ __('admin.shifts.templates.overwrite_existing') }}</span>
-                            </label>
-                            <div class="form-help">{{ __('admin.shifts.templates.overwrite_help') }}</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="preview-section" x-show="applicationPreview">
-                    <h4>{{ __('admin.shifts.templates.application_preview') }}</h4>
-                    <div class="preview-stats">
-                        <div class="preview-stat">
-                            <span class="stat-value" x-text="applicationPreview?.total_shifts"></span>
-                            <span class="stat-label">{{ __('admin.shifts.templates.shifts_to_create') }}</span>
-                        </div>
-                        <div class="preview-stat">
-                            <span class="stat-value" x-text="applicationPreview?.weeks_affected"></span>
-                            <span class="stat-label">{{ __('admin.shifts.templates.weeks_affected') }}</span>
-                        </div>
-                        <div class="preview-stat">
-                            <span class="stat-value" x-text="formatCurrency(applicationPreview?.estimated_cost)"></span>
-                            <span class="stat-label">{{ __('admin.shifts.templates.total_cost') }}</span>
-                        </div>
-                    </div>
-                    <div x-show="applicationPreview?.date_conflicts > 0 || applicationPreview?.staff_conflicts > 0" class="preview-warnings">
-                        <div x-show="applicationPreview?.date_conflicts > 0" class="warning-item">
-                            <svg class="warning-icon" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                            </svg>
-                            <span x-text="`${applicationPreview.date_conflicts} date conflicts detected`"></span>
-                        </div>
-                        <div x-show="applicationPreview?.staff_conflicts > 0" class="warning-item">
-                            <svg class="warning-icon" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                            </svg>
-                            <span x-text="`${applicationPreview.staff_conflicts} staff conflicts detected`"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="modal-actions">
-                <button class="btn btn-secondary" @click="generatePreview()">
-                    {{ __('admin.shifts.templates.preview_application') }}
-                </button>
-                <button class="btn btn-secondary" @click="showApplyTemplateModal = false">
-                    {{ __('admin.shifts.common.cancel') }}
-                </button>
-                <button class="btn btn-primary" @click="confirmApplication()" :disabled="!applicationSettings.startDate || !applicationSettings.endDate">
-                    {{ __('admin.shifts.templates.apply_template') }}
-                </button>
-            </div>
+    <!-- Empty State -->
+    <div class="empty-state" x-show="filteredTemplates.length === 0" x-transition>
+        <div class="empty-state-content">
+            <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <h3 class="empty-title">{{ __('admin.shifts.templates.no_templates') }}</h3>
+            <p class="empty-description">{{ __('admin.shifts.templates.no_templates_desc') }}</p>
+            <a href="{{ route('admin.shifts.shifts.templates.create') }}" class="btn btn-primary">
+                {{ __('admin.shifts.templates.create_first_template') }}
+            </a>
         </div>
     </div>
+
+    <!-- Template Type Statistics -->
+    @if(count($templateTypes) > 0)
+        <div class="template-types-section">
+            <h3 class="section-title">{{ __('admin.shifts.templates.template_types') }}</h3>
+            <div class="types-grid">
+                @foreach($templateTypes as $type)
+                    <div class="type-card">
+                        <div class="type-header">
+                            <span class="type-name">{{ $type['name'] }}</span>
+                            <span class="type-count">{{ $type['count'] }}</span>
+                        </div>
+                        <div class="type-stats">
+                            <span class="type-usage">{{ $type['total_usage'] }} {{ __('admin.shifts.templates.times_used') }}</span>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
+    <!-- Popular Templates -->
+    @if($popularTemplates->count() > 0)
+        <div class="popular-templates-section">
+            <h3 class="section-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="section-title-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m0 0A1.828 1.828 0 016.582 7H9m0 0a2 2 0 012 2v2m-2-2v+2m0-4h2m2-4H9M19 4v5h.582m0 0A1.828 1.828 0 0017.582 7H15m0 0a2 2 0 012 2v2m-2-2v+2m0-4h2m2-4H15"/>
+                </svg>
+                {{ __('admin.shifts.templates.popular_templates') }}
+            </h3>
+            <div class="popular-grid">
+                @foreach($popularTemplates as $template)
+                    <div class="popular-item">
+                        <div class="popular-content">
+                            <h4 class="popular-name">{{ $template['name'] }}</h4>
+                            <div class="popular-meta">
+                                <span class="popular-usage">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                                    </svg>
+                                    {{ $template['usage_count'] }} {{ __('admin.shifts.templates.times_used') }}
+                                </span>
+                                <span class="popular-type">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    {{ ucfirst($template['type']) }}
+                                </span>
+                            </div>
+                        </div>
+                        <a href="{{ route('admin.shifts.shifts.templates.show', $template['id']) }}" class="btn-view-popular">
+                            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                            {{ __('admin.shifts.templates.view') }}
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
 </div>
-
-@push('styles')
-@vite(['resources/css/admin/shifts/templates.css'])
-@endpush
-
-@push('scripts')
-@vite(['resources/js/admin/shifts/templates.js'])
-@endpush
 @endsection

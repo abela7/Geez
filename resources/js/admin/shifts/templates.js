@@ -1,519 +1,894 @@
-// Shift Templates JavaScript
+/**
+ * Templates Page JavaScript
+ * Handles template management, creation, editing, and application
+ */
 
-// Main Shifts Templates Data
-function shiftsTemplatesData() {
+// Templates Index Page Component
+function templatesPageData(initialTemplates = [], initialShifts = [], initialStaff = []) {
     return {
-        // Filters
+        // Data
+        templates: initialTemplates,
+        searchQuery: '',
         filterType: 'all',
         filterStatus: 'all',
-        searchQuery: '',
-        
-        // Modal states
-        showApplyTemplateModal: false,
-        showImportModal: false,
-        
-        // Selection states
-        selectedTemplate: null,
-        applicationPreview: null,
-        
-        // Application settings
-        applicationSettings: {
-            startDate: '',
-            endDate: '',
-            overwriteExisting: false,
+        sortBy: 'created_at',
+
+        // UI State
+        activeDropdown: null,
+        isLoading: false,
+
+        // Computed
+        get filteredTemplates() {
+            return this.templates.filter(template => {
+                const matchesSearch = !this.searchQuery ||
+                    template.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                    template.description?.toLowerCase().includes(this.searchQuery.toLowerCase());
+
+                const matchesType = this.filterType === 'all' || template.type === this.filterType;
+                const matchesStatus = this.filterStatus === 'all' || template.status === this.filterStatus;
+
+                return matchesSearch && matchesType && matchesStatus;
+            }).sort((a, b) => {
+                switch (this.sortBy) {
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'usage_count':
+                        return b.usage_count - a.usage_count;
+                    case 'type':
+                        return a.type.localeCompare(b.type);
+                    case 'created_at':
+                    default:
+                        return new Date(b.created_at) - new Date(a.created_at);
+                }
+            });
         },
-        
+
         // Methods
         init() {
-            this.applyFilters();
-            this.setDefaultDates();
+            console.log('Templates page initialized');
         },
         
-        setDefaultDates() {
-            const today = new Date();
-            const nextWeek = new Date(today);
-            nextWeek.setDate(today.getDate() + 7);
-            const monthLater = new Date(today);
-            monthLater.setMonth(today.getMonth() + 1);
-            
-            this.applicationSettings.startDate = nextWeek.toISOString().split('T')[0];
-            this.applicationSettings.endDate = monthLater.toISOString().split('T')[0];
+        filterTemplates() {
+            // Filtering is handled by computed property
         },
-        
-        applyFilters() {
-            const cards = document.querySelectorAll('.template-card');
-            let visibleCount = 0;
-            
-            cards.forEach(card => {
-                const type = card.dataset.type;
-                const status = card.dataset.status;
-                const name = card.dataset.name;
-                
-                let visible = true;
-                
-                // Type filter
-                if (this.filterType !== 'all' && type !== this.filterType) {
-                    visible = false;
-                }
-                
-                // Status filter
-                if (this.filterStatus !== 'all' && status !== this.filterStatus) {
-                    visible = false;
-                }
-                
-                // Search filter
-                if (this.searchQuery) {
-                    const query = this.searchQuery.toLowerCase();
-                    if (!name.includes(query)) {
-                        visible = false;
-                    }
-                }
-                
-                card.style.display = visible ? 'block' : 'none';
-                if (visible) visibleCount++;
-            });
-            
-            this.showFilterNotification(visibleCount, cards.length);
+
+        isTemplateVisible(templateId) {
+            return this.filteredTemplates.some(t => t.id === templateId);
         },
-        
-        showApplyModal(template) {
-            this.selectedTemplate = template;
-            this.applicationPreview = null;
-            this.showApplyTemplateModal = true;
+
+        toggleDropdown(templateId) {
+            this.activeDropdown = this.activeDropdown === templateId ? null : templateId;
         },
-        
-        async generatePreview() {
-            if (!this.selectedTemplate || !this.applicationSettings.startDate || !this.applicationSettings.endDate) {
-                this.showNotification('Please select dates first', 'warning');
+
+        async duplicateTemplate(templateId, templateName) {
+            if (!confirm(`Are you sure you want to duplicate "${templateName}"?`)) {
                 return;
             }
             
-            try {
-                const response = await fetch(`/admin/shifts/templates/${this.selectedTemplate.id}/preview`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        start_date: this.applicationSettings.startDate,
-                        end_date: this.applicationSettings.endDate,
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    this.applicationPreview = data.preview;
-                    this.showNotification('Preview generated successfully', 'success');
-                } else {
-                    this.showNotification('Failed to generate preview', 'error');
-                }
-            } catch (error) {
-                console.error('Error generating preview:', error);
-                this.showNotification('Error generating preview', 'error');
-            }
-        },
-        
-        async confirmApplication() {
-            if (!this.selectedTemplate || !this.applicationSettings.startDate || !this.applicationSettings.endDate) {
-                this.showNotification('Please fill in all required fields', 'warning');
-                return;
-            }
-            
-            try {
-                const response = await fetch(`/admin/shifts/templates/${this.selectedTemplate.id}/apply`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        start_date: this.applicationSettings.startDate,
-                        end_date: this.applicationSettings.endDate,
-                        overwrite_existing: this.applicationSettings.overwriteExisting,
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    this.showNotification(`Template applied successfully! Created ${data.shifts_created} shifts.`, 'success');
-                    this.showApplyTemplateModal = false;
-                    this.updateTemplateUsage(this.selectedTemplate.id);
-                } else {
-                    this.showNotification(data.message || 'Failed to apply template', 'error');
-                }
-            } catch (error) {
-                console.error('Error applying template:', error);
-                this.showNotification('Error applying template', 'error');
-            }
-        },
-        
-        updateTemplateUsage(templateId) {
-            // Update the usage count in the UI
-            const templateCards = document.querySelectorAll(`[data-template-id="${templateId}"]`);
-            templateCards.forEach(card => {
-                const usageElement = card.querySelector('.usage-count, .stat-value');
-                if (usageElement) {
-                    const currentUsage = parseInt(usageElement.textContent) || 0;
-                    usageElement.textContent = currentUsage + 1;
-                }
-            });
-        },
-        
-        previewTemplate(template) {
-            // In a real app, this would show a detailed preview modal
-            this.showNotification(`Previewing template: ${template.name}`, 'info');
-        },
-        
-        editTemplate(templateId) {
-            window.location.href = `/admin/shifts/templates/${templateId}/edit`;
-        },
-        
-        async duplicateTemplate(templateId) {
+            this.isLoading = true;
             try {
                 const response = await fetch(`/admin/shifts/templates/${templateId}/duplicate`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     }
                 });
                 
                 const data = await response.json();
-                
                 if (data.success) {
                     this.showNotification(data.message, 'success');
-                    // In a real app, you might refresh the page or add the new template to the list
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
+                    // Reload page to show new template
+                    window.location.reload();
                 } else {
-                    this.showNotification(data.message || 'Failed to duplicate template', 'error');
+                    this.showNotification(data.message, 'error');
                 }
-            } catch (error) {
-                console.error('Error duplicating template:', error);
-                this.showNotification('Error duplicating template', 'error');
+            } catch (e) {
+                this.showNotification('Failed to duplicate template', 'error');
+            } finally {
+                this.isLoading = false;
+                this.activeDropdown = null;
             }
         },
-        
-        exportTemplate(templateId) {
-            // In a real app, this would trigger a download
-            this.showNotification('Template exported successfully', 'success');
+
+        async setAsDefault(templateId) {
+            this.isLoading = true;
+            try {
+                const response = await fetch(`/admin/shifts/templates/${templateId}/set-default`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    this.showNotification(data.message, 'success');
+                    // Update templates
+                    this.templates = this.templates.map(template => ({
+                        ...template,
+                        is_default: template.id === templateId
+                    }));
+            } else {
+                    this.showNotification(data.message, 'error');
+                }
+            } catch (e) {
+                this.showNotification('Failed to set template as default', 'error');
+            } finally {
+                this.isLoading = false;
+                this.activeDropdown = null;
+            }
         },
-        
-        async deleteTemplate(templateId) {
-            if (!confirm('Are you sure you want to delete this template? This action cannot be undone.')) {
+
+        async toggleTemplateStatus(templateId) {
+            this.isLoading = true;
+            try {
+                const response = await fetch(`/admin/shifts/templates/${templateId}/toggle-active`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    this.showNotification(data.message, 'success');
+                    // Update template status
+                    this.templates = this.templates.map(template =>
+                        template.id === templateId
+                            ? { ...template, status: template.is_active ? 'draft' : 'active', is_active: !template.is_active }
+                            : template
+                    );
+                } else {
+                    this.showNotification(data.message, 'error');
+                }
+            } catch (e) {
+                this.showNotification('Failed to toggle template status', 'error');
+            } finally {
+                this.isLoading = false;
+                this.activeDropdown = null;
+            }
+        },
+
+        async deleteTemplate(templateId, templateName) {
+            if (!confirm(`Are you sure you want to delete "${templateName}"? This action cannot be undone.`)) {
                 return;
             }
-            
+
+            this.isLoading = true;
             try {
                 const response = await fetch(`/admin/shifts/templates/${templateId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     }
                 });
-                
+
                 if (response.ok) {
                     this.showNotification('Template deleted successfully', 'success');
-                    // Remove the template card from the UI
-                    const templateCard = document.querySelector(`[data-template-id="${templateId}"]`);
-                    if (templateCard) {
-                        templateCard.remove();
-                    }
+                    // Remove from templates array
+                    this.templates = this.templates.filter(template => template.id !== templateId);
                 } else {
-                    this.showNotification('Failed to delete template', 'error');
+                    const data = await response.json();
+                    this.showNotification(data.message || 'Failed to delete template', 'error');
                 }
-            } catch (error) {
-                console.error('Error deleting template:', error);
-                this.showNotification('Error deleting template', 'error');
+            } catch (e) {
+                this.showNotification('Failed to delete template', 'error');
+            } finally {
+                this.isLoading = false;
+                this.activeDropdown = null;
             }
         },
-        
-        formatCurrency(amount) {
-            if (!amount) return '$0';
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD'
-            }).format(amount);
-        },
-        
-        showFilterNotification(visible, total) {
-            if (visible < total) {
-                this.showNotification(`Showing ${visible} of ${total} templates`, 'info');
-            }
-        },
-        
+
         showNotification(message, type = 'info') {
             // Create notification element
             const notification = document.createElement('div');
             notification.className = `notification notification-${type}`;
-            notification.textContent = message;
-            
-            // Style the notification
-            Object.assign(notification.style, {
-                position: 'fixed',
-                top: '20px',
-                right: '20px',
-                padding: '12px 24px',
-                borderRadius: '8px',
-                color: 'white',
-                fontWeight: '500',
-                zIndex: '9999',
-                transform: 'translateX(100%)',
-                transition: 'transform 0.3s ease',
-                maxWidth: '400px'
-            });
-            
-            // Set background color based on type
-            const colors = {
-                success: '#10B981',
-                error: '#EF4444',
-                warning: '#F59E0B',
-                info: '#3B82F6'
-            };
-            notification.style.backgroundColor = colors[type] || colors.info;
-            
-            // Add to page
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <p class="notification-message">${message}</p>
+                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+
             document.body.appendChild(notification);
-            
-            // Animate in
+
+            // Auto remove after 5 seconds
             setTimeout(() => {
-                notification.style.transform = 'translateX(0)';
-            }, 100);
-            
-            // Remove after delay
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
-            }, 3000);
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
         }
     };
 }
 
-// Template Import Logic
-function templateImportData() {
+// Template Create Page Component
+function templateCreateData() {
     return {
-        importFile: null,
-        importProgress: 0,
-        isImporting: false,
-        
-        handleFileSelect(event) {
-            this.importFile = event.target.files[0];
+        // Template data
+        templateData: {
+            name: '',
+            description: '',
+            type: 'standard',
+            is_active: true,
+            is_default: false
+        },
+
+        // Assignments data
+        assignments: [], // Array of assignments by day (0-6)
+
+        // UI State
+        activeDay: 0, // Currently selected day (0=Sunday)
+        showAddAssignmentModal: false,
+        editingAssignment: null, // Index of assignment being edited
+        isSubmitting: false,
+
+        // Form data for modal
+        assignmentForm: {
+            staff_shift_id: '',
+            staff_id: '',
+            status: 'scheduled',
+            notes: ''
+        },
+
+        // Reference data (passed from controller)
+        shifts: initialShifts,
+        staff: initialStaff,
+
+        // Computed
+        getTotalAssignments() {
+            return this.assignments.flat().length;
+        },
+
+        getUniqueStaffCount() {
+            const staffIds = new Set();
+            this.assignments.forEach(day => {
+                day.forEach(assignment => staffIds.add(assignment.staff_id));
+            });
+            return staffIds.size;
+        },
+
+        getUniqueShiftsCount() {
+            const shiftIds = new Set();
+            this.assignments.forEach(day => {
+                day.forEach(assignment => shiftIds.add(assignment.staff_shift_id));
+            });
+            return shiftIds.size;
+        },
+
+        calculateEstimatedCost() {
+            let totalCost = 0;
+            this.assignments.forEach(day => {
+                day.forEach(assignment => {
+                    const shift = this.getShiftData(assignment.staff_shift_id);
+                    if (shift) {
+                        // Simple calculation: assume 8 hours at £15/hour
+                        const hours = 8; // Could be more sophisticated
+                        totalCost += hours * 15;
+                    }
+                });
+            });
+            return totalCost.toFixed(2);
+        },
+
+        // Methods
+        init() {
+            // Initialize assignments array for 7 days
+            this.assignments = Array.from({ length: 7 }, () => []);
+
+            console.log('Template create page initialized');
+        },
+
+        getAssignmentsForDay(dayIndex) {
+            return this.assignments[dayIndex] || [];
+        },
+
+        getDayName(dayIndex) {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            return days[dayIndex] || 'Unknown';
+        },
+
+        getShiftName(shiftId) {
+            const shift = this.getShiftData(shiftId);
+            return shift ? shift.name : 'Unknown Shift';
+        },
+
+        getShiftTime(shiftId) {
+            const shift = this.getShiftData(shiftId);
+            return shift ? `${shift.start_time} - ${shift.end_time}` : '';
+        },
+
+        getStaffName(staffId) {
+            const staff = this.staff.find(s => s.id == staffId);
+            return staff ? staff.full_name : 'Unknown Staff';
+        },
+
+        getStaffType(staffId) {
+            const staff = this.staff.find(s => s.id == staffId);
+            return staff ? (staff.staffType?.display_name || 'No Type') : '';
+        },
+
+        getShiftData(shiftId) {
+            for (const department of Object.values(this.shifts)) {
+                const shift = department.find(s => s.id == shiftId);
+                if (shift) return shift;
+            }
+            return null;
         },
         
-        async importTemplate() {
-            if (!this.importFile) {
-                this.showNotification('Please select a file to import', 'warning');
+        addAssignment() {
+            this.editingAssignment = null;
+            this.resetAssignmentForm();
+            this.showAddAssignmentModal = true;
+        },
+
+        editAssignment(dayIndex, assignmentIndex) {
+            this.editingAssignment = { dayIndex, assignmentIndex };
+            const assignment = this.assignments[dayIndex][assignmentIndex];
+            this.assignmentForm = { ...assignment };
+            this.showAddAssignmentModal = true;
+        },
+
+        removeAssignment(dayIndex, assignmentIndex) {
+            if (confirm('Are you sure you want to remove this assignment?')) {
+                this.assignments[dayIndex].splice(assignmentIndex, 1);
+            }
+        },
+
+        clearAllAssignments() {
+            if (confirm('Are you sure you want to clear all assignments?')) {
+                this.assignments = Array.from({ length: 7 }, () => []);
+            }
+        },
+
+        saveAssignment() {
+            if (!this.assignmentForm.staff_shift_id || !this.assignmentForm.staff_id) {
+                alert('Please select both a shift and staff member.');
+                return;
+            }
+
+            const assignment = { ...this.assignmentForm };
+
+            if (this.editingAssignment) {
+                // Update existing assignment
+                const { dayIndex, assignmentIndex } = this.editingAssignment;
+                this.assignments[dayIndex][assignmentIndex] = assignment;
+            } else {
+                // Add new assignment to current day
+                if (!this.assignments[this.activeDay]) {
+                    this.assignments[this.activeDay] = [];
+                }
+                this.assignments[this.activeDay].push(assignment);
+            }
+
+            this.closeAssignmentModal();
+        },
+
+        closeAssignmentModal() {
+            this.showAddAssignmentModal = false;
+            this.editingAssignment = null;
+            this.resetAssignmentForm();
+        },
+
+        resetAssignmentForm() {
+            this.assignmentForm = {
+                staff_shift_id: '',
+                staff_id: '',
+                status: 'scheduled',
+                notes: ''
+            };
+        },
+
+        isFormValid() {
+            return this.templateData.name.trim() &&
+                   this.templateData.type &&
+                   this.getTotalAssignments() > 0;
+        },
+
+        async submitTemplate() {
+            if (!this.isFormValid()) {
+                alert('Please fill in all required fields and add at least one assignment.');
+                return;
+            }
+
+            this.isSubmitting = true;
+            try {
+                // Prepare form data
+                const formData = {
+                    ...this.templateData,
+                    assignments: []
+                };
+
+                // Flatten assignments with day information
+                this.assignments.forEach((dayAssignments, dayIndex) => {
+                    dayAssignments.forEach(assignment => {
+                        formData.assignments.push({
+                            ...assignment,
+                            day_of_week: dayIndex
+                        });
+                    });
+                });
+
+                const response = await fetch('/admin/shifts/templates', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = '/admin/shifts/templates';
+                } else {
+                    alert(data.message || 'Failed to create template');
+                }
+            } catch (e) {
+                alert('Failed to create template: ' + e.message);
+            } finally {
+                this.isSubmitting = false;
+            }
+        },
+
+        showNotification(message, type = 'info') {
+            // Same notification function as index page
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <p class="notification-message">${message}</p>
+                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+    };
+}
+
+// Template Edit Page Component
+function templateEditData(templateId, existingAssignments = []) {
+    return {
+        // Template data
+        templateData: {
+            name: '',
+            description: '',
+            type: 'standard',
+            is_active: true,
+            is_default: false
+        },
+
+        // Assignments data
+        assignments: Array.from({ length: 7 }, () => []), // Initialize empty arrays for each day
+
+        // UI State
+        activeDay: 0,
+        showAddAssignmentModal: false,
+        editingAssignment: null,
+        isSubmitting: false,
+
+        // Form data for modal
+        assignmentForm: {
+            id: null, // For existing assignments
+            staff_shift_id: '',
+            staff_id: '',
+            status: 'scheduled',
+            notes: ''
+        },
+
+        // Reference data
+        shifts: [],
+        staff: [],
+
+        // Methods
+        init() {
+            // Load existing assignments
+            const assignments = existingAssignments || [];
+            assignments.forEach(assignment => {
+                const dayIndex = assignment.day_of_week;
+                if (!this.assignments[dayIndex]) {
+                    this.assignments[dayIndex] = [];
+                }
+                this.assignments[dayIndex].push({
+                    id: assignment.id,
+                    staff_shift_id: assignment.staff_shift_id,
+                    staff_id: assignment.staff_id,
+                    status: assignment.status,
+                    notes: assignment.notes || ''
+                });
+            });
+
+            console.log('Template edit page initialized');
+        },
+
+        // Same methods as create component, but with update functionality
+        getAssignmentsForDay(dayIndex) {
+            return this.assignments[dayIndex] || [];
+        },
+
+        getDayName(dayIndex) {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            return days[dayIndex] || 'Unknown';
+        },
+
+        getShiftName(shiftId) {
+            const shift = this.getShiftData(shiftId);
+            return shift ? shift.name : 'Unknown Shift';
+        },
+
+        getShiftTime(shiftId) {
+            const shift = this.getShiftData(shiftId);
+            return shift ? `${shift.start_time} - ${shift.end_time}` : '';
+        },
+
+        getStaffName(staffId) {
+            const staff = this.staff.find(s => s.id == staffId);
+            return staff ? staff.full_name : 'Unknown Staff';
+        },
+
+        getStaffType(staffId) {
+            const staff = this.staff.find(s => s.id == staffId);
+            return staff ? (staff.staffType?.display_name || 'No Type') : '';
+        },
+
+        getShiftData(shiftId) {
+            for (const department of Object.values(this.shifts)) {
+                const shift = department.find(s => s.id == shiftId);
+                if (shift) return shift;
+            }
+            return null;
+        },
+
+        getTotalAssignments() {
+            return this.assignments.flat().length;
+        },
+
+        getUniqueStaffCount() {
+            const staffIds = new Set();
+            this.assignments.forEach(day => {
+                day.forEach(assignment => staffIds.add(assignment.staff_id));
+            });
+            return staffIds.size;
+        },
+
+        getUniqueShiftsCount() {
+            const shiftIds = new Set();
+            this.assignments.forEach(day => {
+                day.forEach(assignment => shiftIds.add(assignment.staff_shift_id));
+            });
+            return shiftIds.size;
+        },
+
+        calculateEstimatedCost() {
+            let totalCost = 0;
+            this.assignments.forEach(day => {
+                day.forEach(assignment => {
+                    const shift = this.getShiftData(assignment.staff_shift_id);
+                    if (shift) {
+                        const hours = 8; // Could be more sophisticated
+                        totalCost += hours * 15;
+                    }
+                });
+            });
+            return totalCost.toFixed(2);
+        },
+
+        addAssignment() {
+            this.editingAssignment = null;
+            this.resetAssignmentForm();
+            this.showAddAssignmentModal = true;
+        },
+
+        editAssignment(dayIndex, assignmentIndex) {
+            this.editingAssignment = { dayIndex, assignmentIndex };
+            const assignment = this.assignments[dayIndex][assignmentIndex];
+            this.assignmentForm = { ...assignment };
+            this.showAddAssignmentModal = true;
+        },
+
+        removeAssignment(dayIndex, assignmentIndex) {
+            if (confirm('Are you sure you want to remove this assignment?')) {
+                this.assignments[dayIndex].splice(assignmentIndex, 1);
+            }
+        },
+
+        clearAllAssignments() {
+            if (confirm('Are you sure you want to clear all assignments?')) {
+                this.assignments = Array.from({ length: 7 }, () => []);
+            }
+        },
+
+        saveAssignment() {
+            if (!this.assignmentForm.staff_shift_id || !this.assignmentForm.staff_id) {
+                alert('Please select both a shift and staff member.');
+                return;
+            }
+
+            const assignment = { ...this.assignmentForm };
+
+            if (this.editingAssignment) {
+                // Update existing assignment
+                const { dayIndex, assignmentIndex } = this.editingAssignment;
+                this.assignments[dayIndex][assignmentIndex] = assignment;
+            } else {
+                // Add new assignment to current day
+                if (!this.assignments[this.activeDay]) {
+                    this.assignments[this.activeDay] = [];
+                }
+                this.assignments[this.activeDay].push(assignment);
+            }
+
+            this.closeAssignmentModal();
+        },
+
+        closeAssignmentModal() {
+            this.showAddAssignmentModal = false;
+            this.editingAssignment = null;
+            this.resetAssignmentForm();
+        },
+
+        resetAssignmentForm() {
+            this.assignmentForm = {
+                id: null,
+                staff_shift_id: '',
+                staff_id: '',
+                status: 'scheduled',
+                notes: ''
+            };
+        },
+
+        isFormValid() {
+            return this.templateData.name.trim() &&
+                   this.templateData.type &&
+                   this.getTotalAssignments() > 0;
+        },
+
+        async submitTemplate() {
+            if (!this.isFormValid()) {
+                alert('Please fill in all required fields and add at least one assignment.');
+                return;
+            }
+
+            this.isSubmitting = true;
+            try {
+                // Prepare form data
+                const formData = {
+                    ...this.templateData,
+                    assignments: []
+                };
+
+                // Flatten assignments with day information
+                this.assignments.forEach((dayAssignments, dayIndex) => {
+                    dayAssignments.forEach(assignment => {
+                        formData.assignments.push({
+                            ...assignment,
+                            day_of_week: dayIndex
+                        });
+                    });
+                });
+
+                const response = await fetch(`/admin/shifts/templates/${templateId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = '/admin/shifts/templates';
+                } else {
+                    alert(data.message || 'Failed to update template');
+                }
+            } catch (e) {
+                alert('Failed to update template: ' + e.message);
+            } finally {
+                this.isSubmitting = false;
+            }
+        },
+
+        async duplicateTemplate(templateId, templateName) {
+            if (!confirm(`Are you sure you want to duplicate "${templateName}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/admin/shifts/templates/${templateId}/duplicate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = `/admin/shifts/templates/${data.new_template_id}/edit`;
+                } else {
+                    alert(data.message || 'Failed to duplicate template');
+                }
+            } catch (e) {
+                alert('Failed to duplicate template: ' + e.message);
+            }
+        },
+        
+        showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <p class="notification-message">${message}</p>
+                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+    };
+}
+
+// Template Show Page Component
+function templateShowData(templateId) {
+    return {
+        templateId: templateId,
+        isLoading: false,
+        
+        init() {
+            console.log('Template show page initialized');
+        },
+        
+        async applyTemplate(templateName) {
+            if (!confirm(`Are you sure you want to apply "${templateName}" to the current week?`)) {
                 return;
             }
             
-            this.isImporting = true;
-            this.importProgress = 0;
-            
+            this.isLoading = true;
             try {
-                // Simulate import progress
-                const progressInterval = setInterval(() => {
-                    this.importProgress += 10;
-                    if (this.importProgress >= 100) {
-                        clearInterval(progressInterval);
-                    }
-                }, 200);
-                
-                // Mock import delay
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                this.showNotification('Template imported successfully!', 'success');
-                this.resetImport();
-                
-                // Refresh the page to show the new template
+                // Get current week start date
+                const urlParams = new URLSearchParams(window.location.search);
+                const weekStart = urlParams.get('week') || new Date().toISOString().split('T')[0];
+
+                const response = await fetch(`/admin/shifts/templates/${this.templateId}/apply`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        week_start: weekStart,
+                        overwrite_existing: false
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    this.showNotification(data.message, 'success');
+                    // Redirect to assignments page
                 setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
-                
-            } catch (error) {
-                console.error('Error importing template:', error);
-                this.showNotification('Error importing template', 'error');
+                        window.location.href = '/admin/shifts/assignments';
+                    }, 1000);
+                } else {
+                    this.showNotification(data.message, 'error');
+                }
+            } catch (e) {
+                this.showNotification('Failed to apply template', 'error');
             } finally {
-                this.isImporting = false;
+                this.isLoading = false;
             }
         },
-        
-        resetImport() {
-            this.importFile = null;
-            this.importProgress = 0;
-            this.isImporting = false;
-        },
-        
-        showNotification(message, type) {
-            // Reuse the notification function from main component
-            const event = new CustomEvent('show-notification', {
-                detail: { message, type }
-            });
-            document.dispatchEvent(event);
-        }
-    };
-}
 
-// Template Creation Helper
-function templateCreationHelper() {
-    return {
-        shifts: [],
-        
-        addShift() {
-            this.shifts.push({
-                id: Date.now(),
-                name: '',
-                department: '',
-                start_time: '',
-                end_time: '',
-                required_staff: 1,
-                days: [],
-            });
-        },
-        
-        removeShift(index) {
-            this.shifts.splice(index, 1);
-        },
-        
-        duplicateShift(index) {
-            const shift = { ...this.shifts[index] };
-            shift.id = Date.now();
-            shift.name = shift.name + ' (Copy)';
-            this.shifts.splice(index + 1, 0, shift);
-        },
-        
-        calculateTotalStaff() {
-            return this.shifts.reduce((total, shift) => total + (shift.required_staff || 0), 0);
-        },
-        
-        calculateEstimatedCost() {
-            // Mock calculation based on shifts
-            const totalHours = this.shifts.reduce((total, shift) => {
-                if (shift.start_time && shift.end_time) {
-                    const start = new Date(`2000-01-01 ${shift.start_time}`);
-                    let end = new Date(`2000-01-01 ${shift.end_time}`);
-                    
-                    if (end <= start) {
-                        end.setDate(end.getDate() + 1);
+        async setAsDefault() {
+            this.isLoading = true;
+            try {
+                const response = await fetch(`/admin/shifts/templates/${this.templateId}/set-default`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     }
-                    
-                    const hours = (end - start) / (1000 * 60 * 60);
-                    return total + (hours * (shift.required_staff || 0) * shift.days.length);
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    this.showNotification(data.message, 'success');
+                    // Reload page to show updated status
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    this.showNotification(data.message, 'error');
                 }
-                return total;
-            }, 0);
-            
-            return totalHours * 18; // $18/hour average
+            } catch (e) {
+                this.showNotification('Failed to set template as default', 'error');
+            } finally {
+                this.isLoading = false;
+            }
         },
-        
-        validateTemplate() {
-            if (this.shifts.length === 0) {
-                return 'Template must have at least one shift';
+
+        async duplicateTemplate(templateId, templateName) {
+            if (!confirm(`Are you sure you want to duplicate "${templateName}"?`)) {
+                return;
             }
-            
-            for (let shift of this.shifts) {
-                if (!shift.name || !shift.department || !shift.start_time || !shift.end_time) {
-                    return 'All shifts must have name, department, and times';
+
+            this.isLoading = true;
+            try {
+                const response = await fetch(`/admin/shifts/templates/${templateId}/duplicate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    this.showNotification('Template duplicated successfully', 'success');
+                    // Redirect to edit the new template
+                    setTimeout(() => {
+                        window.location.href = `/admin/shifts/templates/${data.new_template_id}/edit`;
+                    }, 1000);
+                } else {
+                    this.showNotification(data.message, 'error');
                 }
-                
-                if (shift.days.length === 0) {
-                    return 'All shifts must have at least one day selected';
-                }
+            } catch (e) {
+                this.showNotification('Failed to duplicate template', 'error');
+            } finally {
+                this.isLoading = false;
             }
-            
-            return null;
+        },
+
+        showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <p class="notification-message">${message}</p>
+                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
         }
     };
-}
-
-// Listen for custom notification events
-document.addEventListener('show-notification', function(event) {
-    const { message, type } = event.detail;
-    
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-    
-    // Style the notification
-    Object.assign(notification.style, {
-        position: 'fixed',
-        top: '20px',
-        right: '20px',
-        padding: '12px 24px',
-        borderRadius: '8px',
-        color: 'white',
-        fontWeight: '500',
-        zIndex: '9999',
-        transform: 'translateX(100%)',
-        transition: 'transform 0.3s ease',
-        maxWidth: '400px'
-    });
-    
-    // Set background color based on type
-    const colors = {
-        success: '#10B981',
-        error: '#EF4444',
-        warning: '#F59E0B',
-        info: '#3B82F6'
-    };
-    notification.style.backgroundColor = colors[type] || colors.info;
-    
-    // Add to page
-    document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // Remove after delay
-    setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 300);
-    }, 3000);
-});
-
-// Utility functions for template management
-function formatTemplateDate(date) {
-    return new Date(date).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-    });
-}
-
-function calculateTemplateDuration(startTime, endTime) {
-    const start = new Date(`2000-01-01 ${startTime}`);
-    let end = new Date(`2000-01-01 ${endTime}`);
-    
-    if (end <= start) {
-        end.setDate(end.getDate() + 1);
-    }
-    
-    const hours = (end - start) / (1000 * 60 * 60);
-    return hours;
-}
-
-function formatTemplateDuration(hours) {
-    const wholeHours = Math.floor(hours);
-    const minutes = Math.round((hours - wholeHours) * 60);
-    
-    if (minutes === 0) {
-        return `${wholeHours}h`;
-    } else {
-        return `${wholeHours}h ${minutes}m`;
-    }
 }
