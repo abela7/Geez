@@ -57,13 +57,13 @@ class ClearAssignments extends Command
         // Clear weekly schedule assignments first (foreign key constraints)
         if ($weeklyScheduleAssignments > 0) {
             $this->line('Clearing weekly schedule assignments...');
-            WeeklyScheduleAssignment::truncate();
+            WeeklyScheduleAssignment::query()->delete();
         }
         
         // Clear weekly schedules
         if ($weeklySchedules > 0) {
             $this->line('Clearing weekly schedules...');
-            WeeklySchedule::truncate();
+            WeeklySchedule::query()->delete();
         }
         
         // Clear all assignments (including soft-deleted)

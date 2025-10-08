@@ -7,41 +7,35 @@
     <!-- Page Header -->
     <div class="page-header">
         <div class="page-header-content">
-            <div class="page-header-left">
-                <h1 class="page-title">{{ __('shifts.overview.title') }}</h1>
-                <p class="page-description">{{ __('shifts.overview.subtitle') }}</p>
+            <div class="week-navigation">
+                <a href="{{ request()->fullUrlWithQuery(['week' => $weekNavigation['previous_week']->format('Y-m-d')]) }}" 
+                   class="btn btn-outline">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    {{ __('shifts.overview.previous_week') }}
+                </a>
+                <div class="current-week-display">
+                    <span class="week-label">{{ __('shifts.overview.week_of', ['date' => $weekStart->format('M d, Y')]) }}</span>
+                    @if($weekNavigation['is_current_week'])
+                        <span class="current-week-badge">{{ __('shifts.overview.today') }}</span>
+                    @endif
+                </div>
+                <a href="{{ request()->fullUrlWithQuery(['week' => $weekNavigation['next_week']->format('Y-m-d')]) }}" 
+                   class="btn btn-outline">
+                    {{ __('shifts.overview.next_week') }}
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
             </div>
-            <div class="page-header-right">
-                <div class="week-navigation">
-                    <a href="{{ request()->fullUrlWithQuery(['week' => $weekNavigation['previous_week']->format('Y-m-d')]) }}" 
-                       class="btn btn-outline">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                        </svg>
-                        {{ __('shifts.overview.previous_week') }}
-                    </a>
-                    <div class="current-week-display">
-                        <span class="week-label">{{ __('shifts.overview.week_of', ['date' => $weekStart->format('M d, Y')]) }}</span>
-                        @if($weekNavigation['is_current_week'])
-                            <span class="current-week-badge">{{ __('shifts.overview.today') }}</span>
-                        @endif
-                    </div>
-                    <a href="{{ request()->fullUrlWithQuery(['week' => $weekNavigation['next_week']->format('Y-m-d')]) }}" 
-                       class="btn btn-outline">
-                        {{ __('shifts.overview.next_week') }}
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </a>
-                </div>
-                <div class="quick-actions">
-                    <a href="/admin/shifts/manage/create" class="btn btn-primary">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                        </svg>
-                        {{ __('shifts.overview.add_shift') }}
-                    </a>
-                </div>
+            <div class="quick-actions">
+                <a href="/admin/shifts/manage/create" class="btn btn-primary">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    {{ __('shifts.overview.add_shift') }}
+                </a>
             </div>
         </div>
     </div>
@@ -146,34 +140,6 @@
 
         <!-- Quick Info Grid -->
         <div class="quick-info-grid">
-            <!-- Upcoming Shifts -->
-            <div class="upcoming-shifts-section">
-                <div class="section-header">
-                    <h3 class="section-title">{{ __('shifts.overview.upcoming_shifts') }}</h3>
-                </div>
-                <div class="upcoming-shifts-list">
-                    @foreach($upcomingShifts as $shift)
-                    <div class="upcoming-shift-card">
-                        <div class="shift-time-info">
-                            <div class="shift-date">{{ $shift['date']->format('M d') }}</div>
-                            <div class="shift-time">{{ $shift['start_time'] }} - {{ $shift['end_time'] }}</div>
-                            <div class="time-until">{{ __('shifts.common.in') }} {{ $shift['hours_until'] }}h</div>
-                        </div>
-                        <div class="shift-details">
-                            <div class="shift-name">{{ $shift['name'] }}</div>
-                            <div class="shift-department">{{ $shift['department'] }}</div>
-                            <div class="shift-staff-count">{{ count($shift['assigned_staff']) }} {{ __('shifts.common.staff') }}</div>
-                        </div>
-                        <div class="shift-status">
-                            <span class="status-indicator status-{{ $shift['status'] }}">
-                                {{ __('shifts.assignments.' . $shift['status']) }}
-                            </span>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-
             <!-- Coverage Gaps -->
             @if(!empty($coverageGaps))
             <div class="coverage-gaps-section">
@@ -316,7 +282,7 @@
 
             <div class="calendar-container">
                 <div class="weekly-calendar">
-                    @foreach($weeklySchedule as $day)
+                    @foreach($weeklyScheduleData as $day)
                 <div class="calendar-day {{ $day['is_today'] ? 'today' : '' }} {{ $day['is_weekend'] ? 'weekend' : '' }}">
                     <div class="day-header">
                         <div class="day-name">{{ $day['day_short'] }}</div>

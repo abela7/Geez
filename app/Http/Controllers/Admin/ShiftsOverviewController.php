@@ -7,6 +7,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\StaffShift;
 use App\Models\StaffShiftAssignment;
+use App\Models\WeeklySchedule;
+use App\Models\WeeklyScheduleAssignment;
 use App\Models\ShiftType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -28,45 +30,59 @@ class ShiftsOverviewController extends Controller
             'is_current_week' => $weekStart->isCurrentWeek(),
         ];
 
-        // Get shift templates and assignments for the week
-        $shiftTemplates = StaffShift::where('is_template', true)
-            ->where('is_active', true)
-            ->with(['assignments' => function ($query) use ($weekStart, $weekEnd) {
-                $query->whereBetween('assigned_date', [$weekStart->format('Y-m-d'), $weekEnd->format('Y-m-d')])
-                    ->where('status', '!=', 'cancelled')
-                    ->with(['staff.staffType', 'staff.profile']);
-            }])
-            ->orderBy('department')
-            ->orderBy('start_time')
+        // Get or create weekly schedule for this week
+        $weeklySchedule = WeeklySchedule::where('week_start_date', $weekStart->format('Y-m-d'))->first();
+        
+        if (!$weeklySchedule) {
+            // Create a weekly schedule if it doesn't exist
+            $firstStaff = \App\Models\Staff::first();
+            $weeklySchedule = WeeklySchedule::create([
+                'week_start_date' => $weekStart,
+                'week_end_date' => $weekEnd,
+                'year' => $weekStart->year,
+                'week_number' => $weekStart->weekOfYear,
+                'name' => null,
+                'description' => 'Auto-created for overview',
+                'template_id' => null,
+                'is_template_applied' => false,
+                'status' => 'draft',
+                'total_shifts' => 0,
+                'total_staff_assignments' => 0,
+                'total_scheduled_hours' => 0,
+                'estimated_labor_cost' => 0,
+                'created_by' => $firstStaff ? $firstStaff->id : null,
+            ]);
+        }
+
+        // Get assignments for this week using weekly schedule system
+        $assignments = StaffShiftAssignment::whereBetween('assigned_date', [$weekStart->format('Y-m-d'), $weekEnd->format('Y-m-d')])
+            ->where('status', '!=', 'cancelled')
+            ->with(['staff.staffType', 'staff.profile', 'shift'])
             ->get();
 
         // Generate weekly schedule data
-        $weeklySchedule = $this->generateWeeklySchedule($weekStart, $shiftTemplates);
+        $weeklyScheduleData = $this->generateWeeklySchedule($weekStart, $assignments);
 
         // Calculate summary statistics
-        $shiftSummary = $this->calculateShiftSummary($weeklySchedule);
+        $shiftSummary = $this->calculateShiftSummary($weeklyScheduleData, $assignments);
 
         // Get current shifts (shifts happening right now)
         $currentShifts = $this->getCurrentShifts();
 
-        // Get upcoming shifts (next 3 days)
-        $upcomingShifts = $this->getUpcomingShifts($weekStart);
-
         // Identify coverage gaps
-        $coverageGaps = $this->identifyCoverageGaps($weeklySchedule);
+        $coverageGaps = $this->identifyCoverageGaps($weeklyScheduleData);
 
         return view('admin.shifts.overview.index', compact(
             'weekStart',
             'weekNavigation',
             'shiftSummary',
             'currentShifts',
-            'upcomingShifts',
             'coverageGaps',
-            'weeklySchedule'
+            'weeklyScheduleData'
         ));
     }
 
-    private function generateWeeklySchedule(Carbon $weekStart, $shiftTemplates): array
+    private function generateWeeklySchedule(Carbon $weekStart, $assignments): array
     {
         $schedule = [];
         
@@ -86,13 +102,17 @@ class ShiftsOverviewController extends Controller
             $date = (clone $weekStart)->addDays($i);
             $dayShifts = [];
 
-            foreach ($shiftTemplates as $template) {
-                $assignments = $template->assignments->filter(function ($assignment) use ($date) {
-                    return $assignment->assigned_date === $date->format('Y-m-d');
-                });
+            // Group assignments by shift for this day
+            $dayAssignments = $assignments->filter(function ($assignment) use ($date) {
+                return Carbon::parse($assignment->assigned_date)->format('Y-m-d') === $date->format('Y-m-d');
+            });
 
-                $assignedCount = $assignments->count();
-                $requiredCount = $template->min_staff_required;
+            $shiftsByType = $dayAssignments->groupBy('staff_shift_id');
+
+            foreach ($shiftsByType as $shiftId => $shiftAssignments) {
+                $shift = $shiftAssignments->first()->shift;
+                $assignedCount = $shiftAssignments->count();
+                $requiredCount = $shift->min_staff_required ?? 1;
 
                 // Determine coverage status
                 $status = 'not_covered';
@@ -102,26 +122,47 @@ class ShiftsOverviewController extends Controller
                     $status = 'partially_covered';
                 }
 
-                // Calculate duration
-                $startTime = Carbon::parse($template->start_time);
-                $endTime = Carbon::parse($template->end_time);
-                $duration = $endTime->diffInHours($startTime);
+                // Calculate duration (handle overnight shifts)
+                $startTime = Carbon::parse($shift->start_time);
+                $endTime = Carbon::parse($shift->end_time);
+                
+                // Calculate duration in minutes manually
+                $startMinutes = $startTime->hour * 60 + $startTime->minute;
+                $endMinutes = $endTime->hour * 60 + $endTime->minute;
+                
+                if ($endTime->lt($startTime)) {
+                    // Overnight shift: add 24 hours (1440 minutes) to end time
+                    $endMinutes += 1440;
+                }
+                
+                $totalMinutes = $endMinutes - $startMinutes;
+                
+                // Subtract break time if applicable
+                if (isset($shift->break_minutes) && $shift->break_minutes > 0) {
+                    $totalMinutes -= $shift->break_minutes;
+                } elseif (isset($shift->break_duration) && $shift->break_duration > 0) {
+                    $totalMinutes -= $shift->break_duration;
+                }
+                
+                // Ensure total minutes is not negative and convert to hours
+                $totalMinutes = max(0, $totalMinutes);
+                $duration = $totalMinutes / 60;
 
                 // Get shift type color
-                $color = $shiftTypeColors[$template->name] ?? $shiftTypeColors['default'];
+                $color = $shiftTypeColors[$shift->name] ?? $shiftTypeColors['default'];
 
                 $dayShifts[] = [
-                    'id' => $template->id,
-                    'name' => $template->name,
-                    'start_time' => $template->start_time,
-                    'end_time' => $template->end_time,
+                    'id' => $shift->id,
+                    'name' => $shift->name,
+                    'start_time' => $shift->start_time,
+                    'end_time' => $shift->end_time,
                     'duration_hours' => $duration,
-                    'department' => $template->department,
+                    'department' => $shift->department,
                     'color' => $color,
                     'status' => $status,
                     'assigned_staff_count' => $assignedCount,
                     'required_staff' => $requiredCount,
-                    'assigned_staff' => $assignments->map(function ($assignment) {
+                    'assigned_staff' => $shiftAssignments->map(function ($assignment) {
                         return [
                             'id' => $assignment->staff->id,
                             'name' => $assignment->staff->full_name,
@@ -146,14 +187,14 @@ class ShiftsOverviewController extends Controller
         return $schedule;
     }
 
-    private function calculateShiftSummary(array $weeklySchedule): array
+    private function calculateShiftSummary(array $weeklyScheduleData, $assignments): array
     {
         $totalShifts = 0;
         $totalStaffScheduled = 0;
         $totalHours = 0;
         $coverageGaps = 0;
 
-        foreach ($weeklySchedule as $day) {
+        foreach ($weeklyScheduleData as $day) {
             $totalShifts += $day['total_shifts'];
             $totalStaffScheduled += $day['total_staff'];
 
@@ -173,6 +214,8 @@ class ShiftsOverviewController extends Controller
             'total_staff_scheduled' => $totalStaffScheduled,
             'total_hours' => $totalHours,
             'coverage_gaps' => $coverageGaps,
+            'average_hours_per_staff' => $totalStaffScheduled > 0 ? round($totalHours / $totalStaffScheduled, 1) : 0,
+            'coverage_percentage' => $totalStaffScheduled > 0 ? round(($totalStaffScheduled / ($totalStaffScheduled + $coverageGaps)) * 100, 1) : 0,
         ];
     }
 
