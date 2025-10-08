@@ -99,11 +99,14 @@ class ShiftsAssignmentsController extends Controller
 
         try {
             // Check for existing assignment (prevent double booking)
+            // Note: We check only non-deleted records since we use soft deletes
             $existingAssignment = StaffShiftAssignment::where([
                 'staff_id' => $validated['staff_id'],
                 'assigned_date' => $validated['assigned_date'],
                 'staff_shift_id' => $validated['staff_shift_id'],
-            ])->first();
+            ])
+            ->whereNull('deleted_at')  // Only check non-deleted records
+            ->first();
 
             if ($existingAssignment) {
                 return response()->json([

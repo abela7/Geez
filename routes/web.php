@@ -216,6 +216,21 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         Route::patch('manage/bulk-activate', [\App\Http\Controllers\Admin\Shifts\ManageController::class, 'bulkActivate'])->name('manage.bulk-activate');
         Route::patch('manage/bulk-deactivate', [\App\Http\Controllers\Admin\Shifts\ManageController::class, 'bulkDeactivate'])->name('manage.bulk-deactivate');
         Route::delete('manage/bulk-delete', [\App\Http\Controllers\Admin\Shifts\ManageController::class, 'bulkDelete'])->name('manage.bulk-delete');
+
+        // Weekly Schedule Management Routes
+        Route::prefix('weekly-schedule')->name('weekly-schedule.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\WeeklyScheduleController::class, 'index'])->name('index');
+            Route::get('/{weeklySchedule}', [\App\Http\Controllers\Admin\WeeklyScheduleController::class, 'show'])->name('show');
+            Route::post('/{weeklySchedule}/apply-template', [\App\Http\Controllers\Admin\WeeklyScheduleController::class, 'applyTemplate'])->name('apply-template');
+            Route::post('/{weeklySchedule}/publish', [\App\Http\Controllers\Admin\WeeklyScheduleController::class, 'publish'])->name('publish');
+            Route::post('/{weeklySchedule}/archive', [\App\Http\Controllers\Admin\WeeklyScheduleController::class, 'archive'])->name('archive');
+            Route::post('/{weeklySchedule}/assignments', [\App\Http\Controllers\Admin\WeeklyScheduleController::class, 'createAssignment'])->name('create-assignment');
+            Route::delete('/{weeklySchedule}/assignments/{assignmentId}', [\App\Http\Controllers\Admin\WeeklyScheduleController::class, 'removeAssignment'])->name('remove-assignment');
+            Route::post('/{weeklySchedule}/copy-from-week', [\App\Http\Controllers\Admin\WeeklyScheduleController::class, 'copyFromWeek'])->name('copy-from-week');
+            Route::get('/{weeklySchedule}/assignment-options', [\App\Http\Controllers\Admin\WeeklyScheduleController::class, 'getAssignmentOptions'])->name('assignment-options');
+            Route::get('/statistics', [\App\Http\Controllers\Admin\WeeklyScheduleController::class, 'statistics'])->name('statistics');
+            Route::post('/auto-create-upcoming', [\App\Http\Controllers\Admin\WeeklyScheduleController::class, 'autoCreateUpcoming'])->name('auto-create-upcoming');
+        });
     });
 
     // Menu Management Routes (your actual pages)

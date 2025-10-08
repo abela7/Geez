@@ -483,6 +483,8 @@
     cursor: pointer;
     transition: var(--transition-base);
     box-shadow: var(--shift-block-shadow);
+    position: relative;
+    overflow: hidden;
 }
 
 .shift-block:hover {
@@ -600,6 +602,185 @@
 .status-in_progress {
     background: var(--shift-in-progress-bg);
     color: var(--shift-in-progress);
+}
+
+/* Staff Preview */
+.shift-staff-preview {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.staff-preview-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+}
+
+.staff-initials {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.625rem;
+    flex-shrink: 0;
+}
+
+.staff-name {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.staff-more {
+    color: var(--color-text-muted);
+    font-size: 0.625rem;
+    font-style: italic;
+    text-align: center;
+    padding: 0.25rem;
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+}
+
+/* Enhanced Shift Type Colors */
+.shift-block[style*="border-left-color: #8B5CF6"] {
+    --shift-type-color: #8B5CF6;
+}
+
+.shift-block[style*="border-left-color: #F59E0B"] {
+    --shift-type-color: #F59E0B;
+}
+
+.shift-block[style*="border-left-color: #EF4444"] {
+    --shift-type-color: #EF4444;
+}
+
+.shift-block[style*="border-left-color: #F97316"] {
+    --shift-type-color: #F97316;
+}
+
+.shift-block[style*="border-left-color: #10B981"] {
+    --shift-type-color: #10B981;
+}
+
+.shift-block[style*="border-left-color: #3B82F6"] {
+    --shift-type-color: #3B82F6;
+}
+
+.shift-block[style*="border-left-color: #EC4899"] {
+    --shift-type-color: #EC4899;
+}
+
+.shift-block[style*="border-left-color: #6B7280"] {
+    --shift-type-color: #6B7280;
+}
+
+/* Shift Block Hover Effects with Type Colors */
+.shift-block:hover {
+    background: var(--shift-block-hover-bg);
+    box-shadow: var(--shift-block-hover-shadow);
+    transform: translateY(-1px);
+    border-left-width: 6px;
+}
+
+.shift-block:hover .shift-name {
+    font-weight: 700;
+}
+
+.shift-block:hover .staff-initials {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+}
+
+/* Shift Type Legend */
+.shift-legend {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shift-block-shadow);
+}
+
+.legend-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.legend-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.legend-close {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+}
+
+.legend-close:hover {
+    color: var(--color-text-primary);
+    background: var(--color-background);
+}
+
+.legend-close svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.legend-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+}
+
+.legend-item:hover {
+    background: var(--color-bg-secondary);
+    transform: translateY(-1px);
+}
+
+.legend-color {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    border: 2px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.legend-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
 }
 
 /* Sidebar Content Top */

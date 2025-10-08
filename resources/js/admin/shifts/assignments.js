@@ -210,9 +210,9 @@ function shiftsAssignmentsData() {
                     this.showNotification(`${staffName} assigned successfully!`, 'success');
                     this.closeAssignStaffModal();
                     
-                    // Refresh the page after a short delay
+                    // Reload page to show new assignment (simplest approach)
                     setTimeout(() => {
-                        this.refreshAssignments();
+                        window.location.reload();
                     }, 800);
                 } else {
                     this.showNotification(result.message || 'Failed to assign staff', 'error');
@@ -230,6 +230,15 @@ function shiftsAssignmentsData() {
                 return;
             }
 
+            // Find the assignment card first
+            const assignmentCard = document.querySelector(`[data-assignment-id="${assignmentId}"]`);
+            
+            // Show loading state
+            if (assignmentCard) {
+                assignmentCard.style.opacity = '0.5';
+                assignmentCard.style.pointerEvents = 'none';
+            }
+
             this.isLoading = true;
 
             try {
@@ -244,13 +253,36 @@ function shiftsAssignmentsData() {
                 const result = await response.json();
 
                 if (result.success) {
-                    this.showNotification(result.message, 'success');
-                    this.refreshAssignments();
+                    // Only remove from DOM after successful database deletion
+                    if (assignmentCard) {
+                        // Fade out animation
+                        assignmentCard.style.transition = 'opacity 0.3s, transform 0.3s';
+                        assignmentCard.style.opacity = '0';
+                        assignmentCard.style.transform = 'scale(0.9)';
+                        
+                        setTimeout(() => {
+                            assignmentCard.remove();
+                            // Update statistics
+                            this.calculateStats();
+                        }, 300);
+                    }
+                    
+                    this.showNotification(result.message || 'Assignment removed successfully', 'success');
                 } else {
+                    // Restore card if deletion failed
+                    if (assignmentCard) {
+                        assignmentCard.style.opacity = '1';
+                        assignmentCard.style.pointerEvents = 'auto';
+                    }
                     this.showNotification(result.message, 'error');
                 }
             } catch (error) {
                 console.error('Remove assignment error:', error);
+                // Restore card if deletion failed
+                if (assignmentCard) {
+                    assignmentCard.style.opacity = '1';
+                    assignmentCard.style.pointerEvents = 'auto';
+                }
                 this.showNotification('Failed to remove assignment', 'error');
             } finally {
                 this.isLoading = false;

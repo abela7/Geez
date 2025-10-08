@@ -250,19 +250,43 @@
                         <td class="td-staffing">
                             <div class="staffing-display">
                                 <div class="staffing-ratio">
-                                    <span class="assigned">{{ $shift->assignments()->where('status', '!=', 'cancelled')->count() }}</span>
+                                    @php
+                                        // Count assignments for today only
+                                        $todayAssignments = $shift->assignments()
+                                            ->where('status', '!=', 'cancelled')
+                                            ->whereDate('assigned_date', now()->toDateString())
+                                            ->count();
+                                        
+                                        // If no assignments today, show total upcoming assignments
+                                        if ($todayAssignments === 0) {
+                                            $upcomingAssignments = $shift->assignments()
+                                                ->where('status', '!=', 'cancelled')
+                                                ->where('assigned_date', '>=', now()->toDateString())
+                                                ->count();
+                                            $displayAssigned = $upcomingAssignments > 0 ? $upcomingAssignments : 0;
+                                        } else {
+                                            $displayAssigned = $todayAssignments;
+                                        }
+                                    @endphp
+                                    <span class="assigned">{{ $displayAssigned }}</span>
                                     <span class="divider">/</span>
                                     <span class="required">{{ $shift->min_staff_required }}</span>
                                 </div>
                                 <div class="staffing-progress">
                                     @php
-                                        $assigned = $shift->assignments()->where('status', '!=', 'cancelled')->count();
-                                        $percentage = $shift->min_staff_required > 0 ? ($assigned / $shift->min_staff_required) * 100 : 0;
+                                        $percentage = $shift->min_staff_required > 0 ? ($displayAssigned / $shift->min_staff_required) * 100 : 0;
                                         $statusClass = $percentage >= 90 ? 'success' : ($percentage >= 70 ? 'warning' : 'danger');
                                     @endphp
                                     <div class="progress-bar-mini">
                                         <div class="progress-fill-{{ $statusClass }}" style="width: {{ min($percentage, 100) }}%"></div>
                                     </div>
+                                </div>
+                                <div class="staffing-info">
+                                    @if($todayAssignments > 0)
+                                        <small class="text-success">Today: {{ $todayAssignments }}</small>
+                                    @else
+                                        <small class="text-muted">Upcoming: {{ $shift->assignments()->where('status', '!=', 'cancelled')->where('assigned_date', '>=', now()->toDateString())->count() }}</small>
+                                    @endif
                                 </div>
                             </div>
                         </td>
@@ -328,6 +352,24 @@
 
 @push('styles')
 @vite(['resources/css/admin/shifts/manage-modern.css'])
+<style>
+.staffing-info {
+    margin-top: 0.25rem;
+}
+
+.staffing-info small {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.text-success {
+    color: #10B981;
+}
+
+.text-muted {
+    color: #6B7280;
+}
+</style>
 @endpush
 
 @endsection

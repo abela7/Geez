@@ -256,9 +256,64 @@
                         </svg>
                         {{ __('shifts.overview.export_schedule') }}
                     </button>
+                    <button class="btn btn-sm btn-info" @click="showLegend = !showLegend">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Shift Types
+                    </button>
                 </div>
             </div>
             
+            <!-- Shift Type Legend -->
+            <div x-show="showLegend" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 transform scale-95"
+                 x-transition:enter-end="opacity-100 transform scale-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 transform scale-100"
+                 x-transition:leave-end="opacity-0 transform scale-95"
+                 class="shift-legend">
+                <div class="legend-header">
+                    <h4 class="legend-title">Shift Type Colors</h4>
+                    <button @click="showLegend = false" class="legend-close">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #8B5CF6;"></div>
+                        <span class="legend-label">Injera Room</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #F59E0B;"></div>
+                        <span class="legend-label">Waitress</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #EF4444;"></div>
+                        <span class="legend-label">Main Chef</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #F97316;"></div>
+                        <span class="legend-label">Helper Chef</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #10B981;"></div>
+                        <span class="legend-label">Kitchen Porter</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #3B82F6;"></div>
+                        <span class="legend-label">Management</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #EC4899;"></div>
+                        <span class="legend-label">Bar</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="calendar-container">
                 <div class="weekly-calendar">
                     @foreach($weeklySchedule as $day)
@@ -278,10 +333,15 @@
                         @else
                             @foreach($day['shifts'] as $shift)
                             <div class="shift-block shift-{{ $shift['status'] }}" 
-                                 style="border-left-color: {{ $shift['color'] }}"
-                                 @click="showShiftDetails({{ json_encode($shift) }})">
+                                 style="border-left-color: {{ $shift['color'] }}; background: linear-gradient(135deg, {{ $shift['color'] }}10, transparent);"
+                                 @click="showShiftDetails({{ json_encode($shift) }})"
+                                 data-shift-id="{{ $shift['id'] }}"
+                                 data-shift-name="{{ $shift['name'] }}"
+                                 data-shift-time="{{ $shift['start_time'] }} - {{ $shift['end_time'] }}"
+                                 data-shift-department="{{ $shift['department'] }}"
+                                 data-shift-status="{{ $shift['status'] }}">
                                 <div class="shift-header">
-                                    <div class="shift-name">{{ $shift['name'] }}</div>
+                                    <div class="shift-name" style="color: {{ $shift['color'] }};">{{ $shift['name'] }}</div>
                                     <div class="shift-time">{{ $shift['start_time'] }} - {{ $shift['end_time'] }}</div>
                                 </div>
                                 <div class="shift-info">
@@ -295,9 +355,28 @@
                                 </div>
                                 <div class="shift-status">
                                     <span class="status-indicator status-{{ $shift['status'] }}">
-                                        {{ __('shifts.assignments.' . $shift['status']) }}
+                                        @if($shift['status'] === 'fully_covered')
+                                            Fully Covered
+                                        @elseif($shift['status'] === 'partially_covered')
+                                            Partially Covered
+                                        @else
+                                            Not Covered
+                                        @endif
                                     </span>
                                 </div>
+                                @if(count($shift['assigned_staff']) > 0)
+                                <div class="shift-staff-preview">
+                                    @foreach(array_slice($shift['assigned_staff'], 0, 2) as $staff)
+                                    <div class="staff-preview-item">
+                                        <span class="staff-initials">{{ substr($staff['name'], 0, 2) }}</span>
+                                        <span class="staff-name">{{ $staff['name'] }}</span>
+                                    </div>
+                                    @endforeach
+                                    @if(count($shift['assigned_staff']) > 2)
+                                    <div class="staff-more">+{{ count($shift['assigned_staff']) - 2 }} more</div>
+                                    @endif
+                                </div>
+                                @endif
                             </div>
                             @endforeach
                         @endif
@@ -392,6 +471,7 @@ function shiftOverviewData() {
     return {
         showShiftModal: false,
         showExportModal: false,
+        showLegend: false,
         selectedShift: null,
         filterDepartment: 'all',
         filterStatus: 'all',
