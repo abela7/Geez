@@ -41,7 +41,7 @@ class ShiftTypeController extends Controller
             'is_active' => 'boolean',
             'default_hourly_rate' => 'nullable|numeric|min:0|max:999.99',
             'default_overtime_rate' => 'nullable|numeric|min:0|max:999.99',
-            'sort_order' => 'integer|min:0',
+            'sort_order' => 'nullable|integer|min:0',
         ]);
 
         // Generate slug from name
@@ -53,6 +53,11 @@ class ShiftTypeController extends Controller
         while (ShiftType::where('slug', $validated['slug'])->exists()) {
             $validated['slug'] = $originalSlug.'-'.$counter;
             $counter++;
+        }
+
+        // Handle sort_order - ensure it has a proper value
+        if (!isset($validated['sort_order']) || $validated['sort_order'] === null || $validated['sort_order'] === '') {
+            $validated['sort_order'] = 0;
         }
 
         ShiftType::create($validated);
@@ -89,7 +94,7 @@ class ShiftTypeController extends Controller
             'is_active' => 'boolean',
             'default_hourly_rate' => 'nullable|numeric|min:0|max:999.99',
             'default_overtime_rate' => 'nullable|numeric|min:0|max:999.99',
-            'sort_order' => 'integer|min:0',
+            'sort_order' => 'nullable|integer|min:0',
         ]);
 
         // Update slug if name changed
@@ -105,6 +110,11 @@ class ShiftTypeController extends Controller
                 $validated['slug'] = $originalSlug.'-'.$counter;
                 $counter++;
             }
+        }
+
+        // Handle sort_order - ensure it has a proper value
+        if (!isset($validated['sort_order']) || $validated['sort_order'] === null || $validated['sort_order'] === '') {
+            $validated['sort_order'] = 0;
         }
 
         $shiftType->update($validated);

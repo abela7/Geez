@@ -458,10 +458,18 @@ document.getElementById('color').addEventListener('input', function() {
 document.getElementById('color-text').addEventListener('input', function() {
     const colorInput = document.getElementById('color');
     const textValue = this.value;
-    
+
     // Validate hex color
     if (/^#[0-9A-Fa-f]{6}$/.test(textValue)) {
         colorInput.value = textValue;
+    }
+});
+
+// Ensure sort_order has a value before form submission
+document.querySelector('form').addEventListener('submit', function(e) {
+    const sortOrderField = document.getElementById('sort_order');
+    if (!sortOrderField.value || sortOrderField.value === '') {
+        sortOrderField.value = '0';
     }
 });
 </script>
