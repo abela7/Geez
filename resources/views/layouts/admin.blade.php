@@ -37,7 +37,7 @@
     </script>
 
     <!-- Core Styles -->
-    @vite(['resources/css/app.css', 'resources/css/admin/layout.css', 'resources/css/admin/modal-fix.css', 'resources/css/admin/settings.css', 'resources/js/admin/modal-system.js'])
+    @vite(['resources/css/app.css', 'resources/css/admin/layout.css', 'resources/css/admin/modal-fix.css', 'resources/css/admin/settings.css', 'resources/css/admin/modern-attendance-modal.css', 'resources/js/admin/modal-system.js', 'resources/js/admin/modal-portal.js'])
     
     <!-- Page Specific Styles -->
     @stack('styles')
@@ -86,5 +86,9 @@
 
     <!-- Page Specific Scripts -->
     @stack('scripts')
+
+    <!-- Modal Container - Outside main content to avoid z-index stacking issues -->
+    <div id="modal-portal"></div>
+    @stack('modals')
 </body>
 </html>

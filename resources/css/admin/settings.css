@@ -623,7 +623,7 @@
 }
 
 @media (max-width: 768px) {
-    .settings-container {
+.settings-container {
         padding: var(--space-md);
     }
     
@@ -710,9 +710,9 @@
 :root[data-theme="dark"] {
     .settings-container {
         background: var(--color-bg-primary);
-    }
-    
-    .settings-content {
+}
+
+.settings-content {
         background: var(--color-surface-card);
         border-color: var(--color-surface-card-border);
     }

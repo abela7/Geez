@@ -317,5 +317,5 @@ Share: clarifying questions, tiny checklist, files you’ll touch, translation k
 Step B — IMPLEMENT (after OK):
 Implement exactly as planned. Meet DoD. Summarize changes in chat. Run lint/tests/build. Explain how it works and any follow-ups.
 globs: 
-alwaysApply: true
+alwaysApply: false
 ---

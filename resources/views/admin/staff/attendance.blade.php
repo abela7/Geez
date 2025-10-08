@@ -5,24 +5,6 @@
 
 @section('content')
 <div class="attendance-page">
-    <!-- Flash Messages -->
-    @if(session('success'))
-        <div class="alert alert-success">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            {{ session('success') }}
-        </div>
-    @endif
-    
-    @if(session('error'))
-        <div class="alert alert-error">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            {{ session('error') }}
-        </div>
-    @endif
 
     <!-- Page Header -->
     <div class="page-header">
@@ -106,26 +88,14 @@
     <!-- Dashboard Stats -->
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-icon stat-icon-primary">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
-            </div>
-            <div class="stat-content">
-                <div class="stat-value" id="total-staff-count">{{ $todayStats['total_staff'] }}</div>
-                <div class="stat-label">{{ __('staff.attendance.total_staff_today') }}</div>
-            </div>
-        </div>
-
-        <div class="stat-card">
             <div class="stat-icon stat-icon-success">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>
             <div class="stat-content">
-                <div class="stat-value" id="present-count">{{ $todayStats['present_count'] }}</div>
-                <div class="stat-label">{{ __('staff.attendance.present') }}</div>
+                <div class="stat-value" id="currently-working-count">{{ $todayStats['currently_working'] }}</div>
+                <div class="stat-label">{{ __('staff.attendance.currently_working') }}</div>
             </div>
         </div>
 
@@ -136,8 +106,20 @@
                 </svg>
             </div>
             <div class="stat-content">
-                <div class="stat-value" id="on-break-count">{{ $staffOnBreak->count() }}</div>
+                <div class="stat-value" id="on-break-count">{{ $todayStats['on_break'] }}</div>
                 <div class="stat-label">{{ __('staff.attendance.on_break') }}</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-primary">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value" id="completed-today-count">{{ $todayStats['completed_today'] }}</div>
+                <div class="stat-label">{{ __('staff.attendance.completed_today') }}</div>
             </div>
         </div>
 
@@ -148,7 +130,7 @@
                 </svg>
             </div>
             <div class="stat-content">
-                <div class="stat-value" id="needs-review-count">{{ $needsReview->count() }}</div>
+                <div class="stat-value" id="needs-review-count">{{ $todayStats['needs_review'] }}</div>
                 <div class="stat-label">{{ __('staff.attendance.needs_review') }}</div>
             </div>
         </div>
@@ -189,7 +171,11 @@
                                                 {{ strtoupper(substr($record->staff->first_name, 0, 1) . substr($record->staff->last_name, 0, 1)) }}
                                             </div>
                                             <div class="staff-info">
-                                                <div class="staff-name">{{ $record->staff->full_name }}</div>
+                                                <div class="staff-name">
+                                                    <a href="{{ route('admin.staff.attendance.show', $record->id) }}" class="staff-name-link">
+                                                        {{ $record->staff->full_name }}
+                                                    </a>
+                                                </div>
                                                 <div class="staff-type">{{ $record->staff->staffType->display_name ?? 'N/A' }}</div>
                                             </div>
                                         </div>
@@ -283,9 +269,19 @@
                                                 </button>
                                             @endif
                                             
+                                            <!-- View Details -->
+                                            <a href="{{ route('admin.staff.attendance.show', $record->id) }}" 
+                                               class="btn btn-sm btn-primary"
+                                               title="View Details">
+                                                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                </svg>
+                                            </a>
+                                            
                                             <!-- View intervals -->
                                             <button type="button" 
-                                                    onclick="showIntervals('{{ $record->id }}')"
+                                                    onclick="showIntervalsModal('{{ $record->id }}', '{{ $record->staff->full_name }}', '{{ $record->clock_in->format('M d, Y') }}')"
                                                     class="btn btn-sm btn-outline"
                                                     title="{{ __('staff.attendance.view_intervals') }}">
                                                 <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -367,7 +363,27 @@
                                 <div class="active-staff-time">
                                     <div class="clock-in-time">{{ $record->clock_in->format('H:i') }}</div>
                                     <div class="duration" data-start-time="{{ $record->clock_in->toISOString() }}">
-                                        {{ $record->clock_in->diffForHumans() }}
+                                        @php
+                                            $workingMinutes = abs($record->clock_in->diffInMinutes(now()));
+                                            $workingHours = floor($workingMinutes / 60);
+                                            $remainingMinutes = $workingMinutes % 60;
+                                            
+                                            if ($record->clock_in->isFuture()) {
+                                                // Clock-in time is in the future
+                                                if ($workingHours > 0) {
+                                                    echo $workingHours . 'h ' . $remainingMinutes . 'm until start';
+                                                } else {
+                                                    echo $remainingMinutes . ' minutes until start';
+                                                }
+                                            } else {
+                                                // Normal case - clock-in time is in the past
+                                                if ($workingHours > 0) {
+                                                    echo $workingHours . 'h ' . $remainingMinutes . 'm working';
+                                                } else {
+                                                    echo $remainingMinutes . ' minutes working';
+                                                }
+                                            }
+                                        @endphp
                                     </div>
                                     @if($record->is_currently_on_break && $record->current_break_start)
                                         <div class="break-duration">
@@ -478,22 +494,25 @@
     </div>
 </div>
 
+@endsection
+
+@push('modals')
 <!-- Add Attendance Modal -->
 <div id="addAttendanceModal" class="modal-overlay hidden">
-    <div class="modal-container modal-large">
-        <div class="modal-header">
-            <div class="modal-header-content">
-                <div class="modal-icon">
+    <div class="modal-container modal-modern">
+        <div class="modal-header-modern">
+            <div class="modal-header-content-modern">
+                <div class="modal-icon-modern">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                     </svg>
                 </div>
-                <div class="modal-title-section">
-                    <h3 class="modal-title">{{ __('staff.attendance.add_attendance') }}</h3>
-                    <p class="modal-subtitle">{{ __('staff.attendance.add_attendance_description') }}</p>
+                <div class="modal-title-section-modern">
+                    <h3 class="modal-title-modern">{{ __('staff.attendance.add_attendance') }}</h3>
+                    <p class="modal-subtitle-modern">{{ __('staff.attendance.add_attendance_description') }}</p>
                 </div>
             </div>
-            <button type="button" onclick="hideAddModal()" class="modal-close">
+            <button type="button" onclick="hideAddModal()" class="modal-close-modern">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
@@ -502,148 +521,245 @@
         
         <form method="POST" action="{{ route('admin.staff.attendance.store') }}" id="addAttendanceForm">
             @csrf
-            <div class="modal-body">
-                <div class="form-section">
-                    <div class="form-section-header">
-                        <h4 class="form-section-title">{{ __('staff.attendance.staff_information') }}</h4>
-                        <p class="form-section-description">{{ __('staff.attendance.select_staff_description') }}</p>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="staff_id" class="form-label">
-                            <svg class="form-label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                            </svg>
-                            {{ __('staff.attendance.select_staff') }} <span class="required">*</span>
-                        </label>
-                        <div class="form-input-wrapper">
-                            <select name="staff_id" id="staff_id" class="form-select enhanced-select" required>
-                                <option value="">{{ __('staff.attendance.choose_staff') }}</option>
-                                @foreach($allStaff as $staff)
-                                    <option value="{{ $staff->id }}" data-staff-type="{{ $staff->staffType->display_name ?? 'N/A' }}">
-                                        {{ $staff->full_name }} - {{ $staff->staffType->display_name ?? 'N/A' }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <div class="form-input-icon">
+            <div class="modal-body-modern">
+                <!-- Form Grid Layout -->
+                <div class="form-grid-modern">
+                    <!-- Staff Information Card -->
+                    <div class="form-card-modern">
+                        <div class="form-card-header-modern">
+                            <div class="form-card-icon-modern">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                 </svg>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-section">
-                    <div class="form-section-header">
-                        <h4 class="form-section-title">{{ __('staff.attendance.time_information') }}</h4>
-                        <p class="form-section-description">{{ __('staff.attendance.time_description') }}</p>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="clockIn" class="form-label">
-                                <svg class="form-label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                {{ __('staff.attendance.clock_in_time') }} <span class="required">*</span>
-                            </label>
-                            <div class="form-input-wrapper">
-                                <input type="datetime-local" name="clock_in" id="clockIn" class="form-input enhanced-input" value="{{ now()->format('Y-m-d\TH:i') }}" required>
-                                <div class="form-input-icon">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
-                                </div>
+                            <div class="form-card-title-modern">
+                                <h4>{{ __('staff.attendance.staff_information') }}</h4>
+                                <p>{{ __('staff.attendance.select_staff_description') }}</p>
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <label for="clockOut" class="form-label">
-                                <svg class="form-label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                {{ __('staff.attendance.clock_out_time') }}
-                            </label>
-                            <div class="form-input-wrapper">
-                                <input type="datetime-local" name="clock_out" id="clockOut" class="form-input enhanced-input">
-                                <div class="form-input-icon">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
+                        <div class="form-card-content-modern">
+                            <div class="form-field-modern">
+                                <label for="staff_id" class="form-label-modern">
+                                    {{ __('staff.attendance.select_staff') }} <span class="required-modern">*</span>
+                                </label>
+                                <div class="form-input-container-modern">
+                                    <select name="staff_id" id="staff_id" class="form-select-modern" required>
+                                        <option value="">{{ __('staff.attendance.choose_staff') }}</option>
+                                        @foreach($allStaff as $staff)
+                                            <option value="{{ $staff->id }}" data-staff-type="{{ $staff->staffType->display_name ?? 'N/A' }}">
+                                                {{ $staff->full_name }} - {{ $staff->staffType->display_name ?? 'N/A' }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="form-input-icon-modern">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-section">
-                    <div class="form-section-header">
-                        <h4 class="form-section-title">{{ __('staff.attendance.status_information') }}</h4>
-                        <p class="form-section-description">{{ __('staff.attendance.status_description') }}</p>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="status" class="form-label">
-                            <svg class="form-label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            {{ __('staff.attendance.status') }} <span class="required">*</span>
-                        </label>
-                        <div class="form-input-wrapper">
-                            <select name="status" id="status" class="form-select enhanced-select" required>
-                                <option value="present" data-status-color="success">{{ __('staff.attendance.present') }}</option>
-                                <option value="absent" data-status-color="danger">{{ __('staff.attendance.absent') }}</option>
-                                <option value="late" data-status-color="warning">{{ __('staff.attendance.late') }}</option>
-                                <option value="overtime" data-status-color="info">{{ __('staff.attendance.overtime') }}</option>
-                                <option value="early_leave" data-status-color="secondary">{{ __('staff.attendance.early_leave') }}</option>
-                            </select>
-                            <div class="form-input-icon">
+                    <!-- Shift Information Card -->
+                    <div class="form-card-modern">
+                        <div class="form-card-header-modern">
+                            <div class="form-card-icon-modern">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                 </svg>
+                            </div>
+                            <div class="form-card-title-modern">
+                                <h4>{{ __('staff.attendance.shift_information') }}</h4>
+                                <p>{{ __('staff.attendance.shift_description') }}</p>
+                            </div>
+                        </div>
+                        <div class="form-card-content-modern">
+                            <div class="form-field-modern">
+                                <label for="shift_template_id" class="form-label-modern">
+                                    {{ __('staff.attendance.shift_template') }} <span class="optional-modern">({{ __('common.optional') }})</span>
+                                </label>
+                                <div class="form-input-container-modern">
+                                    <select name="shift_template_id" id="shift_template_id" class="form-select-modern">
+                                        <option value="">{{ __('staff.attendance.no_shift_template') }}</option>
+                                        @foreach($activeShifts as $shift)
+                                            <option value="{{ $shift->id }}" 
+                                                    data-shift-name="{{ $shift->name }}"
+                                                    data-start-time="{{ $shift->start_time }}"
+                                                    data-end-time="{{ $shift->end_time }}"
+                                                    data-department="{{ $shift->department }}">
+                                                {{ $shift->name }} 
+                                                ({{ \Carbon\Carbon::parse($shift->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($shift->end_time)->format('H:i') }})
+                                                @if($shift->department)
+                                                    - {{ $shift->department }}
+                                                @endif
+                                            </option>
+                                        @endforeach
+                                        @if($activeShifts->count() === 0)
+                                            <option disabled>{{ __('staff.attendance.no_shift_templates') }}</option>
+                                        @endif
+                                    </select>
+                                    <div class="form-input-icon-modern">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="form-help-modern">
+                                    {{ __('staff.attendance.shift_template_help') }}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-section">
-                    <div class="form-section-header">
-                        <h4 class="form-section-title">{{ __('staff.attendance.additional_information') }}</h4>
-                        <p class="form-section-description">{{ __('staff.attendance.notes_description') }}</p>
+                    <!-- Time Information Card -->
+                    <div class="form-card-modern form-card-wide">
+                        <div class="form-card-header-modern">
+                            <div class="form-card-icon-modern">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div class="form-card-title-modern">
+                                <h4>{{ __('staff.attendance.time_information') }}</h4>
+                                <p>{{ __('staff.attendance.time_description') }}</p>
+                            </div>
+                        </div>
+                        <div class="form-card-content-modern">
+                            <div class="form-row-modern">
+                                <div class="form-field-modern">
+                                    <label for="clockIn" class="form-label-modern">
+                                        {{ __('staff.attendance.clock_in_time') }} <span class="required-modern">*</span>
+                                    </label>
+                                    <div class="form-input-container-modern">
+                                        <input type="datetime-local" name="clock_in" id="clockIn" class="form-input-modern" required>
+                                        <div class="form-input-icon-modern">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-field-modern">
+                                    <label for="clockOut" class="form-label-modern">
+                                        {{ __('staff.attendance.clock_out_time') }}
+                                    </label>
+                                    <div class="form-input-container-modern">
+                                        <input type="datetime-local" name="clock_out" id="clockOut" class="form-input-modern">
+                                        <div class="form-input-icon-modern">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="notes" class="form-label">
-                            <svg class="form-label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                            </svg>
-                            {{ __('staff.attendance.notes') }}
-                        </label>
-                        <div class="form-input-wrapper">
-                            <textarea name="notes" id="notes" class="form-textarea enhanced-textarea" placeholder="{{ __('staff.attendance.notes_placeholder') }}" rows="4"></textarea>
-                            <div class="form-textarea-counter">
-                                <span id="notesCounter">0</span> / 500 {{ __('common.characters') }}
+
+                    <!-- Status Information Card -->
+                    <div class="form-card-modern">
+                        <div class="form-card-header-modern">
+                            <div class="form-card-icon-modern">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div class="form-card-title-modern">
+                                <h4>{{ __('staff.attendance.status_information') }}</h4>
+                                <p>{{ __('staff.attendance.status_description') }}</p>
+                            </div>
+                        </div>
+                        <div class="form-card-content-modern">
+                            <div class="form-field-modern">
+                                <label for="status" class="form-label-modern">
+                                    {{ __('staff.attendance.status') }} <span class="required-modern">*</span>
+                                </label>
+                                <div class="form-input-container-modern">
+                                    <select name="status" id="status" class="form-select-modern" required>
+                                        <option value="present" data-status-color="success">{{ __('staff.attendance.present') }}</option>
+                                        <option value="absent" data-status-color="danger">{{ __('staff.attendance.absent') }}</option>
+                                        <option value="late" data-status-color="warning">{{ __('staff.attendance.late') }}</option>
+                                        <option value="overtime" data-status-color="info">{{ __('staff.attendance.overtime') }}</option>
+                                        <option value="early_leave" data-status-color="secondary">{{ __('staff.attendance.early_leave') }}</option>
+                                    </select>
+                                    <div class="form-input-icon-modern">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information Card -->
+                    <div class="form-card-modern">
+                        <div class="form-card-header-modern">
+                            <div class="form-card-icon-modern">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                            </div>
+                            <div class="form-card-title-modern">
+                                <h4>{{ __('staff.attendance.additional_information') }}</h4>
+                                <p>{{ __('staff.attendance.notes_description') }}</p>
+                            </div>
+                        </div>
+                        <div class="form-card-content-modern">
+                            <div class="form-field-modern">
+                                <label for="notes" class="form-label-modern">
+                                    {{ __('staff.attendance.notes') }}
+                                </label>
+                                <div class="form-textarea-container-modern">
+                                    <textarea name="notes" id="notes" class="form-textarea-modern" rows="4" placeholder="{{ __('staff.attendance.notes_placeholder') }}" maxlength="500"></textarea>
+                                    <div class="form-textarea-footer-modern">
+                                        <div class="form-textarea-counter-modern">
+                                            <span id="notesCounter">0</span> / 500 {{ __('common.characters') }}
+                                        </div>
+                                        <button type="button" onclick="clearNotes()" class="form-textarea-clear-modern">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                            Clear
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="modal-footer">
-                <div class="modal-footer-actions">
-                    <button type="button" onclick="hideAddModal()" class="btn btn-secondary btn-outline">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                        {{ __('common.cancel') }}
-                    </button>
-                    <button type="submit" class="btn btn-primary btn-enhanced">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                        </svg>
-                        {{ __('staff.attendance.save') }}
-                    </button>
+            <!-- Modal Footer -->
+            <div class="modal-footer-modern">
+                <div class="modal-footer-content-modern">
+                    <div class="modal-footer-info-modern">
+                        <div class="modal-footer-icon-modern">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div class="modal-footer-text-modern">
+                            <div class="modal-footer-title-modern">{{ __('common.required_fields') }}</div>
+                            <div class="modal-footer-subtitle-modern">{{ __('common.fill_required_fields') }}</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer-actions-modern">
+                        <button type="button" onclick="hideAddModal()" class="btn-secondary-modern">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            {{ __('common.cancel') }}
+                        </button>
+                        <button type="submit" class="btn-primary-modern">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            {{ __('staff.attendance.save') }}
+                        </button>
+                    </div>
                 </div>
             </div>
         </form>
@@ -699,30 +815,22 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" onclick="hideEditModal()" class="btn btn-secondary">{{ __('common.cancel') }}</button>
-                <button type="submit" class="btn btn-primary">{{ __('staff.attendance.update_attendance') }}</button>
+                <button type="button" onclick="hideEditModal()" class="btn-secondary-enhanced">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    {{ __('common.cancel') }}
+                </button>
+                <button type="submit" class="btn-primary-enhanced">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    {{ __('staff.attendance.update_attendance') }}
+                </button>
             </div>
         </form>
     </div>
 </div>
-
-@if(session('success'))
-    <div class="toast toast-success">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-        {{ session('success') }}
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="toast toast-error">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-        {{ session('error') }}
-    </div>
-@endif
 
 <!-- Start Break Modal -->
 <div id="startBreakModal" class="modal-overlay hidden">
@@ -760,8 +868,18 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" onclick="hideStartBreakModal()" class="btn btn-secondary">{{ __('common.cancel') }}</button>
-                <button type="submit" class="btn btn-warning">{{ __('staff.attendance.start_break') }}</button>
+                <button type="button" onclick="hideStartBreakModal()" class="btn-secondary-enhanced">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    {{ __('common.cancel') }}
+                </button>
+                <button type="submit" class="btn-primary-enhanced">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    {{ __('staff.attendance.start_break') }}
+                </button>
             </div>
         </form>
     </div>
@@ -769,45 +887,98 @@
 
 <!-- Intervals Modal -->
 <div id="intervalsModal" class="modal-overlay hidden">
-    <div class="modal-container modal-large">
-        <div class="modal-header">
-            <h3 class="modal-title">{{ __('staff.attendance.attendance_intervals') }}</h3>
-            <button type="button" onclick="hideIntervalsModal()" class="modal-close">
+    <div class="modal-container modal-intervals">
+        <div class="modal-header-intervals">
+            <div class="modal-header-content">
+                <div class="modal-icon-container">
+                    <svg class="modal-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="modal-title-content">
+                    <h3 class="modal-title">{{ __('staff.attendance.attendance_intervals') }}</h3>
+                    <p class="modal-subtitle">{{ __('staff.attendance.view_detailed_time_breakdown') }}</p>
+                </div>
+            </div>
+            <button type="button" onclick="hideIntervalsModal()" class="modal-close-intervals">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
         </div>
         
-        <div class="modal-body">
-            <div class="intervals-header">
-                <div class="intervals-staff-info">
-                    <div id="intervalsStaffName" class="staff-name"></div>
-                    <div id="intervalsDate" class="date-info"></div>
-                </div>
-                <div class="intervals-summary">
-                    <div class="summary-item">
-                        <span class="summary-label">{{ __('staff.attendance.total_work_time') }}:</span>
-                        <span id="totalWorkTime" class="summary-value">-</span>
+        <div class="modal-body-intervals">
+            <!-- Staff Info Section -->
+            <div class="intervals-staff-section">
+                <div class="staff-info-card">
+                    <div class="staff-avatar-large">
+                        <span id="intervalsStaffInitials" class="staff-initials"></span>
                     </div>
-                    <div class="summary-item">
-                        <span class="summary-label">{{ __('staff.attendance.total_break_time') }}:</span>
-                        <span id="totalBreakTime" class="summary-value">-</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">{{ __('staff.attendance.break_count') }}:</span>
-                        <span id="breakCount" class="summary-value">-</span>
+                    <div class="staff-details">
+                        <h4 id="intervalsStaffName" class="staff-name-large"></h4>
+                        <p id="intervalsDate" class="date-info-large"></p>
                     </div>
                 </div>
             </div>
 
-            <div class="intervals-timeline" id="intervalsTimeline">
-                <!-- Timeline will be populated by JavaScript -->
+            <!-- Summary Cards -->
+            <div class="intervals-summary-grid">
+                <div class="summary-card work-time">
+                    <div class="summary-card-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="summary-card-content">
+                        <div class="summary-card-label">{{ __('staff.attendance.total_work_time') }}</div>
+                        <div id="totalWorkTime" class="summary-card-value">-</div>
+                    </div>
+                </div>
+                
+                <div class="summary-card break-time">
+                    <div class="summary-card-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="summary-card-content">
+                        <div class="summary-card-label">{{ __('staff.attendance.total_break_time') }}</div>
+                        <div id="totalBreakTime" class="summary-card-value">-</div>
+                    </div>
+                </div>
+                
+                <div class="summary-card break-count">
+                    <div class="summary-card-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                    </div>
+                    <div class="summary-card-content">
+                        <div class="summary-card-label">{{ __('staff.attendance.break_count') }}</div>
+                        <div id="breakCount" class="summary-card-value">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline Section -->
+            <div class="intervals-timeline-section">
+                <div class="timeline-header">
+                    <h4 class="timeline-title">{{ __('staff.attendance.time_breakdown') }}</h4>
+                    <p class="timeline-subtitle">{{ __('staff.attendance.detailed_work_break_intervals') }}</p>
+                </div>
+                <div class="intervals-timeline" id="intervalsTimeline">
+                    <!-- Timeline will be populated by JavaScript -->
+                </div>
             </div>
         </div>
 
-        <div class="modal-footer">
-            <button type="button" onclick="hideIntervalsModal()" class="btn btn-secondary">{{ __('common.close') }}</button>
+        <div class="modal-footer-intervals">
+            <button type="button" onclick="hideIntervalsModal()" class="btn-secondary-enhanced">
+                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                {{ __('common.close') }}
+            </button>
         </div>
     </div>
 </div>
@@ -857,8 +1028,18 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" onclick="hideReviewAttendanceModal()" class="btn btn-secondary">{{ __('common.cancel') }}</button>
-                <button type="submit" class="btn btn-primary">{{ __('staff.attendance.complete_review') }}</button>
+                <button type="button" onclick="hideReviewAttendanceModal()" class="btn-secondary-enhanced">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    {{ __('common.cancel') }}
+                </button>
+                <button type="submit" class="btn-primary-enhanced">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    {{ __('staff.attendance.complete_review') }}
+                </button>
             </div>
         </form>
     </div>
@@ -871,4 +1052,4 @@
 @push('scripts')
     @vite('resources/js/admin/staff-attendance.js')
 @endpush
-@endsection
+@endpush

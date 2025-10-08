@@ -17,6 +17,7 @@ export default defineConfig({
                 'resources/js/admin/staff-performance.js',
                 'resources/css/admin/staff-attendance.css',
                 'resources/js/admin/staff-attendance.js',
+                'resources/css/admin/modern-attendance-modal.css',
             'resources/css/admin/inventory-stock-levels.css',
             'resources/js/admin/inventory-stock-levels.js',
             'resources/css/admin/inventory-ingredients.css',

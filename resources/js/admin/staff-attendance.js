@@ -3,6 +3,9 @@
  * Handles modal interactions, state machine operations, and real-time updates
  */
 
+// Import modal portal system
+import ModalPortal from './modal-portal.js';
+
 // Modal state management
 let addModal = null;
 let editModal = null;
@@ -19,24 +22,66 @@ let activeSessionsUpdateInterval = null;
  * Show the add attendance modal
  */
 function showAddModal() {
-    addModal = document.getElementById('addAttendanceModal');
-    if (addModal) {
-        addModal.classList.remove('hidden');
-        addModal.classList.add('flex');
-        document.body.style.overflow = 'hidden';
+    if (window.ModalPortal) {
+        window.ModalPortal.showModal('addAttendanceModal');
+    } else {
+        // Fallback for legacy behavior
+        addModal = document.getElementById('addAttendanceModal');
+        if (addModal) {
+            addModal.classList.remove('hidden');
+            addModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
     }
+    
+            // Reset form and show all shifts when modal opens
+            setTimeout(() => {
+                const form = document.getElementById('addAttendanceForm');
+                if (form) {
+                    form.reset();
+                }
+                
+                // Set default clock-in time to current time (user can change it)
+                const clockInInput = document.getElementById('clockIn');
+                if (clockInInput && !clockInInput.value) {
+                    const now = new Date();
+                    const year = now.getFullYear();
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    
+                    clockInInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+                }
+                
+                // Show all shift templates initially
+                const shiftSelect = document.getElementById('shift_template_id');
+                if (shiftSelect) {
+                    const options = shiftSelect.querySelectorAll('option');
+                    options.forEach(option => {
+                        option.style.display = 'block';
+                    });
+                }
+            }, 100);
 }
 
 /**
  * Hide the add attendance modal
  */
 function hideAddModal() {
-    if (addModal) {
-        addModal.classList.add('hidden');
-        addModal.classList.remove('flex');
-        document.body.style.overflow = '';
+    if (window.ModalPortal) {
+        window.ModalPortal.hideModal('addAttendanceModal');
         // Reset form
         document.getElementById('addAttendanceForm')?.reset();
+    } else {
+        // Fallback for legacy behavior
+        if (addModal) {
+            addModal.classList.add('hidden');
+            addModal.style.display = 'none';
+            document.body.style.overflow = '';
+            // Reset form
+            document.getElementById('addAttendanceForm')?.reset();
+        }
     }
 }
 
@@ -124,6 +169,11 @@ function showIntervalsModal(attendanceId, staffName, date) {
     // Update modal content
     document.getElementById('intervalsStaffName').textContent = staffName;
     document.getElementById('intervalsDate').textContent = date;
+    
+    // Generate staff initials
+    const nameParts = staffName.split(' ');
+    const initials = nameParts.map(part => part.charAt(0)).join('').toUpperCase();
+    document.getElementById('intervalsStaffInitials').textContent = initials;
     
     // Show modal
     intervalsModal.classList.remove('hidden');
@@ -419,11 +469,11 @@ async function updateDashboardStats() {
         const data = await response.json();
         
         if (data.success) {
-            // Update stat cards
-            updateStatCard('totalStaff', data.data.stats.total_staff);
-            updateStatCard('currentlyActive', data.data.stats.currently_active);
-            updateStatCard('onBreak', data.data.stats.on_break);
-            updateStatCard('needsReview', data.data.stats.needs_review);
+            // Update stat cards with new metric IDs
+            updateStatCard('currently-working-count', data.data.stats.currently_working);
+            updateStatCard('on-break-count', data.data.stats.on_break);
+            updateStatCard('completed-today-count', data.data.stats.completed_today);
+            updateStatCard('needs-review-count', data.data.stats.needs_review);
             
             // Update active sessions
             updateActiveSessionsList(data.data.currently_active);
@@ -744,10 +794,108 @@ function initializeEnhancedModal() {
         observer.observe(addModal, { attributes: true });
     }
 
+    // Shift assignment enhancement
+    const staffSelect = document.getElementById('staff_id');
+    const shiftSelect = document.getElementById('shift_template_id');
+    
+    if (staffSelect && shiftSelect) {
+        // Initially show all shift templates
+        const showAllShifts = () => {
+            const options = shiftSelect.querySelectorAll('option');
+            options.forEach(option => {
+                option.style.display = 'block';
+            });
+        };
+        
+        // Initialize by showing all shifts
+        showAllShifts();
+
+        // When staff is selected, show all available shift templates
+        staffSelect.addEventListener('change', function() {
+            const selectedStaffId = this.value;
+            const options = shiftSelect.querySelectorAll('option');
+            let visibleCount = 0;
+            
+            if (!selectedStaffId) {
+                // If no staff selected, show all shifts
+                showAllShifts();
+                return;
+            }
+            
+            // Always show all shift templates - no filtering needed
+            // The user can select any shift template for any staff member
+            showAllShifts();
+            
+            console.log(`Staff selected: ${this.options[this.selectedIndex].textContent}`);
+            console.log('All shift templates are now available for selection');
+        });
+        
+        // When shift template is selected, auto-fill clock-in time
+        shiftSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const selectedStaff = staffSelect.options[staffSelect.selectedIndex];
+            
+            if (selectedOption.value && selectedStaff.value) {
+                console.log(`Creating attendance: ${selectedStaff.textContent} -> ${selectedOption.textContent}`);
+                
+                // Auto-fill clock-in time with shift start time
+                const shiftStartTime = selectedOption.getAttribute('data-start-time');
+                if (shiftStartTime) {
+                    // Get today's date
+                    const today = new Date();
+                    const year = today.getFullYear();
+                    const month = String(today.getMonth() + 1).padStart(2, '0');
+                    const day = String(today.getDate()).padStart(2, '0');
+                    
+                    // Format the time for datetime-local input (YYYY-MM-DDTHH:MM)
+                    const clockInInput = document.getElementById('clockIn');
+                    if (clockInInput) {
+                        const formattedDateTime = `${year}-${month}-${day}T${shiftStartTime}`;
+                        clockInInput.value = formattedDateTime;
+                        
+                        // Add visual feedback
+                        clockInInput.style.backgroundColor = '#f0f9ff';
+                        clockInInput.style.borderColor = '#0ea5e9';
+                        
+                        // Remove highlight after 2 seconds
+                        setTimeout(() => {
+                            clockInInput.style.backgroundColor = '';
+                            clockInInput.style.borderColor = '';
+                        }, 2000);
+                        
+                        console.log(`Auto-filled clock-in time: ${formattedDateTime}`);
+                    }
+                }
+            } else if (!selectedOption.value) {
+                // If "No Shift Template" is selected, clear the clock-in time
+                const clockInInput = document.getElementById('clockIn');
+                if (clockInInput) {
+                    clockInInput.value = '';
+                }
+            }
+        });
+
+        // Show all shifts when modal is first opened
+        showAllShifts();
+    }
+
     // Form validation enhancement
     const addForm = document.getElementById('addAttendanceForm');
     if (addForm) {
         addForm.addEventListener('submit', function(e) {
+            // Debug: Log form data before submission
+            const formData = new FormData(this);
+            console.log('=== FORM SUBMISSION DEBUG ===');
+            console.log('Clock-in input element value:', document.getElementById('clockIn').value);
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+                if (key === 'clock_in') {
+                    console.log(`Clock-in field specifically: "${value}"`);
+                    console.log('Type of clock_in value:', typeof value);
+                }
+            }
+            console.log('=== END FORM DEBUG ===');
+            
             const requiredFields = this.querySelectorAll('[required]');
             let isValid = true;
             

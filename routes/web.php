@@ -93,6 +93,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         Route::get('/performance', [\App\Http\Controllers\Admin\StaffPerformanceController::class, 'index'])->name('performance.index');
         // Staff Attendance
         Route::get('/attendance', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'index'])->name('attendance.index');
+        Route::get('/attendance/{staffAttendance}', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'show'])->name('attendance.show');
         Route::post('/attendance', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'store'])->name('attendance.store');
         Route::put('/attendance/{staffAttendance}', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'update'])->name('attendance.update');
         Route::delete('/attendance/{staffAttendance}', [\App\Http\Controllers\Admin\StaffAttendanceController::class, 'destroy'])->name('attendance.destroy');
