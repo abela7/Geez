@@ -37,7 +37,7 @@
     </script>
 
     <!-- Core Styles -->
-    @vite(['resources/css/app.css', 'resources/css/admin/layout.css', 'resources/css/admin/modal-fix.css', 'resources/css/admin/settings.css', 'resources/css/admin/modern-attendance-modal.css', 'resources/js/admin/modal-system.js', 'resources/js/admin/modal-portal.js'])
+    @vite(['resources/css/app.css', 'resources/css/admin/layout.css', 'resources/css/admin/modal-fix.css', 'resources/css/admin/settings.css', 'resources/css/admin/modern-attendance-modal.css', 'resources/js/admin/modal-system.js'])
     
     <!-- Page Specific Styles -->
     @stack('styles')

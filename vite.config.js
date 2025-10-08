@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/js/admin/layout.js',
                 'resources/css/admin/modal-fix.css',
                 'resources/js/admin/modal-system.js',
+                'resources/js/admin/modal-portal.js',
                 'resources/css/admin/staff.css',
                 'resources/js/admin/staff.js',
                 'resources/css/admin/staff-performance.css',

@@ -55,6 +55,12 @@ class StaffAttendanceController extends Controller
             ->orderBy('first_name')
             ->get();
 
+        // Get active shift templates for dropdown
+        $activeShifts = \App\Models\StaffShift::where('is_active', true)
+            ->where('is_template', true)
+            ->orderBy('name')
+            ->get();
+
         return view('admin.staff.attendance', compact(
             'todayStats',
             'attendanceRecords',
@@ -64,6 +70,7 @@ class StaffAttendanceController extends Controller
             'recentActivity',
             'staffTypes',
             'allStaff',
+            'activeShifts',
             'date',
             'staffTypeId',
             'status',
@@ -86,18 +93,26 @@ class StaffAttendanceController extends Controller
     private function getTodayStats(string $date): array
     {
         try {
-            // TODO: Replace with scheduled staff count when staff_schedules table exists
+            // Get total active staff (this is a placeholder - should be scheduled staff)
             $totalStaff = Staff::where('status', 'active')->count();
 
-            $attendanceToday = StaffAttendance::whereDate('clock_in', $date)->get();
+            // Get attendance records for the date
+            $attendanceToday = StaffAttendance::whereDate('clock_in', $date)
+                ->with('staff')
+                ->get();
 
+            // Calculate stats based on current_state for real-time data
+            $currentlyWorking = $attendanceToday->where('current_state', 'clocked_in')->count();
+            $onBreak = $attendanceToday->where('current_state', 'on_break')->count();
+            $completedToday = $attendanceToday->whereIn('current_state', ['clocked_out', 'auto_closed'])->count();
+            $needsReview = $attendanceToday->where('review_needed', true)->count();
+
+            // Legacy status-based stats (keep for now)
             $presentCount = $attendanceToday->where('status', 'present')->count();
-            // TODO: This is wrong - counts all non-attending staff as absent, even if not scheduled
-            $absentCount = $totalStaff - $attendanceToday->count();
+            $absentCount = $totalStaff - $attendanceToday->count(); // TODO: Fix when schedules exist
             $lateCount = $attendanceToday->where('status', 'late')->count();
             $overtimeCount = $attendanceToday->where('status', 'overtime')->count();
 
-            // TODO: Attendance rate should be present/scheduled, not present/total
             $attendanceRate = $totalStaff > 0 ? round(($presentCount / $totalStaff) * 100, 1) : 0;
 
             return [
@@ -108,8 +123,15 @@ class StaffAttendanceController extends Controller
                 'overtime_count' => $overtimeCount,
                 'attendance_rate' => $attendanceRate,
                 'total_hours' => $attendanceToday->sum('hours_worked') ?: 0,
+
+                // New keys for view
+                'currently_working' => $currentlyWorking,
+                'on_break' => $onBreak,
+                'completed_today' => $completedToday,
+                'needs_review' => $needsReview,
             ];
         } catch (\Exception $e) {
+            // Return defaults on error
             return [
                 'total_staff' => 0,
                 'present_count' => 0,
@@ -118,6 +140,10 @@ class StaffAttendanceController extends Controller
                 'overtime_count' => 0,
                 'attendance_rate' => 0,
                 'total_hours' => 0,
+                'currently_working' => 0,
+                'on_break' => 0,
+                'completed_today' => 0,
+                'needs_review' => 0,
             ];
         }
     }

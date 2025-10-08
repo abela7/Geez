@@ -60,7 +60,7 @@ return new class extends Migration
                 ->comment('Number of breaks taken');
 
             // === PAYROLL INTEGRATION ===
-            $table->foreignUlid('payroll_record_id')->nullable()->after('shift_assignment_id')
+            $table->foreignUlid('payroll_record_id')->nullable()->after('staff_id')
                 ->constrained('staff_payroll_records')->onDelete('set null')
                 ->comment('Link to payroll record');
 
@@ -71,7 +71,7 @@ return new class extends Migration
                 ->comment('When this attendance was paid');
 
             // === REVIEW & AUTO-CLOSE FLAGS ===
-            $table->boolean('review_needed')->default(false)->after('variance_minutes')
+            $table->boolean('review_needed')->default(false)->after('break_count')
                 ->comment('Needs manager review (overtime, auto-close, etc.)');
 
             $table->text('review_reason')->nullable()->after('review_needed')
