@@ -179,7 +179,7 @@
     <div class="main-content-grid">
         <!-- Weekly Schedule -->
         <div class="schedule-section">
-            <div class="section-header">
+            <div class="section-header schedule-section-header">
                 <h2 class="section-title">{{ __('shifts.overview.week_of', ['date' => $weekStart->format('M d')]) }}</h2>
                 <div class="section-filters">
                     <div class="filter-group">
@@ -285,11 +285,8 @@
                     @foreach($weeklyScheduleData as $day)
                 <div class="calendar-day {{ $day['is_today'] ? 'today' : '' }} {{ $day['is_weekend'] ? 'weekend' : '' }}">
                     <div class="day-header">
-                        <div class="day-name">{{ $day['day_short'] }}</div>
-                        <div class="day-date">{{ $day['date']->format('d') }}</div>
-                        <div class="day-stats">
-                            <span class="shift-count">{{ $day['total_shifts'] }} {{ __('shifts.common.shifts') }}</span>
-                            <span class="staff-count">{{ $day['total_staff'] }} {{ __('shifts.common.staff') }}</span>
+                        <div class="day-title">
+                            {{ $day['day_short'] }} {{ $day['date']->format('d') }} - {{ $day['total_shifts'] }} {{ __('shifts.common.shifts') }}, {{ $day['total_staff'] }} {{ __('shifts.common.staff') }}
                         </div>
                     </div>
                     
@@ -300,7 +297,6 @@
                             @foreach($day['shifts'] as $shift)
                             <div class="shift-block shift-{{ $shift['status'] }}" 
                                  style="border-left-color: {{ $shift['color'] }}; background: linear-gradient(135deg, {{ $shift['color'] }}10, transparent);"
-                                 @click="showShiftDetails({{ json_encode($shift) }})"
                                  data-shift-id="{{ $shift['id'] }}"
                                  data-shift-name="{{ $shift['name'] }}"
                                  data-shift-time="{{ $shift['start_time'] }} - {{ $shift['end_time'] }}"
@@ -355,73 +351,9 @@
     </div>
 
     <!-- Shift Details Modal -->
-    <div x-show="showShiftModal" 
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="modal-overlay" 
-         @click="closeShiftModal()"
-         style="display: none;">
-        <div class="modal-content" @click.stop>
-            <div class="modal-header">
-                <h3 class="modal-title" x-text="selectedShift?.name || 'Shift Details'"></h3>
-                <button class="modal-close" @click="closeShiftModal()">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-            
-            <div class="modal-body" x-show="selectedShift">
-                <div class="shift-detail-grid">
-                    <div class="detail-item">
-                        <div class="detail-label">{{ __('shifts.common.time') }}</div>
-                        <div class="detail-value" x-text="`${selectedShift?.start_time} - ${selectedShift?.end_time}`"></div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">{{ __('shifts.manage.department') }}</div>
-                        <div class="detail-value" x-text="selectedShift?.department"></div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">{{ __('shifts.manage.duration') }}</div>
-                        <div class="detail-value" x-text="`${selectedShift?.duration_hours}h`"></div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">{{ __('shifts.assignments.coverage_status') }}</div>
-                        <div class="detail-value">
-                            <span class="status-indicator" :class="`status-${selectedShift?.status}`" x-text="selectedShift?.status"></span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="assigned-staff-section">
-                    <h4 class="staff-section-title">{{ __('shifts.assignments.assigned_staff') }}</h4>
-                    <div class="staff-list">
-                        <template x-for="staff in selectedShift?.assigned_staff || []" :key="staff.id">
-                            <div class="staff-item">
-                                <div class="staff-info">
-                                    <div class="staff-name" x-text="staff.name"></div>
-                                    <div class="staff-role" x-text="staff.role"></div>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="modal-actions">
-                <a :href="`/admin/shifts/manage/${selectedShift?.id}/edit`" class="btn btn-secondary">
-                    {{ __('shifts.common.edit') }}
-                </a>
-                <a :href="`/admin/shifts/assignments?shift=${selectedShift?.id}`" class="btn btn-primary">
-                    {{ __('shifts.assignments.assign_staff') }}
-                </a>
-            </div>
-        </div>
-    </div>
+    <!-- Remove entire modal div (lines ~357-424) -->
+    <!-- Shift Details Modal -->
+    <!-- Remove entire modal div (lines ~357-424) -->
 </div>
 
 @endsection
@@ -435,23 +367,11 @@
 <script>
 function shiftOverviewData() {
     return {
-        showShiftModal: false,
         showExportModal: false,
         showLegend: false,
-        selectedShift: null,
         filterDepartment: 'all',
         filterStatus: 'all',
         filterType: 'all',
-        
-        showShiftDetails(shift) {
-            this.selectedShift = shift;
-            this.showShiftModal = true;
-        },
-        
-        closeShiftModal() {
-            this.showShiftModal = false;
-            this.selectedShift = null;
-        },
         
         assignStaffToGap(gap) {
             window.location.href = `/admin/shifts/assignments?gap=${gap.shift_name}&date=${gap.date}`;
@@ -523,23 +443,21 @@ function shiftOverviewData() {
             const days = document.querySelectorAll('.calendar-day');
             days.forEach(day => {
                 const visibleShifts = day.querySelectorAll('.shift-block[style="display: block"], .shift-block:not([style*="display: none"])');
-                const shiftCount = day.querySelector('.shift-count');
-                const staffCount = day.querySelector('.staff-count');
+                const dayTitle = day.querySelector('.day-title');
                 
-                if (shiftCount) {
-                    shiftCount.textContent = `${visibleShifts.length} shifts`;
-                }
-                
-                // Calculate total staff for visible shifts
-                let totalStaff = 0;
-                visibleShifts.forEach(shift => {
-                    const staffing = shift.querySelector('.staffing-count')?.textContent || '0/0';
-                    const assigned = parseInt(staffing.split('/')[0]) || 0;
-                    totalStaff += assigned;
-                });
-                
-                if (staffCount) {
-                    staffCount.textContent = `${totalStaff} staff`;
+                if (dayTitle) {
+                    // Calculate total staff for visible shifts
+                    let totalStaff = 0;
+                    visibleShifts.forEach(shift => {
+                        const staffing = shift.querySelector('.staffing-count')?.textContent || '0/0';
+                        const assigned = parseInt(staffing.split('/')[0]) || 0;
+                        totalStaff += assigned;
+                    });
+                    
+                    // Update the single title with new counts
+                    const currentText = dayTitle.textContent;
+                    const updatedText = currentText.replace(/(\d+) shifts, (\d+) staff$/, `${visibleShifts.length} shifts, ${totalStaff} staff`);
+                    dayTitle.textContent = updatedText;
                 }
             });
         },

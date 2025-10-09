@@ -19,7 +19,76 @@ window.Alpine = Alpine;
 Alpine.plugin(persist);
 Alpine.data('shiftCreateData', shiftCreateComponent);
 Alpine.data('shiftEditData', shiftEditComponent);
-Alpine.data('shiftsAssignmentsData', shiftsAssignmentsData);
+
+// Only register assignments component on assignments page
+if (window.location.pathname.includes('/admin/shifts/assignments')) {
+    Alpine.data('shiftsAssignmentsData', shiftsAssignmentsData);
+}
+
+// Register shift overview component
+Alpine.data('shiftOverviewData', () => ({
+    // Modal state
+    showShiftModal: false,
+    selectedShift: null,
+    
+    // Filter state
+    filterDepartment: 'all',
+    filterStatus: 'all',
+    filterType: 'all',
+    showLegend: false,
+    
+    // Methods
+    showShiftDetails(shift) {
+        this.selectedShift = shift;
+        this.showShiftModal = true;
+    },
+    
+    closeShiftModal() {
+        this.showShiftModal = false;
+        this.selectedShift = null;
+    },
+    
+    assignStaffToGap(gap) {
+        window.location.href = `/admin/shifts/assignments?gap=${gap.shift_name}&date=${gap.date}`;
+    },
+    
+    exportSchedule() {
+        this.showExportModal = true;
+    },
+    
+    applyFilters() {
+        const shiftBlocks = document.querySelectorAll('.shift-block');
+        shiftBlocks.forEach(block => {
+            const department = block.dataset.department;
+            const status = block.dataset.status;
+            
+            // Apply department filter
+            if (this.filterDepartment !== 'all' && department !== this.filterDepartment) {
+                block.style.display = 'none';
+                return;
+            }
+            
+            // Apply status filter
+            if (this.filterStatus !== 'all' && status !== this.filterStatus) {
+                block.style.display = 'none';
+                return;
+            }
+            
+            block.style.display = 'block';
+        });
+    },
+    
+    resetFilters() {
+        this.filterDepartment = 'all';
+        this.filterStatus = 'all';
+        this.filterType = 'all';
+        
+        const shiftBlocks = document.querySelectorAll('.shift-block');
+        shiftBlocks.forEach(block => {
+            block.style.display = 'block';
+        });
+    }
+}));
 
 // Register shifts manage component with full functionality
 Alpine.data('shiftsManageData', () => ({

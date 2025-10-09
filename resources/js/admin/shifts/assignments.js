@@ -537,8 +537,13 @@ function shiftsAssignmentsData() {
     };
 }
 
-// Initialize keyboard shortcuts when DOM loads
+// Initialize keyboard shortcuts when DOM loads - only on assignments page
 document.addEventListener('DOMContentLoaded', function() {
+    // Only run on assignments page
+    if (!window.location.pathname.includes('/admin/shifts/assignments')) {
+        return;
+    }
+    
     document.addEventListener('keydown', function(event) {
         // Get the Alpine component instance
         const assignmentsPage = document.querySelector('.assignments-page');

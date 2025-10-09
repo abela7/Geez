@@ -355,16 +355,16 @@ class ShiftsOverviewController extends Controller
         return array_slice($gaps, 0, 10); // Return top 10 gaps
     }
 
-    private function calculateShiftProgress(Carbon $startTime, Carbon $endTime, Carbon $now): int
+    private function calculateShiftProgress(Carbon $startTime, Carbon $endTime, Carbon $now): float
     {
         $totalDuration = $endTime->diffInMinutes($startTime);
-        $elapsed = $now->diffInMinutes($startTime);
         
         if ($totalDuration === 0) {
             return 0;
         }
         
+        $elapsed = $now->diffInMinutes($startTime);
         $progress = ($elapsed / $totalDuration) * 100;
-        return min(max(round($progress), 0), 100);
+        return (int) min(max(round($progress), 0), 100);
     }
 }
