@@ -152,6 +152,14 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
 
         Route::get('/payroll', [\App\Http\Controllers\Admin\StaffPayrollController::class, 'index'])->name('payroll.index');
 
+        // Payroll Management Routes
+        Route::prefix('payroll')->name('payroll.')->group(function () {
+            Route::get('/settings', [\App\Http\Controllers\Admin\PayrollController::class, 'settings'])->name('settings');
+            Route::get('/periods', [\App\Http\Controllers\Admin\PayrollController::class, 'periods'])->name('periods');
+            Route::get('/periods/{period}/review', [\App\Http\Controllers\Admin\PayrollController::class, 'review'])->name('review');
+            Route::get('/periods/{period}/payment', [\App\Http\Controllers\Admin\PayrollController::class, 'payment'])->name('payment');
+        });
+
         // Staff Profile - must be before resource routes
         Route::get('/profile/{staff}', [\App\Http\Controllers\Admin\StaffController::class, 'show'])->name('profile');
         // Staff Settings

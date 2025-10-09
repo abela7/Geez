@@ -1,138 +1,483 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
+use App\Helpers\PayrollRoundingHelper;
+use App\Models\Staff;
 use App\Models\StaffAttendance;
+use App\Models\StaffPayrollBonus;
+use App\Models\StaffPayrollDeduction;
+use App\Models\StaffPayrollPeriod;
 use App\Models\StaffPayrollRecord;
+use App\Models\StaffPayrollRecordDetail;
+use App\Models\StaffPayrollSetting;
+use App\Models\StaffPayrollTemplate;
+use App\Models\SystemAuditLog;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
+/**
+ * Enhanced payroll calculation service with full processing logic.
+ */
 class PayrollCalculationService
 {
-    /**
-     * Calculate daily pay for a staff member
-     */
-    public function calculateDailyPay(string $staffId, string $date, float $hourlyRate): array
-    {
-        $attendance = StaffAttendance::where('staff_id', $staffId)
-            ->whereDate('clock_in', $date)
-            ->where('current_state', 'clocked_out')
-            ->first();
-
-        if (!$attendance) {
-            return [
-                'error' => 'No attendance record found for this date',
-                'daily_pay' => 0
-            ];
-        }
-
-        $netHours = $attendance->net_hours_worked ?? 0;
-        $dailyPay = $netHours * $hourlyRate;
-
-        return [
-            'staff_id' => $staffId,
-            'date' => $date,
-            'clock_in' => $attendance->clock_in,
-            'clock_out' => $attendance->clock_out,
-            'total_hours' => $attendance->hours_worked,
-            'break_minutes' => $attendance->total_break_minutes,
-            'net_hours' => $netHours,
-            'hourly_rate' => $hourlyRate,
-            'daily_pay' => round($dailyPay, 2),
-            'break_details' => $this->getBreakDetails($attendance)
-        ];
+    public function __construct(
+        protected PayrollValidationService $validator
+    ) {
     }
 
     /**
-     * Calculate weekly pay for a staff member
+     * Calculate payroll for a single staff member for a period.
      */
-    public function calculateWeeklyPay(string $staffId, Carbon $weekStart, float $hourlyRate): array
-    {
-        $weekEnd = $weekStart->copy()->addDays(6);
-        
-        $attendanceRecords = StaffAttendance::where('staff_id', $staffId)
-            ->whereBetween('clock_in', [$weekStart, $weekEnd])
+    public function calculateForStaff(
+        Staff $staff,
+        StaffPayrollPeriod $period,
+        ?StaffPayrollTemplate $template = null
+    ): StaffPayrollRecord {
+        // Validate staff
+        $errors = $this->validator->validateStaffForPayroll($staff);
+        $this->validator->throwIfErrors($errors, 'Staff validation failed');
+
+        return DB::transaction(function () use ($staff, $period, $template) {
+            // Get or create template
+            $template = $template ?? $this->getTemplateForStaff($staff);
+            $setting = $period->payrollSetting ?? StaffPayrollSetting::getDefault();
+
+            // Check for duplicate
+            $existing = $this->validator->checkDuplicatePayroll(
+                $staff->id,
+                $period->id,
+                $period->period_start->startOfDay(),
+                $period->period_end->endOfDay()
+            );
+
+            if ($existing) {
+                return $existing;
+            }
+
+            // Create payroll record
+            $record = $this->createPayrollRecord($staff, $period, $template);
+
+            // Calculate hours from attendance
+            $hoursData = $this->calculateHoursFromAttendance(
+                $staff,
+                $period->period_start,
+                $period->period_end,
+                $setting
+            );
+
+            // Calculate pay
+            $payData = $this->calculatePay($hoursData, $staff, $template);
+
+            // Get bonuses
+            $bonuses = $this->getBonusesForPeriod($staff, $period);
+            $bonusTotal = $bonuses->sum('amount');
+
+            // Calculate deductions
+            $deductionsData = $this->calculateDeductions($staff, $payData['gross_pay'] + $bonusTotal);
+
+            // Calculate final amounts
+            $grossPay = PayrollRoundingHelper::sumAndRound([
+                $payData['regular_pay'],
+                $payData['overtime_pay'],
+                $bonusTotal,
+            ]);
+
+            $totalDeductions = PayrollRoundingHelper::sumAndRound([
+                $deductionsData['tax_deductions'],
+                $deductionsData['other_deductions'],
+            ]);
+
+            $netPay = PayrollRoundingHelper::calculateNetPay($grossPay, $totalDeductions);
+
+            // Update record
+            $record->update([
+                'regular_hours' => $hoursData['regular_hours'],
+                'regular_pay' => $payData['regular_pay'],
+                'overtime_hours' => $hoursData['overtime_hours'],
+                'overtime_pay' => $payData['overtime_pay'],
+                'bonus_total' => $bonusTotal,
+                'gross_pay' => $grossPay,
+                'tax_deductions' => $deductionsData['tax_deductions'],
+                'other_deductions' => $deductionsData['other_deductions'],
+                'deductions' => $totalDeductions,
+                'net_pay' => $netPay,
+                'status' => $netPay < 0 ? 'needs_review' : 'calculated',
+            ]);
+
+            // Create detail line items
+            $this->createDetailLineItems($record, $hoursData, $payData, $bonuses, $deductionsData);
+
+            // Link bonuses to this record
+            $bonuses->each(fn ($bonus) => $bonus->update(['payroll_record_id' => $record->id]));
+
+            // Audit log
+            SystemAuditLog::logAction(
+                'staff_payroll_records',
+                $record->id,
+                'create',
+                null,
+                $record->toArray(),
+                "Payroll calculated for {$staff->full_name} - Period: {$period->name}",
+                'low'
+            );
+
+            return $record->fresh();
+        });
+    }
+
+    /**
+     * Create initial payroll record with snapshots.
+     */
+    protected function createPayrollRecord(
+        Staff $staff,
+        StaffPayrollPeriod $period,
+        StaffPayrollTemplate $template
+    ): StaffPayrollRecord {
+        $generationHash = hash('sha256', implode('|', [
+            $staff->id,
+            $period->id,
+            $period->period_start->toDateTimeString(),
+            $period->period_end->toDateTimeString(),
+        ]));
+
+        $record = StaffPayrollRecord::create([
+            'staff_id' => $staff->id,
+            'pay_period_id' => $period->id,
+            'template_id' => $template->id,
+            'pay_period_start' => $period->period_start,
+            'pay_period_end' => $period->period_end,
+            'generated_from' => 'attendance',
+            'source_period_start' => $period->period_start->startOfDay(),
+            'source_period_end' => $period->period_end->endOfDay(),
+            'generation_hash' => $generationHash,
+            'currency' => $template->currency ?? 'USD',
+            'hourly_rate' => $staff->profile?->hourly_rate ?? $template->base_hourly_rate ?? 0,
+            'overtime_rate' => $template->getOvertimeMultiplier(),
+            'status' => 'draft',
+            'created_by' => auth()->id(),
+        ]);
+
+        // Capture snapshot
+        $record->captureStaffSnapshot();
+
+        return $record;
+    }
+
+    /**
+     * Calculate hours from attendance records.
+     */
+    protected function calculateHoursFromAttendance(
+        Staff $staff,
+        Carbon $periodStart,
+        Carbon $periodEnd,
+        ?StaffPayrollSetting $setting = null
+    ): array {
+        $setting = $setting ?? StaffPayrollSetting::getDefault();
+
+        $attendances = StaffAttendance::where('staff_id', $staff->id)
+            ->whereBetween('clock_in', [$periodStart, $periodEnd])
             ->where('current_state', 'clocked_out')
             ->get();
 
-        $totalHours = $attendanceRecords->sum('net_hours_worked');
-        $regularHours = min($totalHours, 40);
-        $overtimeHours = max($totalHours - 40, 0);
-        
-        $regularPay = $regularHours * $hourlyRate;
-        $overtimePay = $overtimeHours * ($hourlyRate * 1.5);
-        $totalPay = $regularPay + $overtimePay;
+        $totalNetHours = $attendances->sum('net_hours_worked');
+
+        $regularHours = $setting?->calculateRegularHours($totalNetHours) ?? min($totalNetHours, 40);
+        $overtimeHours = $setting?->calculateOvertimeHours($totalNetHours) ?? max($totalNetHours - 40, 0);
 
         return [
-            'staff_id' => $staffId,
-            'week_start' => $weekStart->format('Y-m-d'),
-            'week_end' => $weekEnd->format('Y-m-d'),
-            'total_hours' => round($totalHours, 2),
-            'regular_hours' => $regularHours,
-            'overtime_hours' => $overtimeHours,
-            'hourly_rate' => $hourlyRate,
-            'regular_pay' => round($regularPay, 2),
-            'overtime_pay' => round($overtimePay, 2),
-            'total_pay' => round($totalPay, 2),
-            'daily_breakdown' => $this->getDailyBreakdown($attendanceRecords)
+            'total_hours' => PayrollRoundingHelper::roundCurrency($totalNetHours),
+            'regular_hours' => PayrollRoundingHelper::roundCurrency($regularHours),
+            'overtime_hours' => PayrollRoundingHelper::roundCurrency($overtimeHours),
+            'attendance_count' => $attendances->count(),
         ];
     }
 
     /**
-     * Get detailed break information
+     * Calculate pay based on hours and rates.
      */
-    private function getBreakDetails(StaffAttendance $attendance): array
+    protected function calculatePay(
+        array $hoursData,
+        Staff $staff,
+        StaffPayrollTemplate $template
+    ): array {
+        $hourlyRate = $staff->profile?->hourly_rate ?? $template->base_hourly_rate ?? 0;
+        $overtimeMultiplier = $template->getOvertimeMultiplier();
+
+        $regularPay = PayrollRoundingHelper::roundCurrency(
+            $hoursData['regular_hours'] * $hourlyRate
+        );
+
+        $overtimePay = PayrollRoundingHelper::roundCurrency(
+            $hoursData['overtime_hours'] * $hourlyRate * $overtimeMultiplier
+        );
+
+        $grossPay = PayrollRoundingHelper::sumAndRound([$regularPay, $overtimePay]);
+
+        return [
+            'hourly_rate' => $hourlyRate,
+            'overtime_multiplier' => $overtimeMultiplier,
+            'regular_pay' => $regularPay,
+            'overtime_pay' => $overtimePay,
+            'gross_pay' => $grossPay,
+        ];
+    }
+
+    /**
+     * Get bonuses for the period.
+     */
+    protected function getBonusesForPeriod(
+        Staff $staff,
+        StaffPayrollPeriod $period
+    ) {
+        return StaffPayrollBonus::where('staff_id', $staff->id)
+            ->where('pay_period_id', $period->id)
+            ->where('status', 'approved')
+            ->whereNull('payroll_record_id')
+            ->get();
+    }
+
+    /**
+     * Calculate all deductions.
+     */
+    protected function calculateDeductions(Staff $staff, float $grossPay): array
     {
-        return $attendance->intervals()
-            ->where('interval_type', 'break')
-            ->get()
-            ->map(function ($interval) {
-                return [
-                    'start_time' => $interval->start_time,
-                    'end_time' => $interval->end_time,
-                    'duration_minutes' => $interval->duration_minutes,
-                    'category' => $interval->break_category,
-                    'reason' => $interval->reason
-                ];
+        $today = now();
+
+        // Get active deductions for this staff member
+        $activeDeductions = StaffPayrollDeduction::where('staff_id', $staff->id)
+            ->where('status', 'active')
+            ->where('effective_from', '<=', $today)
+            ->where(function ($q) use ($today) {
+                $q->whereNull('effective_to')
+                    ->orWhere('effective_to', '>=', $today);
             })
-            ->toArray();
+            ->with('deductionType')
+            ->get();
+
+        $taxDeductions = 0;
+        $otherDeductions = 0;
+
+        foreach ($activeDeductions as $deduction) {
+            $deductionType = $deduction->deductionType;
+            
+            if (! $deductionType) {
+                continue;
+            }
+
+            // Calculate deduction amount
+            $amount = $deduction->custom_amount ?? $deductionType->calculateAmount(
+                $grossPay,
+                $deduction->custom_rate
+            );
+
+            $amount = PayrollRoundingHelper::roundCurrency($amount);
+
+            // Categorize deduction
+            if (str_contains(strtolower($deductionType->name), 'tax')) {
+                $taxDeductions += $amount;
+            } else {
+                $otherDeductions += $amount;
+            }
+        }
+
+        return [
+            'tax_deductions' => PayrollRoundingHelper::roundCurrency($taxDeductions),
+            'other_deductions' => PayrollRoundingHelper::roundCurrency($otherDeductions),
+            'total_deductions' => PayrollRoundingHelper::sumAndRound([$taxDeductions, $otherDeductions]),
+            'deduction_count' => $activeDeductions->count(),
+        ];
     }
 
     /**
-     * Get daily breakdown for weekly calculation
+     * Create detailed line items for the payroll record.
      */
-    private function getDailyBreakdown($attendanceRecords): array
-    {
-        return $attendanceRecords->map(function ($record) {
-            return [
-                'date' => $record->clock_in->format('Y-m-d'),
-                'clock_in' => $record->clock_in->format('H:i'),
-                'clock_out' => $record->clock_out->format('H:i'),
-                'total_hours' => $record->hours_worked,
-                'net_hours' => $record->net_hours_worked,
-                'break_minutes' => $record->total_break_minutes
-            ];
-        })->toArray();
+    protected function createDetailLineItems(
+        StaffPayrollRecord $record,
+        array $hoursData,
+        array $payData,
+        $bonuses,
+        array $deductionsData
+    ): void {
+        $sortOrder = 0;
+
+        // Regular hours
+        if ($hoursData['regular_hours'] > 0) {
+            StaffPayrollRecordDetail::create([
+                'payroll_record_id' => $record->id,
+                'item_type' => 'regular_hours',
+                'description' => 'Regular Hours',
+                'quantity' => $hoursData['regular_hours'],
+                'rate' => $payData['hourly_rate'],
+                'amount' => $payData['regular_pay'],
+                'currency' => $record->currency,
+                'affects' => 'gross',
+                'is_taxable' => true,
+                'sort_order' => $sortOrder++,
+                'created_by' => auth()->id(),
+            ]);
+        }
+
+        // Overtime hours
+        if ($hoursData['overtime_hours'] > 0) {
+            StaffPayrollRecordDetail::create([
+                'payroll_record_id' => $record->id,
+                'item_type' => 'overtime_hours',
+                'description' => 'Overtime Hours',
+                'quantity' => $hoursData['overtime_hours'],
+                'rate' => $payData['hourly_rate'] * $payData['overtime_multiplier'],
+                'amount' => $payData['overtime_pay'],
+                'currency' => $record->currency,
+                'affects' => 'gross',
+                'is_taxable' => true,
+                'sort_order' => $sortOrder++,
+                'created_by' => auth()->id(),
+            ]);
+        }
+
+        // Bonuses
+        foreach ($bonuses as $bonus) {
+            StaffPayrollRecordDetail::create([
+                'payroll_record_id' => $record->id,
+                'item_type' => 'bonus',
+                'description' => $bonus->name,
+                'quantity' => 1,
+                'rate' => $bonus->amount,
+                'amount' => $bonus->amount,
+                'currency' => $bonus->currency,
+                'affects' => 'gross',
+                'is_taxable' => $bonus->is_taxable,
+                'source_type' => 'StaffPayrollBonus',
+                'source_id' => $bonus->id,
+                'sort_order' => $sortOrder++,
+                'created_by' => auth()->id(),
+            ]);
+        }
+
+        // Tax deductions
+        if ($deductionsData['tax_deductions'] > 0) {
+            StaffPayrollRecordDetail::create([
+                'payroll_record_id' => $record->id,
+                'item_type' => 'tax',
+                'description' => 'Tax Deductions',
+                'quantity' => 1,
+                'rate' => $deductionsData['tax_deductions'],
+                'amount' => -$deductionsData['tax_deductions'],
+                'currency' => $record->currency,
+                'affects' => 'net',
+                'is_taxable' => false,
+                'sort_order' => $sortOrder++,
+                'created_by' => auth()->id(),
+            ]);
+        }
+
+        // Other deductions
+        if ($deductionsData['other_deductions'] > 0) {
+            StaffPayrollRecordDetail::create([
+                'payroll_record_id' => $record->id,
+                'item_type' => 'deduction',
+                'description' => 'Other Deductions',
+                'quantity' => 1,
+                'rate' => $deductionsData['other_deductions'],
+                'amount' => -$deductionsData['other_deductions'],
+                'currency' => $record->currency,
+                'affects' => 'net',
+                'is_taxable' => false,
+                'sort_order' => $sortOrder++,
+                'created_by' => auth()->id(),
+            ]);
+        }
     }
 
     /**
-     * Create payroll record for a pay period
+     * Get appropriate template for staff member.
      */
-    public function createPayrollRecord(string $staffId, Carbon $payPeriodStart, Carbon $payPeriodEnd): StaffPayrollRecord
+    protected function getTemplateForStaff(Staff $staff): StaffPayrollTemplate
     {
-        $weeklyPay = $this->calculateWeeklyPay($staffId, $payPeriodStart, 15.00); // $15/hour example
-        
-        return StaffPayrollRecord::create([
-            'staff_id' => $staffId,
-            'pay_period_start' => $payPeriodStart,
-            'pay_period_end' => $payPeriodEnd,
-            'regular_hours' => $weeklyPay['regular_hours'],
-            'overtime_hours' => $weeklyPay['overtime_hours'],
-            'gross_pay' => $weeklyPay['total_pay'],
-            'deductions' => 0, // Calculate based on tax rules
-            'net_pay' => $weeklyPay['total_pay'], // Will be adjusted after deductions
-            'status' => 'pending',
-            'processed_by' => auth()->id(),
-            'created_by' => auth()->id()
-        ]);
+        // Try to find template for staff type, otherwise use default
+        $template = StaffPayrollTemplate::active()->default()->first();
+
+        if (! $template) {
+            throw new \Exception('No active payroll template found');
+        }
+
+        return $template;
+    }
+
+    /**
+     * Recalculate existing payroll record.
+     */
+    public function recalculate(StaffPayrollRecord $record): StaffPayrollRecord
+    {
+        if ($record->isFinalized()) {
+            throw new \Exception('Cannot recalculate finalized payroll');
+        }
+
+        $staff = $record->staff;
+        $period = $record->payPeriod;
+        $template = $record->template ?? $this->getTemplateForStaff($staff);
+
+        return DB::transaction(function () use ($record, $staff, $period, $template) {
+            // Delete existing details
+            $record->details()->delete();
+
+            // Recalculate
+            $setting = $period->payrollSetting ?? StaffPayrollSetting::getDefault();
+
+            $hoursData = $this->calculateHoursFromAttendance(
+                $staff,
+                $period->period_start,
+                $period->period_end,
+                $setting
+            );
+
+            $payData = $this->calculatePay($hoursData, $staff, $template);
+            $bonuses = $this->getBonusesForPeriod($staff, $period);
+            $bonusTotal = $bonuses->sum('amount');
+            $deductionsData = $this->calculateDeductions($staff, $payData['gross_pay'] + $bonusTotal);
+
+            $grossPay = PayrollRoundingHelper::sumAndRound([
+                $payData['regular_pay'],
+                $payData['overtime_pay'],
+                $bonusTotal,
+            ]);
+
+            $totalDeductions = PayrollRoundingHelper::sumAndRound([
+                $deductionsData['tax_deductions'],
+                $deductionsData['other_deductions'],
+            ]);
+
+            $netPay = PayrollRoundingHelper::calculateNetPay($grossPay, $totalDeductions);
+
+            $record->update([
+                'regular_hours' => $hoursData['regular_hours'],
+                'regular_pay' => $payData['regular_pay'],
+                'overtime_hours' => $hoursData['overtime_hours'],
+                'overtime_pay' => $payData['overtime_pay'],
+                'bonus_total' => $bonusTotal,
+                'gross_pay' => $grossPay,
+                'tax_deductions' => $deductionsData['tax_deductions'],
+                'other_deductions' => $deductionsData['other_deductions'],
+                'deductions' => $totalDeductions,
+                'net_pay' => $netPay,
+                'status' => $netPay < 0 ? 'needs_review' : 'calculated',
+            ]);
+
+            $this->createDetailLineItems($record, $hoursData, $payData, $bonuses, $deductionsData);
+
+            SystemAuditLog::logAction(
+                'staff_payroll_records',
+                $record->id,
+                'recalculate',
+                null,
+                $record->toArray(),
+                "Payroll recalculated for {$staff->full_name}",
+                'medium'
+            );
+
+            return $record->fresh();
+        });
     }
 }
