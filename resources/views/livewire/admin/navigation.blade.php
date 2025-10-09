@@ -13,6 +13,7 @@
      }"
      @toggle-sidebar.window="sidebarOpen = !sidebarOpen"
      @keydown.escape.window="sidebarOpen = false"
+     @keydown.window="if (($event.ctrlKey || $event.metaKey) && $event.key === 'o') { $event.preventDefault(); if (window.innerWidth < 1024) { sidebarOpen = !sidebarOpen; } else { toggleSidebar(); } }"
      x-effect="document.body.style.overflow = sidebarOpen ? 'hidden' : ''"
 >
     <!-- Mobile Menu Backdrop -->

@@ -475,10 +475,24 @@ class StaffTasksController extends Controller
         try {
             $task->delete();
 
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => __('staff.tasks.task_deleted_successfully')
+                ]);
+            }
+
             return redirect()->route('admin.staff.tasks.index')
                 ->with('success', __('staff.tasks.task_deleted_successfully'));
 
         } catch (\Exception $e) {
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('staff.tasks.task_deletion_failed').': '.$e->getMessage()
+                ], 500);
+            }
+
             return redirect()->back()
                 ->with('error', __('staff.tasks.task_deletion_failed').': '.$e->getMessage());
         }
@@ -631,11 +645,13 @@ class StaffTasksController extends Controller
                 'status' => 'required|in:pending,in_progress,completed,cancelled,overdue',
                 'progress_percentage' => 'nullable|integer|min:0|max:100',
                 'notes' => 'nullable|string',
+                'quality_rating' => 'nullable|in:bad,good,excellent',
+                'quality_rating_notes' => 'nullable|string',
             ]);
 
             $oldStatus = $assignment->status;
 
-            $assignment->update([
+            $updateData = [
                 'status' => $validated['status'],
                 'progress_percentage' => $validated['progress_percentage'] ?? $assignment->progress_percentage,
                 'notes' => $validated['notes'] ?? $assignment->notes,
@@ -643,7 +659,23 @@ class StaffTasksController extends Controller
                 'completed_at' => $validated['status'] === 'completed' ? now() : null,
                 'completed_by' => $validated['status'] === 'completed' ? auth()->id() : null,
                 'updated_by' => auth()->id(),
-            ]);
+            ];
+
+            // Handle quality rating for completed tasks
+            if ($validated['status'] === 'completed' && isset($validated['quality_rating'])) {
+                $updateData['quality_rating'] = $validated['quality_rating'];
+                $updateData['quality_rating_by'] = auth()->id();
+                $updateData['quality_rating_at'] = now();
+                $updateData['quality_rating_notes'] = $validated['quality_rating_notes'] ?? null;
+            } elseif ($validated['status'] !== 'completed' && $oldStatus === 'completed') {
+                // Clear quality rating when task is no longer completed
+                $updateData['quality_rating'] = null;
+                $updateData['quality_rating_by'] = null;
+                $updateData['quality_rating_at'] = null;
+                $updateData['quality_rating_notes'] = null;
+            }
+
+            $assignment->update($updateData);
 
             return response()->json([
                 'success' => true,
@@ -711,6 +743,69 @@ class StaffTasksController extends Controller
                 'success' => false,
                 'message' => __('staff.tasks.task_status_update_failed'),
                 'error' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * Update quality rating for a task assignment.
+     */
+    public function updateQualityRating(Request $request, StaffTaskAssignment $assignment): JsonResponse
+    {
+        try {
+            \Log::info('Quality rating update request received', [
+                'assignment_id' => $assignment->id,
+                'status' => $assignment->status,
+                'request_data' => $request->all()
+            ]);
+
+            $validated = $request->validate([
+                'quality_rating' => 'required|in:bad,good,excellent',
+                'quality_rating_notes' => 'nullable|string|max:1000',
+            ]);
+
+            // Only allow quality rating on completed tasks
+            if ($assignment->status !== 'completed') {
+                \Log::warning('Quality rating attempted on non-completed task', [
+                    'assignment_id' => $assignment->id,
+                    'status' => $assignment->status
+                ]);
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Quality rating can only be set for completed tasks',
+                ], 422);
+            }
+
+            $assignment->rateQuality(
+                $validated['quality_rating'],
+                $validated['quality_rating_notes'] ?? null,
+                (string) auth()->id()
+            );
+
+            \Log::info('Quality rating updated successfully', [
+                'assignment_id' => $assignment->id,
+                'rating' => $validated['quality_rating']
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => __('staff.tasks.quality_rating_updated'),
+                'assignment' => $assignment->fresh()->load('staff.staffType', 'task'),
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Quality rating update failed', [
+                'assignment_id' => $assignment->id ?? 'unknown',
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => __('staff.tasks.quality_rating_failed'),
+                'error' => $e->getMessage(),
+                'debug' => config('app.debug') ? $e->getTraceAsString() : null,
             ], 422);
         }
     }

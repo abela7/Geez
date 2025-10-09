@@ -145,11 +145,47 @@ class StaffController extends Controller
 
         // Get active task assignments - with fallback
         try {
-            $activeTasks = $staff->taskAssignments()
-                ->with(['task'])
-                ->whereIn('status', ['pending', 'in_progress'])
-                ->orderBy('due_date')
-                ->limit(10)
+            $taskFilter = request('task_filter', 'today');
+            $taskQuery = $staff->taskAssignments()->with(['task']);
+            
+            // Apply filters based on selection
+            switch ($taskFilter) {
+                case 'today':
+                    $taskQuery->where(function ($q) {
+                        $q->whereDate('due_date', today())
+                          ->orWhereDate('scheduled_date', today());
+                    });
+                    break;
+                case 'pending':
+                    $taskQuery->where('status', 'pending');
+                    break;
+                case 'in_progress':
+                    $taskQuery->where('status', 'in_progress');
+                    break;
+                case 'completed':
+                    $taskQuery->where('status', 'completed');
+                    break;
+                case 'overdue':
+                    $taskQuery->where(function ($q) {
+                        $q->where('due_date', '<', now())
+                          ->whereNotIn('status', ['completed', 'cancelled']);
+                    });
+                    break;
+                case 'this_week':
+                    $taskQuery->where(function ($q) {
+                        $q->whereBetween('due_date', [now()->startOfWeek(), now()->endOfWeek()])
+                          ->orWhereBetween('scheduled_date', [now()->startOfWeek(), now()->endOfWeek()]);
+                    });
+                    break;
+                case 'all':
+                default:
+                    // No additional filters for 'all'
+                    break;
+            }
+            
+            $activeTasks = $taskQuery->orderBy('due_date')
+                ->orderBy('scheduled_time')
+                ->limit(50)
                 ->get();
         } catch (\Exception $e) {
             $activeTasks = collect();

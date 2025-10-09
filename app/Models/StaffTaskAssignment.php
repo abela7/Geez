@@ -26,6 +26,10 @@ class StaffTaskAssignment extends Model
         'scheduled_time',
         'scheduled_datetime',
         'status',
+        'quality_rating',
+        'quality_rating_by',
+        'quality_rating_at',
+        'quality_rating_notes',
         'is_overdue',
         'overdue_since',
         'urgency_level',
@@ -59,6 +63,7 @@ class StaffTaskAssignment extends Model
         'scheduled_date' => 'date',
         'scheduled_time' => 'datetime:H:i',
         'scheduled_datetime' => 'datetime',
+        'quality_rating_at' => 'datetime',
         'is_overdue' => 'boolean',
         'overdue_since' => 'datetime',
         'started_at' => 'datetime',
@@ -112,6 +117,14 @@ class StaffTaskAssignment extends Model
     public function updater(): BelongsTo
     {
         return $this->belongsTo(Staff::class, 'updated_by');
+    }
+
+    /**
+     * Get the staff member who rated the quality of this assignment.
+     */
+    public function qualityRatedBy(): BelongsTo
+    {
+        return $this->belongsTo(Staff::class, 'quality_rating_by');
     }
 
     /**
@@ -249,9 +262,29 @@ class StaffTaskAssignment extends Model
      */
     public function isOverdue(): bool
     {
-        return $this->due_date &&
-               $this->due_date->isPast() &&
-               ! in_array($this->status, ['completed', 'cancelled']);
+        if (in_array($this->status, ['completed', 'cancelled'])) {
+            return false;
+        }
+
+        // If we have a scheduled datetime, use that for precise comparison
+        if ($this->scheduled_datetime) {
+            return $this->scheduled_datetime->isPast();
+        }
+
+        // If we have a due date with scheduled time, combine them
+        if ($this->due_date && $this->scheduled_time) {
+            $dueDateTime = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', 
+                $this->due_date->format('Y-m-d') . ' ' . $this->scheduled_time->format('H:i:s')
+            );
+            return $dueDateTime->isPast();
+        }
+
+        // If we only have a due date, consider it overdue at end of day
+        if ($this->due_date) {
+            return $this->due_date->endOfDay()->isPast();
+        }
+
+        return false;
     }
 
     /**
@@ -326,8 +359,28 @@ class StaffTaskAssignment extends Model
      */
     public function scopeOverdue($query)
     {
-        return $query->where('due_date', '<', now())
-            ->whereNotIn('status', ['completed', 'cancelled']);
+        return $query->whereNotIn('status', ['completed', 'cancelled'])
+            ->where(function ($q) {
+                // Check scheduled_datetime first
+                $q->where(function ($sq) {
+                    $sq->whereNotNull('scheduled_datetime')
+                       ->where('scheduled_datetime', '<', now());
+                })
+                // Or check due_date with scheduled_time
+                ->orWhere(function ($sq) {
+                    $sq->whereNull('scheduled_datetime')
+                       ->whereNotNull('due_date')
+                       ->whereNotNull('scheduled_time')
+                       ->whereRaw("CONCAT(due_date, ' ', scheduled_time) < ?", [now()]);
+                })
+                // Or check due_date only (end of day)
+                ->orWhere(function ($sq) {
+                    $sq->whereNull('scheduled_datetime')
+                       ->whereNull('scheduled_time')
+                       ->whereNotNull('due_date')
+                       ->where('due_date', '<', now()->startOfDay());
+                });
+            });
     }
 
     /**
@@ -632,5 +685,96 @@ class StaffTaskAssignment extends Model
             'content' => $content,
             'is_important' => $isImportant,
         ]);
+    }
+
+    /**
+     * Rate the quality of this task assignment.
+     */
+    public function rateQuality(string $rating, ?string $notes = null, ?string $ratedBy = null): void
+    {
+        $validRatings = ['bad', 'good', 'excellent'];
+        
+        if (!in_array($rating, $validRatings)) {
+            throw new \InvalidArgumentException("Invalid quality rating. Must be one of: " . implode(', ', $validRatings));
+        }
+
+        $this->update([
+            'quality_rating' => $rating,
+            'quality_rating_by' => $ratedBy ?? auth()->id(),
+            'quality_rating_at' => now(),
+            'quality_rating_notes' => $notes,
+        ]);
+    }
+
+    /**
+     * Check if the task has been quality rated.
+     */
+    public function hasQualityRating(): bool
+    {
+        return !is_null($this->quality_rating_at);
+    }
+
+    /**
+     * Get quality rating display name.
+     */
+    public function getQualityRatingDisplayAttribute(): string
+    {
+        return match($this->quality_rating) {
+            'bad' => 'Bad',
+            'good' => 'Good', 
+            'excellent' => 'Excellent',
+            default => 'Not Rated'
+        };
+    }
+
+    /**
+     * Get quality rating color for UI.
+     */
+    public function getQualityRatingColorAttribute(): string
+    {
+        return match($this->quality_rating) {
+            'bad' => '#EF4444',      // Red
+            'good' => '#10B981',     // Green  
+            'excellent' => '#8B5CF6', // Purple
+            default => '#6B7280'     // Gray
+        };
+    }
+
+    /**
+     * Get quality rating score for performance calculations.
+     */
+    public function getQualityRatingScoreAttribute(): int
+    {
+        return match($this->quality_rating) {
+            'bad' => 1,
+            'good' => 2,
+            'excellent' => 3,
+            default => 0
+        };
+    }
+
+    /**
+     * Scope for assignments with specific quality rating.
+     */
+    public function scopeWithQualityRating($query, string $rating)
+    {
+        return $query->where('quality_rating', $rating);
+    }
+
+    /**
+     * Scope for assignments that have been quality rated.
+     */
+    public function scopeQualityRated($query)
+    {
+        return $query->whereNotNull('quality_rating_at');
+    }
+
+    /**
+     * Scope for assignments that need quality rating (completed but not rated).
+     */
+    public function scopeNeedingQualityRating($query)
+    {
+        return $query->where('status', 'completed')
+                    ->whereNull('quality_rating_at');
     }
 }

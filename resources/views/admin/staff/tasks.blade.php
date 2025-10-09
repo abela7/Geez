@@ -222,9 +222,8 @@
                             <th>{{ __('common.assignee') }}</th>
                             <th>{{ __('staff.tasks.priority') }}</th>
                             <th>{{ __('common.status') }}</th>
+                            <th>{{ __('staff.tasks.quality_rating') }}</th>
                             <th>{{ __('staff.tasks.due_date') }}</th>
-                            <th>{{ __('staff.tasks.progress') }}</th>
-                            <th>{{ __('common.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -235,8 +234,7 @@
                                 </td>
                                 <td class="task-info-cell">
                                     <div class="task-info">
-                                        <h4 class="task-title">{{ $assignment->task->title ?? 'Untitled Task' }}</h4>
-                                        <p class="task-description">{{ Str::limit($assignment->task->description ?? '', 60) }}</p>
+                                        <h4 class="task-title clickable-title" onclick="openTaskActionsModal('{{ $assignment->id }}', '{{ $assignment->task->id }}', '{{ $assignment->status }}')">{{ $assignment->task->title ?? 'Untitled Task' }}</h4>
                                         <div class="task-meta">
                                             @if($assignment->task->taskType ?? null)
                                                 <span class="task-type">{{ $assignment->task->taskType->name }}</span>
@@ -280,10 +278,36 @@
                                         @endif
                                     </span>
                                 </td>
+
+                                <td class="quality-rating-cell">
+                                    <button type="button" 
+                                            onclick="openQualityRatingModal('{{ $assignment->id }}', '{{ $assignment->status }}', '{{ $assignment->quality_rating ?? '' }}', '{{ addslashes($assignment->quality_rating_notes ?? '') }}')"
+                                            class="btn-rate-quality {{ $assignment->hasQualityRating() ? 'rated' : '' }}" 
+                                            title="{{ __('staff.tasks.rate_quality') }}">
+                                        @if($assignment->hasQualityRating())
+                                            <span class="quality-badge quality-{{ $assignment->quality_rating }}" 
+                                                  style="background-color: {{ $assignment->quality_rating_color }}20; color: {{ $assignment->quality_rating_color }}; border-color: {{ $assignment->quality_rating_color }};">
+                                                <svg class="quality-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    @if($assignment->quality_rating === 'excellent')
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                                                    @elseif($assignment->quality_rating === 'good')
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                    @else
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                    @endif
+                                                </svg>
+                                            </span>
+                                        @else
+                                            <svg class="rate-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                                            </svg>
+                                        @endif
+                                    </button>
+                                </td>
                                 
                                 <td class="due-date-cell">
                                     @if($assignment->due_date)
-                                        <div class="due-date {{ $assignment->due_date < now() && $assignment->status !== 'completed' ? 'overdue' : '' }}">
+                                        <div class="due-date {{ $assignment->isOverdue() ? 'overdue' : '' }}">
                                             <svg class="due-date-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                             </svg>
@@ -297,58 +321,6 @@
                                     @else
                                         <span class="no-due-date">{{ __('common.no_due_date') }}</span>
                                     @endif
-                                </td>
-                                
-                                <td class="progress-cell">
-                                    @if($assignment->progress_percentage)
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" style="width: {{ $assignment->progress_percentage }}%"></div>
-                                            <span class="progress-text">{{ $assignment->progress_percentage }}%</span>
-                                        </div>
-                                    @else
-                                        <span class="no-progress">0%</span>
-                                    @endif
-                                </td>
-                                
-                                <td class="actions-cell">
-                                    <div class="action-buttons">
-                                        <button type="button" 
-                                                onclick="openTaskModal('{{ $assignment->task->id }}')"
-                                                class="btn-action btn-action-secondary" 
-                                                title="{{ __('staff.tasks.view_details') }}">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                            </svg>
-                                        </button>
-                                        
-                                        <a href="{{ route('admin.staff.tasks.edit', $assignment->task->id) }}" 
-                                           class="btn-action btn-action-secondary" 
-                                           title="{{ __('staff.tasks.edit_task') }}">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                            </svg>
-                                        </a>
-                                        
-                                        @if($assignment->status !== 'completed')
-                                            <form method="POST"
-                                                  action="{{ route('admin.staff.task-assignments.update-status', $assignment->id) }}"
-                                                  class="inline-form"
-                                                  onsubmit="return handleAssignmentStatusUpdate(this)">
-                                                @csrf
-                                                @method('PUT')
-                                                <input type="hidden" name="status" value="completed">
-                                                <button type="submit"
-                                                        class="btn-action btn-action-success"
-                                                        title="{{ __('staff.tasks.mark_complete') }}"
-                                                        onclick="return confirm('{{ __('staff.tasks.confirm_complete') }}')">
-                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                                    </svg>
-                                                </button>
-                                            </form>
-                                        @endif
-                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -553,6 +525,16 @@
     font-weight: 600;
     color: var(--color-text-primary);
     margin: 0 0 0.25rem 0;
+}
+
+.clickable-title {
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.clickable-title:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
 }
 
 .task-description {
@@ -1372,13 +1354,12 @@
 
 /* Table Column Sizing */
 .data-table th:nth-child(1) { width: 40px; }      /* Checkbox */
-.data-table th:nth-child(2) { width: 30%; }       /* Task Title */
+.data-table th:nth-child(2) { width: 35%; }       /* Task Title */
 .data-table th:nth-child(3) { width: 15%; }       /* Assignee */
 .data-table th:nth-child(4) { width: 10%; }       /* Priority */
-.data-table th:nth-child(5) { width: 11%; }       /* Status */
-.data-table th:nth-child(6) { width: 14%; }       /* Due Date - More space to prevent wrapping */
-.data-table th:nth-child(7) { width: 10%; }       /* Progress */
-.data-table th:nth-child(8) { width: 10%; }       /* Actions */
+.data-table th:nth-child(5) { width: 12%; }       /* Status */
+.data-table th:nth-child(6) { width: 12%; }       /* Quality Rating */
+.data-table th:nth-child(7) { width: 16%; }       /* Due Date */
 
 .status-cell {
     min-width: 90px;
@@ -1392,6 +1373,103 @@
 
 .due-date-cell {
     min-width: 140px;
+}
+
+.quality-rating-cell {
+    min-width: 120px;
+    text-align: center;
+}
+
+.quality-rating-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.quality-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 1px solid;
+    cursor: help;
+    transition: all 0.2s ease;
+}
+
+.quality-badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.quality-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+    flex-shrink: 0;
+}
+
+.quality-notes {
+    display: inline-flex;
+    align-items: center;
+    cursor: help;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.quality-notes:hover {
+    opacity: 1;
+}
+
+.notes-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+}
+
+.btn-rate-quality {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background: var(--color-primary);
+    color: var(--button-primary-text);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    position: relative;
+}
+
+.btn-rate-quality.rated {
+    background: transparent;
+    border: 1px solid var(--color-border-base);
+}
+
+.btn-rate-quality.rated:hover {
+    background: var(--color-surface-card-hover);
+    border-color: var(--color-primary);
+}
+
+.btn-rate-quality:hover {
+    background: var(--color-secondary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.rate-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+    flex-shrink: 0;
+}
+
+.no-rating {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-style: italic;
 }
 
 .checkbox-cell {
@@ -2194,6 +2272,251 @@
         transform: rotate(360deg);
     }
 }
+
+/* Quality Rating Modal Styles */
+.form-section {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.form-help {
+    color: var(--color-text-secondary);
+    font-size: 0.8125rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.quality-rating-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.quality-option {
+    cursor: pointer;
+    display: block;
+}
+
+.quality-radio {
+    display: none;
+}
+
+.quality-option-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 2px solid var(--color-border-base);
+    border-radius: 0.5rem;
+    background: var(--color-bg-secondary);
+    transition: all 0.2s ease;
+}
+
+.quality-option-card:hover {
+    border-color: var(--color-primary);
+    background: var(--color-surface-card-hover);
+}
+
+.quality-radio:checked + .quality-option-card {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--button-primary-text);
+}
+
+.quality-option-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.quality-option-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.quality-option-icon.excellent {
+    background: #8B5CF620;
+    color: #8B5CF6;
+}
+
+.quality-option-icon.good {
+    background: #10B98120;
+    color: #10B981;
+}
+
+.quality-option-icon.bad {
+    background: #EF444420;
+    color: #EF4444;
+}
+
+.quality-radio:checked + .quality-option-card .quality-option-icon {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--button-primary-text);
+}
+
+.quality-option-content {
+    flex: 1;
+}
+
+.quality-option-title {
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.quality-option-desc {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--form-input-border);
+    border-radius: 0.5rem;
+    background: var(--form-input-bg);
+    color: var(--form-input-text);
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+    transition: var(--transition-all);
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--form-input-border-focus);
+    box-shadow: var(--form-input-shadow-focus);
+}
+
+.form-textarea::placeholder {
+    color: var(--form-input-placeholder);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border-base);
+}
+
+/* Task Actions Modal Styles */
+.task-actions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.task-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-base);
+    border-radius: 0.5rem;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    width: 100%;
+}
+
+.task-action-btn:hover {
+    background: var(--color-surface-card-hover);
+    border-color: var(--color-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.task-action-btn svg {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+}
+
+.task-action-success {
+    background: var(--color-success);
+    color: white;
+    border-color: var(--color-success);
+}
+
+.task-action-success:hover {
+    background: var(--task-status-completed);
+    border-color: var(--task-status-completed);
+}
+
+.task-action-danger {
+    background: var(--color-error);
+    color: white;
+    border-color: var(--color-error);
+}
+
+.task-action-danger:hover {
+    background: #dc2626;
+    border-color: #dc2626;
+}
+
+.task-action-primary {
+    background: var(--color-primary);
+    color: var(--button-primary-text);
+    border-color: var(--color-primary);
+}
+
+.task-action-primary:hover {
+    background: var(--color-secondary);
+    border-color: var(--color-secondary);
+}
+
+/* Task Not Completed Message */
+.task-not-completed {
+    text-align: center;
+    padding: 2rem;
+}
+
+.not-completed-icon {
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto 1rem;
+    background: var(--color-warning);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.not-completed-icon svg {
+    width: 2rem;
+    height: 2rem;
+}
+
+.task-not-completed h3 {
+    color: var(--color-text-primary);
+    margin: 0 0 1rem 0;
+    font-size: 1.25rem;
+}
+
+.task-not-completed p {
+    color: var(--color-text-secondary);
+    margin: 0 0 0.5rem 0;
+    line-height: 1.5;
+}
 </style>
 @endpush
 
@@ -2214,6 +2537,72 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                 </svg>
                 <span style="margin-left: 0.5rem;">{{ __('common.loading') }}...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Task Actions Modal -->
+<div id="taskActionsModalOverlay" class="task-modal-overlay" onclick="closeTaskActionsModal()">
+    <div id="taskActionsModal" class="task-modal" onclick="event.stopPropagation()" style="width: 300px;">
+        <div class="task-modal-header">
+            <h3 class="task-modal-title">{{ __('common.actions') }}</h3>
+            <button type="button" class="task-modal-close" onclick="closeTaskActionsModal()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <div class="task-modal-content">
+            <div class="task-actions-list">
+                <button type="button" onclick="openTaskModal(currentTaskId)" class="task-action-btn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    {{ __('staff.tasks.view_details') }}
+                </button>
+                
+                <a href="#" id="editTaskLink" class="task-action-btn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    {{ __('staff.tasks.edit_task') }}
+                </a>
+                
+                <button type="button" id="completeTaskBtn" onclick="completeTask()" class="task-action-btn task-action-success" style="display: none;">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    {{ __('staff.tasks.mark_complete') }}
+                </button>
+                
+                <button type="button" id="deleteTaskBtn" onclick="deleteTask()" class="task-action-btn task-action-danger">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    {{ __('common.delete') }}
+                </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quality Rating Modal -->
+<div id="qualityRatingModalOverlay" class="task-modal-overlay" onclick="closeQualityRatingModal()">
+    <div id="qualityRatingModal" class="task-modal" onclick="event.stopPropagation()" style="width: 400px;">
+        <div class="task-modal-header">
+            <h3 class="task-modal-title">{{ __('staff.tasks.rate_quality') }}</h3>
+            <button type="button" class="task-modal-close" onclick="closeQualityRatingModal()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <div class="task-modal-content">
+            <div id="qualityRatingContent">
+                <!-- Content will be dynamically loaded based on task status -->
             </div>
         </div>
     </div>
@@ -2532,7 +2921,331 @@ function showNotification(message, type = 'info') {
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         closeTaskModal();
+        closeTaskActionsModal();
+        closeQualityRatingModal();
     }
 });
+
+// Task Actions Modal Functions
+let currentAssignmentId = null;
+let currentTaskId = null;
+
+function openTaskActionsModal(assignmentId, taskId, status) {
+    currentAssignmentId = assignmentId;
+    currentTaskId = taskId;
+    
+    const overlay = document.getElementById('taskActionsModalOverlay');
+    const modal = document.getElementById('taskActionsModal');
+    const editLink = document.getElementById('editTaskLink');
+    const completeBtn = document.getElementById('completeTaskBtn');
+    
+    // Set edit link
+    editLink.href = `/admin/staff/tasks/${taskId}/edit`;
+    
+    // Show/hide complete button based on status
+    if (status !== 'completed') {
+        completeBtn.style.display = 'flex';
+    } else {
+        completeBtn.style.display = 'none';
+    }
+    
+    overlay.classList.add('active');
+    modal.classList.add('active');
+}
+
+function closeTaskActionsModal() {
+    const overlay = document.getElementById('taskActionsModalOverlay');
+    const modal = document.getElementById('taskActionsModal');
+    
+    overlay.classList.remove('active');
+    modal.classList.remove('active');
+    currentAssignmentId = null;
+    currentTaskId = null;
+}
+
+function completeTask() {
+    if (!currentAssignmentId) {
+        showToast('Error: No assignment selected', 'error');
+        return;
+    }
+    
+    if (confirm('{{ __('staff.tasks.confirm_complete') }}')) {
+        const formData = new FormData();
+        formData.append('status', 'completed');
+        formData.append('_method', 'PUT');
+        
+        fetch(`/admin/staff/task-assignments/${currentAssignmentId}/status`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                showToast(data.message || 'Task marked as completed successfully', 'success');
+                closeTaskActionsModal();
+                
+                // Refresh the page to show updated status
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                showToast(data.message || 'Failed to update task status', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('An error occurred while updating the task status', 'error');
+        });
+    }
+}
+
+function deleteTask() {
+    if (!currentTaskId) {
+        showToast('Error: No task selected', 'error');
+        return;
+    }
+    
+    if (confirm('{{ __('staff.tasks.confirm_delete') }}')) {
+        const formData = new FormData();
+        formData.append('_method', 'DELETE');
+        
+        fetch(`/admin/staff/tasks/${currentTaskId}`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                showToast(data.message || 'Task deleted successfully', 'success');
+                closeTaskActionsModal();
+                
+                // Refresh the page to show updated list
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                showToast(data.message || 'Failed to delete task', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('An error occurred while deleting the task', 'error');
+        });
+    }
+}
+
+// Quality Rating Modal Functions
+function openQualityRatingModal(assignmentId, status, currentRating = '', currentNotes = '') {
+    currentAssignmentId = assignmentId;
+    const overlay = document.getElementById('qualityRatingModalOverlay');
+    const modal = document.getElementById('qualityRatingModal');
+    const content = document.getElementById('qualityRatingContent');
+    
+    overlay.classList.add('active');
+    modal.classList.add('active');
+    
+    if (status !== 'completed') {
+        // Show message that task is not completed yet
+        content.innerHTML = `
+            <div class="task-not-completed">
+                <div class="not-completed-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3>Task Not Completed Yet</h3>
+                <p>This task needs to be completed before it can be rated for quality.</p>
+                <p><strong>Current Status:</strong> ${status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' ')}</p>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline-secondary" onclick="closeQualityRatingModal()">
+                        Close
+                    </button>
+                </div>
+            </div>
+        `;
+    } else {
+        // Show rating form for completed tasks
+        const isRated = currentRating !== '';
+        const excellentChecked = currentRating === 'excellent' ? 'checked' : '';
+        const goodChecked = currentRating === 'good' || currentRating === '' ? 'checked' : '';
+        const badChecked = currentRating === 'bad' ? 'checked' : '';
+        
+        content.innerHTML = `
+            <form id="qualityRatingForm" onsubmit="submitQualityRating(event)">
+                ${isRated ? '<div class="form-section"><p class="form-help"><strong>Current Rating:</strong> ' + currentRating.charAt(0).toUpperCase() + currentRating.slice(1) + '</p></div>' : ''}
+                
+                <div class="form-section">
+                    <label class="form-label">Quality Rating</label>
+                    <p class="form-help">Rate the quality of work for this completed task</p>
+                    
+                    <div class="quality-rating-options">
+                        <label class="quality-option">
+                            <input type="radio" name="quality_rating" value="excellent" class="quality-radio" ${excellentChecked}>
+                            <div class="quality-option-card">
+                                <div class="quality-option-icon excellent">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                                    </svg>
+                                </div>
+                                <div class="quality-option-content">
+                                    <div class="quality-option-title">Excellent</div>
+                                    <div class="quality-option-desc">Outstanding work quality</div>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="quality-option">
+                            <input type="radio" name="quality_rating" value="good" class="quality-radio" ${goodChecked}>
+                            <div class="quality-option-card">
+                                <div class="quality-option-icon good">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <div class="quality-option-content">
+                                    <div class="quality-option-title">Good</div>
+                                    <div class="quality-option-desc">Meets expectations</div>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="quality-option">
+                            <input type="radio" name="quality_rating" value="bad" class="quality-radio" ${badChecked}>
+                            <div class="quality-option-card">
+                                <div class="quality-option-icon bad">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <div class="quality-option-content">
+                                    <div class="quality-option-title">Bad</div>
+                                    <div class="quality-option-desc">Needs improvement</div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="quality_rating_notes">Quality Rating Notes</label>
+                    <textarea id="quality_rating_notes" 
+                              name="quality_rating_notes" 
+                              rows="3" 
+                              placeholder="Add notes about the quality of work (optional)"
+                              class="form-textarea">${currentNotes}</textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline-secondary" onclick="closeQualityRatingModal()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        ${isRated ? 'Update Rating' : 'Rate Quality'}
+                    </button>
+                </div>
+            </form>
+        `;
+    }
+}
+
+function closeQualityRatingModal() {
+    const overlay = document.getElementById('qualityRatingModalOverlay');
+    const modal = document.getElementById('qualityRatingModal');
+    
+    overlay.classList.remove('active');
+    modal.classList.remove('active');
+    currentAssignmentId = null;
+}
+
+function submitQualityRating(event) {
+    event.preventDefault();
+    
+    if (!currentAssignmentId) {
+        showToast('Error: No assignment selected', 'error');
+        return;
+    }
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.innerHTML;
+    
+    // Convert FormData to JSON for PUT request
+    const data = {
+        quality_rating: formData.get('quality_rating'),
+        quality_rating_notes: formData.get('quality_rating_notes')
+    };
+    
+    console.log('Submitting quality rating for assignment:', currentAssignmentId);
+    console.log('Data:', data);
+    
+    // Show loading state
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<svg class="animate-spin btn-icon" width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" stroke-dasharray="31.416" stroke-dashoffset="31.416"><animate attributeName="stroke-dashoffset" dur="1s" repeatCount="indefinite" values="31.416;0"/></circle></svg> Saving...';
+    
+    fetch(`/admin/staff/task-assignments/${currentAssignmentId}/quality-rating`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        if (data.success) {
+            showToast(data.message || 'Quality rating updated successfully', 'success');
+            closeQualityRatingModal();
+            
+            // Refresh the page to show updated rating
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            showToast(data.message || 'Failed to update quality rating', 'error');
+            if (data.error) {
+                console.error('Server error:', data.error);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+        showToast('An error occurred while updating the quality rating', 'error');
+    })
+    .finally(() => {
+        // Restore button state
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalText;
+    });
+}
 </script>
 @endpush
