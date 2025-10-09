@@ -95,49 +95,6 @@
 
     <!-- Sidebar Content (Above Calendar) -->
     <div class="sidebar-content-top">
-        <!-- Current Shifts -->
-        @if(!empty($currentShifts))
-        <div class="current-shifts-section">
-            <div class="section-header">
-                <h3 class="section-title">{{ __('shifts.overview.current_shifts') }}</h3>
-            </div>
-            <div class="current-shifts-list">
-                @foreach($currentShifts as $shift)
-                <div class="current-shift-card">
-                    <div class="shift-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ $shift['progress_percentage'] }}%"></div>
-                        </div>
-                        <div class="progress-text">{{ $shift['progress_percentage'] }}% {{ __('shifts.common.complete') }}</div>
-                    </div>
-                    <div class="shift-details">
-                        <div class="shift-name">{{ $shift['name'] }}</div>
-                        <div class="shift-time">{{ $shift['time_remaining'] }} {{ __('shifts.common.remaining') }}</div>
-                        <div class="shift-staff">
-                            @foreach($shift['assigned_staff'] as $staff)
-                            <div class="staff-member {{ $staff['checked_in'] ? 'checked-in' : 'not-checked-in' }}">
-                                <span class="staff-name">{{ $staff['name'] }}</span>
-                                <span class="check-status">
-                                    @if($staff['checked_in'])
-                                        <svg class="check-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                        </svg>
-                                    @else
-                                        <svg class="x-icon" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                                        </svg>
-                                    @endif
-                                </span>
-                            </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-        @endif
-
         <!-- Quick Info Grid -->
         <div class="quick-info-grid">
             <!-- Coverage Gaps -->
@@ -179,11 +136,16 @@
     <div class="main-content-grid">
         <!-- Weekly Schedule -->
         <div class="schedule-section">
-            <div class="section-header schedule-section-header">
-                <h2 class="section-title">{{ __('shifts.overview.week_of', ['date' => $weekStart->format('M d')]) }}</h2>
-                <div class="section-filters">
+            <div class="section-header schedule-section-header flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6 p-6 bg-card rounded-lg shadow-sm border rounded shadow-hover mb-6">
+                <!-- Title -->
+                <h2 class="section-title text-2xl font-bold text-primary mb-0 flex-1 dark:text-primary-light">
+                    {{ __('shifts.overview.week_of', ['date' => $weekStart->format('M d')]) }}
+                </h2>
+                
+                <!-- Filters -->
+                <div class="section-filters flex flex-wrap gap-3 md:gap-4 items-center">
                     <div class="filter-group">
-                        <select x-model="filterDepartment" @change="applyFilters()" class="filter-select">
+                        <select x-model="filterDepartment" @change="applyFilters()" class="filter-select w-full md:w-auto px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-sm text-secondary bg-card dark:bg-secondary dark:text-primary-light dark:border-gray-600">
                             <option value="all">{{ __('shifts.departments.all_departments') }}</option>
                             <option value="Kitchen">{{ __('shifts.departments.kitchen') }}</option>
                             <option value="Front of House">{{ __('shifts.departments.front_of_house') }}</option>
@@ -192,7 +154,7 @@
                         </select>
                     </div>
                     <div class="filter-group">
-                        <select x-model="filterStatus" @change="applyFilters()" class="filter-select">
+                        <select x-model="filterStatus" @change="applyFilters()" class="filter-select w-full md:w-auto px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-sm text-secondary bg-card dark:bg-secondary dark:text-primary-light dark:border-gray-600">
                             <option value="all">{{ __('shifts.common.all_statuses') }}</option>
                             <option value="fully_covered">{{ __('shifts.assignments.fully_covered') }}</option>
                             <option value="partially_covered">{{ __('shifts.assignments.partially_covered') }}</option>
@@ -200,7 +162,7 @@
                         </select>
                     </div>
                     <div class="filter-group">
-                        <select x-model="filterType" @change="applyFilters()" class="filter-select">
+                        <select x-model="filterType" @change="applyFilters()" class="filter-select w-full md:w-auto px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-sm text-secondary bg-card dark:bg-secondary dark:text-primary-light dark:border-gray-600">
                             <option value="all">{{ __('shifts.common.all_types') }}</option>
                             <option value="regular">{{ __('shifts.types.regular') }}</option>
                             <option value="weekend">{{ __('shifts.types.weekend') }}</option>
@@ -209,21 +171,23 @@
                         </select>
                     </div>
                 </div>
-                <div class="section-actions">
-                    <button class="btn btn-sm btn-outline" @click="resetFilters()">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                
+                <!-- Actions -->
+                <div class="section-actions flex justify-end gap-2 md:gap-3 items-center">
+                    <button class="btn btn-sm btn-outline px-3 py-2 text-sm font-medium rounded border bg-card hover:bg-secondary-light text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:bg-secondary dark:text-primary-light dark:border-gray-600 dark:hover:bg-gray-700" @click="resetFilters()">
+                        <svg class="btn-icon w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                         </svg>
                         {{ __('shifts.common.reset_filters') }}
                     </button>
-                    <button class="btn btn-sm btn-secondary" @click="showExportModal = true">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button class="btn btn-sm btn-secondary px-3 py-2 text-sm font-medium rounded bg-secondary-light hover:bg-secondary text-secondary focus:outline-none focus:ring-2 focus:ring-secondary dark:bg-gray-700 dark:text-primary-light dark:hover:bg-gray-600" @click="showExportModal = true">
+                        <svg class="btn-icon w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
                         {{ __('shifts.overview.export_schedule') }}
                     </button>
-                    <button class="btn btn-sm btn-info" @click="showLegend = !showLegend">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button class="btn btn-sm btn-info px-3 py-2 text-sm font-medium rounded bg-primary-light hover:bg-primary text-info focus:outline-none focus:ring-2 focus:ring-info dark:bg-primary-dark dark:text-primary-light dark:hover:bg-primary" @click="showLegend = !showLegend">
+                        <svg class="btn-icon w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         Shift Types

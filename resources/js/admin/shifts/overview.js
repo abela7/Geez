@@ -189,4 +189,113 @@ function initializeNotifications() {
 function showNotification(message, type = 'info') {
     // Create notification element
     const notification = document.createElement('div');
-    notification.className = `
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span class="notification-message">${message}</span>
+            <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    `;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// Shift Overview API functions
+window.ShiftOverviewAPI = {
+    getWeeklySchedule: function(weekStart) {
+        return fetch(`/admin/shifts/overview?week=${weekStart}`)
+            .then(response => response.json());
+    },
+    
+    getShiftDetails: function(shiftId) {
+        return fetch(`/admin/shifts/manage/${shiftId}`)
+            .then(response => response.json());
+    },
+    
+    exportSchedule: function(options) {
+        return fetch('/admin/shifts/overview/export', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+            },
+            body: JSON.stringify(options)
+        }).then(response => response.json());
+    },
+    
+    assignStaffToGap: function(gapId, staffIds) {
+        return fetch('/admin/shifts/assignments/fill-gap', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+            },
+            body: JSON.stringify({
+                gap_id: gapId,
+                staff_ids: staffIds
+            })
+        }).then(response => response.json());
+    }
+};
+
+// Utility functions
+window.ShiftOverviewUtils = {
+    formatTime: function(time24) {
+        const [hours, minutes] = time24.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        return `${hour12}:${minutes} ${ampm}`;
+    },
+    
+    formatDuration: function(startTime, endTime) {
+        const start = new Date(`2000-01-01 ${startTime}`);
+        const end = new Date(`2000-01-01 ${endTime}`);
+        const diff = end - start;
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        return `${hours}h`;
+    },
+    
+    getStatusColor: function(status) {
+        const colors = {
+            'fully_covered': 'var(--color-success)',
+            'partially_covered': 'var(--color-warning)',
+            'not_covered': 'var(--color-danger)',
+            'confirmed': 'var(--color-success)',
+            'pending': 'var(--color-warning)',
+            'in_progress': 'var(--color-info)'
+        };
+        return colors[status] || 'var(--color-text-muted)';
+    },
+    
+    calculateCoveragePercentage: function(assigned, required) {
+        return Math.round((assigned / required) * 100);
+    },
+    
+    isShiftCurrent: function(startTime, endTime) {
+        const now = new Date();
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+        const [startHour, startMin] = startTime.split(':').map(Number);
+        const [endHour, endMin] = endTime.split(':').map(Number);
+        const shiftStart = startHour * 60 + startMin;
+        const shiftEnd = endHour * 60 + endMin;
+        
+        return currentTime >= shiftStart && currentTime <= shiftEnd;
+    }
+};
+
+// Export for global access
+window.initializeShiftOverview = initializeShiftOverview;
+window.showNotification = showNotification;
