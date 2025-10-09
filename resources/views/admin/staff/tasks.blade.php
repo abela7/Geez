@@ -43,6 +43,50 @@
         </div>
     </div>
 
+    <!-- Date Selector -->
+    <div class="date-selector-section">
+        <form method="GET" action="{{ route('admin.staff.tasks.index') }}" class="date-selector-form" id="dateSelectorForm">
+            <div class="date-selector-content">
+                <div class="date-selector-group">
+                    <label for="selected_date" class="date-selector-label">{{ __('staff.tasks.select_date') }}</label>
+                    <div class="date-input-group">
+                        <input type="date"
+                               id="selected_date"
+                               name="selected_date"
+                               value="{{ $selectedDate ?? date('Y-m-d') }}"
+                               class="date-selector-input"
+                               onchange="this.form.submit()">
+                        <button type="button" class="date-nav-btn" onclick="navigateDate(-1)" title="{{ __('common.previous_day') }}">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="date-nav-btn date-nav-today" onclick="goToToday()" title="{{ __('staff.tasks.today') }}">
+                            {{ __('staff.tasks.today') }}
+                        </button>
+                        <button type="button" class="date-nav-btn" onclick="navigateDate(1)" title="{{ __('common.next_day') }}">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="date-display">
+                    <div class="current-date">{{ $selectedDate ? \Carbon\Carbon::parse($selectedDate)->format('l, F j, Y') : \Carbon\Carbon::now()->format('l, F j, Y') }}</div>
+                    <div class="date-subtitle">
+                        @if($selectedDate === date('Y-m-d'))
+                            {{ __('staff.tasks.today_tasks') }}
+                        @elseif($selectedDate && \Carbon\Carbon::parse($selectedDate)->isPast())
+                            {{ __('staff.tasks.past_tasks') }}
+                        @else
+                            {{ __('staff.tasks.future_tasks') }}
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <!-- Dashboard Stats -->
     <div class="stats-grid">
         <div class="stat-card">
@@ -153,6 +197,15 @@
                             </option>
                         @endforeach
                     </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="due_date" class="filter-label">{{ __('staff.tasks.due_date') }}</label>
+                    <input type="date"
+                           id="due_date"
+                           name="due_date"
+                           value="{{ request('due_date') }}"
+                           class="filter-input">
                 </div>
 
                 <div class="filter-actions">
@@ -360,6 +413,116 @@
     background: var(--color-bg-primary);
 }
 
+/* Date Selector Styles */
+.date-selector-section {
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-surface-card-border);
+    border-radius: 0.75rem;
+    padding: var(--card-spacing);
+    margin-bottom: var(--section-spacing);
+    box-shadow: var(--color-surface-card-shadow);
+}
+
+.date-selector-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--card-spacing);
+}
+
+.date-selector-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.date-selector-label {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    font-size: 0.875rem;
+}
+
+.date-input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.date-selector-input {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--form-input-border);
+    border-radius: 0.5rem;
+    background: var(--form-input-bg);
+    color: var(--form-input-text);
+    font-size: 0.875rem;
+    min-width: 140px;
+    transition: var(--transition-all);
+}
+
+.date-selector-input:focus {
+    outline: none;
+    border-color: var(--form-input-border-focus);
+    box-shadow: var(--form-input-shadow-focus);
+}
+
+.date-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--color-border-base);
+    border-radius: 0.375rem;
+    background: var(--color-bg-secondary);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.date-nav-btn:hover {
+    background: var(--color-surface-card-hover);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    transform: translateY(-1px);
+}
+
+.date-nav-btn svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.date-nav-today {
+    min-width: 60px;
+    padding: 0 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--color-primary);
+    color: var(--button-primary-text);
+    border-color: var(--color-primary);
+}
+
+.date-nav-today:hover {
+    background: var(--color-secondary);
+    border-color: var(--color-secondary);
+}
+
+.date-display {
+    text-align: right;
+}
+
+.current-date {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+}
+
+.date-subtitle {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-top: 0.25rem;
+}
+
 .page-header {
     margin-bottom: var(--section-spacing);
 }
@@ -448,7 +611,7 @@
 
 .filters-row {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
     gap: var(--card-spacing);
     align-items: end;
 }
@@ -499,6 +662,7 @@
 
 .data-table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
 }
 
@@ -513,6 +677,8 @@
 
 .data-table td {
     padding: 1rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     border-bottom: 1px solid var(--table-row-border);
     vertical-align: top;
 }
@@ -525,6 +691,7 @@
     font-weight: 600;
     color: var(--color-text-primary);
     margin: 0 0 0.25rem 0;
+    word-break: break-word;
 }
 
 .clickable-title {
@@ -928,17 +1095,49 @@
     height: 1rem;
 }
 
+/* Responsive Date Selector */
+@media (max-width: 768px) {
+    .date-selector-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .date-selector-group {
+        justify-content: space-between;
+    }
+
+    .date-display {
+        text-align: center;
+    }
+
+    .date-input-group {
+        gap: 0.25rem;
+    }
+
+    .date-nav-btn {
+        width: 1.75rem;
+        height: 1.75rem;
+    }
+
+    .date-nav-today {
+        min-width: 50px;
+        padding: 0 0.5rem;
+        font-size: 0.6875rem;
+    }
+}
+
 @media (max-width: 768px) {
     .page-header-content {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .filters-row {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
-    
+
     .filter-actions {
         justify-content: stretch;
     }
@@ -3182,30 +3381,30 @@ function closeQualityRatingModal() {
 
 function submitQualityRating(event) {
     event.preventDefault();
-    
+
     if (!currentAssignmentId) {
         showToast('Error: No assignment selected', 'error');
         return;
     }
-    
+
     const form = event.target;
     const formData = new FormData(form);
     const submitButton = form.querySelector('button[type="submit"]');
     const originalText = submitButton.innerHTML;
-    
+
     // Convert FormData to JSON for PUT request
     const data = {
         quality_rating: formData.get('quality_rating'),
         quality_rating_notes: formData.get('quality_rating_notes')
     };
-    
+
     console.log('Submitting quality rating for assignment:', currentAssignmentId);
     console.log('Data:', data);
-    
+
     // Show loading state
     submitButton.disabled = true;
     submitButton.innerHTML = '<svg class="animate-spin btn-icon" width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" stroke-dasharray="31.416" stroke-dashoffset="31.416"><animate attributeName="stroke-dashoffset" dur="1s" repeatCount="indefinite" values="31.416;0"/></circle></svg> Saving...';
-    
+
     fetch(`/admin/staff/task-assignments/${currentAssignmentId}/quality-rating`, {
         method: 'PUT',
         body: JSON.stringify(data),
@@ -3225,7 +3424,7 @@ function submitQualityRating(event) {
         if (data.success) {
             showToast(data.message || 'Quality rating updated successfully', 'success');
             closeQualityRatingModal();
-            
+
             // Refresh the page to show updated rating
             setTimeout(() => {
                 window.location.reload();
@@ -3246,6 +3445,33 @@ function submitQualityRating(event) {
         submitButton.disabled = false;
         submitButton.innerHTML = originalText;
     });
+}
+
+// Date Navigation Functions
+function navigateDate(days) {
+    const dateInput = document.getElementById('selected_date');
+    const currentDate = new Date(dateInput.value || new Date());
+    currentDate.setDate(currentDate.getDate() + days);
+
+    // Format date as YYYY-MM-DD
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const newDate = `${year}-${month}-${day}`;
+
+    dateInput.value = newDate;
+    document.getElementById('dateSelectorForm').submit();
+}
+
+function goToToday() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const todayStr = `${year}-${month}-${day}`;
+
+    document.getElementById('selected_date').value = todayStr;
+    document.getElementById('dateSelectorForm').submit();
 }
 </script>
 @endpush

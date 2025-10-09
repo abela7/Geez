@@ -542,6 +542,11 @@ return [
     'tasks' => [
         'title' => 'Task Management',
         'subtitle' => 'Manage and track staff tasks and assignments',
+        'select_date' => 'Select Date',
+        'today' => 'Today',
+        'today_tasks' => 'Today\'s Tasks',
+        'past_tasks' => 'Past Tasks',
+        'future_tasks' => 'Future Tasks',
         'create_task' => 'Create Task',
         'view_modes' => 'View Modes',
         'dashboard' => 'Dashboard',

@@ -68,6 +68,9 @@ class StaffTasksController extends Controller
     public function index(Request $request): View
     {
         try {
+            // Get selected date (defaults to today)
+            $selectedDate = $request->get('selected_date', date('Y-m-d'));
+
             // Get filter parameters
             $filters = [
                 'search' => $request->get('search'),
@@ -76,9 +79,10 @@ class StaffTasksController extends Controller
                 'category' => $request->get('category'),
                 'assignee' => $request->get('assignee'),
                 'due_date' => $request->get('due_date'),
+                'selected_date' => $selectedDate,
             ];
 
-            // Get dashboard data
+            // Get dashboard data for selected date
             $dashboardData = $this->getDashboardData($filters);
             $tasks = $this->getFilteredTasks($filters);
             $assignments = $this->getFilteredAssignments($filters);
@@ -101,7 +105,8 @@ class StaffTasksController extends Controller
                 'taskTypes',
                 'taskPriorities',
                 'taskCategories',
-                'filters'
+                'filters',
+                'selectedDate'
             ));
 
         } catch (\Exception $e) {
@@ -126,23 +131,35 @@ class StaffTasksController extends Controller
     private function getDashboardData(array $filters): array
     {
         try {
-            // Count tasks that actually have assignments (real active tasks)
+            $selectedDate = $filters['selected_date'] ?? date('Y-m-d');
+
+            // Count tasks that actually have assignments for the selected date
             $totalTasks = StaffTask::active()
                 ->whereHas('assignments')
+                ->whereDate('scheduled_date', $selectedDate)
                 ->count();
 
-            $totalAssignments = StaffTaskAssignment::whereHas('task', fn ($q) => $q->active())->count();
+            $totalAssignments = StaffTaskAssignment::whereHas('task', function ($q) use ($selectedDate) {
+                $q->active()->whereDate('scheduled_date', $selectedDate);
+            })->count();
+
             $completedAssignments = StaffTaskAssignment::where('status', 'completed')
-                ->whereHas('task', fn ($q) => $q->active())
+                ->whereHas('task', function ($q) use ($selectedDate) {
+                    $q->active()->whereDate('scheduled_date', $selectedDate);
+                })
                 ->count();
 
             $overdueAssignments = StaffTaskAssignment::where('status', '!=', 'completed')
-                ->whereHas('task', fn ($q) => $q->active())
+                ->whereHas('task', function ($q) use ($selectedDate) {
+                    $q->active()->whereDate('scheduled_date', $selectedDate);
+                })
                 ->where('due_date', '<', now())
                 ->count();
 
             $inProgressAssignments = StaffTaskAssignment::where('status', 'in_progress')
-                ->whereHas('task', fn ($q) => $q->active())
+                ->whereHas('task', function ($q) use ($selectedDate) {
+                    $q->active()->whereDate('scheduled_date', $selectedDate);
+                })
                 ->count();
 
             return [
@@ -212,14 +229,53 @@ class StaffTasksController extends Controller
             $query = StaffTaskAssignment::with(['task.taskType', 'task.taskPriority', 'task.taskCategory', 'staff.staffType', 'assignedBy'])
                 ->whereHas('task', fn ($q) => $q->active());
 
+            // Filter by selected date - tasks scheduled for the selected date
+            if (! empty($filters['selected_date'])) {
+                $query->whereHas('task', function ($q) use ($filters) {
+                    $q->whereDate('scheduled_date', $filters['selected_date']);
+                });
+            }
+
+            // Search filter - search in task title, description, and staff name
+            if (! empty($filters['search'])) {
+                $searchTerm = $filters['search'];
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->whereHas('task', function ($taskQuery) use ($searchTerm) {
+                        $taskQuery->where('title', 'like', "%{$searchTerm}%")
+                                  ->orWhere('description', 'like', "%{$searchTerm}%");
+                    })
+                      ->orWhereHas('staff', function ($staffQuery) use ($searchTerm) {
+                          $staffQuery->where('first_name', 'like', "%{$searchTerm}%")
+                                    ->orWhere('last_name', 'like', "%{$searchTerm}%");
+                      });
+                });
+            }
+
+            // Status filter
             if (! empty($filters['status'])) {
                 $query->where('status', $filters['status']);
             }
 
+            // Priority filter - filter by task's priority
+            if (! empty($filters['priority'])) {
+                $query->whereHas('task', function ($q) use ($filters) {
+                    $q->where('priority', $filters['priority']);
+                });
+            }
+
+            // Category filter - filter by task's category
+            if (! empty($filters['category'])) {
+                $query->whereHas('task', function ($q) use ($filters) {
+                    $q->where('category', $filters['category']);
+                });
+            }
+
+            // Assignee filter
             if (! empty($filters['assignee'])) {
                 $query->where('staff_id', $filters['assignee']);
             }
 
+            // Due date filter
             if (! empty($filters['due_date'])) {
                 $query->whereDate('due_date', $filters['due_date']);
             }
