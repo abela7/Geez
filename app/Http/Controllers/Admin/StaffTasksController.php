@@ -661,6 +661,61 @@ class StaffTasksController extends Controller
     }
 
     /**
+     * Update task completion status (mark as done/undone).
+     */
+    public function updateTaskStatus(Request $request, StaffTask $task): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'action' => 'required|in:mark_done,mark_undone',
+            ]);
+
+            $action = $validated['action'];
+
+            if ($action === 'mark_done') {
+                // Mark all pending assignments as completed
+                $task->assignments()
+                    ->where('status', '!=', 'completed')
+                    ->update([
+                        'status' => 'completed',
+                        'completed_at' => now(),
+                        'completed_by' => auth()->id(),
+                        'updated_by' => auth()->id(),
+                    ]);
+            } elseif ($action === 'mark_undone') {
+                // Mark all completed assignments as pending
+                $task->assignments()
+                    ->where('status', 'completed')
+                    ->update([
+                        'status' => 'pending',
+                        'completed_at' => null,
+                        'completed_by' => null,
+                        'updated_by' => auth()->id(),
+                    ]);
+            }
+
+            // Reload the task with fresh data
+            $task->load(['assignments.staff.staffType']);
+
+            return response()->json([
+                'success' => true,
+                'message' => $action === 'mark_done'
+                    ? __('staff.tasks.task_marked_done')
+                    : __('staff.tasks.task_marked_undone'),
+                'task' => $task->fresh(),
+                'is_completed' => $task->isCompleted(),
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => __('staff.tasks.task_status_update_failed'),
+                'error' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
      * Show the form for creating a new task.
      */
     public function create(): View

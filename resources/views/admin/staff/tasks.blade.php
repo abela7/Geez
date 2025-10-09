@@ -287,7 +287,12 @@
                                             <svg class="due-date-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                             </svg>
-                                            <span class="due-date-text">{{ $assignment->due_date->format('M j, Y') }}</span>
+                                            <div class="due-date-info">
+                                                <span class="due-date-text">{{ $assignment->due_date->format('M j, Y') }}</span>
+                                                @if($assignment->scheduled_time)
+                                                    <span class="due-time-text">{{ $assignment->scheduled_time->format('g:i A') }}</span>
+                                                @endif
+                                            </div>
                                         </div>
                                     @else
                                         <span class="no-due-date">{{ __('common.no_due_date') }}</span>
@@ -326,12 +331,15 @@
                                         </a>
                                         
                                         @if($assignment->status !== 'completed')
-                                            <form method="POST" action="{{ route('admin.staff.task-assignments.update-status', $assignment->id) }}" class="inline-form">
+                                            <form method="POST"
+                                                  action="{{ route('admin.staff.task-assignments.update-status', $assignment->id) }}"
+                                                  class="inline-form"
+                                                  onsubmit="return handleAssignmentStatusUpdate(this)">
                                                 @csrf
                                                 @method('PUT')
                                                 <input type="hidden" name="status" value="completed">
-                                                <button type="submit" 
-                                                        class="btn-action btn-action-success" 
+                                                <button type="submit"
+                                                        class="btn-action btn-action-success"
                                                         title="{{ __('staff.tasks.mark_complete') }}"
                                                         onclick="return confirm('{{ __('staff.tasks.confirm_complete') }}')">
                                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -674,8 +682,24 @@
     flex-shrink: 0;
 }
 
+.due-date-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
 .due-date-text {
     white-space: nowrap;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+.due-time-text {
+    white-space: nowrap;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    font-weight: 400;
 }
 
 .progress-bar {
@@ -1410,6 +1434,766 @@
         right: -100%;
     }
 }
+
+/* ===== ENHANCED TASK MODAL STYLING ===== */
+
+/* Task Modal Header Card */
+.task-modal-header-card {
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-surface-card-border);
+    border-radius: 0.75rem;
+    padding: var(--card-spacing);
+    margin-bottom: var(--section-spacing);
+    box-shadow: var(--color-surface-card-shadow);
+}
+
+.task-header-content {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--card-spacing);
+}
+
+.task-title-section {
+    flex: 1;
+}
+
+.task-modal-title-main {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0 0 0.5rem 0;
+    line-height: 1.2;
+}
+
+.task-type-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.task-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: var(--transition-all);
+}
+
+.task-priority-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Task Detail Cards */
+.task-detail-card {
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-surface-card-border);
+    border-radius: 0.75rem;
+    margin-bottom: var(--section-spacing);
+    box-shadow: var(--color-surface-card-shadow);
+    overflow: hidden;
+    transition: var(--transition-all);
+}
+
+.task-detail-card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.card-header {
+    padding: var(--card-spacing);
+    border-bottom: 1px solid var(--color-surface-card-border);
+    background: var(--color-bg-tertiary);
+}
+
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.card-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-primary);
+    flex-shrink: 0;
+}
+
+.assignment-count, .tag-count {
+    background: var(--color-primary);
+    color: var(--button-primary-text);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    margin-left: 0.25rem;
+}
+
+.card-content {
+    padding: var(--card-spacing);
+}
+
+/* Detail Rows */
+.detail-row {
+    padding: 1rem;
+    border: 1px solid var(--color-surface-card-border);
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    background: var(--color-bg-tertiary);
+    transition: var(--transition-all);
+}
+
+.detail-row:last-child {
+    margin-bottom: 0;
+}
+
+.detail-row:hover {
+    background: var(--color-surface-card-hover);
+    border-color: var(--color-primary);
+}
+
+.detail-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.375rem;
+    display: block;
+}
+
+.detail-value {
+    color: var(--color-text-primary);
+    line-height: 1.5;
+}
+
+.detail-instructions {
+    white-space: pre-line;
+    font-family: inherit;
+}
+
+/* Classification Grid */
+.classification-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+
+.classification-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-surface-card-border);
+    border-radius: 0.5rem;
+    transition: var(--transition-all);
+}
+
+.classification-item:hover {
+    background: var(--color-surface-card-hover);
+    border-color: var(--color-primary);
+}
+
+.item-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    min-width: 4rem;
+}
+
+.category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    background: var(--color-secondary);
+    color: var(--button-primary-text);
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+}
+
+/* Assignments Grid */
+.assignments-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+
+.assignment-card {
+    padding: 1rem;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-surface-card-border);
+    border-radius: 0.5rem;
+    transition: var(--transition-all);
+}
+
+.assignment-card:hover {
+    background: var(--color-surface-card-hover);
+    border-color: var(--color-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.assignment-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.assignee-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--button-primary-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+.assignee-details {
+    flex: 1;
+}
+
+.assignee-name {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    font-size: 0.875rem;
+}
+
+.assignee-type {
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+}
+
+.assignment-status {
+    flex-shrink: 0;
+}
+
+.assignment-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+.meta-icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+}
+
+.time-text {
+    color: var(--color-text-primary);
+    font-weight: 500;
+}
+
+/* Timing Grid */
+.timing-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+
+.timing-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-surface-card-border);
+    border-radius: 0.5rem;
+    transition: var(--transition-all);
+}
+
+.timing-item:hover {
+    background: var(--color-surface-card-hover);
+    border-color: var(--color-primary);
+}
+
+.timing-item-full {
+    grid-column: 1 / -1;
+}
+
+.timing-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    background: var(--color-primary);
+    color: var(--button-primary-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.timing-icon svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.timing-content {
+    flex: 1;
+}
+
+.timing-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.125rem;
+}
+
+.timing-value {
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+    font-weight: 500;
+}
+
+.schedule-time {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+/* Tags Container */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    background: var(--color-primary);
+    color: var(--button-primary-text);
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+    transition: var(--transition-all);
+}
+
+.tag-pill:hover {
+    background: var(--color-secondary);
+    transform: translateY(-1px);
+}
+
+.tag-icon {
+    width: 0.75rem;
+    height: 0.75rem;
+    flex-shrink: 0;
+}
+
+/* Settings Grid */
+.settings-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-surface-card-border);
+    border-radius: 0.5rem;
+    transition: var(--transition-all);
+}
+
+.setting-item:hover {
+    background: var(--color-surface-card-hover);
+    border-color: var(--color-primary);
+}
+
+.setting-item-full {
+    grid-column: 1 / -1;
+}
+
+.setting-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    background: var(--color-primary);
+    color: var(--button-primary-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.setting-icon svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.setting-content {
+    flex: 1;
+}
+
+.setting-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.125rem;
+}
+
+.setting-value {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-active {
+    background: var(--color-success);
+    color: white;
+}
+
+.status-inactive {
+    background: var(--color-text-muted);
+    color: white;
+}
+
+/* Metadata Grid */
+.metadata-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+
+.metadata-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-surface-card-border);
+    border-radius: 0.5rem;
+    transition: var(--transition-all);
+}
+
+.metadata-item:hover {
+    background: var(--color-surface-card-hover);
+    border-color: var(--color-primary);
+}
+
+.metadata-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    background: var(--color-primary);
+    color: var(--button-primary-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.metadata-icon svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.metadata-content {
+    flex: 1;
+}
+
+.metadata-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.125rem;
+}
+
+.metadata-value {
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+    font-weight: 500;
+}
+
+/* Action Buttons Grid */
+.action-buttons-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-surface-card-border);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition-all);
+}
+
+.action-button:hover {
+    background: var(--color-surface-card-hover);
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.action-button-primary {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--button-primary-text);
+}
+
+.action-button-primary:hover {
+    background: var(--color-secondary);
+    border-color: var(--color-secondary);
+}
+
+.action-button-secondary {
+    border-color: var(--color-border-base);
+}
+
+.action-button-secondary:hover {
+    border-color: var(--color-primary);
+    background: var(--color-surface-card-hover);
+}
+
+.action-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    background: currentColor;
+    opacity: 0.1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: var(--transition-all);
+}
+
+.action-button:hover .action-icon {
+    opacity: 0.2;
+}
+
+.action-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.action-content {
+    flex: 1;
+}
+
+.action-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 0.125rem;
+}
+
+.action-description {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+.action-arrow {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-all);
+}
+
+.action-button:hover .action-arrow {
+    color: var(--color-primary);
+    transform: translateX(2px);
+}
+
+.action-arrow svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Enhanced Badge Icons */
+.badge-icon {
+    width: 0.75rem;
+    height: 0.75rem;
+    flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .classification-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .timing-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .settings-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .metadata-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .action-buttons-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .task-modal {
+        width: 100%;
+        right: -100%;
+    }
+
+    .task-header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .task-priority-indicator {
+        align-self: flex-start;
+    }
+
+    .assignment-card {
+        padding: 0.75rem;
+    }
+
+    .assignment-header {
+        gap: 0.5rem;
+    }
+
+    .assignee-details {
+        min-width: 0;
+    }
+
+    .action-button {
+        padding: 0.75rem;
+    }
+}
+
+/* ==========================================================================
+   Toast Notifications
+   ========================================================================== */
+
+.toast {
+    position: fixed;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    z-index: var(--z-toast);
+    padding: var(--space-lg) var(--space-xl);
+    border-radius: 0.5rem;
+    background: var(--alert-success-bg);
+    color: var(--alert-success-text);
+    border: 1px solid var(--alert-success-border);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideInRight 0.3s ease-out;
+    max-width: 400px;
+    word-wrap: break-word;
+}
+
+.toast svg {
+    width: var(--space-lg);
+    height: var(--space-lg);
+    flex-shrink: 0;
+}
+
+.toast-success {
+    background: var(--alert-success-bg);
+    color: var(--alert-success-text);
+    border: 1px solid var(--alert-success-border);
+}
+
+.toast-error {
+    background: var(--alert-error-bg);
+    color: var(--alert-error-text);
+    border: 1px solid var(--alert-error-border);
+}
+
+.toast-warning {
+    background: var(--alert-warning-bg);
+    color: var(--alert-warning-text);
+    border: 1px solid var(--alert-warning-border);
+}
+
+.toast-info {
+    background: var(--alert-info-bg);
+    color: var(--alert-info-text);
+    border: 1px solid var(--alert-info-border);
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
 </style>
 @endpush
 
@@ -1546,11 +2330,98 @@ function bulkAction(action) {
     }
 }
 
+/**
+ * Show toast notification
+ */
+function showToast(message, type = 'info') {
+    // Remove existing toasts
+    const existingToasts = document.querySelectorAll('.toast');
+    existingToasts.forEach(toast => toast.remove());
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+
+    const icon = type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ';
+    toast.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <text x="10" y="15" text-anchor="middle" font-size="14">${icon}</text>
+        </svg>
+        <span>${message}</span>
+    `;
+
+    document.body.appendChild(toast);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        toast.remove();
+    }, 5000);
+}
+
+/**
+ * Handle assignment status update
+ */
+function handleAssignmentStatusUpdate(form) {
+    const formData = new FormData(form);
+    const button = form.querySelector('button[type="submit"]');
+    const originalText = button.innerHTML;
+
+    // Show loading state
+    button.disabled = true;
+    button.innerHTML = '<svg class="animate-spin" width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" stroke-dasharray="31.416" stroke-dashoffset="31.416"><animate attributeName="stroke-dashoffset" dur="1s" repeatCount="indefinite" values="31.416;0"/></circle></svg>';
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast(data.message || 'Assignment status updated successfully', 'success');
+
+            // Update the button and UI
+            const card = form.closest('.task-card');
+            if (card) {
+                const statusBadge = card.querySelector('.status-badge');
+                if (statusBadge) {
+                    statusBadge.className = 'status-badge status-completed';
+                    statusBadge.textContent = 'Completed';
+                }
+
+                // Remove the form since it's completed
+                form.remove();
+            }
+
+            // Refresh the page data after a short delay
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            showToast(data.message || 'Failed to update assignment status', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('An error occurred while updating the assignment status', 'error');
+    })
+    .finally(() => {
+        // Restore button state
+        button.disabled = false;
+        button.innerHTML = originalText;
+    });
+
+    return false; // Prevent default form submission
+}
+
 function openTaskModal(taskId) {
     const overlay = document.getElementById('taskModalOverlay');
     const modal = document.getElementById('taskModal');
     const content = document.getElementById('taskModalContent');
-    
+
     // Show modal
     overlay.classList.add('active');
     modal.classList.add('active');

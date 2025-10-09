@@ -169,6 +169,25 @@ class StaffTask extends Model
     }
 
     /**
+     * Check if the entire task is completed (all assignments completed).
+     */
+    public function isCompleted(): bool
+    {
+        $totalAssignments = $this->assignments()->count();
+        $completedAssignments = $this->completedAssignments()->count();
+
+        return $totalAssignments > 0 && $totalAssignments === $completedAssignments;
+    }
+
+    /**
+     * Check if the task has any assignments.
+     */
+    public function hasAssignments(): bool
+    {
+        return $this->assignments()->count() > 0;
+    }
+
+    /**
      * Check if task is recurring.
      */
     public function isRecurring(): bool

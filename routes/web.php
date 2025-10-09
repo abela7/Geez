@@ -147,6 +147,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         Route::post('/tasks/bulk-action', [\App\Http\Controllers\Admin\StaffTasksController::class, 'bulkAction'])->name('tasks.bulk-action');
         Route::delete('/tasks/{task}', [\App\Http\Controllers\Admin\StaffTasksController::class, 'destroy'])->name('tasks.destroy');
         Route::put('/task-assignments/{assignment}/status', [\App\Http\Controllers\Admin\StaffTasksController::class, 'updateAssignmentStatus'])->name('task-assignments.update-status');
+        Route::put('/tasks/{task}/status', [\App\Http\Controllers\Admin\StaffTasksController::class, 'updateTaskStatus'])->name('tasks.update-status');
 
         Route::get('/payroll', [\App\Http\Controllers\Admin\StaffPayrollController::class, 'index'])->name('payroll.index');
 

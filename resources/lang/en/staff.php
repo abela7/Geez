@@ -773,6 +773,12 @@ return [
         'timing_information' => 'Timing Information',
         'scheduled_for' => 'Scheduled For',
         'task_settings' => 'Task Settings',
+        'settings_and_configuration' => 'Settings & Configuration',
+        'timing_and_schedule' => 'Timing & Schedule',
+        'classification' => 'Classification',
+        'audit_information' => 'Audit Information',
+        'modify_task_details' => 'Modify task details and assignments',
+        'view_complete_details' => 'View complete task details',
         'view_full_page' => 'View Full Page',
 
         // Task Settings
