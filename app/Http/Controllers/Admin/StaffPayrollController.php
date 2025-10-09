@@ -11,6 +11,6 @@ class StaffPayrollController extends Controller
 {
     public function index(): View
     {
-        return view('admin.staff.payroll');
+        return view('admin.payroll.index');
     }
 }

@@ -87,6 +87,14 @@ class StaffPayrollDeductionType extends Model
     }
 
     /**
+     * Scope for ordered deduction types.
+     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('sort_order')->orderBy('name');
+    }
+
+    /**
      * Scope for mandatory deductions.
      */
     public function scopeMandatory($query)
@@ -108,14 +116,6 @@ class StaffPayrollDeductionType extends Model
     public function scopePostTax($query)
     {
         return $query->where('is_pre_tax', false);
-    }
-
-    /**
-     * Scope ordered by sort order.
-     */
-    public function scopeOrdered($query)
-    {
-        return $query->orderBy('sort_order')->orderBy('name');
     }
 
     /**

@@ -63,11 +63,11 @@ class StaffPayrollTemplate extends Model
     }
 
     /**
-     * Get the staff member who last updated this template.
+     * Scope for active templates only.
      */
-    public function updater(): BelongsTo
+    public function scopeActive($query)
     {
-        return $this->belongsTo(Staff::class, 'updated_by');
+        return $query->where('is_active', true);
     }
 
     /**
@@ -76,14 +76,6 @@ class StaffPayrollTemplate extends Model
     public function payrollRecords(): HasMany
     {
         return $this->hasMany(StaffPayrollRecord::class, 'template_id');
-    }
-
-    /**
-     * Scope for active templates only.
-     */
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
     }
 
     /**

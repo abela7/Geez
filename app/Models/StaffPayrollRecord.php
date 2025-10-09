@@ -93,6 +93,14 @@ class StaffPayrollRecord extends Model
     }
 
     /**
+     * Alias for payPeriod relationship.
+     */
+    public function period(): BelongsTo
+    {
+        return $this->payPeriod();
+    }
+
+    /**
      * Get the template used for this record.
      */
     public function template(): BelongsTo

@@ -234,8 +234,14 @@
                     <a href="{{ route('admin.staff.tasks.settings.index') }}" class="submenu-link {{ request()->routeIs('admin.staff.tasks.settings.*') ? 'active' : '' }}">
                         {{ __('staff.nav_task_settings') }}
                     </a>
-                    <a href="{{ route('admin.staff.payroll.index') }}" class="submenu-link {{ request()->routeIs('admin.staff.payroll.*') ? 'active' : '' }}">
-                        {{ __('staff.nav_payroll') }}
+                    <a href="{{ route('admin.staff.payroll.index') }}" class="submenu-link {{ request()->routeIs('admin.staff.payroll.index') ? 'active' : '' }}">
+                        Payroll Overview
+                    </a>
+                    <a href="{{ route('admin.staff.payroll.settings') }}" class="submenu-link {{ request()->routeIs('admin.staff.payroll.settings') ? 'active' : '' }}">
+                        Payroll Settings
+                    </a>
+                    <a href="{{ route('admin.staff.payroll.periods') }}" class="submenu-link {{ request()->routeIs('admin.staff.payroll.periods') ? 'active' : '' }}">
+                        Pay Periods
                     </a>
                     <div class="submenu-separator"></div>
                     <div class="submenu-section-title">{{ __('shifts.management.section_title') }}</div>
