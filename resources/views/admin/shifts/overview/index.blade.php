@@ -265,7 +265,8 @@
                                  data-shift-name="{{ $shift['name'] }}"
                                  data-shift-time="{{ $shift['start_time'] }} - {{ $shift['end_time'] }}"
                                  data-shift-department="{{ $shift['department'] }}"
-                                 data-shift-status="{{ $shift['status'] }}">
+                                 data-shift-status="{{ $shift['status'] }}"
+                                 data-shift-type="{{ $shift['type'] ?? 'regular' }}">
                                 <div class="shift-header">
                                     <div class="shift-name" style="color: {{ $shift['color'] }};">{{ $shift['name'] }}</div>
                                     <div class="shift-time">{{ $shift['start_time'] }} - {{ $shift['end_time'] }}</div>
@@ -354,7 +355,8 @@ function shiftOverviewData() {
                 
                 let visible = true;
                 
-                if (this.filterDepartment !== 'all' && department !== this.filterDepartment) {
+                // Loose match for department (handles abbreviations like 'Front' vs 'Front of House')
+                if (this.filterDepartment !== 'all' && !this.filterDepartment.includes(department)) {
                     visible = false;
                 }
                 
@@ -395,12 +397,7 @@ function shiftOverviewData() {
         },
         
         getShiftType(block) {
-            // In a real implementation, this would get the type from data attributes
-            const shiftName = block.querySelector('.shift-name')?.textContent?.toLowerCase() || '';
-            if (shiftName.includes('weekend')) return 'weekend';
-            if (shiftName.includes('overtime')) return 'overtime';
-            if (shiftName.includes('training')) return 'training';
-            return 'regular';
+            return block.dataset.shiftType || 'regular';
         },
         
         updateDayStats() {

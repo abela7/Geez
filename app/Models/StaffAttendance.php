@@ -274,6 +274,8 @@ class StaffAttendance extends Model
 
     /**
      * Calculate hours worked based on clock in/out times.
+     * Handles overnight shifts correctly by detecting when clock_out time
+     * is earlier than clock_in time on the same day and treating it as the next day.
      */
     public function calculateHoursWorked(): ?float
     {
@@ -281,7 +283,19 @@ class StaffAttendance extends Model
             return null;
         }
 
-        $diffInMinutes = $this->clock_in->diffInMinutes($this->clock_out);
+        // Handle overnight shifts: if clock_out time is earlier than clock_in time
+        // AND they are on the same date, it means the shift crossed midnight
+        $isOvernightShift = ($this->clock_out->toDateString() === $this->clock_in->toDateString()) && 
+                           ($this->clock_out->format('H:i') < $this->clock_in->format('H:i'));
+        
+        if ($isOvernightShift) {
+            // Add one day to clock_out to get the correct end time
+            $adjustedClockOut = $this->clock_out->copy()->addDay();
+            $diffInMinutes = $this->clock_in->diffInMinutes($adjustedClockOut);
+        } else {
+            // Same day shift or already correctly dated overnight shift
+            $diffInMinutes = $this->clock_in->diffInMinutes($this->clock_out);
+        }
 
         return round($diffInMinutes / 60, 2);
     }
@@ -457,6 +471,16 @@ class StaffAttendance extends Model
             if ($attendance->clock_out && $attendance->clock_in) {
                 $attendance->hours_worked = $attendance->calculateHoursWorked();
                 $attendance->recalculateNetHours();
+                
+                // Automatically set state to clocked_out if clock_out is present
+                if ($attendance->current_state === 'clocked_in' || !$attendance->current_state) {
+                    $attendance->current_state = 'clocked_out';
+                }
+            } elseif ($attendance->clock_in && !$attendance->clock_out) {
+                // Set state to clocked_in if only clock_in is present
+                if (!$attendance->current_state) {
+                    $attendance->current_state = 'clocked_in';
+                }
             }
         });
 

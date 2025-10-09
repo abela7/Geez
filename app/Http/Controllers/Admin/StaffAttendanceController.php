@@ -276,6 +276,116 @@ class StaffAttendanceController extends Controller
     }
 
     /**
+     * Show attendance details.
+     */
+    public function show(StaffAttendance $staffAttendance): View
+    {
+        $this->authorize('view', $staffAttendance);
+
+        // Load relationships needed for the detail view
+        $staffAttendance->load([
+            'staff.staffType',
+            'shiftAssignment.shift',
+            'intervals' => function ($query) {
+                $query->orderBy('start_time', 'asc');
+            }
+        ]);
+
+        // Calculate metrics for the view
+        $metrics = $this->calculateAttendanceMetrics($staffAttendance);
+
+        return view('admin.staff.attendance.show', compact('staffAttendance', 'metrics'));
+    }
+
+    /**
+     * Calculate attendance metrics for display.
+     */
+    private function calculateAttendanceMetrics(StaffAttendance $staffAttendance): array
+    {
+        $totalMinutes = $staffAttendance->clock_in->diffInMinutes($staffAttendance->clock_out);
+        $totalHours = $totalMinutes / 60;
+        $breakMinutes = $staffAttendance->total_break_minutes ?? 0;
+        $netMinutes = $totalMinutes - $breakMinutes;
+        $netHours = $netMinutes / 60;
+
+        // Calculate efficiency score (net hours / total hours * 100)
+        $efficiencyScore = $totalHours > 0 ? round(($netHours / $totalHours) * 100, 1) : 0;
+
+        // Calculate punctuality score based on scheduled vs actual start time
+        $punctualityScore = 100; // Default to perfect score
+        if ($staffAttendance->shiftAssignment && $staffAttendance->shiftAssignment->shift) {
+            $assignment = $staffAttendance->shiftAssignment;
+            $startTime = $assignment->shift->start_time;
+            
+            // Handle different time formats
+            if ($startTime instanceof \Carbon\Carbon) {
+                $startTime = $startTime->format('H:i:s');
+            }
+            
+            $assignedDate = $assignment->assigned_date instanceof \Carbon\Carbon 
+                ? $assignment->assigned_date->format('Y-m-d')
+                : $assignment->assigned_date;
+                
+            $scheduledStart = Carbon::parse($assignedDate . ' ' . $startTime);
+            $actualStart = $staffAttendance->clock_in;
+            
+            if ($actualStart->gt($scheduledStart)) {
+                $lateMinutes = $actualStart->diffInMinutes($scheduledStart);
+                // Deduct points for being late (max 50 points deduction)
+                $punctualityScore = max(50, 100 - ($lateMinutes * 2));
+            }
+        }
+
+        // Determine compliance status
+        $complianceStatus = 'on_time';
+        if ($staffAttendance->shiftAssignment && $staffAttendance->shiftAssignment->shift) {
+            $assignment = $staffAttendance->shiftAssignment;
+            $startTime = $assignment->shift->start_time;
+            $endTime = $assignment->shift->end_time;
+            
+            // Handle different time formats
+            if ($startTime instanceof \Carbon\Carbon) {
+                $startTime = $startTime->format('H:i:s');
+            }
+            if ($endTime instanceof \Carbon\Carbon) {
+                $endTime = $endTime->format('H:i:s');
+            }
+            
+            $assignedDate = $assignment->assigned_date instanceof \Carbon\Carbon 
+                ? $assignment->assigned_date->format('Y-m-d')
+                : $assignment->assigned_date;
+                
+            $scheduledStart = Carbon::parse($assignedDate . ' ' . $startTime);
+            $scheduledEnd = Carbon::parse($assignedDate . ' ' . $endTime);
+            
+            // Handle overnight shifts
+            if ($scheduledEnd->format('H:i') < $scheduledStart->format('H:i')) {
+                $scheduledEnd->addDay();
+            }
+            
+            $actualStart = $staffAttendance->clock_in;
+            $actualEnd = $staffAttendance->clock_out;
+
+            if ($actualStart->gt($scheduledStart->addMinutes(15))) {
+                $complianceStatus = 'late_arrival';
+            } elseif ($actualEnd && $actualEnd->lt($scheduledEnd->subMinutes(15))) {
+                $complianceStatus = 'early_departure';
+            }
+        } else {
+            $complianceStatus = 'unscheduled';
+        }
+
+        return [
+            'total_hours' => $totalHours,
+            'net_hours' => $netHours,
+            'break_hours' => $breakMinutes / 60,
+            'efficiency_score' => $efficiencyScore,
+            'punctuality_score' => $punctualityScore,
+            'compliance_status' => $complianceStatus,
+        ];
+    }
+
+    /**
      * Store a new attendance record (admin creating attendance for staff).
      */
     public function store(Request $request)
@@ -302,8 +412,12 @@ class StaffAttendanceController extends Controller
                     ->with('error', __('staff.attendance.already_clocked_in'));
             }
 
+            // Determine the initial state based on whether clock_out is provided
+            $initialState = $validated['clock_out'] ? 'clocked_out' : 'clocked_in';
+            
             $attendance = StaffAttendance::create([
                 ...$validated,
+                'current_state' => $initialState,
                 'created_by' => auth()->id(),
             ]);
 
@@ -333,8 +447,12 @@ class StaffAttendanceController extends Controller
         ]);
 
         try {
+            // Determine the state based on whether clock_out is provided
+            $newState = $validated['clock_out'] ? 'clocked_out' : 'clocked_in';
+            
             $staffAttendance->update([
                 ...$validated,
+                'current_state' => $newState,
                 'updated_by' => auth()->id(),
             ]);
 

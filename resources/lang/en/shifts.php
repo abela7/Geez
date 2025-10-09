@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'management' => [
+        'section_title' => 'Shift Management',
+    ],
+    
     'overview' => [
         'title' => 'Shift Overview',
         'subtitle' => 'Weekly schedule overview with shift assignments and coverage analysis',
@@ -36,6 +40,7 @@ return [
     ],
     
     'assignments' => [
+        'title' => 'Shift Assignments',
         'fully_covered' => 'Fully Covered',
         'partially_covered' => 'Partially Covered',
         'not_covered' => 'Not Covered',
@@ -55,6 +60,10 @@ return [
         'training' => 'Training',
     ],
     
+    'templates' => [
+        'title' => 'Shift Templates',
+    ],
+    
     'departments' => [
         'all_departments' => 'All Departments',
         'kitchen' => 'Kitchen',
@@ -64,6 +73,7 @@ return [
     ],
     
     'manage' => [
+        'title' => 'Manage Shifts',
         'department' => 'Department',
         'duration' => 'Duration',
     ],
