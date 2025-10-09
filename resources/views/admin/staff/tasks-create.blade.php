@@ -224,22 +224,29 @@
                 <!-- Tags -->
                 <div class="form-group form-group-full">
                     <label for="tags" class="form-label">{{ __('staff.tasks.tags') }}</label>
-                    <input type="text" 
-                           id="tags"
-                           name="tags"
-                           value="{{ old('tags') }}"
-                           class="form-input @error('tags') form-input-error @enderror"
-                           placeholder="{{ __('staff.tasks.tags_placeholder') }}">
+                    <div class="tags-input-container">
+                        <input type="text"
+                               id="tags"
+                               name="tags"
+                               value="{{ old('tags') }}"
+                               class="form-input @error('tags') form-input-error @enderror"
+                               placeholder="{{ __('staff.tasks.tags_placeholder') }}">
+                        <button type="button" class="btn-create-tag" onclick="showCreateTagModal()" title="{{ __('staff.tasks.create_new_tag') }}">
+                            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                        </button>
+                    </div>
                     <div class="form-help">{{ __('staff.tasks.tags_help') }}</div>
-                    
+
                     @if($taskTags->count() > 0)
                         <div class="available-tags">
                             <span class="available-tags-label">{{ __('staff.tasks.available_tags') }}:</span>
                             <div class="tags-list">
                                 @foreach($taskTags as $tag)
-                                    <button type="button" 
-                                            class="tag-button" 
-                                            onclick="addTag('{{ $tag->name }}')"
+                                    <button type="button"
+                                            class="tag-button"
+                                            onclick="addTag('{{ $tag->name }}', this)"
                                             style="background-color: {{ $tag->color }}20; border-color: {{ $tag->color }}; color: {{ $tag->color }};">
                                         {{ $tag->name }}
                                     </button>
@@ -247,7 +254,7 @@
                             </div>
                         </div>
                     @endif
-                    
+
                     @error('tags')
                         <div class="form-error">{{ $message }}</div>
                     @enderror
@@ -352,6 +359,61 @@
             </div>
         </form>
     </div>
+
+    <!-- Create Tag Modal -->
+    <div class="modal" id="create-tag-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="create-tag-modal-title">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="create-tag-modal-title">{{ __('staff.tasks.settings.add_task_tag') }}</h3>
+                <button type="button" class="modal-close" onclick="hideCreateTagModal()" aria-label="Close modal">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="create-tag-form" class="modal-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="new-tag-name">
+                            {{ __('staff.tasks.settings.name') }} <span class="required">*</span>
+                        </label>
+                        <input type="text"
+                               id="new-tag-name"
+                               class="form-input"
+                               required
+                               placeholder="{{ __('staff.tasks.settings.tag_name_placeholder') }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="new-tag-color">
+                            {{ __('staff.tasks.settings.color') }} <span class="required">*</span>
+                        </label>
+                        <input type="color" id="new-tag-color" class="form-color" value="#8B5CF6" required>
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label class="form-label" for="new-tag-description">
+                            {{ __('staff.tasks.settings.description') }}
+                        </label>
+                        <textarea id="new-tag-description"
+                                  class="form-textarea"
+                                  rows="2"
+                                  placeholder="{{ __('staff.tasks.settings.tag_description_placeholder') }}"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="hideCreateTagModal()">
+                        {{ __('common.cancel') }}
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        {{ __('staff.tasks.settings.create_task_tag') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -377,7 +439,7 @@ function toggleAssignmentSection(checkbox) {
     }
 }
 
-function addTag(tagName) {
+function addTag(tagName, buttonElement = null) {
     const tagsInput = document.getElementById('tags');
     const currentTags = tagsInput.value.trim();
     
@@ -394,17 +456,193 @@ function addTag(tagName) {
         tagsInput.value = tagName;
     }
     
-    // Add visual feedback
-    const button = event.target;
-    const originalText = button.textContent;
-    button.textContent = '✓ Added';
-    button.style.opacity = '0.6';
-    
-    setTimeout(() => {
-        button.textContent = originalText;
-        button.style.opacity = '1';
-    }, 1000);
+    // Add visual feedback if button element is provided
+    if (buttonElement) {
+        const originalText = buttonElement.textContent;
+        buttonElement.textContent = '✓ Added';
+        buttonElement.style.opacity = '0.6';
+        
+        setTimeout(() => {
+            buttonElement.textContent = originalText;
+            buttonElement.style.opacity = '1';
+        }, 1000);
+    }
 }
+
+function showCreateTagModal() {
+    const modal = document.getElementById('create-tag-modal');
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+
+    // Focus on first input
+    setTimeout(() => {
+        document.getElementById('new-tag-name').focus();
+    }, 100);
+}
+
+function hideCreateTagModal() {
+    const modal = document.getElementById('create-tag-modal');
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+
+    // Reset form
+    document.getElementById('create-tag-form').reset();
+    document.getElementById('new-tag-color').value = '#8B5CF6';
+}
+
+// Handle tag creation form submission
+document.getElementById('create-tag-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const tagName = document.getElementById('new-tag-name').value.trim();
+    const tagColor = document.getElementById('new-tag-color').value;
+    const tagDescription = document.getElementById('new-tag-description').value.trim();
+
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = '{{ __("common.saving") }}...';
+    submitBtn.disabled = true;
+
+    // Make AJAX request
+    fetch('{{ route("admin.staff.tasks.settings.tags.ajax.store") }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name: tagName,
+            color: tagColor,
+            description: tagDescription
+        })
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+
+        if (data.success) {
+            // Add the tag to the available tags list (it might already exist)
+            addNewTagToList(data.tag);
+
+            // Add the tag to the input field
+            addTag(data.tag.name);
+
+            // Close modal and show success
+            hideCreateTagModal();
+
+            // Show success notification with tag name
+            const successMessage = data.message || `Tag "${data.tag.name}" is ready to use!`;
+            showNotification(successMessage, 'success');
+
+        } else {
+            console.error('Tag creation failed:', data);
+
+            // Show validation errors
+            if (data.errors) {
+                let errorMessage = 'Tag creation failed:';
+                for (let field in data.errors) {
+                    errorMessage += '\n• ' + field + ': ' + data.errors[field].join(', ');
+                }
+                showNotification(errorMessage, 'error');
+            } else {
+                showNotification(data.message || 'Tag creation failed - please try again', 'error');
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error creating tag:', error);
+        showNotification('{{ __("staff.tasks.settings.task_tag_creation_failed") }}: ' + error.message, 'error');
+    })
+    .finally(() => {
+        // Reset button
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    });
+});
+
+function addNewTagToList(tag) {
+    const tagsList = document.querySelector('.tags-list');
+    if (tagsList) {
+        const tagButton = document.createElement('button');
+        tagButton.type = 'button';
+        tagButton.className = 'tag-button';
+        tagButton.onclick = function() { addTag(tag.name, this); };
+        tagButton.style.cssText = `background-color: ${tag.color}20; border-color: ${tag.color}; color: ${tag.color};`;
+        tagButton.textContent = tag.name;
+
+        tagsList.appendChild(tagButton);
+    }
+}
+
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 0.5rem;
+        color: white;
+        font-weight: 500;
+        z-index: 9999;
+        max-width: 400px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    `;
+
+    // Set background color based on type
+    if (type === 'success') {
+        notification.style.background = '#10b981';
+    } else if (type === 'error') {
+        notification.style.background = '#ef4444';
+    } else {
+        notification.style.background = '#3b82f6';
+    }
+
+    notification.textContent = message;
+
+    // Add to page
+    document.body.appendChild(notification);
+
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+
+    // Remove after 5 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 5000);
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        hideCreateTagModal();
+    }
+});
+
+// Close modal when clicking outside
+document.getElementById('create-tag-modal').addEventListener('click', function(event) {
+    if (event.target === this) {
+        hideCreateTagModal();
+    }
+});
 
 // Show template field and assignment section if they were checked on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -631,6 +869,224 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .tag-button:active {
     transform: scale(0.98);
+}
+
+/* Tags Input Container */
+.tags-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-create-tag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border-base);
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: var(--transition-all);
+    flex-shrink: 0;
+}
+
+.btn-create-tag:hover {
+    background: var(--color-primary);
+    color: var(--button-primary-text);
+    border-color: var(--color-primary);
+    transform: scale(1.05);
+}
+
+.btn-create-tag:active {
+    transform: scale(0.98);
+}
+
+.btn-create-tag:focus {
+    outline: none;
+    box-shadow: var(--form-input-shadow-focus);
+}
+
+.btn-create-tag svg {
+    width: 1.125rem;
+    height: 1.125rem;
+}
+
+/* Create Tag Modal Styles */
+#create-tag-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-modal);
+    padding: 1rem;
+}
+
+#create-tag-modal.active {
+    display: flex;
+}
+
+#create-tag-modal .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+}
+
+#create-tag-modal .modal-content {
+    background: var(--color-surface-card);
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow: hidden;
+    transform: scale(0.95) translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--color-surface-card-border);
+}
+
+#create-tag-modal.active .modal-content {
+    transform: scale(1) translateY(0);
+}
+
+#create-tag-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 1.5rem 0;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+#create-tag-modal .modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+    line-height: 1.4;
+}
+
+#create-tag-modal .modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border-base);
+    border-radius: 0.5rem;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+#create-tag-modal .modal-close:hover {
+    background: var(--color-error-bg);
+    border-color: var(--color-error);
+    color: var(--color-error);
+    transform: scale(1.05);
+}
+
+#create-tag-modal .modal-form {
+    padding: 0 1.5rem 1.5rem;
+}
+
+#create-tag-modal .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+#create-tag-modal .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+#create-tag-modal .form-label {
+    font-weight: 500;
+    color: var(--color-text-primary);
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+#create-tag-modal .form-input,
+#create-tag-modal .form-textarea,
+#create-tag-modal .form-color {
+    padding: 0.75rem;
+    border: 1px solid var(--form-input-border);
+    border-radius: 0.5rem;
+    background: var(--form-input-bg);
+    color: var(--form-input-text);
+    font-size: 0.875rem;
+    transition: var(--transition-all);
+}
+
+#create-tag-modal .form-input:focus,
+#create-tag-modal .form-textarea:focus,
+#create-tag-modal .form-color:focus {
+    outline: none;
+    border-color: var(--form-input-border-focus);
+    box-shadow: var(--form-input-shadow-focus);
+}
+
+#create-tag-modal .form-color {
+    width: 100%;
+    height: 3rem;
+    padding: 0.25rem;
+    border: 1px solid var(--form-input-border);
+    border-radius: 0.5rem;
+    background: var(--form-input-bg);
+    cursor: pointer;
+}
+
+#create-tag-modal .modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border-base);
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 640px) {
+    #create-tag-modal {
+        padding: 0.5rem;
+        align-items: flex-end;
+    }
+
+    #create-tag-modal .modal-content {
+        max-width: 100%;
+        max-height: 95vh;
+        border-radius: 1rem 1rem 0 0;
+        transform: translateY(100%);
+    }
+
+    #create-tag-modal.active .modal-content {
+        transform: translateY(0);
+    }
+
+    #create-tag-modal .modal-actions {
+        flex-direction: column;
+    }
 }
 
 /* Staff Assignment Styling */

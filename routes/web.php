@@ -132,6 +132,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         Route::put('/tasks/settings/categories/{taskCategory}', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'updateTaskCategory'])->name('tasks.settings.categories.update');
         Route::delete('/tasks/settings/categories/{taskCategory}', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'destroyTaskCategory'])->name('tasks.settings.categories.destroy');
         Route::post('/tasks/settings/tags', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'storeTaskTag'])->name('tasks.settings.tags.store');
+        Route::post('/tasks/settings/tags/ajax', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'storeTagAjax'])->name('tasks.settings.tags.ajax.store');
         Route::get('/tasks/settings/tags/{taskTag}/edit', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'editTaskTag'])->name('tasks.settings.tags.edit');
         Route::put('/tasks/settings/tags/{taskTag}', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'updateTaskTag'])->name('tasks.settings.tags.update');
         Route::delete('/tasks/settings/tags/{taskTag}', [\App\Http\Controllers\Admin\TaskSettingsController::class, 'destroyTaskTag'])->name('tasks.settings.tags.destroy');

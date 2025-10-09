@@ -845,6 +845,7 @@ return [
             'task_tag_created' => 'Task tag created successfully!',
             'task_tag_updated' => 'Task tag updated successfully!',
             'task_tag_deleted' => 'Task tag deleted successfully!',
+            'tag_already_exists' => 'Tag already exists and has been selected',
 
             // Form Fields
             'name' => 'Name',

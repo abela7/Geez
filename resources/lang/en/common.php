@@ -58,6 +58,7 @@ return [
     'coming_soon' => 'Coming Soon',
     'coming_soon_description' => ':module is currently under development and will be available soon.',
     'back_to_dashboard' => 'Back to Dashboard',
+    'back_to_tasks' => 'Back to Tasks',
     'go_back' => 'Go Back',
     'select_option' => 'Select an option...',
     'clear_filters' => 'Clear Filters',

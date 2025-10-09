@@ -155,9 +155,15 @@ class ModalSystem {
         // Store currently focused element
         modal.dataset.previousFocus = document.activeElement?.id || '';
 
-        // Prevent body scroll
+        // Prevent body scroll and handle fixed elements
         if (this.activeModals.size === 0) {
             document.body.classList.add('modal-open');
+
+            // Ensure fixed elements are properly covered
+            const fixedElements = document.querySelectorAll('.admin-header, .admin-sidebar, [class*="header"], [class*="nav"], [class*="sidebar"]');
+            fixedElements.forEach(el => {
+                el.style.zIndex = '0';
+            });
         }
 
         // Add to active modals
@@ -220,9 +226,15 @@ class ModalSystem {
             delete modal.dataset.persistent;
         }, 300);
 
-        // Restore body scroll if no more modals
+        // Restore body scroll and fixed elements if no more modals
         if (this.activeModals.size === 0) {
             document.body.classList.remove('modal-open');
+
+            // Restore fixed elements z-index
+            const fixedElements = document.querySelectorAll('.admin-header, .admin-sidebar, [class*="header"], [class*="nav"], [class*="sidebar"]');
+            fixedElements.forEach(el => {
+                el.style.zIndex = '';
+            });
         }
 
         // Dispatch custom event

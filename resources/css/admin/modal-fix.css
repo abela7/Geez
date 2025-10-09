@@ -388,6 +388,27 @@
     z-index: calc(var(--z-modal-backdrop) - 10) !important;
 }
 
+/* ===== FORCE MODAL TO COVER FIXED ELEMENTS ===== */
+.modal-overlay,
+.modal-backdrop {
+    z-index: calc(var(--z-modal-backdrop) + 100) !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+
+/* Ensure modal content is above overlay */
+.modal-content {
+    z-index: calc(var(--z-modal-backdrop) + 200) !important;
+}
+
 /* Dropdowns within modals */
 .modal .dropdown-menu,
 .modal [class*="dropdown"] {
@@ -412,6 +433,17 @@
 body.modal-open {
     overflow: hidden;
     padding-right: var(--scrollbar-width, 0);
+}
+
+/* ===== HIDE FIXED ELEMENTS WHEN MODAL IS OPEN ===== */
+body.modal-open .admin-header,
+body.modal-open .admin-sidebar,
+body.modal-open [class*="header"],
+body.modal-open [class*="nav"],
+body.modal-open [class*="sidebar"] {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
 }
 
 /* ===== MODAL ENTRANCE ANIMATIONS ===== */

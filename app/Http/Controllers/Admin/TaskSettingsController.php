@@ -11,6 +11,8 @@ use App\Models\TaskStatus;
 use App\Models\TaskTag;
 use App\Models\TaskTemplate;
 use App\Models\TaskType;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -276,17 +278,66 @@ class TaskSettingsController extends Controller
     public function storeTaskTag(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:task_tags,name',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
             'color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        // Check if a tag with this name already exists (including soft-deleted)
+        $existingTag = TaskTag::where('name', $validated['name'])->withTrashed()->first();
+
+        if ($existingTag) {
+            if ($existingTag->trashed()) {
+                // If tag exists but is soft-deleted, restore it with updated info
+                $existingTag->restore();
+                $existingTag->update([
+                    'color' => $validated['color'],
+                    'description' => $validated['description'] ?? $existingTag->description,
+                    'updated_by' => auth()->user()->id,
+                    'is_active' => true,
+                ]);
+
+                return redirect()->back()->with('success', 'Tag restored and updated successfully!');
+            } else {
+                // Tag exists and is active
+                return redirect()->back()->with('info', 'Tag already exists and is available for use.');
+            }
+        }
+
+        // Generate unique name by appending a number if needed
+        $originalName = $validated['name'];
+        $uniqueName = $originalName;
+        $nameCounter = 1;
+
+        while (TaskTag::where('name', $uniqueName)->withTrashed()->exists()) {
+            $uniqueName = $originalName . ' ' . $nameCounter;
+            $nameCounter++;
+        }
+
+        // Generate unique slug from the unique name
+        $baseSlug = Str::slug($uniqueName);
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (TaskTag::where('slug', $slug)->withTrashed()->exists()) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+
+        $validated['name'] = $uniqueName;
+        $validated['slug'] = $slug;
         $validated['created_by'] = auth()->user()->id;
+        $validated['updated_by'] = auth()->user()->id;
+        $validated['is_active'] = true;
+        $validated['usage_count'] = 0;
 
         TaskTag::create($validated);
 
-        return redirect()->back()->with('success', __('staff.tasks.settings.task_tag_created'));
+        $message = $uniqueName !== $originalName 
+            ? "Tag created as \"$uniqueName\" (original name \"$originalName\" already exists)"
+            : __('staff.tasks.settings.task_tag_created');
+
+        return redirect()->back()->with('success', $message);
     }
 
     /**
@@ -324,6 +375,126 @@ class TaskSettingsController extends Controller
         $taskTag->delete();
 
         return redirect()->back()->with('success', __('staff.tasks.settings.task_tag_deleted'));
+    }
+
+    /**
+     * Create a new task tag via AJAX for inline creation.
+     */
+    public function storeTagAjax(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string|max:1000',
+                'color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
+            ]);
+
+            // Check if a tag with this name already exists (including soft-deleted)
+            $existingTag = TaskTag::where('name', $validated['name'])->withTrashed()->first();
+
+            if ($existingTag) {
+                if ($existingTag->trashed()) {
+                    // If tag exists but is soft-deleted, restore it with updated info
+                    $existingTag->restore();
+                    $existingTag->update([
+                        'color' => $validated['color'],
+                        'description' => $validated['description'] ?? $existingTag->description,
+                        'updated_by' => auth()->id(),
+                        'is_active' => true,
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'tag' => [
+                            'id' => $existingTag->id,
+                            'name' => $existingTag->name,
+                            'slug' => $existingTag->slug,
+                            'color' => $existingTag->color,
+                            'description' => $existingTag->description,
+                        ],
+                        'message' => 'Tag restored and updated successfully!'
+                    ]);
+                } else {
+                    // Tag exists and is active, just return it
+                    return response()->json([
+                        'success' => true,
+                        'tag' => [
+                            'id' => $existingTag->id,
+                            'name' => $existingTag->name,
+                            'slug' => $existingTag->slug,
+                            'color' => $existingTag->color,
+                            'description' => $existingTag->description,
+                        ],
+                        'message' => 'Tag already exists and has been selected'
+                    ]);
+                }
+            }
+
+            // If we reach here, create a new tag with a unique name
+            $originalName = $validated['name'];
+            $uniqueName = $originalName;
+            $nameCounter = 1;
+
+            // Generate unique name by appending a number if needed
+            while (TaskTag::where('name', $uniqueName)->withTrashed()->exists()) {
+                $uniqueName = $originalName . ' ' . $nameCounter;
+                $nameCounter++;
+            }
+
+            // Generate unique slug from the unique name
+            $baseSlug = Str::slug($uniqueName);
+            $slug = $baseSlug;
+            $counter = 1;
+
+            while (TaskTag::where('slug', $slug)->withTrashed()->exists()) {
+                $slug = $baseSlug . '-' . $counter;
+                $counter++;
+            }
+
+            $validated['name'] = $uniqueName;
+            $validated['slug'] = $slug;
+            $validated['created_by'] = auth()->id();
+            $validated['updated_by'] = auth()->id();
+            $validated['is_active'] = true;
+            $validated['usage_count'] = 0;
+
+            $tag = TaskTag::create($validated);
+
+            // Create appropriate success message
+            $message = $uniqueName !== $originalName 
+                ? "Tag created as \"$uniqueName\" (original name \"$originalName\" already exists)"
+                : 'Tag created successfully!';
+
+            return response()->json([
+                'success' => true,
+                'tag' => [
+                    'id' => $tag->id,
+                    'name' => $tag->name,
+                    'slug' => $tag->slug,
+                    'color' => $tag->color,
+                    'description' => $tag->description,
+                ],
+                'message' => $message
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors(),
+                'message' => __('staff.tasks.settings.task_tag_creation_failed')
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Tag creation failed: ' . $e->getMessage(), [
+                'user_id' => auth()->id(),
+                'request_data' => $request->all(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => __('staff.tasks.settings.task_tag_creation_failed') . ': ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
