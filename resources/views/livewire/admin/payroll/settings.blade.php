@@ -281,11 +281,13 @@
                                             <div class="flex items-center space-x-2">
                                                 @if(!$setting->is_default)
                                                     <button wire:click="makeDefault('{{ $setting->id }}')"
+                                                            wire:loading.attr="disabled"
                                                             class="text-sm font-medium transition-colors"
                                                             style="color: var(--color-primary);"
                                                             onmouseover="this.style.color='var(--color-secondary)'"
                                                             onmouseout="this.style.color='var(--color-primary)'">
-                                                        Make Default
+                                                        <span wire:loading.remove wire:target="makeDefault('{{ $setting->id }}')">Make Default</span>
+                                                        <span wire:loading wire:target="makeDefault('{{ $setting->id }}')">Setting...</span>
                                                     </button>
                                                 @endif
                                                 <button wire:click="toggleActive('{{ $setting->id }}')"
@@ -301,6 +303,16 @@
                                                         onmouseover="this.style.color='var(--color-secondary)'"
                                                         onmouseout="this.style.color='var(--color-primary)'">
                                                     Edit
+                                                </button>
+                                                <button wire:click="confirmDelete('{{ $setting->id }}')"
+                                                        wire:loading.attr="disabled"
+                                                        onclick="console.log('Delete clicked for {{ $setting->id }}'); alert('Delete button clicked!');"
+                                                        class="text-sm font-medium transition-colors"
+                                                        style="color: var(--color-error);"
+                                                        onmouseover="this.style.color='var(--color-error)'"
+                                                        onmouseout="this.style.color='var(--color-error)'">
+                                                    <span wire:loading.remove wire:target="confirmDelete('{{ $setting->id }}')">Delete</span>
+                                                    <span wire:loading wire:target="confirmDelete('{{ $setting->id }}')">Loading...</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -370,4 +382,75 @@
             </div>
         @endif
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    @if($showDeleteModal)
+    <div class="fixed inset-0 z-50 overflow-y-auto" style="z-index: var(--z-modal);" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Backdrop -->
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true" style="background-color: var(--modal-overlay); backdrop-filter: blur(4px);">
+                <div class="absolute inset-0 opacity-75"></div>
+            </div>
+            
+            <!-- Modal positioning -->
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            
+            <!-- Modal content -->
+            <div class="inline-block align-bottom rounded-xl px-6 pt-6 pb-6 text-left overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                 style="background-color: var(--color-surface-card); border: 1px solid var(--color-border-base); box-shadow: var(--color-surface-card-shadow);">
+                
+                <!-- Icon and content -->
+                <div>
+                    <div class="mx-auto flex items-center justify-center h-14 w-14 rounded-full mb-4"
+                         style="background-color: var(--color-error-bg);">
+                        <svg class="h-7 w-7" style="color: var(--color-error);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                    </div>
+                    
+                    <div class="text-center">
+                        <h3 class="text-xl font-semibold mb-3" style="color: var(--color-text-primary);">
+                            Delete Payroll Setting
+                        </h3>
+                        <div class="mb-6">
+                            <p class="text-sm leading-relaxed" style="color: var(--color-text-secondary);">
+                                Are you sure you want to delete <span class="font-medium" style="color: var(--color-text-primary);">"{{ $settingToDelete?->name }}"</span>? 
+                                <br><span class="text-xs" style="color: var(--color-text-muted);">This action cannot be undone.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action buttons -->
+                <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-3 space-y-3 space-y-reverse sm:space-y-0">
+                    <!-- Cancel button -->
+                    <button wire:click="cancelDelete"
+                            class="w-full sm:w-auto inline-flex justify-center items-center px-4 py-2.5 text-sm font-medium rounded-lg border transition-all duration-200"
+                            style="border-color: var(--color-border-base); color: var(--color-text-secondary); background-color: transparent;"
+                            onmouseover="this.style.backgroundColor='var(--color-surface-card-hover)'; this.style.borderColor='var(--color-border-strong)';"
+                            onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='var(--color-border-base)';">
+                        Cancel
+                    </button>
+                    
+                    <!-- Delete button -->
+                    <button wire:click="deleteSetting"
+                            wire:loading.attr="disabled"
+                            class="w-full sm:w-auto inline-flex justify-center items-center px-4 py-2.5 text-sm font-medium text-white rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                            style="background-color: var(--color-error);"
+                            onmouseover="this.style.backgroundColor='var(--color-error)'; this.style.opacity='0.9';"
+                            onmouseout="this.style.backgroundColor='var(--color-error)'; this.style.opacity='1';">
+                        <span wire:loading.remove wire:target="deleteSetting">Delete Setting</span>
+                        <span wire:loading wire:target="deleteSetting" class="flex items-center">
+                            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Deleting...
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>

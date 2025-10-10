@@ -21,6 +21,9 @@ class Periods extends Component
     #[Rule('required|string|max:255')]
     public string $name = '';
     
+    #[Rule('required|in:weekly,biweekly,monthly')]
+    public string $period_type = 'monthly';
+    
     #[Rule('required|date')]
     public string $period_start = '';
     
@@ -90,14 +93,7 @@ class Periods extends Component
     {
         $period = StaffPayrollPeriod::findOrFail($periodId);
         
-        if ($period->status !== 'draft') {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Only draft periods can be edited.'
-            ]);
-            return;
-        }
-
+        // Allow editing for all periods
         $this->currentPeriod = $period;
         $this->fillFromPeriod($period);
         $this->showCreateForm = true;
@@ -128,6 +124,7 @@ class Periods extends Component
 
             $data = [
                 'name' => $this->name,
+                'period_type' => $this->period_type,
                 'period_start' => $this->period_start,
                 'period_end' => $this->period_end,
                 'pay_date' => $this->pay_date,
@@ -146,9 +143,9 @@ class Periods extends Component
                     'message' => 'Pay period updated successfully!'
                 ]);
             } else {
-                StaffPayrollPeriod::create([
+                $period = StaffPayrollPeriod::create([
                     ...$data,
-                    'status' => 'draft',
+                    'status' => 'open',
                     'created_by' => auth()->id(),
                 ]);
 
@@ -223,14 +220,7 @@ class Periods extends Component
         try {
             $period = StaffPayrollPeriod::findOrFail($periodId);
             
-            if ($period->status !== 'draft') {
-                $this->dispatch('notify', [
-                    'type' => 'error',
-                    'message' => 'Only draft periods can be deleted.'
-                ]);
-                return;
-            }
-
+            // Allow deletion for all periods
             $period->delete();
 
             $this->dispatch('notify', [
@@ -264,9 +254,10 @@ class Periods extends Component
     private function fillFromPeriod(StaffPayrollPeriod $period): void
     {
         $this->name = $period->name;
+        $this->period_type = $period->period_type;
         $this->period_start = $period->period_start->format('Y-m-d');
         $this->period_end = $period->period_end->format('Y-m-d');
-        $this->pay_date = $period->pay_date->format('Y-m-d');
+        $this->pay_date = $period->pay_date ? $period->pay_date->format('Y-m-d') : '';
         $this->payroll_setting_id = $period->payroll_setting_id;
         $this->notes = $period->notes ?? '';
     }
@@ -274,6 +265,7 @@ class Periods extends Component
     private function resetForm(): void
     {
         $this->name = '';
+        $this->period_type = 'monthly';
         $this->period_start = '';
         $this->period_end = '';
         $this->pay_date = '';

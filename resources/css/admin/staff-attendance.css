@@ -82,6 +82,161 @@
 }
 
 /* ==========================================
+   DAY NAVIGATOR
+   ========================================== */
+.day-navigator {
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-surface-card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    box-shadow: var(--color-surface-card-shadow);
+}
+
+.day-navigator-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.day-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    font-weight: var(--font-weight-medium);
+    transition: all 0.2s ease;
+}
+
+.day-nav-btn:hover {
+    transform: translateY(-1px);
+}
+
+.day-picker-container {
+    flex: 0 0 auto;
+}
+
+.date-picker-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background: var(--color-bg-primary);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.date-picker-group:hover {
+    border-color: var(--color-primary-hover);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+}
+
+.date-picker-label {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    cursor: pointer;
+}
+
+.date-picker-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--color-primary);
+    transition: all 0.2s ease;
+}
+
+.date-picker-input {
+    border: none;
+    background: transparent;
+    padding: 0;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    min-width: 150px;
+    flex: 1;
+}
+
+.date-picker-input:focus {
+    outline: none;
+}
+
+.date-picker-input:hover {
+    cursor: pointer;
+}
+
+/* Show default date picker icon and make it clickable */
+.date-picker-input::-webkit-calendar-picker-indicator {
+    opacity: 1;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    margin-left: 8px;
+    background: transparent;
+}
+
+/* Ensure the input is properly styled for date picking */
+.date-picker-input[type="date"] {
+    position: relative;
+}
+
+/* Firefox date picker styling */
+.date-picker-input::-moz-calendar-picker-indicator {
+    opacity: 1;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    margin-left: 8px;
+}
+
+/* Make sure the entire input area is clickable */
+.date-picker-input {
+    position: relative;
+    z-index: 1;
+}
+
+/* Additional styling to ensure calendar shows */
+.date-picker-input[type="date"] {
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+}
+
+.date-picker-input[type="date"]::-webkit-inner-spin-button,
+.date-picker-input[type="date"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Ensure the calendar picker is visible and clickable */
+.date-picker-input::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+    opacity: 1;
+}
+
+/* Add a visual hint that the input is clickable */
+.date-picker-group:hover .date-picker-input {
+    cursor: pointer;
+}
+
+.date-picker-group:hover .date-picker-icon {
+    color: var(--color-primary-hover);
+    transform: scale(1.1);
+}
+
+/* ==========================================
    FILTERS SECTION
    ========================================== */
 .filters-section {
@@ -91,6 +246,222 @@
     padding: var(--space-xl);
     margin-bottom: var(--space-xl);
     box-shadow: var(--color-surface-card-shadow);
+}
+
+.filters-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+    transition: background-color 0.2s ease;
+}
+
+.filters-header:hover {
+    background: var(--color-bg-secondary);
+}
+
+.filters-header-content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.filters-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--color-text-secondary);
+}
+
+.filters-title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+
+.filters-badge {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--color-primary);
+    color: white;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--radius-full);
+}
+
+.filters-chevron {
+    width: 20px;
+    height: 20px;
+    color: var(--color-text-secondary);
+    transition: transform 0.2s ease;
+}
+
+.filters-section.expanded .filters-chevron {
+    transform: rotate(180deg);
+}
+
+/* ==========================================
+   COMPACT STATS OVERVIEW
+   ========================================== */
+.compact-stats-overview {
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-surface-card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    box-shadow: var(--color-surface-card-shadow);
+}
+
+.compact-stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-lg);
+}
+
+.compact-stat-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--color-bg-primary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-base);
+    transition: all 0.2s ease;
+}
+
+.compact-stat-item:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
+    transform: translateY(-1px);
+}
+
+.compact-stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.compact-stat-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.compact-stat-icon.working {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.compact-stat-icon.break {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.compact-stat-icon.completed {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.compact-stat-icon.review {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.compact-stat-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.compact-stat-value {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    line-height: 1;
+}
+
+.compact-stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-medium);
+}
+
+/* ==========================================
+   COLLAPSIBLE CARDS
+   ========================================== */
+.collapsible-card {
+    transition: all 0.2s ease;
+}
+
+.collapsible-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    transition: background-color 0.2s ease;
+}
+
+.collapsible-header:hover {
+    background: var(--color-bg-secondary);
+}
+
+.collapsible-header-content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.collapsible-chevron {
+    width: 20px;
+    height: 20px;
+    color: var(--color-text-secondary);
+    transition: transform 0.2s ease;
+}
+
+.collapsible-card.expanded .collapsible-chevron {
+    transform: rotate(180deg);
+}
+
+.collapsible-content {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .compact-stats-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-md);
+    }
+    
+    .compact-stat-item {
+        padding: var(--space-sm);
+        gap: var(--space-sm);
+    }
+    
+    .compact-stat-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .compact-stat-icon svg {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .compact-stat-value {
+        font-size: var(--font-size-lg);
+    }
+    
+    .compact-stat-label {
+        font-size: var(--font-size-xs);
+    }
 }
 
 .filters-form {

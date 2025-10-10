@@ -63,6 +63,24 @@
                             @error('name') <p class="mt-1 text-sm" style="color: var(--color-error);">{{ $message }}</p> @enderror
                         </div>
 
+                        <!-- Period Type -->
+                        <div>
+                            <label for="period_type" class="block text-sm font-medium" style="color: var(--color-text-primary);">
+                                Period Type
+                            </label>
+                            <select wire:model="period_type" 
+                                    id="period_type"
+                                    class="mt-1 block w-full rounded-md shadow-sm transition-colors"
+                                    style="background-color: var(--color-bg-secondary); border: 1px solid var(--color-border-base); color: var(--color-text-primary);"
+                                    onfocus="this.style.borderColor='var(--color-primary)'; this.style.boxShadow='0 0 0 3px rgba(var(--color-primary-rgb), 0.1)';"
+                                    onblur="this.style.borderColor='var(--color-border-base)'; this.style.boxShadow='none';">
+                                <option value="weekly">Weekly</option>
+                                <option value="biweekly">Bi-weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                            @error('period_type') <p class="mt-1 text-sm" style="color: var(--color-error);">{{ $message }}</p> @enderror
+                        </div>
+
                         <!-- Period Start -->
                         <div>
                             <label for="period_start" class="block text-sm font-medium" style="color: var(--color-text-primary);">
@@ -252,7 +270,7 @@
                                                 {{ $period->name }}
                                             </div>
                                             <div class="text-sm" style="color: var(--color-text-secondary);">
-                                                Pay Date: {{ $period->pay_date->format('M d, Y') }}
+                                                Pay Date: {{ $period->pay_date ? $period->pay_date->format('M d, Y') : 'Not set' }}
                                             </div>
                                         </div>
                                     </td>
@@ -278,50 +296,75 @@
                                             -
                                         @endif
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                        @if($period->status === 'draft')
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <div class="flex items-center justify-end space-x-2">
+                                            <!-- Edit Button (available for all periods) -->
                                             <button wire:click="startEdit('{{ $period->id }}')"
-                                                    class="transition-colors"
-                                                    style="color: var(--color-primary);"
-                                                    onmouseover="this.style.color='var(--color-secondary)'"
-                                                    onmouseout="this.style.color='var(--color-primary)'">
+                                                    class="inline-flex items-center px-2 py-1 text-xs font-medium rounded transition-colors"
+                                                    style="color: var(--color-primary); background-color: var(--color-primary-bg);"
+                                                    onmouseover="this.style.backgroundColor='var(--color-primary)'; this.style.color='white'"
+                                                    onmouseout="this.style.backgroundColor='var(--color-primary-bg)'; this.style.color='var(--color-primary)'"
+                                                    title="Edit Period">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                </svg>
                                                 Edit
                                             </button>
-                                            <button wire:click="generatePayroll('{{ $period->id }}')"
-                                                    wire:confirm="Generate payroll for this period? This will create payroll records for all active staff."
-                                                    class="transition-colors"
-                                                    style="color: var(--color-success);"
-                                                    onmouseover="this.style.color='var(--color-success)'"
-                                                    onmouseout="this.style.color='var(--color-success)'">
-                                                Generate
-                                            </button>
+
+                                            <!-- Status-specific actions -->
+                                            @if($period->status === 'open')
+                                                <button wire:click="generatePayroll('{{ $period->id }}')"
+                                                        wire:confirm="Generate payroll for this period? This will create payroll records for all active staff."
+                                                        class="inline-flex items-center px-2 py-1 text-xs font-medium rounded transition-colors"
+                                                        style="color: var(--color-success); background-color: var(--color-success-bg);"
+                                                        onmouseover="this.style.backgroundColor='var(--color-success)'; this.style.color='white'"
+                                                        onmouseout="this.style.backgroundColor='var(--color-success-bg)'; this.style.color='var(--color-success)'"
+                                                        title="Generate Payroll">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                    </svg>
+                                                    Generate
+                                                </button>
+                                            @elseif($period->status === 'calculated')
+                                                <a href="{{ route('admin.staff.payroll.review', $period->id) }}"
+                                                   class="inline-flex items-center px-2 py-1 text-xs font-medium rounded transition-colors"
+                                                   style="color: var(--color-info); background-color: var(--color-info-bg);"
+                                                   onmouseover="this.style.backgroundColor='var(--color-info)'; this.style.color='white'"
+                                                   onmouseout="this.style.backgroundColor='var(--color-info-bg)'; this.style.color='var(--color-info)'"
+                                                   title="Review Payroll">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                                    </svg>
+                                                    Review
+                                                </a>
+                                            @elseif($period->status === 'approved')
+                                                <a href="{{ route('admin.staff.payroll.payment', $period->id) }}"
+                                                   class="inline-flex items-center px-2 py-1 text-xs font-medium rounded transition-colors"
+                                                   style="color: var(--color-success); background-color: var(--color-success-bg);"
+                                                   onmouseover="this.style.backgroundColor='var(--color-success)'; this.style.color='white'"
+                                                   onmouseout="this.style.backgroundColor='var(--color-success-bg)'; this.style.color='var(--color-success)'"
+                                                   title="Process Payment">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                                    </svg>
+                                                    Process Payment
+                                                </a>
+                                            @endif
+
+                                            <!-- Delete Button (available for all periods) -->
                                             <button wire:click="deletePeriod('{{ $period->id }}')"
-                                                    wire:confirm="Are you sure you want to delete this period?"
-                                                    class="transition-colors"
-                                                    style="color: var(--color-error);"
-                                                    onmouseover="this.style.color='var(--color-error)'"
-                                                    onmouseout="this.style.color='var(--color-error)'">
+                                                    wire:confirm="Are you sure you want to delete this period? This action cannot be undone."
+                                                    class="inline-flex items-center px-2 py-1 text-xs font-medium rounded transition-colors"
+                                                    style="color: var(--color-error); background-color: var(--color-error-bg);"
+                                                    onmouseover="this.style.backgroundColor='var(--color-error)'; this.style.color='white'"
+                                                    onmouseout="this.style.backgroundColor='var(--color-error-bg)'; this.style.color='var(--color-error)'"
+                                                    title="Delete Period">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
                                                 Delete
                                             </button>
-                                        @elseif($period->status === 'calculated')
-                                            <a href="{{ route('admin.staff.payroll.review', $period->id) }}"
-                                               class="transition-colors"
-                                               style="color: var(--color-info);"
-                                               onmouseover="this.style.color='var(--color-info)'"
-                                               onmouseout="this.style.color='var(--color-info)'">
-                                                Review
-                                            </a>
-                                        @elseif($period->status === 'approved')
-                                            <a href="{{ route('admin.staff.payroll.payment', $period->id) }}"
-                                               class="transition-colors"
-                                               style="color: var(--color-success);"
-                                               onmouseover="this.style.color='var(--color-success)'"
-                                               onmouseout="this.style.color='var(--color-success)'">
-                                                Process Payment
-                                            </a>
-                                        @else
-                                            <span style="color: var(--color-text-muted);">Completed</span>
-                                        @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

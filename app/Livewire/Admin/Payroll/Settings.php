@@ -43,6 +43,8 @@ class Settings extends Component
     // UI State
     public bool $showCreateForm = false;
     public bool $isEditing = false;
+    public bool $showDeleteModal = false;
+    public ?StaffPayrollSetting $settingToDelete = null;
 
     public function mount(): void
     {
@@ -81,11 +83,11 @@ class Settings extends Component
     {
         $this->name = $setting->name;
         $this->pay_frequency = $setting->pay_frequency;
-        $this->overtime_threshold_hours = $setting->overtime_threshold_hours;
-        $this->overtime_multiplier = $setting->overtime_multiplier;
+        $this->overtime_threshold_hours = (float) $setting->overtime_threshold_hours;
+        $this->overtime_multiplier = (float) $setting->overtime_multiplier;
         $this->currency_code = $setting->currency_code;
         $this->rounding_mode = $setting->rounding_mode;
-        $this->auto_calculate_tax = $setting->auto_calculate_tax;
+        $this->auto_calculate_tax = (bool) $setting->auto_calculate_tax;
     }
 
     public function startCreate(): void
@@ -169,6 +171,7 @@ class Settings extends Component
     public function makeDefault(string $settingId): void
     {
         try {
+            
             // Remove default from all settings
             StaffPayrollSetting::query()->update(['is_default' => false]);
             
@@ -225,5 +228,86 @@ class Settings extends Component
         $this->rounding_mode = 'nearest';
         $this->auto_calculate_tax = true;
         $this->currentSetting = null;
+    }
+
+    public function confirmDelete(string $settingId): void
+    {
+        \Log::info("confirmDelete called with ID: " . $settingId);
+        $this->settingToDelete = StaffPayrollSetting::findOrFail($settingId);
+        $this->showDeleteModal = true;
+    }
+
+    public function cancelDelete(): void
+    {
+        $this->showDeleteModal = false;
+        $this->settingToDelete = null;
+    }
+
+    public function deleteSetting(): void
+    {
+        \Log::info("deleteSetting method called");
+        try {
+            if (!$this->settingToDelete) {
+                \Log::info("No setting to delete");
+                $this->dispatch('notify', [
+                    'type' => 'error',
+                    'message' => 'No setting selected for deletion.'
+                ]);
+                return;
+            }
+            
+            \Log::info("Setting to delete: " . $this->settingToDelete->id . " - " . $this->settingToDelete->name);
+
+            $settingName = $this->settingToDelete->name;
+            
+            // Check if this is the default setting
+            \Log::info("Is default: " . ($this->settingToDelete->is_default ? 'Yes' : 'No'));
+            if ($this->settingToDelete->is_default) {
+                \Log::info("Cannot delete default setting");
+                $this->dispatch('notify', [
+                    'type' => 'error',
+                    'message' => 'Cannot delete the default setting. Please set another setting as default first.'
+                ]);
+                $this->showDeleteModal = false;
+                $this->settingToDelete = null;
+                return;
+            }
+
+            // Check if setting is being used by any periods
+            \Log::info("Checking periods...");
+            $periodsCount = $this->settingToDelete->periods()->count();
+            \Log::info("Periods count: " . $periodsCount);
+            if ($this->settingToDelete->periods()->exists()) {
+                \Log::info("Cannot delete setting with periods");
+                $this->dispatch('notify', [
+                    'type' => 'error',
+                    'message' => 'Cannot delete setting that is being used by existing payroll periods.'
+                ]);
+                $this->showDeleteModal = false;
+                $this->settingToDelete = null;
+                return;
+            }
+
+            \Log::info("Attempting to delete setting...");
+            $this->settingToDelete->delete();
+            \Log::info("Setting deleted successfully");
+
+            $this->dispatch('notify', [
+                'type' => 'success',
+                'message' => "Setting '{$settingName}' deleted successfully."
+            ]);
+
+            $this->showDeleteModal = false;
+            $this->settingToDelete = null;
+
+            // Reload default setting if we deleted the current one
+            $this->loadDefaultSetting();
+
+        } catch (\Exception $e) {
+            $this->dispatch('notify', [
+                'type' => 'error',
+                'message' => 'Error deleting setting: ' . $e->getMessage()
+            ]);
+        }
     }
 }

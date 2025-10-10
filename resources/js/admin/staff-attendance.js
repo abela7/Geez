@@ -916,6 +916,44 @@ function initializeEnhancedModal() {
     }
 }
 
+/**
+ * Toggle filters section visibility
+ */
+function toggleFilters() {
+    const filtersSection = document.querySelector('.filters-section');
+    const filtersForm = document.getElementById('filterForm');
+    const chevron = document.querySelector('.filters-chevron');
+    
+    if (filtersForm && filtersSection) {
+        const isVisible = filtersForm.style.display !== 'none';
+        filtersForm.style.display = isVisible ? 'none' : 'block';
+        filtersSection.classList.toggle('expanded');
+        
+        // Animate chevron
+        if (chevron) {
+            chevron.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+    }
+}
+
+/**
+ * Toggle collapsible card visibility
+ */
+function toggleCard(cardId) {
+    const content = document.getElementById(cardId);
+    const card = content.closest('.collapsible-card');
+    const chevron = card.querySelector('.collapsible-chevron');
+    
+    if (content && chevron) {
+        const isVisible = content.style.display !== 'none';
+        content.style.display = isVisible ? 'none' : 'block';
+        card.classList.toggle('expanded');
+        
+        // Animate chevron
+        chevron.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+}
+
 // Make functions globally available
 window.showAddModal = showAddModal;
 window.hideAddModal = hideAddModal;
@@ -932,5 +970,7 @@ window.resumeWork = resumeWork;
 window.clockOut = clockOut;
 window.autoClose = autoClose;
 window.deleteAttendance = deleteAttendance;
+window.toggleFilters = toggleFilters;
+window.toggleCard = toggleCard;
 
 console.log('Enhanced Staff attendance JS loaded');
