@@ -262,6 +262,59 @@
                         @enderror
                     </div>
                 </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="hourly_rate" class="form-label required">
+                            <i class="fas fa-pound-sign"></i>
+                            {{ __('staff.hourly_rate') }}
+                        </label>
+                        <div class="currency-input-wrapper">
+                            <span class="currency-symbol">£</span>
+                            <input type="number" 
+                                   class="form-input currency-input @error('hourly_rate') error @enderror" 
+                                   id="hourly_rate" 
+                                   name="hourly_rate" 
+                                   value="{{ old('hourly_rate') }}" 
+                                   placeholder="15.00"
+                                   step="0.01"
+                                   min="0"
+                                   max="999.99"
+                                   required
+                                   autocomplete="off">
+                        </div>
+                        <div class="form-help">
+                            <i class="fas fa-info-circle"></i>
+                            {{ __('staff.hourly_rate_help') }}
+                        </div>
+                        @error('hourly_rate')
+                            <div class="form-error">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employee_id" class="form-label">
+                            <i class="fas fa-id-badge"></i>
+                            {{ __('staff.employee_id') }}
+                        </label>
+                        <input type="text" 
+                               class="form-input @error('employee_id') error @enderror" 
+                               id="employee_id" 
+                               name="employee_id" 
+                               value="{{ old('employee_id') }}" 
+                               placeholder="EMP-0001"
+                               maxlength="20"
+                               pattern="EMP-[0-9]{4}"
+                               autocomplete="off">
+                        <div class="form-help">
+                            <i class="fas fa-magic"></i>
+                            {{ __('staff.employee_id_help') }}
+                        </div>
+                        @error('employee_id')
+                            <div class="form-error">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
             </div>
 
             <!-- Form Actions -->
@@ -455,6 +508,30 @@
     color: var(--color-primary);
 }
 
+.currency-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.currency-symbol {
+    position: absolute;
+    left: 0.75rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.currency-input {
+    padding-left: 1.5rem !important;
+    text-align: right;
+}
+
+.currency-input:focus {
+    padding-left: 1.5rem !important;
+}
+
 .form-actions {
     display: flex;
     gap: 1rem;
@@ -509,6 +586,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const firstNameField = document.getElementById('first_name');
     const lastNameField = document.getElementById('last_name');
     const usernameField = document.getElementById('username');
+    const hourlyRateField = document.getElementById('hourly_rate');
+    const employeeIdField = document.getElementById('employee_id');
     
     function generateUsername() {
         const firstName = firstNameField.value.trim().toLowerCase();
@@ -523,8 +602,57 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Smart hourly rate formatting
+    function formatHourlyRate() {
+        let value = hourlyRateField.value;
+        
+        // Remove any non-numeric characters except decimal point
+        value = value.replace(/[^0-9.]/g, '');
+        
+        // Ensure only one decimal point
+        const parts = value.split('.');
+        if (parts.length > 2) {
+            value = parts[0] + '.' + parts.slice(1).join('');
+        }
+        
+        // Limit to 2 decimal places
+        if (parts.length === 2 && parts[1].length > 2) {
+            value = parts[0] + '.' + parts[1].substring(0, 2);
+        }
+        
+        // Set minimum value
+        if (value && parseFloat(value) < 0) {
+            value = '0';
+        }
+        
+        // Set maximum value
+        if (value && parseFloat(value) > 999.99) {
+            value = '999.99';
+        }
+        
+        hourlyRateField.value = value;
+    }
+    
+    // Auto-generate employee ID if empty
+    function generateEmployeeId() {
+        if (!employeeIdField.value.trim()) {
+            // This will be handled by the backend, but we can show a preview
+            employeeIdField.placeholder = 'EMP-XXXX (Auto-generated)';
+        }
+    }
+    
     firstNameField.addEventListener('blur', generateUsername);
     lastNameField.addEventListener('blur', generateUsername);
+    
+    hourlyRateField.addEventListener('input', formatHourlyRate);
+    hourlyRateField.addEventListener('blur', formatHourlyRate);
+    
+    employeeIdField.addEventListener('blur', generateEmployeeId);
+    
+    // Set default hourly rate if empty
+    if (!hourlyRateField.value) {
+        hourlyRateField.value = '15.00';
+    }
 });
 
 // Form validation

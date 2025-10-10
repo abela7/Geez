@@ -64,20 +64,36 @@ class StaffProfile extends Model
 
     /**
      * Generate the next employee ID.
+     * This method ensures uniqueness by checking all existing IDs and finding the highest number.
      */
     public static function generateEmployeeId(): string
     {
-        $lastProfile = static::whereNotNull('employee_id')
-            ->orderBy('employee_id', 'desc')
-            ->first();
+        // Get all employee IDs that match the EMP-XXXX pattern
+        $allProfiles = static::whereNotNull('employee_id')
+            ->where('employee_id', 'like', 'EMP-%')
+            ->pluck('employee_id');
 
-        if (! $lastProfile) {
+        // If no profiles exist, start from 0001
+        if ($allProfiles->isEmpty()) {
             return 'EMP-0001';
         }
 
-        $lastNumber = (int) substr($lastProfile->employee_id, 4);
-        $nextNumber = $lastNumber + 1;
+        // Extract all numeric parts and find the maximum
+        $maxNumber = 0;
+        foreach ($allProfiles as $employeeId) {
+            // Extract the numeric part after 'EMP-'
+            $numericPart = substr($employeeId, 4);
+            $number = (int) $numericPart;
+            
+            if ($number > $maxNumber) {
+                $maxNumber = $number;
+            }
+        }
 
+        // Generate the next number
+        $nextNumber = $maxNumber + 1;
+
+        // Format as EMP-XXXX (4 digits, zero-padded)
         return 'EMP-'.str_pad((string) $nextNumber, 4, '0', STR_PAD_LEFT);
     }
 
@@ -90,7 +106,30 @@ class StaffProfile extends Model
 
         static::creating(function (StaffProfile $profile) {
             if (empty($profile->employee_id)) {
-                $profile->employee_id = static::generateEmployeeId();
+                // Try to generate a unique employee ID with retry logic
+                $maxAttempts = 10;
+                $attempts = 0;
+                
+                while ($attempts < $maxAttempts) {
+                    $employeeId = static::generateEmployeeId();
+                    
+                    // Check if this ID already exists
+                    $exists = static::where('employee_id', $employeeId)
+                        ->whereNull('deleted_at')
+                        ->exists();
+                    
+                    if (!$exists) {
+                        $profile->employee_id = $employeeId;
+                        break;
+                    }
+                    
+                    $attempts++;
+                    
+                    // If we've tried too many times, throw an exception
+                    if ($attempts >= $maxAttempts) {
+                        throw new \RuntimeException('Unable to generate unique employee ID after ' . $maxAttempts . ' attempts');
+                    }
+                }
             }
         });
     }

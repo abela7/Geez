@@ -4,7 +4,7 @@
         <div class="bg-background border border-main rounded-lg p-4 text-center">
             <div class="text-2xl font-bold text-green-600">
                 @if ($staff->profile && $staff->profile->hourly_rate)
-                    ${{ number_format($staff->profile->hourly_rate, 2) }}
+                    £{{ number_format($staff->profile->hourly_rate, 2) }}
                 @else
                     —
                 @endif
@@ -14,7 +14,7 @@
         <div class="bg-background border border-main rounded-lg p-4 text-center">
             <div class="text-2xl font-bold text-blue-600">
                 @if ($recentPayroll->count() > 0)
-                    ${{ number_format($recentPayroll->first()->gross_pay, 2) }}
+                    £{{ number_format($recentPayroll->first()->gross_pay, 2) }}
                 @else
                     —
                 @endif
@@ -24,7 +24,7 @@
         <div class="bg-background border border-main rounded-lg p-4 text-center">
             <div class="text-2xl font-bold text-purple-600">
                 @if ($recentPayroll->count() > 0)
-                    ${{ number_format($recentPayroll->sum('gross_pay'), 2) }}
+                    £{{ number_format($recentPayroll->sum('gross_pay'), 2) }}
                 @else
                     —
                 @endif
@@ -74,13 +74,13 @@
                                 {{ number_format($payroll->overtime_hours ?? 0, 1) }}h
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-primary font-medium">
-                                ${{ number_format($payroll->gross_pay, 2) }}
+                                £{{ number_format($payroll->gross_pay, 2) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-primary">
-                                ${{ number_format($payroll->deductions ?? 0, 2) }}
+                                £{{ number_format($payroll->deductions ?? 0, 2) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-primary font-medium">
-                                ${{ number_format($payroll->net_pay, 2) }}
+                                £{{ number_format($payroll->net_pay, 2) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @php

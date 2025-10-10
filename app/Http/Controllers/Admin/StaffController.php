@@ -85,14 +85,67 @@ class StaffController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
-            'username' => 'required|string|max:50|unique:staff,username',
+            'username' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('staff', 'username')->whereNull('deleted_at')
+            ],
             'password' => 'required|string|min:8|confirmed',
-            'email' => 'nullable|email|unique:staff,email',
+            'email' => [
+                'nullable',
+                'email',
+                Rule::unique('staff', 'email')->whereNull('deleted_at')
+            ],
             'phone' => 'nullable|string|max:20',
             'staff_type_id' => 'required|exists:staff_types,id',
             'status' => 'required|in:active,inactive,suspended',
             'hire_date' => 'nullable|date',
+            'hourly_rate' => 'required|numeric|min:0|max:999.99',
+            'employee_id' => [
+                'nullable',
+                'string',
+                'max:20',
+                Rule::unique('staff_profiles', 'employee_id')->whereNull('deleted_at')
+            ],
         ]);
+
+        // Check if there's a soft-deleted staff with the same username
+        $deletedStaff = Staff::onlyTrashed()
+            ->where('username', $validated['username'])
+            ->first();
+
+        // If found, check if it's the same person (matching first name, last name, and phone)
+        if ($deletedStaff) {
+            $isSamePerson = (
+                strtolower($deletedStaff->first_name) === strtolower($validated['first_name']) &&
+                strtolower($deletedStaff->last_name) === strtolower($validated['last_name']) &&
+                ($deletedStaff->phone === $validated['phone'] || !$deletedStaff->phone || !$validated['phone'])
+            );
+
+            if ($isSamePerson) {
+                // Permanently delete the soft-deleted record to avoid conflicts
+                $deletedStaff->forceDelete();
+            }
+        }
+
+        // Also check for email conflicts with soft-deleted records
+        if (!empty($validated['email'])) {
+            $deletedStaffByEmail = Staff::onlyTrashed()
+                ->where('email', $validated['email'])
+                ->first();
+
+            if ($deletedStaffByEmail) {
+                $isSamePerson = (
+                    strtolower($deletedStaffByEmail->first_name) === strtolower($validated['first_name']) &&
+                    strtolower($deletedStaffByEmail->last_name) === strtolower($validated['last_name'])
+                );
+
+                if ($isSamePerson) {
+                    $deletedStaffByEmail->forceDelete();
+                }
+            }
+        }
 
         // Hash password
         $validated['password'] = Hash::make($validated['password']);
@@ -101,7 +154,28 @@ class StaffController extends Controller
         $validated['created_by'] = Auth::id();
         $validated['updated_by'] = Auth::id();
 
-        $staff = Staff::create($validated);
+        // Create staff member
+        $staff = Staff::create([
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'username' => $validated['username'],
+            'password' => $validated['password'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'staff_type_id' => $validated['staff_type_id'],
+            'status' => $validated['status'],
+            'hire_date' => $validated['hire_date'],
+            'created_by' => $validated['created_by'],
+            'updated_by' => $validated['updated_by'],
+        ]);
+
+        // Create staff profile with hourly rate
+        $staff->profile()->create([
+            'hourly_rate' => $validated['hourly_rate'],
+            'employee_id' => $validated['employee_id'], // Will be auto-generated if empty
+            'created_by' => $validated['created_by'],
+            'updated_by' => $validated['updated_by'],
+        ]);
 
         return redirect()
             ->route('admin.staff.show', $staff)
@@ -257,9 +331,18 @@ class StaffController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
-            'username' => ['required', 'string', 'max:50', Rule::unique('staff')->ignore($staff->id)],
+            'username' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('staff', 'username')->ignore($staff->id)->whereNull('deleted_at')
+            ],
             'password' => 'nullable|string|min:8|confirmed',
-            'email' => ['nullable', 'email', Rule::unique('staff')->ignore($staff->id)],
+            'email' => [
+                'nullable',
+                'email',
+                Rule::unique('staff', 'email')->ignore($staff->id)->whereNull('deleted_at')
+            ],
             'phone' => 'nullable|string|max:20',
             'staff_type_id' => 'required|exists:staff_types,id',
             'status' => 'required|in:active,inactive,suspended',

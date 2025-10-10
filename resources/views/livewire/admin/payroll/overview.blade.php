@@ -100,7 +100,7 @@
                                     This Month
                                 </dt>
                                 <dd class="text-lg font-medium text-gray-900 dark:text-white">
-                                    ${{ number_format($stats['this_month_total'], 2) }}
+                                    £{{ number_format($stats['this_month_total'], 2) }}
                                 </dd>
                             </dl>
                         </div>
@@ -146,7 +146,7 @@
                                     Year to Date
                                 </dt>
                                 <dd class="text-lg font-medium text-gray-900 dark:text-white">
-                                    ${{ number_format($stats['ytd_total'], 2) }}
+                                    £{{ number_format($stats['ytd_total'], 2) }}
                                 </dd>
                             </dl>
                         </div>
@@ -273,11 +273,11 @@
                                     </div>
                                     <div>
                                         <p class="text-sm text-gray-500 dark:text-gray-400">Gross Amount</p>
-                                        <p class="text-lg font-medium text-gray-900 dark:text-white">${{ number_format($currentPeriod->total_gross_pay ?? 0, 2) }}</p>
+                                        <p class="text-lg font-medium text-gray-900 dark:text-white">£{{ number_format($currentPeriod->total_gross_pay ?? 0, 2) }}</p>
                                     </div>
                                     <div>
                                         <p class="text-sm text-gray-500 dark:text-gray-400">Net Amount</p>
-                                        <p class="text-lg font-medium text-gray-900 dark:text-white">${{ number_format($currentPeriod->total_net_pay ?? 0, 2) }}</p>
+                                        <p class="text-lg font-medium text-gray-900 dark:text-white">£{{ number_format($currentPeriod->total_net_pay ?? 0, 2) }}</p>
                                     </div>
                                 </div>
                             @endif
@@ -315,7 +315,7 @@
                                             </span>
                                             @if($period->total_net_pay)
                                                 <span class="text-sm font-medium text-gray-900 dark:text-white">
-                                                    ${{ number_format($period->total_net_pay, 2) }}
+                                                    £{{ number_format($period->total_net_pay, 2) }}
                                                 </span>
                                             @endif
                                         </div>

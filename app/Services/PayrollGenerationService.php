@@ -93,7 +93,7 @@ class PayrollGenerationService
                     'create',
                     null,
                     $results,
-                    "Batch payroll generated for period {$period->name} - Success: {$results['success']}, Failed: {$results['failed']}, Skipped: {$results['skipped']}",
+                    "Batch payroll generated for period {$period->name} - Success: " . count($results['success']) . ", Failed: " . count($results['failed']) . ", Skipped: " . count($results['skipped']),
                     'high'
                 );
 

@@ -59,10 +59,6 @@
                             {{ $staff->profile->employee_id }}
                         </span>
                         @endif
-                        <span class="staff-meta-item">
-                            <i class="fas fa-calendar"></i>
-                            {{ $stats['years_of_service'] }} {{ __('staff.years_of_service') }}
-                        </span>
                     </div>
                     
                     <!-- Status Badge -->

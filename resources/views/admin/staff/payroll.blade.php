@@ -90,7 +90,7 @@
                     </div>
                     <span class="stat-card-label">{{ __('staff.payroll.total_payroll') }}</span>
                 </div>
-                <div class="stat-card-value" x-text="formatCurrency(payrollStats.totalPayroll)">$0</div>
+                <div class="stat-card-value" x-text="formatCurrency(payrollStats.totalPayroll)">£0</div>
                 <div class="stat-card-trend stat-card-trend--positive">
                     <svg class="trend-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
@@ -144,7 +144,7 @@
                     </div>
                     <span class="stat-card-label">{{ __('staff.payroll.avg_salary') }}</span>
                 </div>
-                <div class="stat-card-value" x-text="formatCurrency(payrollStats.avgSalary)">$0</div>
+                <div class="stat-card-value" x-text="formatCurrency(payrollStats.avgSalary)">£0</div>
                 <div class="stat-card-trend stat-card-trend--positive">
                     <svg class="trend-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>

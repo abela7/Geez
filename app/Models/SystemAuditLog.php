@@ -167,12 +167,12 @@ class SystemAuditLog extends Model
             'old_values' => $oldValues,
             'new_values' => $newValues,
             'changed_fields' => $changedFields,
-            'performed_by' => auth()->id(),
+            'performed_by' => auth()->id() ?? '01K72PSEVBF8X4YM39T6GV00GA', // Fallback for CLI
             'performed_at' => now(),
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-            'request_method' => request()->method(),
-            'request_url' => request()->fullUrl(),
+            'ip_address' => request()->ip() ?? '127.0.0.1',
+            'user_agent' => request()->userAgent() ?? 'CLI',
+            'request_method' => request()->method() ?? 'CLI',
+            'request_url' => request()->fullUrl() ?? 'CLI',
             'description' => $description,
             'severity' => $severity,
         ]);

@@ -214,10 +214,24 @@
                                             @endif
                                         </div>
                                     </td>
-                                    <td>{{ $record->hours_worked ? number_format($record->hours_worked, 1) . 'h' : '-' }}</td>
+                                    <td>
+                                        @if($record->hours_worked)
+                                            @php
+                                                $totalHours = floor($record->hours_worked);
+                                                $minutes = round(($record->hours_worked - $totalHours) * 60);
+                                            @endphp
+                                            {{ $totalHours }}h {{ $minutes }}m
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td>
                                         @if($record->net_hours_worked)
-                                            <span class="net-hours">{{ number_format($record->net_hours_worked, 1) }}h</span>
+                                            @php
+                                                $netTotalHours = floor($record->net_hours_worked);
+                                                $netMinutes = round(($record->net_hours_worked - $netTotalHours) * 60);
+                                            @endphp
+                                            <span class="net-hours">{{ $netTotalHours }}h {{ $netMinutes }}m</span>
                                             @if($record->total_break_minutes > 0)
                                                 <small class="break-info">({{ $record->total_break_minutes }}m breaks)</small>
                                             @endif

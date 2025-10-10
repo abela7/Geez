@@ -273,7 +273,7 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm" style="color: var(--color-text-primary);">
                                         @if($period->total_net_pay)
-                                            ${{ number_format($period->total_net_pay, 2) }}
+                                            £{{ number_format($period->total_net_pay, 2) }}
                                         @else
                                             -
                                         @endif

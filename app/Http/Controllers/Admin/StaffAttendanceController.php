@@ -28,20 +28,20 @@ class StaffAttendanceController extends Controller
         $status = $request->get('status');
         $search = $request->get('search');
 
-        // Get today's attendance overview
-        $todayStats = $this->getTodayStats($date);
+        // Get today's attendance overview with filters applied
+        $todayStats = $this->getTodayStats($date, $staffTypeId, $status, $search);
 
         // Get attendance records with filters
         $attendanceRecords = $this->getAttendanceRecords($request);
 
-        // Get currently clocked in staff (active sessions)
-        $currentlyClocked = $this->getCurrentlyActive();
+        // Get currently clocked in staff (active sessions) - apply filters
+        $currentlyClocked = $this->getCurrentlyActive($date, $staffTypeId, $search);
 
-        // Get staff on break
-        $staffOnBreak = $this->getStaffOnBreak();
+        // Get staff on break - apply filters
+        $staffOnBreak = $this->getStaffOnBreak($date, $staffTypeId, $search);
 
-        // Get attendance needing review
-        $needsReview = $this->getAttendanceNeedingReview();
+        // Get attendance needing review - apply filters
+        $needsReview = $this->getAttendanceNeedingReview($date, $staffTypeId, $search);
 
         // Get recent attendance activity
         $recentActivity = $this->getRecentActivity();
@@ -79,7 +79,7 @@ class StaffAttendanceController extends Controller
     }
 
     /**
-     * Get today's attendance statistics.
+     * Get today's attendance statistics with filters applied.
      *
      * TODO: FIX ATTENDANCE LOGIC - Currently assumes all staff are scheduled
      * This is incorrect! We need a staff_schedules table to properly calculate:
@@ -90,16 +90,50 @@ class StaffAttendanceController extends Controller
      * Current logic: totalStaff = all active staff (WRONG)
      * Correct logic: totalStaff = staff scheduled for this date (NEEDS staff_schedules table)
      */
-    private function getTodayStats(string $date): array
+    private function getTodayStats(string $date, ?string $staffTypeId = null, ?string $status = null, ?string $search = null): array
     {
         try {
-            // Get total active staff (this is a placeholder - should be scheduled staff)
-            $totalStaff = Staff::where('status', 'active')->count();
+            // Build base query for attendance records
+            $attendanceQuery = StaffAttendance::whereDate('clock_in', $date)
+                ->with('staff');
 
-            // Get attendance records for the date
-            $attendanceToday = StaffAttendance::whereDate('clock_in', $date)
-                ->with('staff')
-                ->get();
+            // Apply staff type filter
+            if ($staffTypeId) {
+                $attendanceQuery->whereHas('staff', function ($q) use ($staffTypeId) {
+                    $q->where('staff_type_id', $staffTypeId);
+                });
+            }
+
+            // Apply status filter
+            if ($status) {
+                $attendanceQuery->where('status', $status);
+            }
+
+            // Apply search filter
+            if ($search) {
+                $attendanceQuery->whereHas('staff', function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                });
+            }
+
+            $attendanceToday = $attendanceQuery->get();
+
+            // Get total staff count with same filters applied
+            $totalStaffQuery = Staff::where('status', 'active');
+            
+            if ($staffTypeId) {
+                $totalStaffQuery->where('staff_type_id', $staffTypeId);
+            }
+            
+            if ($search) {
+                $totalStaffQuery->where(function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                });
+            }
+            
+            $totalStaff = $totalStaffQuery->count();
 
             // Calculate stats based on current_state for real-time data
             $currentlyWorking = $attendanceToday->where('current_state', 'clocked_in')->count();
@@ -200,18 +234,40 @@ class StaffAttendanceController extends Controller
     }
 
     /**
-     * Get currently active staff (clocked in or on break).
+     * Get currently active staff (clocked in or on break) with filters.
      */
-    private function getCurrentlyActive()
+    private function getCurrentlyActive(?string $date = null, ?string $staffTypeId = null, ?string $search = null)
     {
         try {
-            return StaffAttendance::with(['staff.staffType', 'intervals' => function ($query) {
+            $query = StaffAttendance::with(['staff.staffType', 'intervals' => function ($query) {
                 $query->active()->latest();
             }])
                 ->whereHas('staff') // Only get records that have valid staff
-                ->active() // Using the new scope
-                ->whereDate('clock_in', now())
-                ->orderBy('clock_in', 'desc')
+                ->active(); // Using the new scope
+
+            // Apply date filter
+            if ($date) {
+                $query->whereDate('clock_in', $date);
+            } else {
+                $query->whereDate('clock_in', now());
+            }
+
+            // Apply staff type filter
+            if ($staffTypeId) {
+                $query->whereHas('staff', function ($q) use ($staffTypeId) {
+                    $q->where('staff_type_id', $staffTypeId);
+                });
+            }
+
+            // Apply search filter
+            if ($search) {
+                $query->whereHas('staff', function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                });
+            }
+
+            return $query->orderBy('clock_in', 'desc')
                 ->limit(15)
                 ->get();
         } catch (\Exception $e) {
@@ -221,16 +277,38 @@ class StaffAttendanceController extends Controller
     }
 
     /**
-     * Get staff currently on break.
+     * Get staff currently on break with filters.
      */
-    private function getStaffOnBreak()
+    private function getStaffOnBreak(?string $date = null, ?string $staffTypeId = null, ?string $search = null)
     {
         try {
-            return StaffAttendance::with(['staff.staffType'])
+            $query = StaffAttendance::with(['staff.staffType'])
                 ->whereHas('staff') // Only get records that have valid staff
-                ->where('current_state', 'on_break')
-                ->whereDate('clock_in', now())
-                ->orderBy('current_break_start', 'desc')
+                ->where('current_state', 'on_break');
+
+            // Apply date filter
+            if ($date) {
+                $query->whereDate('clock_in', $date);
+            } else {
+                $query->whereDate('clock_in', now());
+            }
+
+            // Apply staff type filter
+            if ($staffTypeId) {
+                $query->whereHas('staff', function ($q) use ($staffTypeId) {
+                    $q->where('staff_type_id', $staffTypeId);
+                });
+            }
+
+            // Apply search filter
+            if ($search) {
+                $query->whereHas('staff', function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                });
+            }
+
+            return $query->orderBy('current_break_start', 'desc')
                 ->limit(10)
                 ->get();
         } catch (\Exception $e) {
@@ -240,15 +318,36 @@ class StaffAttendanceController extends Controller
     }
 
     /**
-     * Get attendance records needing review.
+     * Get attendance records needing review with filters.
      */
-    private function getAttendanceNeedingReview()
+    private function getAttendanceNeedingReview(?string $date = null, ?string $staffTypeId = null, ?string $search = null)
     {
         try {
-            return StaffAttendance::with(['staff.staffType'])
+            $query = StaffAttendance::with(['staff.staffType'])
                 ->whereHas('staff') // Only get records that have valid staff
-                ->needsReview() // Using the new scope
-                ->orderBy('clock_in', 'desc')
+                ->needsReview(); // Using the new scope
+
+            // Apply date filter
+            if ($date) {
+                $query->whereDate('clock_in', $date);
+            }
+
+            // Apply staff type filter
+            if ($staffTypeId) {
+                $query->whereHas('staff', function ($q) use ($staffTypeId) {
+                    $q->where('staff_type_id', $staffTypeId);
+                });
+            }
+
+            // Apply search filter
+            if ($search) {
+                $query->whereHas('staff', function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                });
+            }
+
+            return $query->orderBy('clock_in', 'desc')
                 ->limit(10)
                 ->get();
         } catch (\Exception $e) {
@@ -726,14 +825,17 @@ class StaffAttendanceController extends Controller
     {
         try {
             $date = $request->get('date', now()->format('Y-m-d'));
+            $staffTypeId = $request->get('staff_type_id');
+            $status = $request->get('status');
+            $search = $request->get('search');
 
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'stats' => $this->getTodayStats($date),
-                    'currently_active' => $this->getCurrentlyActive(),
-                    'staff_on_break' => $this->getStaffOnBreak(),
-                    'needs_review' => $this->getAttendanceNeedingReview(),
+                    'stats' => $this->getTodayStats($date, $staffTypeId, $status, $search),
+                    'currently_active' => $this->getCurrentlyActive($date, $staffTypeId, $search),
+                    'staff_on_break' => $this->getStaffOnBreak($date, $staffTypeId, $search),
+                    'needs_review' => $this->getAttendanceNeedingReview($date, $staffTypeId, $search),
                     'timestamp' => now()->toISOString(),
                 ]
             ]);

@@ -100,12 +100,6 @@
                     <span class="text-secondary">{{ __('staff.status') }}:</span>
                     <span class="text-primary font-medium">{{ __('staff.status_values.' . $staff->status) }}</span>
                 </div>
-                @if ($staff->profile && $staff->profile->hourly_rate)
-                <div class="flex justify-between">
-                    <span class="text-secondary">{{ __('staff.hourly_rate') }}:</span>
-                    <span class="text-primary font-medium">${{ number_format($staff->profile->hourly_rate, 2) }}/hr</span>
-                </div>
-                @endif
             </div>
         </div>
 
