@@ -90,5 +90,52 @@
     <!-- Modal Container - Outside main content to avoid z-index stacking issues -->
     <div id="modal-portal"></div>
     @stack('modals')
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <script>
+        // Livewire notification listener
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('notify', (data) => {
+                const container = document.getElementById('notification-container');
+                const notification = document.createElement('div');
+                
+                const bgColor = data.type === 'success' ? 'bg-green-500' : 
+                              data.type === 'error' ? 'bg-red-500' : 
+                              data.type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500';
+                
+                notification.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 ease-in-out`;
+                notification.style.transform = 'translateX(100%)';
+                notification.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span>${data.message}</span>
+                        <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(notification);
+                
+                // Animate in
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        if (notification.parentElement) {
+                            notification.remove();
+                        }
+                    }, 300);
+                }, 5000);
+            });
+        });
+    </script>
 </body>
 </html>
