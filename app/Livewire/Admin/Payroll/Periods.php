@@ -170,10 +170,11 @@ class Periods extends Component
         try {
             $period = StaffPayrollPeriod::findOrFail($periodId);
             
-            if ($period->status !== 'draft') {
+            // Allow generation for 'open' status only
+            if ($period->status !== 'open') {
                 $this->dispatch('notify', [
                     'type' => 'error',
-                    'message' => 'Payroll can only be generated for draft periods.'
+                    'message' => 'Payroll can only be generated for open periods.'
                 ]);
                 return;
             }
@@ -189,21 +190,27 @@ class Periods extends Component
                 return;
             }
 
-            // Use the PayrollGenerationService
-            $service = new PayrollGenerationService();
+            // Use Laravel's service container to resolve dependencies
+            $service = app(PayrollGenerationService::class);
             $result = $service->generateForPeriod($period, $activeStaff->pluck('id')->toArray());
 
-            $period->update([
-                'status' => 'calculated',
-                'total_records' => $result['total_records'],
-                'total_gross_pay' => $result['total_gross'],
-                'total_net_pay' => $result['total_net'],
-                'updated_by' => auth()->id(),
-            ]);
+            // The service already updates totals and sets status
+            // Just refresh and notify
+            $successCount = count($result['success']);
+            $failedCount = count($result['failed']);
+            $skippedCount = count($result['skipped']);
+
+            $message = "Payroll generated! Success: {$successCount}";
+            if ($failedCount > 0) {
+                $message .= ", Failed: {$failedCount}";
+            }
+            if ($skippedCount > 0) {
+                $message .= ", Skipped: {$skippedCount}";
+            }
 
             $this->dispatch('notify', [
-                'type' => 'success',
-                'message' => "Payroll generated successfully! {$result['total_records']} records created."
+                'type' => $failedCount > 0 ? 'warning' : 'success',
+                'message' => $message
             ]);
 
             $this->resetPage();

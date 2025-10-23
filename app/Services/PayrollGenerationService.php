@@ -83,8 +83,8 @@ class PayrollGenerationService
                 // Update period totals
                 $period->updateTotals();
 
-                // Mark period as open again (allow corrections)
-                $period->update(['status' => 'open']);
+                // Mark period as processing (payroll calculated, ready for review/approval)
+                $period->update(['status' => 'processing']);
 
                 // Audit log
                 SystemAuditLog::logAction(

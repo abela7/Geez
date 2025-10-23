@@ -26,6 +26,14 @@ class PayrollController extends Controller
     }
 
     /**
+     * Show add payroll page (generate payroll for individual staff).
+     */
+    public function add()
+    {
+        return view('admin.payroll.add');
+    }
+
+    /**
      * Show payroll review page for a period.
      */
     public function review(StaffPayrollPeriod $period)

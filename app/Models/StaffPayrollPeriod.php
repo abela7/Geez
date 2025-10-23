@@ -187,7 +187,7 @@ class StaffPayrollPeriod extends Model
     public function updateTotals(): void
     {
         $records = $this->payrollRecords()
-            ->whereIn('status', ['approved', 'paid'])
+            ->whereIn('status', ['calculated', 'approved', 'paid'])
             ->get();
 
         $this->update([

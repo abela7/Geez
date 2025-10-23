@@ -122,7 +122,7 @@ class StaffPayrollSetting extends Model
      */
     public function calculateOvertimeHours(float $totalHours): float
     {
-        $threshold = $this->overtime_threshold_hours ?? 40.00;
+        $threshold = (float) ($this->overtime_threshold_hours ?? 40.00);
         
         return max(0, $totalHours - $threshold);
     }
@@ -132,7 +132,7 @@ class StaffPayrollSetting extends Model
      */
     public function calculateRegularHours(float $totalHours): float
     {
-        $threshold = $this->overtime_threshold_hours ?? 40.00;
+        $threshold = (float) ($this->overtime_threshold_hours ?? 40.00);
         
         return min($totalHours, $threshold);
     }

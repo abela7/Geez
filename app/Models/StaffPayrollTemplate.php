@@ -139,7 +139,7 @@ class StaffPayrollTemplate extends Model
      */
     public function getOvertimeMultiplier(): float
     {
-        return $this->overtime_rate ?? 1.5;
+        return (float) ($this->overtime_rate ?? 1.5);
     }
 }
 

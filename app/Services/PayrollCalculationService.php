@@ -156,6 +156,8 @@ class PayrollCalculationService
             'currency' => $template->currency ?? 'USD',
             'hourly_rate' => $staff->profile?->hourly_rate ?? $template->base_hourly_rate ?? 0,
             'overtime_rate' => $template->getOvertimeMultiplier(),
+            'gross_pay' => 0,  // Will be calculated after creation
+            'net_pay' => 0,    // Will be calculated after creation
             'status' => 'draft',
             'created_by' => auth()->id(),
         ]);

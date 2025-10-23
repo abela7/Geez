@@ -12,7 +12,7 @@
                     </p>
                 </div>
                 @if(!$showCreateForm)
-                <button wire:click="startCreate" 
+                <button wire:click="startCreate"
                         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white btn"
                         style="background-color: var(--color-primary); transition: var(--transition-base);"
                         onmouseover="this.style.backgroundColor='var(--color-secondary)'"
@@ -189,7 +189,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
                     <!-- Status Filter Tabs -->
                     <div class="flex space-x-1">
-                        @foreach(['all' => 'All', 'draft' => 'Draft', 'calculated' => 'Calculated', 'approved' => 'Approved', 'paid' => 'Paid'] as $status => $label)
+                        @foreach(['all' => 'All', 'open' => 'Open', 'processing' => 'Processing', 'closed' => 'Closed'] as $status => $label)
                             <button wire:click="setStatusFilter('{{ $status }}')"
                                     class="px-3 py-2 text-sm font-medium rounded-md transition-colors"
                                     style="{{ $statusFilter === $status ? 'background-color: var(--color-primary); color: white;' : 'color: var(--color-text-muted);' }}"
@@ -260,7 +260,7 @@
                         </thead>
                         <tbody style="background-color: var(--color-bg-secondary);">
                             @foreach($periods as $period)
-                                <tr class="transition-colors" 
+                                <tr class="transition-colors"
                                     style="border-bottom: 1px solid var(--color-border-base);"
                                     onmouseover="this.style.backgroundColor='var(--color-surface-card-hover)'"
                                     onmouseout="this.style.backgroundColor='var(--color-bg-secondary)'">
@@ -279,15 +279,14 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                                              style="{{ $period->status === 'draft' ? 'background-color: var(--color-bg-tertiary); color: var(--color-text-secondary);' : '' }}
-                                                     {{ $period->status === 'calculated' ? 'background-color: var(--color-warning-bg); color: var(--color-warning);' : '' }}
-                                                     {{ $period->status === 'approved' ? 'background-color: var(--color-info-bg); color: var(--color-info);' : '' }}
-                                                     {{ $period->status === 'paid' ? 'background-color: var(--color-success-bg); color: var(--color-success);' : '' }}">
+                                              style="{{ $period->status === 'open' ? 'background-color: var(--color-info-bg); color: var(--color-info);' : '' }}
+                                                     {{ $period->status === 'processing' ? 'background-color: var(--color-warning-bg); color: var(--color-warning);' : '' }}
+                                                     {{ $period->status === 'closed' ? 'background-color: var(--color-success-bg); color: var(--color-success);' : '' }}">
                                             {{ ucfirst($period->status) }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm" style="color: var(--color-text-primary);">
-                                        {{ $period->total_records ?? 0 }}
+                                        {{ $period->total_staff_count ?? 0 }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm" style="color: var(--color-text-primary);">
                                         @if($period->total_net_pay)
