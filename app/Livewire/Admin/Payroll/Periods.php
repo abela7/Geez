@@ -43,6 +43,8 @@ class Periods extends Component
     public bool $showCreateForm = false;
     public bool $isEditing = false;
     public ?StaffPayrollPeriod $currentPeriod = null;
+    public bool $showModal = false;
+    public ?string $selectedPeriod = null;
     
     // Filters
     public string $statusFilter = 'all';
@@ -248,6 +250,18 @@ class Periods extends Component
     {
         $this->statusFilter = $status;
         $this->resetPage();
+    }
+
+    public function openModal(string $periodId): void
+    {
+        $this->showModal = true;
+        $this->selectedPeriod = $periodId;
+    }
+
+    public function closeModal(): void
+    {
+        $this->showModal = false;
+        $this->selectedPeriod = null;
     }
 
     public function cancelForm(): void

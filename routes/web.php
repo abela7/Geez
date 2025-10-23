@@ -160,6 +160,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
             Route::get('/add', [\App\Http\Controllers\Admin\PayrollController::class, 'add'])->name('add');
             Route::get('/periods/{period}/review', [\App\Http\Controllers\Admin\PayrollController::class, 'review'])->name('review');
             Route::get('/periods/{period}/payment', [\App\Http\Controllers\Admin\PayrollController::class, 'payment'])->name('payment');
+            Route::get('/periods/{period}/reports', [\App\Http\Controllers\Admin\PayrollController::class, 'reports'])->name('reports');
         });
 
         // Staff Profile - must be before resource routes

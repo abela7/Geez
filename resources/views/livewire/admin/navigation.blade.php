@@ -249,6 +249,26 @@
                         Payroll Settings
                     </a>
                     <div class="submenu-separator"></div>
+                    <div class="submenu-section-title" style="font-size: 0.75rem; color: var(--color-text-muted);">Quick Actions</div>
+                    <a href="{{ route('admin.staff.payroll.review', isset($latestPeriod) ? $latestPeriod->id : '#') }}" class="submenu-link" style="display: inline-flex; align-items: center; gap: 0.5rem;" title="Go to latest pay period review">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                        </svg>
+                        <span>Review Payroll</span>
+                    </a>
+                    <a href="{{ route('admin.staff.payroll.payment', isset($latestPeriod) ? $latestPeriod->id : '#') }}" class="submenu-link" style="display: inline-flex; align-items: center; gap: 0.5rem;" title="Go to latest pay period payment processing">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                        <span>Process Payment</span>
+                    </a>
+                    <a href="{{ route('admin.staff.payroll.reports', isset($latestPeriod) ? $latestPeriod->id : '#') }}" class="submenu-link" style="display: inline-flex; align-items: center; gap: 0.5rem;" title="Go to latest pay period reports">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span>View Reports</span>
+                    </a>
+                    <div class="submenu-separator"></div>
                     <div class="submenu-section-title">{{ __('shifts.management.section_title') }}</div>
                     <a href="{{ route('admin.shifts.overview.index') }}" class="submenu-link {{ request()->routeIs('admin.shifts.overview.*') ? 'active' : '' }}">
                         {{ __('shifts.overview.title') }}

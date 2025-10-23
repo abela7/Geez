@@ -308,71 +308,47 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="flex items-center justify-end space-x-2">
-                                            <!-- Edit Button (available for all periods) -->
-                                            <button wire:click="startEdit('{{ $period->id }}')"
-                                                    class="inline-flex items-center px-2 py-1 text-xs font-medium rounded transition-colors"
-                                                    style="color: var(--color-primary); background-color: var(--color-primary-bg);"
-                                                    onmouseover="this.style.backgroundColor='var(--color-primary)'; this.style.color='white'"
-                                                    onmouseout="this.style.backgroundColor='var(--color-primary-bg)'; this.style.color='var(--color-primary)'"
-                                                    title="Edit Period">
+                                            <!-- Quick Access Button - Opens Side Modal -->
+                                            <button wire:click="openModal('{{ $period->id }}')" 
+                                                    type="button"
+                                                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded transition-all"
+                                                    style="background-color: var(--color-primary); color: white;"
+                                                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-md)';"
+                                                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                                 </svg>
-                                                Edit
+                                                Actions
+                                                <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                                </svg>
                                             </button>
-
-                                            <!-- Status-specific actions -->
-                                            @if($period->status === 'open')
-                                                <button wire:click="generatePayroll('{{ $period->id }}')"
-                                                        wire:confirm="Generate payroll for this period? This will create payroll records for all active staff."
-                                                        class="inline-flex items-center px-2 py-1 text-xs font-medium rounded transition-colors"
-                                                        style="color: var(--color-success); background-color: var(--color-success-bg);"
-                                                        onmouseover="this.style.backgroundColor='var(--color-success)'; this.style.color='white'"
-                                                        onmouseout="this.style.backgroundColor='var(--color-success-bg)'; this.style.color='var(--color-success)'"
-                                                        title="Generate Payroll">
-                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                    </svg>
-                                                    Generate
-                                                </button>
-                                            @elseif($period->status === 'calculated')
-                                                <a href="{{ route('admin.staff.payroll.review', $period->id) }}"
-                                                   class="inline-flex items-center px-2 py-1 text-xs font-medium rounded transition-colors"
-                                                   style="color: var(--color-info); background-color: var(--color-info-bg);"
-                                                   onmouseover="this.style.backgroundColor='var(--color-info)'; this.style.color='white'"
-                                                   onmouseout="this.style.backgroundColor='var(--color-info-bg)'; this.style.color='var(--color-info)'"
-                                                   title="Review Payroll">
-                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                                                    </svg>
-                                                    Review
-                                                </a>
-                                            @elseif($period->status === 'approved')
-                                                <a href="{{ route('admin.staff.payroll.payment', $period->id) }}"
-                                                   class="inline-flex items-center px-2 py-1 text-xs font-medium rounded transition-colors"
-                                                   style="color: var(--color-success); background-color: var(--color-success-bg);"
-                                                   onmouseover="this.style.backgroundColor='var(--color-success)'; this.style.color='white'"
-                                                   onmouseout="this.style.backgroundColor='var(--color-success-bg)'; this.style.color='var(--color-success)'"
-                                                   title="Process Payment">
-                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                                                    </svg>
-                                                    Process Payment
-                                                </a>
-                                            @endif
-
-                                            <!-- Delete Button (available for all periods) -->
+                                            
+                                            <!-- Edit Button -->
+                                            <button wire:click="startEdit('{{ $period->id }}')" 
+                                                    type="button"
+                                                    class="inline-flex items-center p-2 rounded transition-all"
+                                                    style="background-color: var(--color-warning-bg); color: var(--color-warning);"
+                                                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-md)';"
+                                                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';"
+                                                    title="Edit Period">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                                </svg>
+                                            </button>
+                                            
+                                            <!-- Delete Button -->
                                             <button wire:click="deletePeriod('{{ $period->id }}')"
                                                     wire:confirm="Are you sure you want to delete this period? This action cannot be undone."
-                                                    class="inline-flex items-center px-2 py-1 text-xs font-medium rounded transition-colors"
-                                                    style="color: var(--color-error); background-color: var(--color-error-bg);"
-                                                    onmouseover="this.style.backgroundColor='var(--color-error)'; this.style.color='white'"
-                                                    onmouseout="this.style.backgroundColor='var(--color-error-bg)'; this.style.color='var(--color-error)'"
+                                                    type="button"
+                                                    class="inline-flex items-center p-2 rounded transition-all"
+                                                    style="background-color: var(--color-error-bg); color: var(--color-error);"
+                                                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-md)';"
+                                                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';"
                                                     title="Delete Period">
-                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                                 </svg>
-                                                Delete
                                             </button>
                                         </div>
                                     </td>
@@ -399,4 +375,111 @@
             @endif
         </div>
     </div>
+
+    <!-- Side Modal for Actions -->
+    @if($showModal && $selectedPeriod)
+        @teleport('body')
+            <div x-data="{ show: @entangle('showModal') }"
+                 x-show="show"
+                 @keydown.escape.window="$wire.closeModal()"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 overflow-hidden"
+                 style="z-index: 99999;">
+                
+                <!-- Backdrop -->
+                <div class="absolute inset-0" style="background-color: rgba(0, 0, 0, 0.7);" wire:click="closeModal"></div>
+            
+            <!-- Side Panel -->
+            <div x-show="show"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="transform translate-x-full"
+                 x-transition:enter-end="transform translate-x-0"
+                 x-transition:leave="transition ease-in duration-250"
+                 x-transition:leave-start="transform translate-x-0"
+                 x-transition:leave-end="transform translate-x-full"
+                 class="absolute right-0 top-0 h-full w-full max-w-md shadow-2xl flex flex-col"
+                 style="background-color: var(--color-bg-secondary);"
+                 @click.stop>
+        
+                <!-- Header -->
+                <div class="flex items-center justify-between p-6" style="border-bottom: 1px solid var(--color-border-base);">
+                    <h2 class="text-xl font-bold" style="color: var(--color-text-primary);">Period Actions</h2>
+                    <button wire:click="closeModal" class="transition-colors" style="color: var(--color-text-muted);" onmouseover="this.style.color='var(--color-text-primary)'" onmouseout="this.style.color='var(--color-text-muted)'">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Content -->
+                <div class="flex-1 overflow-y-auto p-6 space-y-3">
+                    <!-- Review Payroll -->
+                    <a href="/admin/staff/payroll/periods/{{ $selectedPeriod }}/review"
+                       class="flex items-center px-4 py-3 rounded-lg transition-colors"
+                       style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary);"
+                       onmouseover="this.style.backgroundColor='var(--color-surface-card-hover)'; this.style.color='var(--color-primary)';"
+                       onmouseout="this.style.backgroundColor='var(--color-bg-tertiary)'; this.style.color='var(--color-text-primary)';">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                        </svg>
+                        <div>
+                            <div class="font-medium">Review Payroll</div>
+                            <div class="text-xs" style="color: var(--color-text-secondary);">Review and approve records</div>
+                        </div>
+                    </a>
+                    
+                    <!-- Process Payment -->
+                    <a href="/admin/staff/payroll/periods/{{ $selectedPeriod }}/payment"
+               class="flex items-center px-4 py-3 rounded-lg transition-colors"
+               style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary);"
+               onmouseover="this.style.backgroundColor='var(--color-surface-card-hover)'; this.style.color='var(--color-primary)';"
+               onmouseout="this.style.backgroundColor='var(--color-bg-tertiary)'; this.style.color='var(--color-text-primary)';">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <div>
+                    <div class="font-medium">Process Payment</div>
+                    <div class="text-xs" style="color: var(--color-text-secondary);">Process staff payments</div>
+                </div>
+            </a>
+            
+            <!-- View Reports -->
+                    <a href="/admin/staff/payroll/periods/{{ $selectedPeriod }}/reports"
+               class="flex items-center px-4 py-3 rounded-lg transition-colors"
+               style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary);"
+               onmouseover="this.style.backgroundColor='var(--color-surface-card-hover)'; this.style.color='var(--color-primary)';"
+               onmouseout="this.style.backgroundColor='var(--color-bg-tertiary)'; this.style.color='var(--color-text-primary)';">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <div>
+                    <div class="font-medium">View Reports</div>
+                    <div class="text-xs" style="color: var(--color-text-secondary);">Generate payslips & summaries</div>
+                </div>
+            </a>
+            
+            <!-- View Records -->
+                    <a href="/admin/staff/payroll/periods/{{ $selectedPeriod }}/records"
+               class="flex items-center px-4 py-3 rounded-lg transition-colors"
+               style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary);"
+               onmouseover="this.style.backgroundColor='var(--color-surface-card-hover)'; this.style.color='var(--color-primary)';"
+               onmouseout="this.style.backgroundColor='var(--color-bg-tertiary)'; this.style.color='var(--color-text-primary)';">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <div>
+                    <div class="font-medium">View All Records</div>
+                    <div class="text-xs" style="color: var(--color-text-secondary);">View all payroll records</div>
+                </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        @endteleport
+    @endif
 </div>

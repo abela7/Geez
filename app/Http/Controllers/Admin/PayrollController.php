@@ -56,4 +56,12 @@ class PayrollController extends Controller
     {
         return view('admin.payroll.payment', compact('period'));
     }
+
+    /**
+     * Show payroll reports page for a period.
+     */
+    public function reports(StaffPayrollPeriod $period)
+    {
+        return view('admin.payroll.reports', compact('period'));
+    }
 }
