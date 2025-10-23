@@ -19,10 +19,6 @@ class Reports extends Component
     public string $statusFilter = 'all';
     public string $search = '';
     
-    // Payslip modal
-    public bool $showPayslipModal = false;
-    public ?StaffPayrollRecord $selectedRecord = null;
-
     protected $queryString = [
         'reportType' => ['except' => 'summary'],
         'statusFilter' => ['except' => 'all'],
@@ -46,15 +42,7 @@ class Reports extends Component
 
     public function viewPayslip(string $recordId): void
     {
-        $this->selectedRecord = StaffPayrollRecord::with(['staff.profile', 'staff.staffType', 'payPeriod'])
-            ->findOrFail($recordId);
-        $this->showPayslipModal = true;
-    }
-
-    public function closePayslipModal(): void
-    {
-        $this->showPayslipModal = false;
-        $this->selectedRecord = null;
+        $this->redirect(route('admin.staff.payroll.payslip', ['record' => $recordId]));
     }
 
     public function downloadPayslip(string $recordId): void
