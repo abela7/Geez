@@ -6,22 +6,30 @@ namespace App\Livewire\Admin\Payroll;
 
 use App\Models\Staff;
 use App\Models\StaffPayrollPeriod;
+use App\Models\StaffPayrollRecord;
 use App\Models\StaffPayrollSetting;
 use App\Models\StaffPayrollTemplate;
 use App\Models\StaffAttendance;
 use App\Services\PayrollCalculationService;
 use Illuminate\Support\Collection;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class AddPayroll extends Component
 {
-    use WithPagination;
-
+    // Step 1: Period Selection
     public ?string $selectedPeriodId = null;
-    public string $searchTerm = '';
-    public array $selectedStaff = [];
-    public bool $selectAll = false;
+    
+    // Step 2: Staff Selection
+    public ?string $selectedStaffId = null;
+    public string $staffSearchTerm = '';
+    
+    // Step 3: Attendance Selection
+    public array $selectedAttendanceIds = [];
+    public bool $selectAllAttendance = false;
+    
+    // Step 4: Manual Adjustments (optional)
+    public ?float $manualHours = null;
+    public string $notes = '';
     
     // Period creation modal
     public bool $showCreatePeriodModal = false;
@@ -31,7 +39,7 @@ class AddPayroll extends Component
     public string $newPayDate = '';
 
     protected $queryString = [
-        'searchTerm' => ['except' => ''],
+        'staffSearchTerm' => ['except' => ''],
     ];
 
     public function mount(): void
@@ -46,24 +54,43 @@ class AddPayroll extends Component
         }
     }
 
-    public function updatedSelectAll($value): void
+    public function selectStaff(string $staffId): void
+    {
+        $this->selectedStaffId = $staffId;
+        $this->selectedAttendanceIds = [];
+        $this->selectAllAttendance = false;
+        $this->manualHours = null;
+        $this->notes = '';
+    }
+
+    public function clearStaffSelection(): void
+    {
+        $this->selectedStaffId = null;
+        $this->selectedAttendanceIds = [];
+        $this->selectAllAttendance = false;
+        $this->manualHours = null;
+        $this->notes = '';
+        $this->staffSearchTerm = '';
+    }
+
+    public function updatedSelectAllAttendance($value): void
     {
         if ($value) {
-            $this->selectedStaff = $this->getStaffForPeriod()->pluck('id')->toArray();
+            $this->selectedAttendanceIds = $this->getAttendanceRecords()->pluck('id')->toArray();
         } else {
-            $this->selectedStaff = [];
+            $this->selectedAttendanceIds = [];
         }
     }
 
-    public function toggleStaffSelection(string $staffId): void
+    public function toggleAttendanceSelection(string $attendanceId): void
     {
-        if (in_array($staffId, $this->selectedStaff)) {
-            $this->selectedStaff = array_values(array_diff($this->selectedStaff, [$staffId]));
+        if (in_array($attendanceId, $this->selectedAttendanceIds)) {
+            $this->selectedAttendanceIds = array_values(array_diff($this->selectedAttendanceIds, [$attendanceId]));
         } else {
-            $this->selectedStaff[] = $staffId;
+            $this->selectedAttendanceIds[] = $attendanceId;
         }
         
-        $this->selectAll = false;
+        $this->selectAllAttendance = false;
     }
 
     public function openCreatePeriodModal(): void
@@ -110,15 +137,6 @@ class AddPayroll extends Component
 
     public function generatePayroll(): void
     {
-        // Validate inputs
-        if (empty($this->selectedStaff)) {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Please select at least one staff member.'
-            ]);
-            return;
-        }
-
         if (!$this->selectedPeriodId) {
             $this->dispatch('notify', [
                 'type' => 'error',
@@ -127,14 +145,45 @@ class AddPayroll extends Component
             return;
         }
 
+        if (!$this->selectedStaffId) {
+            $this->dispatch('notify', [
+                'type' => 'error',
+                'message' => 'Please select a staff member.'
+            ]);
+            return;
+        }
+
+        if (empty($this->selectedAttendanceIds) && !$this->manualHours) {
+            $this->dispatch('notify', [
+                'type' => 'error',
+                'message' => 'Please select attendance records or enter manual hours.'
+            ]);
+            return;
+        }
+
         try {
             $period = StaffPayrollPeriod::findOrFail($this->selectedPeriodId);
+            $staff = Staff::with(['profile', 'staffType'])->findOrFail($this->selectedStaffId);
             
             // Validate period status
             if ($period->status !== 'open') {
                 $this->dispatch('notify', [
                     'type' => 'error',
                     'message' => 'Payroll can only be generated for open periods.'
+                ]);
+                return;
+            }
+
+            // Check if payroll already exists (only non-deleted records)
+            $existing = $period->payrollRecords()
+                ->where('staff_id', $this->selectedStaffId)
+                ->whereNull('deleted_at')
+                ->exists();
+            
+            if ($existing) {
+                $this->dispatch('notify', [
+                    'type' => 'error',
+                    'message' => "{$staff->full_name} already has a payroll record for this period."
                 ]);
                 return;
             }
@@ -159,107 +208,86 @@ class AddPayroll extends Component
                 return;
             }
 
-            // Use service layer for calculations
-            $calculator = app(PayrollCalculationService::class);
-            $successCount = 0;
-            $failedCount = 0;
-            $skippedCount = 0;
-            $errors = [];
-
-            foreach ($this->selectedStaff as $staffId) {
-                try {
-                    $staff = Staff::with(['profile', 'staffType'])->findOrFail($staffId);
-                    
-                    // Validation: Check if staff has profile
-                    if (!$staff->profile) {
-                        $errors[] = "{$staff->full_name}: Missing staff profile.";
-                        $skippedCount++;
-                        continue;
-                    }
-
-                    // Validation: Check if staff has hourly rate
-                    if (!$staff->profile->hourly_rate || $staff->profile->hourly_rate <= 0) {
-                        $errors[] = "{$staff->full_name}: Missing or invalid hourly rate.";
-                        $skippedCount++;
-                        continue;
-                    }
-                    
-                    // Validation: Check if payroll already exists
-                    $existing = $period->payrollRecords()
-                        ->where('staff_id', $staffId)
-                        ->exists();
-                    
-                    if ($existing) {
-                        $errors[] = "{$staff->full_name}: Already has payroll for this period.";
-                        $skippedCount++;
-                        continue;
-                    }
-                    
-                    // Generate payroll using service
-                    $calculator->calculateForStaff($staff, $period);
-                    $successCount++;
-                    
-                } catch (\Exception $e) {
-                    $failedCount++;
-                    $staffName = isset($staff) ? $staff->full_name : "Staff ID: {$staffId}";
-                    $errors[] = "{$staffName}: " . $e->getMessage();
-                    \Log::error("Payroll generation failed for staff {$staffId}", [
-                        'error' => $e->getMessage(),
-                        'period' => $period->id,
-                        'trace' => $e->getTraceAsString()
-                    ]);
-                }
+            // Calculate hours
+            $totalHours = 0;
+            if ($this->manualHours) {
+                $totalHours = (float) $this->manualHours;
+            } else {
+                $attendance = StaffAttendance::whereIn('id', $this->selectedAttendanceIds)->get();
+                $totalHours = $attendance->sum('net_hours_worked') ?? 0;
             }
 
-            // Update period totals from database
+            // Get hourly rate
+            $hourlyRate = $staff->profile?->hourly_rate ?? 0;
+            
+            if ($hourlyRate <= 0) {
+                $this->dispatch('notify', [
+                    'type' => 'error',
+                    'message' => "{$staff->full_name} has no valid hourly rate."
+                ]);
+                return;
+            }
+
+            // Calculate pay components
+            $regularHours = $setting->calculateRegularHours($totalHours);
+            $overtimeHours = $setting->calculateOvertimeHours($totalHours);
+            
+            $regularPay = $regularHours * $hourlyRate;
+            $overtimePay = $overtimeHours * $hourlyRate * $setting->overtime_multiplier;
+            $grossPay = $regularPay + $overtimePay;
+            
+            // For now, no deductions
+            $deductions = 0;
+            $netPay = $grossPay - $deductions;
+
+            // Create payroll record
+            $record = StaffPayrollRecord::create([
+                'pay_period_id' => $period->id,
+                'staff_id' => $staff->id,
+                'payroll_template_id' => $template->id,
+                'pay_period_start' => $period->period_start,
+                'pay_period_end' => $period->period_end,
+                'regular_hours' => $regularHours,
+                'overtime_hours' => $overtimeHours,
+                'hourly_rate' => $hourlyRate,
+                'regular_pay' => $regularPay,
+                'overtime_pay' => $overtimePay,
+                'gross_pay' => $grossPay,
+                'deductions' => $deductions,
+                'net_pay' => $netPay,
+                'status' => 'calculated',
+                'notes' => $this->notes ?: null,
+                'created_by' => auth()->id(),
+            ]);
+
+            // Update period totals
             $period->refresh();
             $period->updateTotals();
 
-            // Build response message
-            $message = "Payroll generation complete. Success: {$successCount}";
-            if ($skippedCount > 0) {
-                $message .= ", Skipped: {$skippedCount}";
-            }
-            if ($failedCount > 0) {
-                $message .= ", Failed: {$failedCount}";
-            }
-
-            // Log detailed errors if any
-            if (!empty($errors)) {
-                \Log::warning('Payroll generation had issues', [
-                    'period' => $period->id,
-                    'success' => $successCount,
-                    'failed' => $failedCount,
-                    'skipped' => $skippedCount,
-                    'errors' => $errors
-                ]);
-            }
-
             $this->dispatch('notify', [
-                'type' => ($failedCount > 0 || $skippedCount > 0) ? 'warning' : 'success',
-                'message' => $message
+                'type' => 'success',
+                'message' => "Payroll generated for {$staff->full_name}! Gross Pay: £" . number_format($grossPay, 2)
             ]);
 
-            // Clear selection and refresh
-            $this->selectedStaff = [];
-            $this->selectAll = false;
-            $this->resetPage();
+            // Clear selection
+            $this->clearStaffSelection();
             
         } catch (\Exception $e) {
             \Log::error('Critical error in payroll generation', [
                 'error' => $e->getMessage(),
                 'period_id' => $this->selectedPeriodId,
+                'staff_id' => $this->selectedStaffId,
                 'trace' => $e->getTraceAsString()
             ]);
             
             $this->dispatch('notify', [
                 'type' => 'error',
-                'message' => 'Critical error generating payroll. Please contact system administrator.'
+                'message' => 'Error generating payroll: ' . $e->getMessage()
             ]);
         }
     }
 
-    public function getStaffForPeriod(): Collection
+    public function getStaffList(): Collection
     {
         if (!$this->selectedPeriodId) {
             return collect([]);
@@ -270,60 +298,93 @@ class AddPayroll extends Component
             return collect([]);
         }
 
-        $query = Staff::active()
-            ->with(['profile', 'attendance' => function ($query) use ($period) {
-                $query->whereBetween('clock_in', [
-                    $period->period_start->startOfDay(),
-                    $period->period_end->endOfDay()
-                ])
-                ->where('current_state', 'clocked_out');
-            }]);
+        $query = Staff::with(['profile', 'staffType'])
+            ->whereHas('profile')
+            ->where('status', 'active');
 
-        if ($this->searchTerm) {
+        if ($this->staffSearchTerm) {
             $query->where(function ($q) {
-                $q->where('first_name', 'like', '%' . $this->searchTerm . '%')
-                  ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
-                  ->orWhere('email', 'like', '%' . $this->searchTerm . '%');
+                $q->where('first_name', 'like', '%' . $this->staffSearchTerm . '%')
+                  ->orWhere('last_name', 'like', '%' . $this->staffSearchTerm . '%')
+                  ->orWhere('email', 'like', '%' . $this->staffSearchTerm . '%');
             });
         }
 
         return $query->get()->map(function ($staff) use ($period) {
-            // Get attendance hours from database
-            $totalHours = $staff->attendance->sum('net_hours_worked') ?? 0;
-            
-            // Get hourly rate from staff profile
-            $hourlyRate = 0;
-            if ($staff->profile && $staff->profile->hourly_rate) {
-                $hourlyRate = (float) $staff->profile->hourly_rate;
-            }
-            
-            // Calculate gross pay
-            $grossPay = $totalHours * $hourlyRate;
-            
-            // Check if payroll already exists for this staff and period
             $hasPayroll = $period->payrollRecords()
                 ->where('staff_id', $staff->id)
                 ->exists();
 
-            // Get staff type name
-            $staffTypeName = $staff->staffType ? $staff->staffType->name : null;
-            
-            // Get employee ID
-            $employeeId = $staff->profile ? $staff->profile->employee_id : null;
-            
             return (object) [
                 'id' => $staff->id,
                 'name' => $staff->full_name,
-                'employee_id' => $employeeId,
-                'staff_type' => $staffTypeName,
-                'hourly_rate' => $hourlyRate,
-                'total_hours' => $totalHours,
-                'gross_pay' => $grossPay,
+                'employee_id' => $staff->profile?->employee_id,
+                'staff_type' => $staff->staffType?->name,
+                'hourly_rate' => $staff->profile?->hourly_rate ?? 0,
                 'has_payroll' => $hasPayroll,
-                'has_profile' => $staff->profile !== null,
-                'has_hourly_rate' => $hourlyRate > 0,
             ];
         });
+    }
+
+    public function getAttendanceRecords(): Collection
+    {
+        if (!$this->selectedStaffId || !$this->selectedPeriodId) {
+            return collect([]);
+        }
+
+        $period = StaffPayrollPeriod::find($this->selectedPeriodId);
+        if (!$period) {
+            return collect([]);
+        }
+
+        return StaffAttendance::where('staff_id', $this->selectedStaffId)
+            ->whereBetween('clock_in', [
+                $period->period_start->startOfDay(),
+                $period->period_end->endOfDay()
+            ])
+            ->whereNotNull('clock_out')
+            ->orderBy('clock_in', 'asc')
+            ->get();
+    }
+
+    public function getSelectedStaff()
+    {
+        if (!$this->selectedStaffId) {
+            return null;
+        }
+
+        $staff = Staff::with(['profile', 'staffType'])->find($this->selectedStaffId);
+        if (!$staff) {
+            return null;
+        }
+
+        return (object) [
+            'id' => $staff->id,
+            'name' => $staff->full_name,
+            'employee_id' => $staff->profile?->employee_id,
+            'staff_type' => $staff->staffType?->name,
+            'hourly_rate' => $staff->profile?->hourly_rate ?? 0,
+        ];
+    }
+
+    public function getCalculatedTotals(): array
+    {
+        if ($this->manualHours) {
+            $totalHours = (float) $this->manualHours;
+        } else {
+            $attendance = StaffAttendance::whereIn('id', $this->selectedAttendanceIds)->get();
+            $totalHours = $attendance->sum('net_hours_worked') ?? 0;
+        }
+
+        $staff = $this->getSelectedStaff();
+        $hourlyRate = $staff->hourly_rate ?? 0;
+        $grossPay = $totalHours * $hourlyRate;
+
+        return [
+            'total_hours' => $totalHours,
+            'hourly_rate' => $hourlyRate,
+            'gross_pay' => $grossPay,
+        ];
     }
 
     public function render()
@@ -333,16 +394,21 @@ class AddPayroll extends Component
             ->get();
 
         $selectedPeriod = $this->selectedPeriodId 
-            ? StaffPayrollPeriod::find($this->selectedPeriodId)
+            ? StaffPayrollPeriod::find($this->selectedPeriodId) 
             : null;
 
-        $staffList = $this->getStaffForPeriod();
+        $staffList = $this->getStaffList();
+        $selectedStaff = $this->getSelectedStaff();
+        $attendanceRecords = $this->getAttendanceRecords();
+        $calculatedTotals = $this->getCalculatedTotals();
 
         return view('livewire.admin.payroll.add-payroll', [
             'periods' => $periods,
             'selectedPeriod' => $selectedPeriod,
             'staffList' => $staffList,
+            'selectedStaff' => $selectedStaff,
+            'attendanceRecords' => $attendanceRecords,
+            'calculatedTotals' => $calculatedTotals,
         ]);
     }
 }
-

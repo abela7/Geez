@@ -34,6 +34,14 @@ class PayrollController extends Controller
     }
 
     /**
+     * Show payroll records for a specific period.
+     */
+    public function records(StaffPayrollPeriod $period)
+    {
+        return view('admin.payroll.records', compact('period'));
+    }
+
+    /**
      * Show payroll review page for a period.
      */
     public function review(StaffPayrollPeriod $period)

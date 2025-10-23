@@ -286,7 +286,18 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm" style="color: var(--color-text-primary);">
-                                        {{ $period->total_staff_count ?? 0 }}
+                                        @if($period->total_staff_count > 0)
+                                            <a href="{{ route('admin.staff.payroll.periods.records', $period->id) }}" 
+                                               class="inline-flex items-center gap-1 font-medium hover:underline transition-colors"
+                                               style="color: var(--color-primary);">
+                                                {{ $period->total_staff_count }}
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                                </svg>
+                                            </a>
+                                        @else
+                                            {{ $period->total_staff_count ?? 0 }}
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm" style="color: var(--color-text-primary);">
                                         @if($period->total_net_pay)

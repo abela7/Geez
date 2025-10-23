@@ -156,6 +156,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         Route::prefix('payroll')->name('payroll.')->group(function () {
             Route::get('/settings', [\App\Http\Controllers\Admin\PayrollController::class, 'settings'])->name('settings');
             Route::get('/periods', [\App\Http\Controllers\Admin\PayrollController::class, 'periods'])->name('periods');
+            Route::get('/periods/{period}/records', [\App\Http\Controllers\Admin\PayrollController::class, 'records'])->name('periods.records');
             Route::get('/add', [\App\Http\Controllers\Admin\PayrollController::class, 'add'])->name('add');
             Route::get('/periods/{period}/review', [\App\Http\Controllers\Admin\PayrollController::class, 'review'])->name('review');
             Route::get('/periods/{period}/payment', [\App\Http\Controllers\Admin\PayrollController::class, 'payment'])->name('payment');
